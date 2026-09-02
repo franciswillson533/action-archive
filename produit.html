@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html class="light" lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Produit - Action Archive</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,900;1,900&family=Work+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = { darkMode: "class", theme: { extend: { colors: {
+            "secondary": "#755700", "surface-container-low": "#fdefd5", "surface-container-high": "#efe1c3",
+            "surface": "#fff5e5", "primary": "#bb0003", "tertiary": "#0f56bf", "on-surface": "#342e1e",
+            "secondary-container": "#ffca4d", "on-background": "#342e1e", "background": "#fff5e5",
+            "surface-variant": "#eadcbc", "on-surface-variant": "#635b48",
+        }, fontFamily: { "headline": ["Epilogue"], "body": ["Work Sans"], "label": ["Work Sans"] } } } }
+    </script>
+    <style>
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 80% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+        .animate-pop-in { animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        @keyframes urgentBlink {
+            0%, 100% { transform: scale(1); box-shadow: 6px 6px 0 0 #342e1e; }
+            50% { transform: scale(1.03); box-shadow: 8px 8px 0 0 #ffca4d; }
+        }
+        .aa-btn-blink { animation: urgentBlink 1.2s ease-in-out infinite; }
+        #side-drawer { box-shadow: -8px 0 0 0 rgba(52, 46, 30, 0.2); transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1); }
+        #side-drawer.open { transform: translateX(0); }
+        .drawer-overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .drawer-overlay.open { opacity: 1; pointer-events: auto; }
+        .btn-physical { transition: all 0.1s ease; }
+        .btn-physical:active { transform: translateY(4px); box-shadow: 0px 0px 0px 0px !important; }
+        #aa-cart-badge{position:absolute;top:-7px;right:-8px;min-width:18px;height:18px;background:#ffca4d;color:#342e1e;font-family:'Epilogue',sans-serif;font-weight:900;font-size:10px;border:2px solid #342e1e;border-radius:2px;display:none;align-items:center;justify-content:center;padding:0 3px;}
+        .aa-toast{background:#342e1e;color:#fff5e5;border:3px solid #ffca4d;padding:12px 18px;font-family:'Epilogue',sans-serif;font-weight:900;font-size:13px;text-transform:uppercase;display:flex;align-items:center;gap:10px;max-width:300px;transform:translateX(120%);opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);pointer-events:auto;}
+        .aa-toast.show{transform:translateX(0);opacity:1;}
+        #aa-toasts{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
+        .aa-qty-btn{width:36px;height:36px;background:#342e1e;color:#fff5e5;font-family:'Epilogue',sans-serif;font-weight:900;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #342e1e;}
+        .aa-qty-btn:hover{background:#bb0003;}
+        .aa-logo { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease; filter: drop-shadow(2px 2px 0px rgba(52, 46, 30, 0.15)); }
+        .aa-logo-link:hover .aa-logo { transform: rotate(-5deg) scale(1.05); filter: drop-shadow(3px 3px 0px rgba(187, 0, 3, 0.4)); }
+        .aa-stars-badge{position:absolute;top:-7px;right:-8px;min-width:18px;height:18px;background:#ffca4d;color:#342e1e;font-family:'Epilogue',sans-serif;font-weight:900;font-size:10px;border:2px solid #342e1e;border-radius:2px;display:flex;align-items:center;justify-content:center;padding:0 3px;}
+        .aa-nav-gift-badge{position:absolute;bottom:-8px;right:-8px;font-size:14px;display:none;align-items:center;justify-content:center;}
+        @keyframes giftPulse { 0%,100%{box-shadow:0 0 0 0 rgba(255,202,77,0.7);} 50%{box-shadow:0 0 0 6px rgba(255,202,77,0);} }
+        .aa-nav-stars.aa-has-gift { border-color:#ffca4d !important; color:#ffca4d !important; animation: giftPulse 1.5s infinite; }
+        .aa-type-badge-big { display:inline-flex; align-items:center; gap:0.5rem; padding:8px 16px; font-family:'Epilogue',sans-serif; font-weight:900; font-size:14px; text-transform:uppercase; border:3px solid #342e1e; letter-spacing:0.05em; box-shadow:4px 4px 0 0 #342e1e; }
+        .aa-type-reproduction-big { background: #0f56bf; color: white; }
+        .aa-type-custom-big { background: #7b1fa2; color: white; }
+        .aa-menu-btn { font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; background: #bb0003; color: #fff5e5; border: 3px solid #342e1e; padding: 10px 20px; font-size: 1.05rem; box-shadow: 4px 4px 0 0 #342e1e; cursor: pointer; transition: all 0.15s ease; }
+        .aa-menu-btn:hover { background: #342e1e; color: #ffca4d; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 #bb0003; }
+        .aa-hover-hint { position: absolute; bottom: 12px; right: 12px; background: rgba(0, 0, 0, 0.7); color: #ffca4d; padding: 6px 12px; font-family: 'Epilogue', sans-serif; font-weight: 900; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+        .aa-img-container:hover .aa-hover-hint { opacity: 1; }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface overflow-x-hidden">
+
+<header class="w-full border-b-4 border-double border-[#bb0003] bg-[#fff5e5] shadow-[4px_4px_0px_0px_rgba(52,46,30,0.2)] z-50 sticky top-0">
+    <div class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
+        <a href="index.html" class="aa-logo-link flex items-center gap-3 group cursor-pointer" title="Retour à l'accueil">
+            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="eager" class="aa-logo h-12 md:h-14 w-auto"/>
+            <span class="text-2xl md:text-3xl font-black italic text-[#bb0003] font-headline uppercase tracking-tighter group-hover:text-[#0f56bf] transition-colors">Action Archive</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-6 font-headline font-black uppercase tracking-tighter text-sm">
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="index.html">Accueil</a>
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="produits.html">Produits</a>
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="info.html">Info</a>
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="panier.html">Commande</a>
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="inscription.html">Inscription</a>
+        </nav>
+        <div class="flex items-center gap-2">
+            <a class="aa-nav-stars relative p-2 text-[#755700] border-2 border-[#755700] rounded-sm btn-physical" href="inscription.html" style="display:none;" title="Mon programme fidélité">
+                <span class="material-symbols-outlined">stars</span>
+                <span class="aa-nav-stars-count aa-stars-badge">0</span>
+                <span class="aa-nav-gift-badge">🎁</span>
+            </a>
+            <a class="relative p-2 text-[#bb0003] border-2 border-[#bb0003] rounded-sm btn-physical" href="panier.html" title="Mon panier">
+                <span class="material-symbols-outlined">shopping_cart</span>
+                <span id="aa-cart-badge"></span>
+            </a>
+            <button onclick="toggleDrawer()" class="aa-menu-btn">☰ MENU</button>
+        </div>
+    </div>
+</header>
+
+<div id="drawer-overlay" class="drawer-overlay fixed inset-0 bg-on-background/40 backdrop-blur-sm z-[90]" onclick="toggleDrawer()"></div>
+<aside id="side-drawer" class="fixed top-0 right-0 h-full w-full max-w-[320px] bg-surface-container-high border-l-8 border-primary z-[100] transform translate-x-full overflow-y-auto">
+    <div class="p-8 space-y-8 flex flex-col h-full text-on-surface">
+        <div class="flex justify-between items-center border-b-4 border-on-background/10 pb-6">
+            <h2 class="font-headline font-black text-2xl text-primary italic uppercase">MENU</h2>
+            <button class="text-on-background" onclick="toggleDrawer()"><span class="material-symbols-outlined text-3xl">close</span></button>
+        </div>
+        <nav class="flex flex-col gap-3">
+            <a href="index.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">ACCUEIL</a>
+            <a href="produits.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">PRODUITS</a>
+            <a href="info.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">INFO</a>
+            <a href="panier.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">COMMANDE</a>
+            <a href="inscription.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">INSCRIPTION</a>
+        </nav>
+    </div>
+</aside>
+
+<main class="container mx-auto px-6 py-12 min-h-screen">
+    <div id="aa-loading" class="text-center py-20">
+        <p class="font-headline font-black text-2xl uppercase italic text-primary">Chargement de la pièce...</p>
+    </div>
+
+    <div id="aa-product-detail" class="hidden">
+        <a href="produits.html" class="inline-flex items-center gap-2 mb-8 font-headline font-black uppercase text-on-surface hover:text-primary">
+            <span class="material-symbols-outlined">arrow_back</span> Retour au catalogue
+        </a>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div>
+                <div class="aa-img-container bg-surface-container-lowest border-4 border-on-background shadow-[12px_12px_0px_0px_rgba(52,46,30,1)] overflow-hidden aspect-square relative cursor-pointer">
+                    <img id="aa-main-img" src="" alt="" class="w-full h-full object-cover transition-opacity duration-200">
+                    <span id="aa-type-badge-big" class="aa-type-badge-big absolute top-4 left-4" style="display:none;"></span>
+                    <div class="aa-hover-hint">🔄 Survolez pour voir le verso</div>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <div>
+                    <div class="flex items-center gap-3 mb-3 flex-wrap">
+                        <span id="aa-status-badge" class="inline-block px-3 py-1 font-headline font-black text-xs uppercase border-2 border-on-background"></span>
+                        <span id="aa-collection-tag" class="inline-block px-3 py-1 font-headline font-black text-xs uppercase bg-secondary-container border-2 border-on-background"></span>
+                    </div>
+                    <h1 id="aa-product-name" class="font-headline font-black text-4xl md:text-5xl uppercase text-on-background tracking-tighter leading-none mb-3"></h1>
+                    <p id="aa-product-collection" class="font-body font-bold text-secondary uppercase tracking-widest text-sm"></p>
+                </div>
+
+                <div class="border-y-4 border-on-background py-6">
+                    <span id="aa-product-price" class="font-headline font-black text-5xl text-tertiary"></span>
+                </div>
+
+                <div>
+                    <h3 class="font-headline font-black text-xl uppercase text-on-background mb-2">Description</h3>
+                    <p id="aa-product-desc" class="font-body text-on-surface-variant leading-relaxed"></p>
+                </div>
+
+                <div class="bg-tertiary border-4 border-on-background p-4 shadow-[4px_4px_0px_0px_#342e1e]">
+                    <div class="flex items-start gap-3">
+                        <span class="material-symbols-outlined text-3xl text-on-primary flex-shrink-0">info</span>
+                        <div>
+                            <p class="font-headline font-black uppercase text-on-primary text-base leading-tight">
+                                <strong>Possibilité de demander un devis ou un renseignement sur la page <a href="info.html" class="underline hover:text-secondary-container">INFO</a></strong>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-surface-container-high border-4 border-on-background p-6 shadow-[8px_8px_0px_0px_rgba(117,87,0,1)]">
+                    <div class="flex items-center gap-4 mb-4">
+                        <span class="font-headline font-black uppercase">Quantité :</span>
+                        <div class="flex items-center border-2 border-on-background">
+                            <button class="aa-qty-btn" id="aa-qty-minus">-</button>
+                            <span id="aa-qty-display" class="w-12 text-center font-headline font-black text-xl">1</span>
+                            <button class="aa-qty-btn" id="aa-qty-plus">+</button>
+                        </div>
+                    </div>
+                    <button id="aa-add-btn" class="aa-btn-blink w-full bg-primary text-on-primary font-headline font-black px-6 py-4 text-xl uppercase shadow-[6px_6px_0px_0px_#342e1e] hover:translate-y-[-2px] transition-all">
+                        🛒 AJOUTER AU PANIER
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- 🆕 FOOTER RÉPARÉ : même chemin d'image que le header -->
+<footer class="bg-[#342e1e] border-t-8 border-double border-[#755700] w-full py-12 px-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-20">
+    <div class="flex flex-col items-center md:items-start gap-3">
+        <a href="index.html" class="aa-logo-link flex items-center gap-3 cursor-pointer" title="Action Archive">
+            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="lazy" class="aa-logo h-10 w-auto"/>
+            <span class="text-xl md:text-2xl font-black italic text-[#ffca4d] font-headline uppercase tracking-tighter hover:text-white transition-colors">Action Archive</span>
+        </a>
+        <p class="font-body font-medium text-[10px] text-[#ffca4d] tracking-widest uppercase">© 2026 Action Archive INC.</p>
+    </div>
+    <nav id="aa-social-nav" class="flex flex-wrap justify-center gap-10"></nav>
+</footer>
+
+<div id="aa-toasts"></div>
+<script src="aa-core.js"></script>
+<script>
+function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+
+let currentProduct = null;
+let currentQty = 1;
+let currentImgRecto = null;
+let currentImgVerso = null;
+
+function changeQty(delta) {
+    currentQty = Math.max(1, currentQty + delta);
+    document.getElementById('aa-qty-display').textContent = currentQty;
+}
+
+function addCurrentToCart() {
+    if (!currentProduct) { aaToast('Erreur : produit non chargé', 'error'); return; }
+    const f = currentProduct.fields || currentProduct;
+    const name = f.Nom || 'Produit sans nom';
+    const price = parseFloat(f.Prix) || 0;
+    const image = currentImgRecto || '';
+    const productId = currentProduct.id;
+    const url = `produit.html?id=${productId}`;
+    aaAddToCart(name, price, url, image);
+    aaToast(name + ' ajouté au panier !', 'shopping_cart');
+}
+
+function detectProductType(f) {
+    if (!f) return 'reproduction';
+    const rawType = f.Type || f.type || '';
+    const t = String(rawType).trim().toLowerCase();
+    if (t === 'custom' || t.startsWith('custom') || t.includes('custom')) return 'custom';
+    return 'reproduction';
+}
+
+async function loadProduct() {
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get('id');
+    if (!productId) {
+        document.getElementById('aa-loading').innerHTML = '<p class="text-red-600 font-bold">ID manquant dans l\'URL</p>';
+        return;
+    }
+    const records = await fetchProducts();
+    const record = records.find(r => String(r.id) === String(productId));
+    if (!record) {
+        document.getElementById('aa-loading').innerHTML = `<p class="text-red-600 font-bold">Produit introuvable.</p><p class="text-sm">ID: ${productId} | ${records.length} produits chargés</p>`;
+        return;
+    }
+    currentProduct = record;
+    const f = record.fields || record;
+    const type = detectProductType(f);
+
+    document.getElementById('aa-loading').classList.add('hidden');
+    document.getElementById('aa-product-detail').classList.remove('hidden');
+
+    let rawRecto = f['Lien Recto'] || f.Image || f.image;
+    if (typeof rawRecto === 'object' && rawRecto !== null) {
+        rawRecto = rawRecto.url || rawRecto.secure_url || rawRecto[0]?.url || '';
+    }
+    if (Array.isArray(rawRecto)) { rawRecto = rawRecto[0]?.url || rawRecto[0] || ''; }
+    if (typeof rawRecto === 'string' && rawRecto && !rawRecto.startsWith('http')) {
+        rawRecto = 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + rawRecto;
+    }
+    currentImgRecto = rawRecto || '';
+
+    let rawVerso = f['Lien Verso'];
+    if (typeof rawVerso === 'object' && rawVerso !== null) {
+        rawVerso = rawVerso.url || rawVerso.secure_url || rawVerso[0]?.url || '';
+    }
+    if (Array.isArray(rawVerso)) { rawVerso = rawVerso[0]?.url || rawVerso[0] || ''; }
+    if (typeof rawVerso === 'string' && rawVerso && !rawVerso.startsWith('http')) {
+        rawVerso = 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + rawVerso;
+    }
+    currentImgVerso = rawVerso || currentImgRecto;
+
+    const mainImg = document.getElementById('aa-main-img');
+    const imgContainer = mainImg.parentElement;
+    if (currentImgRecto) {
+        mainImg.src = currentImgRecto;
+        mainImg.onerror = function() { this.onerror = null; this.src = PLACEHOLDER_IMG; this.style.objectFit = 'contain'; this.style.background = '#eadcbc'; };
+        if (currentImgVerso && currentImgVerso !== currentImgRecto) {
+            imgContainer.onmouseenter = function() { mainImg.style.opacity = '0'; setTimeout(() => { mainImg.src = currentImgVerso; mainImg.style.opacity = '1'; }, 150); };
+            imgContainer.onmouseleave = function() { mainImg.style.opacity = '0'; setTimeout(() => { mainImg.src = currentImgRecto; mainImg.style.opacity = '1'; }, 150); };
+        }
+    } else {
+        mainImg.src = PLACEHOLDER_IMG;
+        mainImg.style.objectFit = 'contain';
+        mainImg.style.background = '#eadcbc';
+    }
+
+    const typeBadgeBig = document.getElementById('aa-type-badge-big');
+    if (type === 'custom') {
+        typeBadgeBig.textContent = '🟣 CUSTOM';
+        typeBadgeBig.className = 'aa-type-badge-big aa-type-custom-big';
+    } else {
+        typeBadgeBig.textContent = '🔵 REPRODUCTION';
+        typeBadgeBig.className = 'aa-type-badge-big aa-type-reproduction-big';
+    }
+    typeBadgeBig.style.display = 'inline-flex';
+
+    const collection = f.Collection || f.Série || 'Archive Générale';
+    document.getElementById('aa-product-name').textContent = f.Nom || 'Sans nom';
+    document.getElementById('aa-product-collection').textContent = collection;
+    document.getElementById('aa-collection-tag').textContent = collection;
+    document.getElementById('aa-product-price').textContent = formatPrice(f.Prix);
+    document.getElementById('aa-product-desc').textContent = f.Description || 'Reproduction de boîte vintage.';
+
+    const badge = document.getElementById('aa-status-badge');
+    const statut = f.Statut || 'Disponible';
+    badge.textContent = statut.toUpperCase();
+    badge.className = 'inline-block px-3 py-1 font-headline font-black text-xs uppercase border-2 border-on-background ';
+    if (statut === 'Vendu' || statut === 'Indisponible') {
+        badge.classList.add('bg-red-600', 'text-white');
+        document.getElementById('aa-add-btn').disabled = true;
+        document.getElementById('aa-add-btn').textContent = '✗ INDISPONIBLE';
+        document.getElementById('aa-add-btn').classList.add('opacity-50', 'cursor-not-allowed');
+    } else if (statut === 'Réservé') {
+        badge.classList.add('bg-yellow-500', 'text-black');
+    } else {
+        badge.classList.add('bg-green-600', 'text-white');
+    }
+}
+
+loadProduct();
+
+document.addEventListener('DOMContentLoaded', function() {
+    const minus = document.getElementById('aa-qty-minus');
+    const plus = document.getElementById('aa-qty-plus');
+    const addBtn = document.getElementById('aa-add-btn');
+    if (minus) minus.addEventListener('click', () => changeQty(-1));
+    if (plus) plus.addEventListener('click', () => changeQty(1));
+    if (addBtn) addBtn.addEventListener('click', addCurrentToCart);
+});
+
+(function() {
+    const social = JSON.parse(localStorage.getItem('aa_social_config') || '{}');
+    const nav = document.getElementById('aa-social-nav');
+    if (!nav) return;
+    const items = [{ key: 'facebook', icon: 'facebook', label: 'FACEBOOK' },{ key: 'twitter', icon: 'share', label: 'TWITTER' },{ key: 'instagram', icon: 'camera_alt', label: 'INSTAGRAM' },{ key: 'tiktok', icon: 'music_note', label: 'TIKTOK' },{ key: 'youtube', icon: 'play_circle', label: 'YOUTUBE' }];
+    items.forEach(item => {
+        const data = social[item.key];
+        if (data && data.enabled && data.url) nav.innerHTML += `<a href="${aaEscapeHtml(data.url)}" target="_blank" rel="noopener" class="text-[#ffca4d]"><span class="material-symbols-outlined">${item.icon}</span></a>`;
+    });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html class="light" lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Catalogue - Action Archive</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,900;1,900&family=Work+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = { darkMode: "class", theme: { extend: { colors: {
+            "secondary": "#755700", "surface-container-low": "#fdefd5", "surface-container-high": "#efe1c3",
+            "surface": "#fff5e5", "primary": "#bb0003", "tertiary": "#0f56bf", "on-surface": "#342e1e",
+            "secondary-container": "#ffca4d", "on-background": "#342e1e", "background": "#fff5e5",
+            "surface-variant": "#eadcbc", "on-surface-variant": "#635b48",
+        }, fontFamily: { "headline": ["Epilogue"], "body": ["Work Sans"], "label": ["Work Sans"] } } } }
+    </script>
+    <style>
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .animate-pop-in { animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        #side-drawer { box-shadow: -8px 0 0 0 rgba(52, 46, 30, 0.2); transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1); }
+        #side-drawer.open { transform: translateX(0); }
+        .drawer-overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .drawer-overlay.open { opacity: 1; pointer-events: auto; }
+        .btn-physical { transition: all 0.1s ease; }
+        .btn-physical:active { transform: translateY(4px); box-shadow: 0px 0px 0px 0px !important; }
+        #aa-cart-badge{position:absolute;top:-7px;right:-7px;min-width:18px;height:18px;background:#ffca4d;color:#342e1e;font-family:'Epilogue',sans-serif;font-weight:900;font-size:10px;border:2px solid #342e1e;border-radius:2px;display:none;align-items:center;justify-content:center;padding:0 3px;}
+        .aa-toast{background:#342e1e;color:#fff5e5;border:3px solid #ffca4d;padding:12px 18px;font-family:'Epilogue',sans-serif;font-weight:900;font-size:13px;text-transform:uppercase;display:flex;align-items:center;gap:10px;max-width:300px;transform:translateX(120%);opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);pointer-events:auto;}
+        .aa-toast.show{transform:translateX(0);opacity:1;}
+        #aa-toasts{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
+        .search-big { display:flex; align-items:center; background:#fff5e5; border:3px solid #342e1e; box-shadow:6px 6px 0 0 rgba(187,0,3,1); padding:0.75rem 1rem; gap:0.75rem; }
+        .search-big:focus-within { box-shadow:6px 6px 0 0 rgba(15,86,191,1); border-color:#0f56bf; }
+        .search-big input { background:transparent; border:none; outline:none; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:14px; width:100%; color:#342e1e; }
+        .aa-logo { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease; filter: drop-shadow(2px 2px 0px rgba(52, 46, 30, 0.15)); }
+        .aa-logo-link:hover .aa-logo { transform: rotate(-5deg) scale(1.05); filter: drop-shadow(3px 3px 0px rgba(187, 0, 3, 0.4)); }
+        .aa-type-badge { position:absolute; top:8px; left:8px; padding:4px 10px; font-family:'Epilogue',sans-serif; font-weight:900; font-size:10px; text-transform:uppercase; border:2px solid #342e1e; letter-spacing:0.05em; z-index:5; box-shadow:2px 2px 0 0 #342e1e; }
+        .aa-type-reproduction { background: #0f56bf; color: white; }
+        .aa-type-custom { background: #7b1fa2; color: white; }
+        .aa-menu-btn { font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; background: #bb0003; color: #fff5e5; border: 3px solid #342e1e; padding: 10px 20px; font-size: 1.05rem; box-shadow: 4px 4px 0 0 #342e1e; cursor: pointer; transition: all 0.15s ease; }
+        .aa-menu-btn:hover { background: #342e1e; color: #ffca4d; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 #bb0003; }
+        .aa-active-filter-badge { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+            background: #bb0003; 
+            color: #fff5e5; 
+            font-family: 'Epilogue', sans-serif; 
+            font-weight: 900; 
+            text-transform: uppercase; 
+            font-size: 0.75rem; 
+            padding: 0.4rem 0.8rem; 
+            border: 2px solid #342e1e; 
+            box-shadow: 3px 3px 0 0 #342e1e; 
+            margin-right: 0.5rem; 
+            margin-bottom: 0.5rem;
+        }
+        .aa-active-filter-badge button { 
+            background: none; 
+            border: none; 
+            color: #ffca4d; 
+            cursor: pointer; 
+            font-weight: 900; 
+            font-size: 1rem; 
+            padding: 0; 
+            line-height: 1; 
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface overflow-x-hidden">
+
+<header class="w-full border-b-4 border-double border-[#bb0003] bg-[#fff5e5] shadow-[4px_4px_0px_0px_rgba(52,46,30,0.2)] z-50 sticky top-0">
+    <div class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
+        <a href="index.html" class="aa-logo-link flex items-center gap-3 group cursor-pointer" title="Retour à l'accueil">
+            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="eager" class="aa-logo h-12 md:h-14 w-auto"/>
+            <span class="text-2xl md:text-3xl font-black italic text-[#bb0003] font-headline uppercase tracking-tighter group-hover:text-[#0f56bf] transition-colors">Action Archive</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-6 font-headline font-black uppercase tracking-tighter text-sm">
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="index.html">Accueil</a>
+            <a class="text-[#0f56bf] underline decoration-4 underline-offset-8" href="produits.html">Produits</a>
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="info.html">Info</a>
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="panier.html">Commande</a>
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="inscription.html">Inscription</a>
+        </nav>
+        <div class="flex items-center gap-2">
+            <a class="relative p-2 text-[#bb0003] border-2 border-[#bb0003] rounded-sm btn-physical" href="panier.html" title="Mon panier">
+                <span class="material-symbols-outlined">shopping_cart</span>
+                <span id="aa-cart-badge"></span>
+            </a>
+            <button onclick="toggleDrawer()" class="aa-menu-btn">☰ MENU</button>
+        </div>
+    </div>
+</header>
+
+<div id="drawer-overlay" class="drawer-overlay fixed inset-0 bg-on-background/40 backdrop-blur-sm z-[90]" onclick="toggleDrawer()"></div>
+<aside id="side-drawer" class="fixed top-0 right-0 h-full w-full max-w-[320px] bg-surface-container-high border-l-8 border-primary z-[100] transform translate-x-full overflow-y-auto">
+    <div class="p-8 space-y-8 flex flex-col h-full text-on-surface">
+        <div class="flex justify-between items-center border-b-4 border-on-background/10 pb-6">
+            <h2 class="font-headline font-black text-2xl text-primary italic uppercase">MENU</h2>
+            <button class="text-on-background" onclick="toggleDrawer()"><span class="material-symbols-outlined text-3xl">close</span></button>
+        </div>
+        <nav class="flex flex-col gap-3">
+            <a href="index.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">ACCUEIL</a>
+            <a href="produits.html" class="p-4 bg-surface-container-low border-2 border-primary font-headline font-black uppercase text-primary">PRODUITS</a>
+            <a href="info.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">INFO</a>
+            <a href="panier.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">COMMANDE</a>
+            <a href="inscription.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">INSCRIPTION</a>
+        </nav>
+    </div>
+</aside>
+
+<main class="container mx-auto px-6 py-12 min-h-screen">
+    <h1 class="font-headline font-black text-5xl uppercase text-on-background italic mb-2 border-b-4 border-on-background pb-4">🗄️ Toutes les Reproductions & Custom</h1>
+    <p class="text-on-surface-variant font-bold italic mb-6">Filtrez par type, collection ou décennie pour trouver votre bonheur.</p>
+
+    <div id="aa-active-filters" class="mb-4"></div>
+    
+    <div class="search-big mb-6">
+        <span class="material-symbols-outlined">search</span>
+        <input id="aa-search-input" onkeyup="applyFilters()" type="search" placeholder="RECHERCHER UNE PIÈCE, UNE COLLECTION...">
+    </div>
+    
+    <div class="mb-4">
+        <p class="font-headline font-black uppercase text-xs mb-2 text-on-surface-variant">🏷️ Type de pièce</p>
+        <div class="flex flex-wrap gap-2">
+            <button class="aa-filter-btn active" data-filter="type" data-value="all" onclick="setFilter('type','all',this)">Toutes</button>
+            <button class="aa-filter-btn reproduction" data-filter="type" data-value="reproduction" onclick="setFilter('type','reproduction',this)">🔵 REPRODUCTIONS</button>
+            <button class="aa-filter-btn custom" data-filter="type" data-value="custom" onclick="setFilter('type','custom',this)">🟣 CUSTOM</button>
+        </div>
+    </div>
+    
+    <div class="flex items-center justify-between mb-6 bg-secondary-container border-2 border-on-background p-3">
+        <span class="font-headline font-black uppercase text-sm"><span id="aa-results-count">0</span> pièce(s) trouvée(s)</span>
+        <button id="aa-reset-filters" onclick="resetAllFilters()" class="hidden text-xs font-bold uppercase text-primary hover:underline">↻ Réinitialiser les filtres</button>
+    </div>
+    
+    <div id="aa-product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <p class="col-span-full text-center py-12 font-bold italic text-on-surface-variant">Chargement...</p>
+    </div>
+</main>
+
+<!-- 🆕 FOOTER RÉPARÉ : même chemin d'image que le header -->
+<footer class="bg-[#342e1e] border-t-8 border-double border-[#755700] w-full py-12 px-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-20">
+    <div class="flex flex-col items-center md:items-start gap-3">
+        <a href="index.html" class="aa-logo-link flex items-center gap-3 cursor-pointer" title="Action Archive">
+            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="lazy" class="aa-logo h-10 w-auto"/>
+            <span class="text-xl md:text-2xl font-black italic text-[#ffca4d] font-headline uppercase tracking-tighter hover:text-white transition-colors">Action Archive</span>
+        </a>
+        <p class="font-body font-medium text-[10px] text-[#ffca4d] tracking-widest uppercase">© 2026 Action Archive INC.</p>
+    </div>
+    <nav id="aa-social-nav" class="flex flex-wrap justify-center gap-10"></nav>
+</footer>
+
+<div id="aa-toasts"></div>
+<script src="aa-core.js"></script>
+<script>
+function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+function aaEscapeAttr(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+const FALLBACK_IMG = "data:image/svg+xml;charset=utf-8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="400" viewBox="0 0 300 400"><rect width="300" height="400" fill="#eadcbc"/><text x="150" y="200" text-anchor="middle" font-family="Arial Black" font-size="16" font-weight="900" fill="#635b48">PHOTO INDISPONIBLE</text></svg>');
+
+function handleImgError(img) { img.onerror = null; img.src = FALLBACK_IMG; img.style.objectFit = 'contain'; img.style.background = '#eadcbc'; }
+
+function detectTypeStrict(f) {
+    if (!f) return 'reproduction';
+    const rawType = f.Type || f.type || f.TYPE || '';
+    const t = String(rawType).trim().toLowerCase();
+    if (t === 'custom' || t.startsWith('custom') || t.includes('custom')) return 'custom';
+    return 'reproduction';
+}
+
+// 🆕 TRI ALÉATOIRE — change tous les 5 jours, même ordre pour tout le monde
+function shuffleBy5DaySeed(products) {
+    if (!products || products.length === 0) return products;
+    
+    // Calcul du numéro de la période de 5 jours actuelle
+    // 5 jours en millisecondes
+    const FIVE_DAYS_MS = 5 * 24 * 60 * 60 * 1000;
+    const periodIndex = Math.floor(Date.now() / FIVE_DAYS_MS);
+    
+    // Copie pour ne pas modifier l'original
+    const shuffled = [...products];
+    
+    // Algorithme pseudo-aléatoire reproductible (Fisher-Yates avec seed)
+    // Même seed = même résultat = tout le monde voit la même chose pendant 5 jours
+    let seed = periodIndex;
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        // PRNG simple et déterministe
+        seed = (seed * 9301 + 49297) % 233280;
+        const rand = seed / 233280;
+        const j = Math.floor(rand * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    
+    return shuffled;
+}
+
+let allProducts = [];
+let shuffledProducts = []; // 🆕 version mélangée
+let currentFilter = { type: 'all', search: '', decade: null, brands: [] };
+
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('type')) currentFilter.type = urlParams.get('type');
+if (urlParams.get('decade')) currentFilter.decade = urlParams.get('decade');
+if (urlParams.get('search')) {
+    currentFilter.search = urlParams.get('search').toLowerCase();
+    setTimeout(() => {
+        const input = document.getElementById('aa-search-input');
+        if (input) input.value = urlParams.get('search');
+    }, 200);
+}
+if (urlParams.get('brands')) {
+    currentFilter.brands = urlParams.get('brands').split(',').map(b => b.trim()).filter(b => b);
+}
+
+function renderActiveFilters() {
+    const container = document.getElementById('aa-active-filters');
+    const resetBtn = document.getElementById('aa-reset-filters');
+    if (!container) return;
+    let html = '';
+    let hasFilter = false;
+    
+    if (currentFilter.decade) {
+        hasFilter = true;
+        html += `<div class="aa-active-filter-badge">🎯 Années ${currentFilter.decade} <button onclick="clearDecade()" title="Retirer">✕</button></div>`;
+    }
+    if (currentFilter.brands && currentFilter.brands.length > 0) {
+        hasFilter = true;
+        const label = currentFilter.brands.join(' / ');
+        html += `<div class="aa-active-filter-badge">🏷️ ${aaEscapeHtml(label)} <button onclick="clearBrands()" title="Retirer">✕</button></div>`;
+    }
+    if (currentFilter.search) {
+        hasFilter = true;
+        html += `<div class="aa-active-filter-badge">🔍 "${aaEscapeHtml(currentFilter.search)}" <button onclick="clearSearch()" title="Retirer">✕</button></div>`;
+    }
+    
+    container.innerHTML = html;
+    if (resetBtn) resetBtn.classList.toggle('hidden', !hasFilter);
+}
+
+function clearDecade() {
+    currentFilter.decade = null;
+    const url = new URL(window.location);
+    url.searchParams.delete('decade');
+    window.history.replaceState({}, '', url);
+    applyFilters();
+}
+
+function clearBrands() {
+    currentFilter.brands = [];
+    const url = new URL(window.location);
+    url.searchParams.delete('brands');
+    window.history.replaceState({}, '', url);
+    applyFilters();
+}
+
+function clearSearch() {
+    currentFilter.search = '';
+    const input = document.getElementById('aa-search-input');
+    if (input) input.value = '';
+    const url = new URL(window.location);
+    url.searchParams.delete('search');
+    window.history.replaceState({}, '', url);
+    applyFilters();
+}
+
+function resetAllFilters() {
+    currentFilter = { type: 'all', search: '', decade: null, brands: [] };
+    const input = document.getElementById('aa-search-input');
+    if (input) input.value = '';
+    document.querySelectorAll('[data-filter="type"]').forEach(b => b.classList.remove('active'));
+    const btnAll = document.querySelector('[data-filter="type"][data-value="all"]');
+    if (btnAll) btnAll.classList.add('active');
+    window.history.replaceState({}, '', window.location.pathname);
+    applyFilters();
+}
+
+function setFilter(name, value, btn) {
+    currentFilter[name] = value;
+    document.querySelectorAll(`[data-filter="${name}"]`).forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    applyFilters();
+}
+
+function applyFilters() {
+    currentFilter.search = (document.getElementById('aa-search-input')?.value || '').toLowerCase();
+    renderActiveFilters();
+    
+    // 🆕 On filtre à partir de la version mélangée (ordre aléatoire stable 5j)
+    const filtered = shuffledProducts.filter(record => {
+        const f = record.fields || record;
+        if (currentFilter.type !== 'all' && detectTypeStrict(f) !== currentFilter.type) return false;
+        
+        if (currentFilter.decade) {
+            const year = parseInt(f.Année);
+            if (isNaN(year)) return false;
+            const decadeStart = parseInt(currentFilter.decade);
+            if (year < decadeStart || year >= decadeStart + 10) return false;
+        }
+        
+        if (currentFilter.brands && currentFilter.brands.length > 0) {
+            const haystack = `${f.Nom || ''} ${f.Collection || ''} ${f.Description || ''}`.toLowerCase();
+            const match = currentFilter.brands.some(brand => haystack.includes(brand.toLowerCase()));
+            if (!match) return false;
+        }
+        
+        if (currentFilter.search) {
+            const s = currentFilter.search;
+            const searchable = `${f.Nom || ''} ${f.Collection || ''} ${f.Année || ''} ${f.Description || ''}`.toLowerCase();
+            if (!searchable.includes(s)) return false;
+        }
+        return true;
+    });
+    document.getElementById('aa-results-count').textContent = filtered.length;
+    renderProducts(filtered);
+}
+
+function renderProducts(products) {
+    const grid = document.getElementById('aa-product-grid');
+    if (products.length === 0) { 
+        grid.innerHTML = '<div class="col-span-full text-center py-12"><p class="font-bold italic text-xl mb-2">Aucune pièce trouvée.</p><p class="text-on-surface-variant">Essaie d\'autres filtres ou réinitialise la recherche.</p><button onclick="resetAllFilters()" class="mt-4 btn-physical bg-primary text-on-primary font-headline font-black px-6 py-2 uppercase shadow-[3px_3px_0px_0px_#342e1e]">↻ Tout afficher</button></div>'; 
+        return; 
+    }
+    grid.innerHTML = '';
+    products.forEach((record, index) => {
+        const f = record.fields || record;
+        const shadowColor = SHADOW_COLORS[index % SHADOW_COLORS.length];
+        const isVendu = f.Statut === 'Vendu' || f.Statut === 'Indisponible';
+        const type = detectTypeStrict(f);
+        const badge = type === 'custom' 
+            ? { text: '🟣 CUSTOM', className: 'aa-type-custom' }
+            : { text: '🔵 REPRODUCTION', className: 'aa-type-reproduction' };
+        const badgeHtml = `<span class="aa-type-badge ${badge.className}">${badge.text}</span>`;
+        
+        const imgRecto = getImageUrl(f['Lien Recto']) || getImageUrl(f.Image) || FALLBACK_IMG;
+        const price = parseFloat(f.Prix) || 0;
+        const nameHtml = aaEscapeHtml(f.Nom || 'Sans nom');
+        const imgAttr = aaEscapeAttr(imgRecto);
+        const productId = record.id;
+        
+        let statusBadge = '';
+        if (isVendu) statusBadge = `<div class="absolute top-2 right-2 bg-red-600 text-white px-2 py-1 font-headline font-black text-xs">VENDU</div>`;
+        else if (f.Statut === 'Réservé') statusBadge = `<div class="absolute top-2 right-2 bg-yellow-500 text-black px-2 py-1 font-headline font-black text-xs">RÉSERVÉ</div>`;
+        
+        const addButton = isVendu ? '' : `<button class="btn-add-cart btn-physical bg-on-background text-surface px-2 py-1.5 font-headline font-black text-[10px] uppercase shadow-[2px_2px_0px_0px_#342e1e]" data-id="${productId}" data-name="${aaEscapeAttr(f.Nom || '')}" data-price="${price}" data-url="produit.html?id=${productId}" data-image="${imgAttr}">AJOUTER</button>`;
+        
+        grid.innerHTML += `<div class="group bg-surface-container-high border-4 border-on-background p-3 flex flex-col animate-pop-in" style="box-shadow: 6px 6px 0px 0px ${shadowColor};">
+            <div class="bg-surface-container-lowest border-2 border-outline-variant aspect-[3/4] mb-3 relative overflow-hidden">
+                ${badgeHtml}
+                ${statusBadge}
+                <a href="produit.html?id=${productId}"><img src="${imgAttr}" onerror="handleImgError(this)" class="w-full h-full object-cover" alt="${nameHtml}"></a>
+            </div>
+            <h3 class="font-headline font-black text-base uppercase mb-1"><a class="hover:text-primary" href="produit.html?id=${productId}">${nameHtml}</a></h3>
+            <p class="font-body text-[10px] text-on-surface-variant font-bold mb-2 italic">${aaEscapeHtml(f.Collection || '')}${f.Année ? ' • ' + f.Année : ''}</p>
+            <div class="flex justify-between items-center border-t-2 border-outline-variant pt-2 ${isVendu ? 'opacity-50' : ''}">
+                <span class="font-headline font-black text-lg text-tertiary">${formatPrice(price)}</span>
+                ${isVendu ? '<span class="material-symbols-outlined text-sm">lock</span>' : addButton}
+            </div>
+        </div>`;
+    });
+    attachAddToCart();
+}
+
+function attachAddToCart() {
+    document.querySelectorAll('.btn-add-cart').forEach(btn => {
+        if (btn.dataset.bound) return;
+        btn.dataset.bound = '1';
+        btn.addEventListener('click', function() {
+            aaAddToCart(this.dataset.name, parseFloat(this.dataset.price), this.dataset.url, this.dataset.image);
+            const o = this.textContent;
+            this.textContent = '✓ AJOUTÉ';
+            this.classList.add('bg-green-600');
+            setTimeout(() => { this.textContent = o; this.classList.remove('bg-green-600'); }, 1200);
+        });
+    });
+}
+
+async function init() {
+    allProducts = await fetchProducts();
+    // 🆕 Mélange stable sur 5 jours
+    shuffledProducts = shuffleBy5DaySeed(allProducts);
+    applyFilters();
+}
+init();
+
+document.head.insertAdjacentHTML('beforeend', `<style>
+.aa-filter-btn { font-family:'Epilogue',sans-serif; font-weight:900; font-size:11px; text-transform:uppercase; padding:6px 14px; border:2px solid #342e1e; cursor:pointer; letter-spacing:0.05em; background:#fdefd5; color:#342e1e; }
+.aa-filter-btn:hover { background:#efe1c3; }
+.aa-filter-btn.active { background:#bb0003; color:#fff5e5; box-shadow:2px 2px 0 0 #342e1e; }
+.aa-filter-btn.reproduction.active { background:#0f56bf; }
+.aa-filter-btn.custom.active { background:#7b1fa2; }
+</style>`);
+
+(function() {
+    const social = JSON.parse(localStorage.getItem('aa_social_config') || '{}');
+    const nav = document.getElementById('aa-social-nav');
+    if (!nav) return;
+    const items = [{ key: 'facebook', icon: 'facebook', label: 'FACEBOOK' },{ key: 'twitter', icon: 'share', label: 'TWITTER' },{ key: 'instagram', icon: 'camera_alt', label: 'INSTAGRAM' },{ key: 'tiktok', icon: 'music_note', label: 'TIKTOK' },{ key: 'youtube', icon: 'play_circle', label: 'YOUTUBE' }];
+    items.forEach(item => {
+        const data = social[item.key];
+        if (data && data.enabled && data.url) nav.innerHTML += `<a href="${aaEscapeAttr(data.url)}" target="_blank" class="text-[#ffca4d]"><span class="material-symbols-outlined">${item.icon}</span></a>`;
+    });
+})();
+</script>
+</body>
+</html>

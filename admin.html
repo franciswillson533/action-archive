@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html class="light" lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Admin - Action Archive</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,900;1,900&family=Work+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = { darkMode: "class", theme: { extend: { colors: {
+            "secondary": "#755700", "surface-container-low": "#fdefd5", "surface-container-high": "#efe1c3",
+            "surface": "#fff5e5", "primary": "#bb0003", "tertiary": "#0f56bf", "on-surface": "#342e1e",
+            "secondary-container": "#ffca4d", "on-background": "#342e1e", "background": "#fff5e5",
+            "surface-variant": "#eadcbc", "on-surface-variant": "#635b48",
+        }, fontFamily: { "headline": ["Epilogue"], "body": ["Work Sans"], "label": ["Work Sans"] } } } }
+    </script>
+    <style>
+        #side-drawer { box-shadow: -8px 0 0 0 rgba(52, 46, 30, 0.2); transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1); }
+        #side-drawer.open { transform: translateX(0); }
+        .drawer-overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .drawer-overlay.open { opacity: 1; pointer-events: auto; }
+        .btn-physical { transition: all 0.1s ease; }
+        .btn-physical:active { transform: translateY(4px); box-shadow: 0px 0px 0px 0px !important; }
+        #aa-cart-badge{position:absolute;top:-7px;right:-8px;min-width:18px;height:18px;background:#ffca4d;color:#342e1e;font-family:'Epilogue',sans-serif;font-weight:900;font-size:10px;border:2px solid #342e1e;border-radius:2px;display:none;align-items:center;justify-content:center;padding:0 3px;}
+        .aa-toast{background:#342e1e;color:#fff5e5;border:3px solid #ffca4d;padding:12px 18px;font-family:'Epilogue',sans-serif;font-weight:900;font-size:13px;text-transform:uppercase;display:flex;align-items:center;gap:10px;max-width:300px;transform:translateX(120%);opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);pointer-events:auto;}
+        .aa-toast.show{transform:translateX(0);opacity:1;}
+        #aa-toasts{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
+        .status-btn { font-family:'Epilogue',sans-serif; font-weight:900; font-size:10px; text-transform:uppercase; padding:4px 8px; border:2px solid #342e1e; cursor:pointer; transition:all .15s; }
+        .status-btn:hover { transform:scale(1.05); }
+        .status-btn.active { box-shadow:2px 2px 0 0 #342e1e; }
+        .order-card { background:#fff5e5; border:2px solid #342e1e; padding:12px; margin-bottom:8px; transition:all .2s; }
+        .order-card:hover { box-shadow:4px 4px 0 0 #342e1e; transform:translate(-2px,-2px); }
+        .stat-card { transition:transform .2s; }
+        .stat-card:hover { transform:translateY(-4px); }
+        .tab-btn { font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; padding:8px 16px; border:2px solid #342e1e; background:#fdefd5; cursor:pointer; transition:all .15s; font-size:13px; }
+        .tab-btn.active { background:#bb0003; color:#fff5e5; }
+        .tab-btn:hover:not(.active) { background:#efe1c3; }
+        .tab-content { display:none; }
+        .tab-content.active { display:block; }
+        .aa-logo { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease; filter: drop-shadow(2px 2px 0px rgba(52, 46, 30, 0.15)); }
+        .aa-logo-link:hover .aa-logo { transform: rotate(-5deg) scale(1.05); filter: drop-shadow(3px 3px 0px rgba(187, 0, 3, 0.4)); }
+        .aa-stars-badge{position:absolute;top:-7px;right:-8px;min-width:18px;height:18px;background:#ffca4d;color:#342e1e;font-family:'Epilogue',sans-serif;font-weight:900;font-size:10px;border:2px solid #342e1e;border-radius:2px;display:flex;align-items:center;justify-content:center;padding:0 3px;}
+        .aa-nav-gift-badge{position:absolute;bottom:-8px;right:-8px;font-size:14px;display:none;align-items:center;justify-content:center;}
+        @keyframes giftPulse { 0%,100%{box-shadow:0 0 0 0 rgba(255,202,77,0.7);} 50%{box-shadow:0 0 0 6px rgba(255,202,77,0);} }
+        .aa-nav-stars.aa-has-gift { border-color:#ffca4d !important; color:#ffca4d !important; animation: giftPulse 1.5s infinite; }
+        .loyalty-card { background:#fff5e5; border:3px solid #342e1e; padding:1rem; transition:all .2s; }
+        .loyalty-card:hover { box-shadow:6px 6px 0 0 #342e1e; transform:translate(-2px,-2px); }
+        .loyalty-card.has-gift { border-color:#ffca4d; background:#fdefd5; }
+        .loyalty-history { max-height:0; overflow:hidden; transition:max-height .4s ease; }
+        .loyalty-history.open { max-height:500px; }
+        .badge-oui { background:#00aa00; color:white; padding:2px 8px; font-family:'Epilogue',sans-serif; font-weight:900; font-size:10px; text-transform:uppercase; border:2px solid #342e1e; }
+        .badge-non { background:#eadcbc; color:#635b48; padding:2px 8px; font-family:'Epilogue',sans-serif; font-weight:900; font-size:10px; text-transform:uppercase; border:2px solid #342e1e; }
+        .aa-type-badge { display:inline-block; padding:2px 6px; font-family:'Epilogue',sans-serif; font-weight:900; font-size:9px; text-transform:uppercase; border:2px solid #342e1e; margin-left:4px; }
+        .aa-type-reproduction { background:#0f56bf; color:white; }
+        .aa-type-custom { background:#7b1fa2; color:white; }
+        .aa-menu-btn { font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; background: #bb0003; color: #fff5e5; border: 3px solid #342e1e; padding: 10px 20px; font-size: 1.05rem; box-shadow: 4px 4px 0 0 #342e1e; cursor: pointer; transition: all 0.15s ease; }
+        .aa-menu-btn:hover { background: #342e1e; color: #ffca4d; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 #bb0003; }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface overflow-x-hidden">
+
+<header class="w-full border-b-4 border-double border-[#bb0003] bg-[#fff5e5] shadow-[4px_4px_0px_0px_rgba(52,46,30,0.2)] z-50 sticky top-0">
+    <div class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
+        <a href="index.html" class="aa-logo-link flex items-center gap-3 group cursor-pointer" title="Retour à l'accueil">
+            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="eager" class="aa-logo h-12 md:h-14 w-auto"/>
+            <span class="text-2xl md:text-3xl font-black italic text-[#bb0003] font-headline uppercase tracking-tighter group-hover:text-[#0f56bf] transition-colors">Action Archive</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-6 font-headline font-black uppercase tracking-tighter text-sm">
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="index.html">Accueil</a>
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="produits.html">Produits</a>
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="info.html">Info</a>
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="panier.html">Commande</a>
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="inscription.html">Inscription</a>
+        </nav>
+        <div class="flex items-center gap-2">
+            <a class="aa-nav-stars relative p-2 text-[#755700] border-2 border-[#755700] rounded-sm btn-physical" href="inscription.html" style="display:none;" title="Mon programme fidélité">
+                <span class="material-symbols-outlined">stars</span>
+                <span class="aa-nav-stars-count aa-stars-badge">0</span>
+                <span class="aa-nav-gift-badge">🎁</span>
+            </a>
+            <a class="relative p-2 text-[#bb0003] border-2 border-[#bb0003] rounded-sm btn-physical" href="panier.html" title="Mon panier">
+                <span class="material-symbols-outlined">shopping_cart</span>
+                <span id="aa-cart-badge"></span>
+            </a>
+            <button onclick="toggleDrawer()" class="aa-menu-btn">☰ MENU</button>
+        </div>
+    </div>
+</header>
+
+<div id="drawer-overlay" class="drawer-overlay fixed inset-0 bg-on-background/40 backdrop-blur-sm z-[90]" onclick="toggleDrawer()"></div>
+<aside id="side-drawer" class="fixed top-0 right-0 h-full w-full max-w-[320px] bg-surface-container-high border-l-8 border-primary z-[100] transform translate-x-full overflow-y-auto">
+    <div class="p-8 space-y-8 flex flex-col h-full text-on-surface">
+        <div class="flex justify-between items-center border-b-4 border-on-background/10 pb-6">
+            <h2 class="font-headline font-black text-2xl text-primary italic uppercase">MENU</h2>
+            <button class="text-on-background" onclick="toggleDrawer()"><span class="material-symbols-outlined text-3xl">close</span></button>
+        </div>
+        <nav class="flex flex-col gap-3">
+            <a href="index.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">ACCUEIL</a>
+            <a href="produits.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">PRODUITS</a>
+            <a href="info.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">INFO</a>
+            <a href="panier.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">COMMANDE</a>
+            <a href="inscription.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">INSCRIPTION</a>
+        </nav>
+    </div>
+</aside>
+
+<main class="container mx-auto px-6 py-12 min-h-screen">
+    <h1 class="font-headline font-black text-5xl uppercase text-on-background italic mb-8 border-b-4 border-on-background pb-4">Administration</h1>
+
+    <div id="aa-admin-login" class="max-w-md mx-auto bg-surface-container-high border-4 border-on-background p-8 shadow-[8px_8px_0px_0px_#342e1e]">
+        <div class="text-center mb-6"><span class="material-symbols-outlined text-6xl text-primary">lock</span></div>
+        <h2 class="font-headline font-black text-2xl uppercase italic text-center mb-2">Accès restreint</h2>
+        <p class="text-center text-on-surface-variant font-bold text-sm mb-6 italic">
+            🔒 Cette partie est strictement personnelle.<br>
+            📊 Elle contient toutes les <strong>statistiques</strong> du site.
+        </p>
+        <form onsubmit="return adminLogin(event)">
+            <label class="font-headline font-black uppercase text-sm block mb-2">Mot de passe admin</label>
+            <input id="admin-pwd" type="password" required placeholder="" class="w-full border-2 border-on-background p-3 font-bold bg-surface focus:outline-none focus:border-primary mb-4" autocomplete="off">
+            <button type="submit" class="btn-physical w-full bg-primary text-on-primary font-headline font-black py-3 uppercase shadow-[4px_4px_0px_0px_#755700]">ENTRER</button>
+        </form>
+    </div>
+
+    <div id="aa-admin-panel" class="hidden">
+        <div class="flex flex-wrap gap-2 mb-6 border-b-4 border-on-background pb-4">
+            <button class="tab-btn active" onclick="switchTab('inventory', this)">📦 Inventaire</button>
+            <button class="tab-btn" onclick="switchTab('add', this)">➕ Ajout</button>
+            <button class="tab-btn" onclick="switchTab('orders', this)">🧾 Commandes</button>
+            <button class="tab-btn" onclick="switchTab('stats', this)">📊 Stats</button>
+            <button class="tab-btn" onclick="switchTab('customers', this)">👥 Clients</button>
+            <button class="tab-btn" onclick="switchTab('loyalty', this)">⭐ Fidélité</button>
+            <button class="tab-btn" onclick="switchTab('shipping', this)">🚚 Livraison</button>
+            <button class="tab-btn" onclick="switchTab('social', this)">🌐 Réseaux</button>
+        </div>
+
+        <!-- INVENTAIRE -->
+        <div id="tab-inventory" class="tab-content active">
+            <div class="bg-surface-container-high border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_#bb0003]">
+                <h2 class="font-headline font-black text-2xl uppercase italic mb-2 flex items-center gap-2"><span class="material-symbols-outlined">inventory_2</span> Inventaire local (<span id="aa-local-count">0</span>)</h2>
+                <div class="bg-secondary-container border-2 border-on-background p-3 mb-4 text-sm">
+                    <p>💡 <strong>Mode local uniquement</strong> : produits stockés dans votre navigateur. Cliquez sur <strong>✏️ Modifier</strong> pour éditer un produit.</p>
+                </div>
+                <div id="aa-local-list" class="space-y-2 max-h-[600px] overflow-y-auto"><p class="text-center py-8 text-on-surface-variant italic">Aucun produit pour le moment.</p></div>
+            </div>
+        </div>
+
+        <!-- AJOUT -->
+        <div id="tab-add" class="tab-content">
+            <div class="bg-fdefd5 border-2 border-on-background p-4 mb-4" id="aa-edit-mode-banner" style="display:none;">
+                <p class="font-headline font-black uppercase text-sm text-primary mb-1">✏️ MODE ÉDITION</p>
+                <p class="text-sm">Vous modifiez : <strong id="aa-edit-product-name"></strong></p>
+                <button onclick="cancelEdit()" type="button" class="mt-2 text-xs underline">← Annuler et retour à l'inventaire</button>
+            </div>
+            <form id="aa-add-form" onsubmit="return addOrUpdateLocalProduct(event)" class="bg-surface-container-high border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_#0f56bf] space-y-3 max-w-2xl">
+                <h2 class="font-headline font-black text-2xl uppercase italic mb-4 flex items-center gap-2"><span class="material-symbols-outlined">add_box</span> <span id="aa-form-title">Ajouter une pièce</span></h2>
+                <div id="aa-add-error" class="hidden bg-red-100 border-2 border-red-600 text-red-800 p-3 text-sm font-bold"></div>
+                <div id="aa-add-success" class="hidden bg-green-100 border-2 border-green-600 text-green-800 p-3 text-sm font-bold"></div>
+                <div><label class="font-headline font-black uppercase text-xs block mb-1">Nom *</label><input name="Nom" required class="w-full border-2 border-on-background p-2 font-bold bg-surface focus:outline-none focus:border-primary"></div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label class="font-headline font-black uppercase text-xs block mb-1">Prix (€) *</label><input name="Prix" type="number" step="0.01" required class="w-full border-2 border-on-background p-2 font-bold bg-surface focus:outline-none focus:border-primary"></div>
+                    <div><label class="font-headline font-black uppercase text-xs block mb-1">Année d'origine</label><input name="Année" type="number" placeholder="1978" class="w-full border-2 border-on-background p-2 font-bold bg-surface focus:outline-none focus:border-primary"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label class="font-headline font-black uppercase text-xs block mb-1">Collection</label><input name="Collection" placeholder="Star Wars" class="w-full border-2 border-on-background p-2 font-bold bg-surface focus:outline-none focus:border-primary"></div>
+                    <div>
+                        <label class="font-headline font-black uppercase text-xs block mb-1">Type *</label>
+                        <select name="Type" id="aa-input-type" required class="w-full border-2 border-on-background p-2 font-bold bg-surface focus:outline-none focus:border-primary">
+                            <option value="Reproduction">🔵 Reproduction</option>
+                            <option value="Custom">🟣 Custom</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label class="font-headline font-black uppercase text-xs block mb-1">État</label><select name="État" class="w-full border-2 border-on-background p-2 font-bold bg-surface focus:outline-none focus:border-primary"><option>Excellent</option><option>Très bon</option><option>Bon</option><option>Correct</option><option>À restaurer</option></select></div>
+                    <div><label class="font-headline font-black uppercase text-xs block mb-1">Statut</label><select name="Statut" class="w-full border-2 border-on-background p-2 font-bold bg-surface focus:outline-none focus:border-primary"><option>Disponible</option><option>Réservé</option><option>Vendu</option></select></div>
+                </div>
+                <div><label class="font-headline font-black uppercase text-xs block mb-1">URL Image recto (Cloudinary) *</label><input name="Image" type="url" required placeholder="https://res.cloudinary.com/..." class="w-full border-2 border-on-background p-2 font-bold bg-surface focus:outline-none focus:border-primary"></div>
+                <div><label class="font-headline font-black uppercase text-xs block mb-1">URL Image verso</label><input name="Lien Verso" type="url" placeholder="https://res.cloudinary.com/..." class="w-full border-2 border-on-background p-2 font-bold bg-surface focus:outline-none focus:border-primary"></div>
+                <div><label class="font-headline font-black uppercase text-xs block mb-1">Description</label><textarea name="Description" rows="3" class="w-full border-2 border-on-background p-2 font-bold bg-surface focus:outline-none focus:border-primary"></textarea></div>
+                <div class="flex gap-2">
+                    <button type="submit" class="btn-physical flex-1 bg-tertiary text-on-primary font-headline font-black py-3 uppercase shadow-[4px_4px_0px_0px_#755700]"><span id="aa-submit-text">✓ AJOUTER À L'INVENTAIRE LOCAL</span></button>
+                    <button type="button" id="aa-cancel-edit-btn" onclick="cancelEdit()" class="hidden btn-physical bg-on-background text-surface font-headline font-black px-6 py-3 uppercase shadow-[4px_4px_0px_0px_#342e1e]">ANNULER</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- COMMANDES -->
+        <div id="tab-orders" class="tab-content">
+            <div class="bg-surface-container-high border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_#0f56bf]">
+                <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+                    <h2 class="font-headline font-black text-2xl uppercase italic flex items-center gap-2"><span class="material-symbols-outlined">receipt_long</span> Commandes à traiter</h2>
+                    <div class="text-sm font-bold text-on-surface-variant">En cours : <span id="orders-count">0</span></div>
+                </div>
+                <div id="aa-orders-list" class="space-y-2 max-h-[600px] overflow-y-auto"><p class="text-center py-8 text-on-surface-variant italic">Chargement...</p></div>
+            </div>
+        </div>
+
+        <!-- STATS -->
+        <div id="tab-stats" class="tab-content">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div class="stat-card bg-surface-container-high border-4 border-on-background p-6 text-center shadow-[4px_4px_0px_0px_#0f56bf]"><span class="material-symbols-outlined text-3xl text-tertiary">shopping_bag</span><p class="font-headline font-black text-4xl text-tertiary mt-2" id="stat-total-orders">0</p><p class="font-headline font-black uppercase text-xs mt-2">Commandes</p></div>
+                <div class="stat-card bg-surface-container-high border-4 border-on-background p-6 text-center shadow-[4px_4px_0px_0px_#00aa00]"><span class="material-symbols-outlined text-3xl text-green-700">euro</span><p class="font-headline font-black text-4xl text-green-700 mt-2" id="stat-total-revenue">0 €</p><p class="font-headline font-black uppercase text-xs mt-2">CA total</p></div>
+                <div class="stat-card bg-surface-container-high border-4 border-on-background p-6 text-center shadow-[4px_4px_0px_0px_#ffaa00]"><span class="material-symbols-outlined text-3xl text-yellow-700">avg_pace</span><p class="font-headline font-black text-4xl text-yellow-700 mt-2" id="stat-avg-cart">0 €</p><p class="font-headline font-black uppercase text-xs mt-2">Panier moyen</p></div>
+                <div class="stat-card bg-surface-container-high border-4 border-on-background p-6 text-center shadow-[4px_4px_0px_0px_#bb0003]"><span class="material-symbols-outlined text-3xl text-primary">pending_actions</span><p class="font-headline font-black text-4xl text-primary mt-2" id="stat-pending">0</p><p class="font-headline font-black uppercase text-xs mt-2">À traiter</p></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-surface-container-high border-4 border-on-background p-6 shadow-[4px_4px_0px_0px_#342e1e]"><h3 class="font-headline font-black text-xl uppercase italic mb-4">📈 Par statut</h3><div id="stats-by-status" class="space-y-2"></div></div>
+                <div class="bg-surface-container-high border-4 border-on-background p-6 shadow-[4px_4px_0px_0px_#342e1e]"><h3 class="font-headline font-black text-xl uppercase italic mb-4">🏆 Top pièces</h3><div id="stats-top-products" class="space-y-2"></div></div>
+            </div>
+            <div class="bg-surface-container-high border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_#00aa00]">
+                <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+                    <h2 class="font-headline font-black text-2xl uppercase italic flex items-center gap-2"><span class="material-symbols-outlined">history</span> Historique envoyé (<span id="archive-count">0</span>)</h2>
+                    <button onclick="clearArchivedOrders()" class="btn-physical bg-red-600 text-white font-headline font-black px-4 py-2 text-sm uppercase shadow-[2px_2px_0px_0px_#342e1e] hover:bg-red-700">🗑️ Effacer tout</button>
+                </div>
+                <div class="bg-surface border-2 border-on-background max-h-[500px] overflow-y-auto">
+                    <table class="w-full">
+                        <thead class="bg-green-700 text-white sticky top-0"><tr><th class="font-headline font-black uppercase text-xs p-2 text-left">N°</th><th class="font-headline font-black uppercase text-xs p-2 text-left">Date</th><th class="font-headline font-black uppercase text-xs p-2 text-left">Client</th><th class="font-headline font-black uppercase text-xs p-2 text-left">Pays</th><th class="font-headline font-black uppercase text-xs p-2 text-center">Articles</th><th class="font-headline font-black uppercase text-xs p-2 text-right">Total</th><th class="font-headline font-black uppercase text-xs p-2 text-center">Paiement</th><th class="font-headline font-black uppercase text-xs p-2 text-center">×</th></tr></thead>
+                        <tbody id="archived-orders-table"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- CLIENTS -->
+        <div id="tab-customers" class="tab-content">
+            <div class="bg-surface-container-high border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_#bb0003]">
+                <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+                    <h2 class="font-headline font-black text-2xl uppercase italic flex items-center gap-2"><span class="material-symbols-outlined">group</span> Clients (<span id="customers-count">0</span>)</h2>
+                    <div class="flex gap-2 flex-wrap">
+                        <select id="customers-filter" onchange="loadCustomers()" class="border-2 border-on-background p-2 font-bold bg-surface text-xs uppercase">
+                            <option value="all">Tous</option>
+                            <option value="inscrits">✓ Inscrits uniquement</option>
+                            <option value="non-insrits">✗ Non inscrits uniquement</option>
+                        </select>
+                        <button onclick="exportCustomersCSV()" class="btn-physical bg-tertiary text-on-primary font-headline font-black px-4 py-2 text-sm uppercase shadow-[2px_2px_0px_0px_#342e1e]">📥 CSV</button>
+                        <button onclick="copyEmailsToClipboard()" class="btn-physical bg-secondary text-surface font-headline font-black px-4 py-2 text-sm uppercase shadow-[2px_2px_0px_0px_#342e1e]">📋 Copier</button>
+                    </div>
+                </div>
+                <div class="bg-surface border-2 border-on-background max-h-[600px] overflow-y-auto">
+                    <table class="w-full">
+                        <thead class="bg-on-background text-surface sticky top-0">
+                            <tr>
+                                <th class="font-headline font-black uppercase text-xs p-3 text-left">Client</th>
+                                <th class="font-headline font-black uppercase text-xs p-3 text-left">Email</th>
+                                <th class="font-headline font-black uppercase text-xs p-3 text-center">Source</th>
+                                <th class="font-headline font-black uppercase text-xs p-3 text-center">📧 INSCRITS</th>
+                                <th class="font-headline font-black uppercase text-xs p-3 text-center">Commandes</th>
+                                <th class="font-headline font-black uppercase text-xs p-3 text-center">⚙️ Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="aa-customers-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- FIDÉLITÉ -->
+        <div id="tab-loyalty" class="tab-content">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div class="stat-card bg-surface-container-high border-4 border-on-background p-6 text-center shadow-[4px_4px_0px_0px_#ffca4d]"><span class="material-symbols-outlined text-3xl text-secondary">group</span><p class="font-headline font-black text-4xl text-on-background mt-2" id="loyalty-stat-clients">0</p><p class="font-headline font-black uppercase text-xs mt-2">Clients fidèles</p></div>
+                <div class="stat-card bg-surface-container-high border-4 border-on-background p-6 text-center shadow-[4px_4px_0px_0px_#ffca4d]"><span class="material-symbols-outlined text-3xl text-secondary">stars</span><p class="font-headline font-black text-4xl text-secondary mt-2" id="loyalty-stat-stars">0</p><p class="font-headline font-black uppercase text-xs mt-2">Étoiles données</p></div>
+                <div class="stat-card bg-surface-container-high border-4 border-on-background p-6 text-center shadow-[4px_4px_0px_0px_#bb0003]"><span class="material-symbols-outlined text-3xl text-primary">redeem</span><p class="font-headline font-black text-4xl text-primary mt-2" id="loyalty-stat-pending">0</p><p class="font-headline font-black uppercase text-xs mt-2">Cadeaux à remettre</p></div>
+                <div class="stat-card bg-surface-container-high border-4 border-on-background p-6 text-center shadow-[4px_4px_0px_0px_#00aa00]"><span class="material-symbols-outlined text-3xl text-green-700">emoji_events</span><p class="font-headline font-black text-base md:text-lg text-green-700 mt-2 truncate" id="loyalty-stat-top">-</p><p class="font-headline font-black uppercase text-xs mt-2">Top client</p></div>
+            </div>
+            <div class="bg-surface-container-high border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_#ffca4d]">
+                <div class="flex flex-wrap items-center gap-3 mb-4">
+                    <div class="search-big flex-grow" style="box-shadow:4px 4px 0 0 #342e1e; border-width:2px;">
+                        <span class="material-symbols-outlined">search</span>
+                        <input id="loyalty-search" onkeyup="renderLoyaltyList()" type="search" placeholder="RECHERCHER UN CLIENT...">
+                    </div>
+                    <select id="loyalty-filter" onchange="renderLoyaltyList()" class="border-2 border-on-background p-2 font-bold bg-surface">
+                        <option value="all">Tous les clients</option>
+                        <option value="with-gift">🎁 Avec cadeau à remettre</option>
+                        <option value="top10">🏆 Top 10 (€)</option>
+                        <option value="top-stars">⭐ Top 10 (étoiles)</option>
+                    </select>
+                    <button onclick="exportLoyaltyCSV()" class="btn-physical bg-tertiary text-on-primary font-headline font-black px-4 py-2 text-sm uppercase shadow-[2px_2px_0px_0px_#342e1e]">📥 Export CSV</button>
+                </div>
+                <div id="aa-loyalty-list" class="space-y-3 max-h-[700px] overflow-y-auto"><p class="text-center py-8 text-on-surface-variant italic">Chargement...</p></div>
+            </div>
+        </div>
+
+        <!-- LIVRAISON -->
+        <div id="tab-shipping" class="tab-content">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-surface-container-high border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_#0f56bf]">
+                    <h2 class="font-headline font-black text-2xl uppercase italic mb-2 flex items-center gap-2"><span class="material-symbols-outlined">local_shipping</span> Tarifs livraison</h2>
+                    <form onsubmit="return addShippingRate(event)" class="bg-surface border-2 border-on-background p-4 mb-4 space-y-2">
+                        <div class="grid grid-cols-2 gap-2">
+                            <input id="ship-country" placeholder="Pays" required class="border-2 border-on-background p-2 font-bold bg-surface text-sm">
+                            <input id="ship-carrier" placeholder="Transporteur" required class="border-2 border-on-background p-2 font-bold bg-surface text-sm">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="flex items-center gap-1"><input id="ship-cost" type="number" step="0.01" min="0" placeholder="Coût (€)" required class="flex-grow border-2 border-on-background p-2 font-bold bg-surface text-sm"><span class="text-xs">€</span></div>
+                            <div class="flex items-center gap-1"><input id="ship-surcharge" type="number" step="0.01" min="0" placeholder="Surplus 4+ (€)" class="flex-grow border-2 border-on-background p-2 font-bold bg-surface text-sm"><span class="text-xs">€</span></div>
+                        </div>
+                        <button type="submit" class="btn-physical w-full bg-tertiary text-on-primary font-headline font-black py-2 uppercase text-sm shadow-[2px_2px_0px_0px_#342e1e]">✓ AJOUTER</button>
+                    </form>
+                    <div class="bg-surface border-2 border-on-background max-h-[500px] overflow-y-auto">
+                        <table class="w-full"><thead class="bg-on-background text-surface sticky top-0"><tr><th class="font-headline font-black uppercase text-[10px] p-2 text-left">Pays</th><th class="font-headline font-black uppercase text-[10px] p-2 text-left">Transporteur</th><th class="font-headline font-black uppercase text-[10px] p-2 text-right">Coût</th><th class="font-headline font-black uppercase text-[10px] p-2 text-right">/art. 4+</th><th class="font-headline font-black uppercase text-[10px] p-2 text-center">×</th></tr></thead><tbody id="shipping-rates-table"></tbody></table>
+                    </div>
+                </div>
+                <div class="bg-surface-container-high border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_#bb0003]">
+                    <h2 class="font-headline font-black text-2xl uppercase italic mb-2 flex items-center gap-2"><span class="material-symbols-outlined">percent</span> Taxes par pays</h2>
+                    <label class="flex items-center gap-3 cursor-pointer mb-4 p-3 bg-surface border-2 border-on-background">
+                        <input id="ship-enable-taxes" type="checkbox" class="w-5 h-5" onchange="saveShippingParams()">
+                        <span class="font-headline font-black uppercase text-sm">Activer les taxes</span>
+                        <span id="taxes-status" class="ml-auto text-xs font-bold"></span>
+                    </label>
+                    <input id="ship-tax-label" placeholder="TVA" class="w-full border-2 border-on-background p-2 font-bold bg-surface mb-3" onchange="saveShippingParams()">
+                    <form onsubmit="return addTaxRate(event)" class="bg-surface border-2 border-on-background p-4 mb-3 space-y-2">
+                        <div class="grid grid-cols-2 gap-2">
+                            <input id="tax-country" placeholder="Pays" required class="border-2 border-on-background p-2 font-bold bg-surface text-sm">
+                            <div class="flex items-center gap-1"><input id="tax-rate" type="number" step="0.01" min="0" max="100" placeholder="20" required class="flex-grow border-2 border-on-background p-2 font-bold bg-surface text-sm"><span class="text-xs">%</span></div>
+                        </div>
+                        <button type="submit" class="btn-physical w-full bg-primary text-on-primary font-headline font-black py-2 uppercase text-sm shadow-[2px_4px_0px_0px_#342e1e]">✓ AJOUTER</button>
+                    </form>
+                    <div class="bg-surface border-2 border-on-background max-h-[280px] overflow-y-auto">
+                        <table class="w-full"><thead class="bg-on-background text-surface sticky top-0"><tr><th class="font-headline font-black uppercase text-xs p-2 text-left">Pays</th><th class="font-headline font-black uppercase text-xs p-2 text-right">Taux</th><th class="font-headline font-black uppercase text-xs p-2 text-center">×</th></tr></thead><tbody id="tax-rates-table"></tbody></table>
+                    </div>
+                </div>
+                <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-surface-container-high border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_#00aa00]">
+                        <h2 class="font-headline font-black text-xl uppercase italic mb-4 flex items-center gap-2"><span class="material-symbols-outlined">redeem</span> Livraison gratuite</h2>
+                        <div class="flex items-center gap-2 mb-2"><input id="ship-free-threshold" type="number" step="0.01" min="0" placeholder="150" class="flex-grow border-2 border-on-background p-2 font-bold bg-surface text-lg"><span class="font-headline font-black">€</span></div>
+                        <button onclick="saveShippingParams()" class="btn-physical w-full bg-green-600 text-white font-headline font-black py-2 uppercase text-sm shadow-[2px_2px_0px_0px_#342e1e]">💾 SAUVEGARDER</button>
+                    </div>
+                    <div class="md:col-span-2 bg-surface-container-high border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_#755700]">
+                        <h2 class="font-headline font-black text-xl uppercase italic mb-4 flex items-center gap-2"><span class="material-symbols-outlined">email</span> Contact international</h2>
+                        <input id="ship-email" type="email" placeholder="contact@action-archive.com" class="w-full border-2 border-on-background p-2 font-bold bg-surface mb-3">
+                        <textarea id="ship-default-message" rows="2" class="w-full border-2 border-on-background p-2 font-bold bg-surface text-sm mb-3"></textarea>
+                        <button onclick="saveShippingParams()" class="btn-physical w-full bg-secondary text-on-secondary font-headline font-black py-2 uppercase text-sm shadow-[2px_2px_0px_0px_#342e1e]">💾 SAUVEGARDER</button>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 bg-surface-container-high border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_#342e1e]">
+                <h2 class="font-headline font-black text-2xl uppercase italic mb-4">📋 Aperçu client</h2>
+                <div id="shipping-preview-customer" class="space-y-4"></div>
+            </div>
+        </div>
+
+        <!-- RÉSEAUX -->
+        <div id="tab-social" class="tab-content">
+            <div class="bg-surface-container-high border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_#0f56bf] max-w-3xl">
+                <h2 class="font-headline font-black text-2xl uppercase italic mb-2 flex items-center gap-2"><span class="material-symbols-outlined">share</span> Réseaux sociaux</h2>
+                <div class="space-y-4">
+                    <div class="bg-surface border-2 border-on-background p-4">
+                        <div class="flex items-center gap-3 mb-2"><div class="bg-[#1877F2] text-white p-2"><span class="material-symbols-outlined">facebook</span></div><label class="font-headline font-black uppercase text-sm flex-grow">Facebook</label><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="fb-enabled" class="w-4 h-4"><span class="text-xs font-bold uppercase">Afficher</span></label></div>
+                        <input id="fb-url" type="url" placeholder="https://facebook.com/ta-page" class="w-full border-2 border-on-background p-2 font-bold bg-surface text-sm">
+                    </div>
+                    <div class="bg-surface border-2 border-on-background p-4">
+                        <div class="flex items-center gap-3 mb-2"><div class="bg-black text-white p-2"><span class="material-symbols-outlined">share</span></div><label class="font-headline font-black uppercase text-sm flex-grow">Twitter / X</label><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="tw-enabled" class="w-4 h-4"><span class="text-xs font-bold uppercase">Afficher</span></label></div>
+                        <input id="tw-url" type="url" placeholder="https://twitter.com/ton-compte" class="w-full border-2 border-on-background p-2 font-bold bg-surface text-sm">
+                    </div>
+                    <div class="bg-surface border-2 border-on-background p-4">
+                        <div class="flex items-center gap-3 mb-2"><div class="bg-gradient-to-tr from-yellow-400 via-pink-500-to-purple-600 text-white p-2"><span class="material-symbols-outlined">camera_alt</span></div><label class="font-headline font-black uppercase text-sm flex-grow">Instagram</label><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="ig-enabled" class="w-4 h-4"><span class="text-xs font-bold uppercase">Afficher</span></label></div>
+                        <input id="ig-url" type="url" placeholder="https://instagram.com/ton-compte" class="w-full border-2 border-on-background p-2 font-bold bg-surface text-sm">
+                    </div>
+                    <div class="bg-surface border-2 border-on-background p-4">
+                        <div class="flex items-center gap-3 mb-2"><div class="bg-black text-white p-2"><span class="material-symbols-outlined">music_note</span></div><label class="font-headline font-black uppercase text-sm flex-grow">TikTok</label><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="tk-enabled" class="w-4 h-4"><span class="text-xs font-bold uppercase">Afficher</span></label></div>
+                        <input id="tw-url" type="url" placeholder="https://tiktok.com/@ton-compte" class="w-full border-2 border-on-background p-2 font-bold bg-surface text-sm">
+                    </div>
+                    <div class="bg-surface border-2 border-on-background p-4">
+                        <div class="flex items-center gap-3 mb-2"><div class="bg-red-600 text-white p-2"><span class="material-symbols-outlined">play_circle</span></div><label class="font-headline font-black uppercase text-sm flex-grow">YouTube</label><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="yt-enabled" class="w-4 h-4"><span class="text-xs font-bold uppercase">Afficher</span></label></div>
+                        <input id="yt-url" type="url" placeholder="https://youtube.com/@ta-chaine" class="w-full border-2 border-on-background p-2 font-bold bg-surface text-sm">
+                    </div>
+                </div>
+                <button onclick="saveSocialConfig()" class="btn-physical w-full bg-primary text-on-primary font-headline font-black py-3 uppercase text-base mt-6 shadow-[4px_4px_0px_0px_#342e1e]">💾 SAUVEGARDER TOUS</button>
+                <div class="mt-6 bg-fdefd5 border-2 border-on-background p-4"><p class="font-headline font-black uppercase text-xs mb-2">👁️ Aperçu</p><div id="social-preview" class="flex flex-wrap gap-3"></div></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="bg-[#342e1e] border-t-8 border-double border-[#755700] w-full py-12 px-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-20">
+    <div class="flex flex-col items-center md:items-start gap-3">
+        <a href="index.html" class="aa-logo-link flex items-center gap-3 cursor-pointer" title="Action Archive">
+            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="lazy" class="aa-logo h-10 w-auto"/>
+            <span class="text-xl md:text-2xl font-black italic text-[#ffca4d] font-headline uppercase tracking-tighter hover:text-white transition-colors">Action Archive</span>
+        </a>
+        <p class="font-body font-medium text-[10px] text-[#ffca4d] tracking-widest uppercase">© 2026 Action Archive INC.</p>
+    </div>
+    <nav id="aa-social-nav" class="flex flex-wrap justify-center gap-10"></nav>
+</footer>
+
+<div id="aa-toasts"></div>
+<script src="aa-core.js"></script>
+<script>
+const ADMIN_PWD = 'action1982';
+const LOCAL_PRODUCTS_KEY = 'aa_local_products';
+
+let editingIndex = -1;
+
+function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+function aaEscapeAttr(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+function getLocalProducts() { try { return JSON.parse(localStorage.getItem(LOCAL_PRODUCTS_KEY) || '[]'); } catch (e) { return []; } }
+function saveLocalProducts(p) { localStorage.setItem(LOCAL_PRODUCTS_KEY, JSON.stringify(p)); }
+
+// 🆕 CORRECTION : detectTypeStrict renvoie juste "custom" ou "reproduction" (minuscule pour l'AFFICHAGE), mais ne modifie PAS la valeur originale
+function detectTypeStrict(f) {
+    if (!f) return 'reproduction';
+    const rawType = f.Type || f.type || '';
+    const t = String(rawType).trim().toLowerCase();
+    if (t === 'custom' || t.startsWith('custom') || t.includes('custom')) return 'custom';
+    return 'reproduction';
+}
+
+// 🆕 Helper pour récupérer le label affiché (Custom/Reproduction)
+function getTypeLabel(f) {
+    if (!f) return 'Reproduction';
+    const rawType = f.Type || f.type || '';
+    if (String(rawType).trim().toLowerCase().includes('custom')) return 'Custom';
+    return 'Reproduction';
+}
+
+function switchTab(tabId, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + tabId).classList.add('active');
+    btn.classList.add('active');
+    if (tabId === 'orders') loadOrders();
+    if (tabId === 'stats') loadStats();
+    if (tabId === 'customers') loadCustomers();
+    if (tabId === 'inventory') loadLocalInventory();
+    if (tabId === 'shipping') loadShippingConfig();
+    if (tabId === 'social') loadSocialConfig();
+    if (tabId === 'loyalty') loadLoyalty();
+}
+
+function adminLogin(e) {
+    e.preventDefault();
+    if (document.getElementById('admin-pwd').value === ADMIN_PWD) {
+        document.getElementById('aa-admin-login').classList.add('hidden');
+        document.getElementById('aa-admin-panel').classList.remove('hidden');
+        loadLocalInventory();
+        loadOrders();
+        loadStats();
+        loadCustomers();
+        loadLoyalty();
+        loadShippingConfig();
+        loadSocialConfig();
+        if (typeof aaToast === 'function') aaToast('Bienvenue admin !', 'admin_panel_settings');
+    } else {
+        if (typeof aaToast === 'function') aaToast('Mot de passe incorrect', 'error');
+    }
+    return false;
+}
+
+function toggleDrawer() {
+    const drawer = document.getElementById('side-drawer');
+    const overlay = document.getElementById('drawer-overlay');
+    if (!drawer || !overlay) return;
+    drawer.classList.toggle('open');
+    overlay.classList.toggle('open');
+    document.body.style.overflow = drawer.classList.contains('open') ? 'hidden' : '';
+}
+
+// 🆕 CORRECTION : on ne touche plus au champ Type (on garde la casse originale)
+function addOrUpdateLocalProduct(e) {
+    e.preventDefault();
+    const fields = Object.fromEntries(new FormData(e.target));
+    const cleaned = {};
+    for (const [k, v] of Object.entries(fields)) {
+        if (v && v.toString().trim() !== '') cleaned[k] = (k === 'Prix' ? parseFloat(v) : v);
+    }
+    // ✅ NE PLUS modifier cleaned.Type — on garde la valeur exacte du select ("Custom" ou "Reproduction")
+    if (!cleaned.Type) cleaned.Type = 'Reproduction';
+    if (!cleaned.Image) {
+        document.getElementById('aa-add-error').innerHTML = '<strong>Erreur :</strong> URL image obligatoire.';
+        document.getElementById('aa-add-error').classList.remove('hidden');
+        return false;
+    }
+    const products = getLocalProducts();
+    if (editingIndex >= 0) {
+        cleaned.id = products[editingIndex].id;
+        products[editingIndex] = cleaned;
+        const successBox = document.getElementById('aa-add-success');
+        successBox.textContent = '✓ Produit modifié avec succès ! (' + cleaned.Type + ')';
+        successBox.classList.remove('hidden');
+        if (typeof aaToast === 'function') aaToast('Produit modifié ! (' + cleaned.Type + ')', 'check_circle');
+    } else {
+        cleaned.id = 'local_' + Date.now();
+        products.push(cleaned);
+        const successBox = document.getElementById('aa-add-success');
+        successBox.textContent = '✓ Pièce ajoutée ! (' + products.length + ' au total) — Type : ' + cleaned.Type;
+        successBox.classList.remove('hidden');
+        if (typeof aaToast === 'function') aaToast('Pièce ajoutée ! (' + cleaned.Type + ')', 'check_circle');
+    }
+    saveLocalProducts(products);
+    cancelEdit();
+    setTimeout(loadLocalInventory, 300);
+    return false;
+}
+
+// 🆕 CORRECTION : utilise la valeur EXACTE du Type, pas transformée
+function editLocalProduct(index) {
+    const products = getLocalProducts();
+    const p = products[index];
+    if (!p) return;
+    editingIndex = index;
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-add').classList.add('active');
+    document.querySelectorAll('.tab-btn')[1].classList.add('active');
+    const form = document.getElementById('aa-add-form');
+    form.Nom.value = p.Nom || '';
+    form.Prix.value = p.Prix || '';
+    form.Année.value = p.Année || '';
+    form.Collection.value = p.Collection || '';
+    // ✅ Garder la valeur EXACTE pour que le select s'affiche correctement
+    form.Type.value = p.Type || 'Reproduction';
+    form.État.value = p.État || 'Excellent';
+    form.Statut.value = p.Statut || 'Disponible';
+    form.Image.value = p.Image || '';
+    form['Lien Verso'].value = p['Lien Verso'] || '';
+    form.Description.value = p.Description || '';
+    document.getElementById('aa-edit-mode-banner').style.display = 'block';
+    document.getElementById('aa-edit-product-name').textContent = p.Nom;
+    document.getElementById('aa-form-title').textContent = 'Modifier la pièce';
+    document.getElementById('aa-submit-text').textContent = '💾 ENREGISTRER LES MODIFICATIONS';
+    document.getElementById('aa-cancel-edit-btn').classList.remove('hidden');
+    window.scrollTo(0, 0);
+    if (typeof aaToast === 'function') aaToast('Mode édition - Type : ' + (p.Type || 'Reproduction'), 'edit');
+}
+
+function cancelEdit() {
+    editingIndex = -1;
+    document.getElementById('aa-add-form').reset();
+    document.getElementById('aa-input-type').value = 'Reproduction';
+    document.getElementById('aa-edit-mode-banner').style.display = 'none';
+    document.getElementById('aa-form-title').textContent = 'Ajouter une pièce';
+    document.getElementById('aa-submit-text').textContent = '✓ AJOUTER À L\'INVENTAIRE LOCAL';
+    document.getElementById('aa-cancel-edit-btn').classList.add('hidden');
+    document.getElementById('aa-add-error').classList.add('hidden');
+    document.getElementById('aa-add-success').classList.add('hidden');
+}
+
+function loadLocalInventory() {
+    const products = getLocalProducts();
+    const list = document.getElementById('aa-local-list');
+    document.getElementById('aa-local-count').textContent = products.length;
+    if (products.length === 0) { list.innerHTML = '<p class="text-center py-8 text-on-surface-variant italic">Aucun produit pour le moment.</p>'; return; }
+    list.innerHTML = '';
+    products.forEach((f, index) => {
+        const cs = f.Statut || 'Disponible';
+        const type = detectTypeStrict(f);
+        const typeText = type === 'custom' ? '🟣 CUSTOM' : '🔵 REPRODUCTION';
+        const typeClass = type === 'custom' ? 'aa-type-custom' : 'aa-type-reproduction';
+        const imgUrl = f.Image || '';
+        list.innerHTML += `<div class="bg-surface border-2 border-on-background p-3 flex flex-col sm:flex-row gap-3">
+            <div class="flex-shrink-0 w-20 h-20 bg-surface-container-lowest border-2 border-outline-variant overflow-hidden">${imgUrl ? `<img src="${aaEscapeHtml(imgUrl)}" class="w-full h-full object-cover" onerror="this.src='data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'80\\' height=\\'80\\'><rect width=\\'80\\' height=\\'80\\' fill=\\'#eadcbc\\'/></svg>')">` : '?'}</div>
+            <div class="flex-grow">
+                <p class="font-headline font-black uppercase text-sm">${aaEscapeHtml(f.Nom || 'Sans nom')}<span class="aa-type-badge ${typeClass}">${typeText}</span></p>
+                <p class="text-xs text-on-surface-variant font-bold mt-1">${formatPrice(f.Prix)} ${f.Année ? '• ' + f.Année : ''}</p>
+            </div>
+            <div class="flex flex-col gap-1">
+                <button onclick="editLocalProduct(${index})" class="bg-tertiary text-on-primary font-headline font-black px-3 py-1 text-xs uppercase border-2 border-on-background shadow-[2px_2px_0px_0px_#342e1e] hover:translate-y-[-1px]">✏️ MODIFIER</button>
+                <button onclick="changeLocalStatus(${index},'Disponible')" class="status-btn ${cs==='Disponible'?'bg-green-600 text-white active':'bg-surface text-on-surface-variant'}">✓</button>
+                <button onclick="changeLocalStatus(${index},'Réservé')" class="status-btn ${cs==='Réservé'?'bg-yellow-500 text-black active':'bg-surface text-on-surface-variant'}">⏳</button>
+                <button onclick="changeLocalStatus(${index},'Vendu')" class="status-btn ${cs==='Vendu'?'bg-red-600 text-white active':'bg-surface text-on-surface-variant'}">✗</button>
+                <button onclick="deleteLocalProduct(${index})" class="bg-red-600 text-white font-headline font-black px-3 py-1 text-xs uppercase border-2 border-on-background shadow-[2px_2px_0px_0px_#342e1e]">🗑️ SUPPR</button>
+            </div>
+        </div>`;
+    });
+}
+
+function changeLocalStatus(index, newStatus) {
+    const products = getLocalProducts();
+    if (products[index]) {
+        products[index].Statut = newStatus;
+        saveLocalProducts(products);
+        loadLocalInventory();
+        if (typeof aaToast === 'function') aaToast('Statut → ' + newStatus, 'check_circle');
+    }
+}
+
+function deleteLocalProduct(index) {
+    if (!confirm('Supprimer ce produit ?')) return;
+    const products = getLocalProducts();
+    products.splice(index, 1);
+    saveLocalProducts(products);
+    loadLocalInventory();
+    if (typeof aaToast === 'function') aaToast('Supprimé', 'delete');
+}
+
+function loadOrders() {
+    const allOrders = JSON.parse(localStorage.getItem('aa_orders') || '[]');
+    const orders = allOrders.filter(o => o.status !== 'Envoyé' && o.status !== 'Annulé');
+    document.getElementById('orders-count').textContent = orders.length;
+    const list = document.getElementById('aa-orders-list');
+    if (orders.length === 0) { list.innerHTML = '<p class="text-center py-8 italic text-on-surface-variant">Aucune commande à traiter.</p>'; return; }
+    orders.sort((a, b) => new Date(b.date) - new Date(a.date));
+    const sc = { 'Commandé':'bg-yellow-500 text-black', 'Traité':'bg-tertiary text-white' };
+    list.innerHTML = '';
+    orders.forEach(order => {
+        const items = order.items.map(i => `${i.name} x${i.qty}`).join(', ');
+        list.innerHTML += `<div class="order-card"><div class="flex items-start justify-between flex-wrap gap-3"><div class="flex-grow"><div class="flex items-center gap-2 mb-1 flex-wrap"><span class="font-headline font-black text-base text-primary">#${order.id}</span><span class="${sc[order.status] || 'bg-gray-500 text-white'} px-2 py-0.5 text-[10px] font-black uppercase">${order.status}</span></div><p class="font-body text-sm font-bold">${aaEscapeHtml(order.customer?.name || 'Client')} • ${aaEscapeHtml(order.customer?.country || '')}</p><p class="font-body text-xs text-on-surface-variant">${aaEscapeHtml(order.customer?.email || '')}</p><p class="font-body text-xs mt-1 italic">${aaEscapeHtml(items.substring(0, 80))}</p></div><div class="text-right"><p class="font-headline font-black text-xl text-primary">${formatPrice(order.total)}</p><div class="flex gap-1 mt-2 flex-wrap"><button onclick="updateOrderStatus('${order.id}','Commandé')" class="status-btn bg-surface text-on-surface-variant text-[9px]">Commandé</button><button onclick="updateOrderStatus('${order.id}','Traité')" class="status-btn bg-surface text-on-surface-variant text-[9px]">Traité</button><button onclick="updateOrderStatus('${order.id}','Envoyé')" class="status-btn bg-green-600 text-white text-[9px]">✓ Envoyer</button></div></div></div></div>`;
+    });
+}
+function updateOrderStatus(orderId, newStatus) {
+    const orders = JSON.parse(localStorage.getItem('aa_orders') || '[]');
+    const order = orders.find(o => o.id === orderId);
+    if (order) { order.status = newStatus; if (newStatus === 'Envoyé') order.sentDate = new Date().toISOString(); localStorage.setItem('aa_orders', JSON.stringify(orders)); if (typeof aaToast === 'function') aaToast('Statut → ' + newStatus, 'check_circle'); loadOrders(); loadStats(); }
+}
+
+function loadStats() {
+    const orders = JSON.parse(localStorage.getItem('aa_orders') || '[]');
+    document.getElementById('stat-total-orders').textContent = orders.length;
+    document.getElementById('stat-total-revenue').textContent = formatPrice(orders.reduce((s, o) => s + (o.total || 0), 0));
+    document.getElementById('stat-avg-cart').textContent = formatPrice(orders.length ? orders.reduce((s, o) => s + (o.total || 0), 0) / orders.length : 0);
+    document.getElementById('stat-pending').textContent = orders.filter(o => o.status === 'Commandé' || o.status === 'Traité').length;
+    const byStatus = {};
+    orders.forEach(o => { byStatus[o.status] = (byStatus[o.status] || 0) + 1; });
+    const colors = { 'Commandé':'bg-yellow-500 text-black', 'Traité':'bg-tertiary text-white', 'Envoyé':'bg-green-600 text-white' };
+    document.getElementById('stats-by-status').innerHTML = Object.keys(byStatus).length === 0 ? '<p class="italic">Aucune commande</p>' : Object.entries(byStatus).map(([s, c]) => `<div class="flex items-center justify-between"><span class="${colors[s]||'bg-gray-500 text-white'} px-2 py-1 text-xs font-black uppercase">${s}</span><span class="font-headline font-black">${c}</span></div>`).join('');
+    const productSales = {};
+    orders.forEach(o => (o.items || []).forEach(item => { productSales[item.name] = (productSales[item.name] || 0) + item.qty; }));
+    const top = Object.entries(productSales).sort((a, b) => b[1] - a[1]).slice(0, 5);
+    document.getElementById('stats-top-products').innerHTML = top.length === 0 ? '<p class="italic">Aucune vente</p>' : top.map(([n, q], i) => `<div class="flex items-center justify-between p-2 bg-surface border-2 border-outline-variant"><span class="font-headline font-black text-tertiary text-lg">#${i+1}</span><span class="text-sm">${aaEscapeHtml(n)}</span><span class="font-headline font-black text-primary">x${q}</span></div>`).join('');
+    const archived = orders.filter(o => o.status === 'Envoyé');
+    document.getElementById('archive-count').textContent = archived.length;
+    const tbody = document.getElementById('archived-orders-table');
+    if (archived.length === 0) { tbody.innerHTML = '<tr><td colspan="8" class="p-6 text-center italic">Aucune commande envoyée.</td></tr>'; return; }
+    archived.sort((a, b) => new Date(b.sentDate || b.date) - new Date(a.sentDate || a.date));
+    tbody.innerHTML = '';
+    archived.forEach(o => {
+        const itemList = (o.items || []).map(i => i.name).join(', ');
+        tbody.innerHTML += `<tr class="border-b border-outline-variant"><td class="p-2 text-xs font-bold text-primary">#${o.id}</td><td class="p-2 text-xs">${o.sentDate ? new Date(o.sentDate).toLocaleDateString('fr-FR') : ''}</td><td class="p-2 text-xs">${aaEscapeHtml(o.customer?.name || '')}</td><td class="p-2 text-xs">${aaEscapeHtml(o.customer?.country || '')}</td><td class="p-2 text-xs text-center">${(o.items || []).reduce((s, i) => s + i.qty, 0)}</td><td class="p-2 text-xs text-right font-bold text-primary">${formatPrice(o.total)}</td><td class="p-2 text-xs text-center"><span class="px-1 py-0.5 bg-tertiary text-white text-[9px] font-bold">${o.paymentMethod || 'N/A'}</span></td><td class="p-2 text-center"><button onclick="deleteArchivedOrder('${o.id}')" class="text-red-600">🗑️</button></td></tr>`;
+    });
+}
+function deleteArchivedOrder(orderId) { if (!confirm('Supprimer ?')) return; const orders = JSON.parse(localStorage.getItem('aa_orders') || '[]'); localStorage.setItem('aa_orders', JSON.stringify(orders.filter(o => o.id !== orderId))); loadStats(); }
+function clearArchivedOrders() { if (!confirm('⚠️ Tout effacer ?')) return; const orders = JSON.parse(localStorage.getItem('aa_orders') || '[]'); localStorage.setItem('aa_orders', JSON.stringify(orders.filter(o => o.status !== 'Envoyé'))); loadStats(); }
+
+function loadCustomers() {
+    const customers = getLoyaltyCustomers();
+    const orders = JSON.parse(localStorage.getItem('aa_orders') || '[]');
+    const user = JSON.parse(localStorage.getItem('aa_user') || 'null');
+    const filter = document.getElementById('customers-filter')?.value || 'all';
+    if (filter === 'non-insrits') {
+        document.getElementById('customers-filter').value = 'non-inscrits';
+    }
+    const all = [...customers];
+    orders.forEach(o => { if (o.customer?.email && !all.find(c => c.email === o.customer.email)) all.push({ pseudo: o.customer.name, email: o.customer.email, source: 'commande', ordersCount: 0, stars: 0, registeredAt: o.date || new Date().toISOString() }); });
+    if (user && !all.find(c => c.email === user.email)) all.push({ pseudo: user.pseudo, email: user.email, source: 'inscription', ordersCount: 0, stars: 1, registeredAt: user.registeredAt || new Date().toISOString() });
+    const isInscrit = (email) => email && (!!customers.find(c => c.email === email) || (user && user.email === email));
+    let filtered = all;
+    if (filter === 'inscrits') filtered = all.filter(c => isInscrit(c.email));
+    if (filter === 'non-inscrits') filtered = all.filter(c => !isInscrit(c.email));
+    const inscritsCount = all.filter(c => isInscrit(c.email)).length;
+    document.getElementById('customers-count').textContent = all.length;
+    const fl = document.getElementById('customers-filter');
+    if (fl) { const o1 = fl.querySelector('option[value="inscrits"]'); if (o1) o1.textContent = `✓ Inscrits (${inscritsCount})`; const o2 = fl.querySelector('option[value="non-inscrits"]'); if (o2) o2.textContent = `✗ Non inscrits (${all.length - inscritsCount})`; }
+    const list = document.getElementById('aa-customers-list');
+    if (filtered.length === 0) { list.innerHTML = '<tr><td colspan="6" class="p-8 text-center italic">Aucun client.</td></tr>'; return; }
+    list.innerHTML = '';
+    filtered.forEach((c, idx) => {
+        const i = isInscrit(c.email);
+        const sb = i ? '<span class="badge-oui">✓ OUI</span>' : '<span class="badge-non">✗ NON</span>';
+        const src = c.source === 'commande' ? '🛒' : '✉️';
+        const pseudoSafe = aaEscapeHtml(c.pseudo || 'Sans pseudo');
+        const emailSafe = aaEscapeHtml(c.email || '');
+        list.innerHTML += `<tr class="border-b border-outline-variant hover:bg-fdefd5">
+            <td class="p-3"><div class="flex items-center gap-3"><div class="w-9 h-9 bg-on-background text-surface flex items-center justify-center font-headline font-black text-sm flex-shrink-0">${(c.pseudo || c.email || '?')[0].toUpperCase()}</div><span class="font-headline font-black uppercase text-sm">${pseudoSafe}</span></div></td>
+            <td class="p-3 text-xs">${emailSafe}</td>
+            <td class="p-3 text-center">${src}</td>
+            <td class="p-3 text-center">${sb}</td>
+            <td class="p-3 text-center"><span class="font-headline font-black text-tertiary">${c.ordersCount || 0}</span></td>
+            <td class="p-3 text-center">
+                <button onclick="deleteCustomer('${c.email}')" class="bg-red-600 text-white font-headline font-black px-3 py-1 text-xs uppercase border-2 border-on-background shadow-[2px_2px_0px_0px_#342e1e] hover:bg-red-800">🗑️ SUPPR</button>
+            </td>
+        </tr>`;
+    });
+}
+
+function deleteCustomer(email) {
+    if (!confirm('Supprimer définitivement ce client ?')) return;
+    if (!confirm('Confirmation finale : supprimer ' + email + ' ?')) return;
+    const customers = getLoyaltyCustomers();
+    const updatedCustomers = customers.filter(c => c.email !== email);
+    saveLoyaltyCustomers(updatedCustomers);
+    const user = JSON.parse(localStorage.getItem('aa_user') || 'null');
+    if (user && user.email === email) { localStorage.removeItem('aa_user'); }
+    const sessionEmail = localStorage.getItem('aa_session_email');
+    if (sessionEmail === email) { localStorage.removeItem('aa_session_email'); }
+    if (typeof aaToast === 'function') aaToast('Client ' + email + ' supprimé', 'delete');
+    loadCustomers();
+    loadLoyalty();
+}
+
+function loadLoyalty() {
+    const customers = getLoyaltyCustomers();
+    const clientsAvecEtoiles = customers.filter(c => (c.stars || 0) > 0);
+    document.getElementById('loyalty-stat-clients').textContent = clientsAvecEtoiles.length;
+    document.getElementById('loyalty-stat-stars').textContent = customers.reduce((s, c) => s + (c.stars || 0), 0);
+    document.getElementById('loyalty-stat-pending').textContent = customers.reduce((s, c) => s + getGiftsPending(c), 0);
+    const top = [...customers].filter(c => (c.stars || 0) > 0).sort((a, b) => (b.totalSpent || 0) - (a.totalSpent || 0))[0];
+    document.getElementById('loyalty-stat-top').textContent = top ? top.pseudo : '-';
+    renderLoyaltyList();
+}
+
+function renderLoyaltyList() {
+    const customers = getLoyaltyCustomers();
+    const search = (document.getElementById('loyalty-search')?.value || '').toLowerCase();
+    const filter = document.getElementById('loyalty-filter')?.value || 'all';
+    const all = getLoyaltyCustomers();
+    let filtered = [...all];
+    if (search) filtered = filtered.filter(c => (c.pseudo || '').toLowerCase().includes(search) || (c.email || '').toLowerCase().includes(search));
+    if (filter === 'with-gift') filtered = filtered.filter(c => getGiftsPending(c) > 0);
+    if (filter === 'top10') filtered = filtered.sort((a, b) => (b.totalSpent || 0) - (a.totalSpent || 0)).slice(0, 10);
+    if (filter === 'top-stars') filtered = filtered.sort((a, b) => (b.stars || 0) - (a.stars || 0)).slice(0, 10);
+    const list = document.getElementById('aa-loyalty-list');
+    if (filtered.length === 0) { list.innerHTML = '<p class="text-center py-8 italic">Aucun client fidèle.</p>'; return; }
+    list.innerHTML = filtered.map(c => {
+        const gifts = getGiftsPending(c);
+        const hasGift = gifts > 0;
+        return `<div class="loyalty-card ${hasGift ? 'has-gift' : ''}">
+            <div class="flex items-start justify-between flex-wrap gap-4">
+                <div class="flex items-center gap-3 flex-grow min-w-[200px]">
+                    <div class="w-12 h-12 ${hasGift ? 'bg-primary' : 'bg-on-background'} text-surface flex items-center justify-center font-headline font-black text-lg">${(c.pseudo || '?')[0].toUpperCase()}</div>
+                    <div>
+                        <p class="font-headline font-black uppercase text-base">${aaEscapeHtml(c.pseudo || '')}</p>
+                        <p class="text-xs text-on-surface-variant">${aaEscapeHtml(c.email || '')}</p>
+                        <p class="text-[10px] text-on-surface-variant mt-1">Inscrit le ${new Date(c.registeredAt).toLocaleDateString('fr-FR')}</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2 items-center">
+                    <div class="bg-surface border-2 border-on-background px-3 py-1 text-center"><p class="text-[9px] font-headline font-black uppercase text-on-surface-variant">Étoiles</p><p class="font-headline font-black text-lg text-secondary">⭐ ${c.stars || 0}</p></div>
+                    <div class="bg-surface border-2 border-on-background px-3 py-1 text-center"><p class="text-[9px] font-headline font-black uppercase text-on-surface-variant">Commandes</p><p class="font-headline font-black text-lg text-tertiary">🛒 ${c.ordersCount || 0}</p></div>
+                    <div class="bg-surface border-2 border-on-background px-3 py-1 text-center"><p class="text-[9px] font-headline font-black uppercase text-on-surface-variant">Total</p><p class="font-headline font-black text-lg text-green-700">${formatPrice(c.totalSpent || 0)}</p></div>
+                    ${hasGift ? `<div class="bg-primary text-on-primary px-3 py-1 text-center animate-pop-in"><p class="text-[9px] font-headline font-black uppercase">🎁 À remettre</p><p class="font-headline font-black text-lg">${gifts}</p></div>` : ''}
+                </div>
+            </div>
+            <div class="flex items-center justify-between flex-wrap gap-2 mt-3 pt-3 border-t-2 border-outline-variant">
+                <div class="text-[10px] text-on-surface-variant">
+                    <span class="font-bold">Dernière commande :</span> ${c.lastOrderDate ? new Date(c.lastOrderDate).toLocaleDateString('fr-FR') : '-'}
+                    ${(c.stars || 0) >= 10 ? ` • <span class="font-bold text-primary">${Math.floor((c.stars || 0) / 10)}</span> cadeau(x) gagné(s), <span class="font-bold">${c.giftsDelivered || 0}</span> remis` : ''}
+                </div>
+                <div class="flex flex-wrap gap-1">
+                    <button onclick="adjustStarsPrompt('${c.email}')" class="status-btn bg-tertiary text-white text-[10px]">⭐ +1</button>
+                    ${hasGift ? `<button onclick="doMarkGiftDelivered('${c.email}')" class="status-btn bg-primary text-on-primary text-[10px]">🎁 Marquer remis</button>` : ''}
+                    <button onclick="deleteLoyaltyClient('${c.email}')" class="bg-red-600 text-white font-headline font-black px-3 py-1 text-[10px] uppercase border-2 border-on-background">🗑️ Suppr</button>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function adjustStarsPrompt(email) {
+    const customer = getCustomerByEmail(email);
+    if (!customer) return;
+    const delta = prompt(`Ajuster les étoiles de ${customer.pseudo}\n\nÉtoiles actuelles : ${customer.stars}\n\nEntrez un nombre (positif ou négatif) :`, '1');
+    if (delta === null) return;
+    const n = parseInt(delta, 10);
+    if (isNaN(n)) { if (typeof aaToast === 'function') aaToast('Nombre invalide', 'error'); return; }
+    if (adjustStars(email, n)) { if (typeof aaToast === 'function') aaToast('Étoiles → ' + (customer.stars + n), 'stars'); loadLoyalty(); }
+    else if (typeof aaToast === 'function') aaToast('Erreur', 'error');
+}
+
+function doMarkGiftDelivered(email) {
+    if (!confirm('Marquer le cadeau comme remis pour ce client ?')) return;
+    if (markGiftDelivered(email)) { if (typeof aaToast === 'function') aaToast('Cadeau marqué comme remis !', 'redeem'); loadLoyalty(); }
+    else if (typeof aaToast === 'function') aaToast('Aucun cadeau en attente', 'error');
+}
+
+function deleteLoyaltyClient(email) {
+    if (!confirm('Supprimer ' + email + ' du programme de fidélité ?')) return;
+    if (!confirm('Confirmation finale ?')) return;
+    const customers = getLoyaltyCustomers();
+    const updated = customers.filter(c => c.email !== email);
+    saveLoyaltyCustomers(updated);
+    if (typeof aaToast === 'function') aaToast('Client retiré de la fidélité', 'delete');
+    loadLoyalty();
+}
+
+function exportCustomersCSV() { alert('Fonctionnalité à venir'); }
+function copyEmailsToClipboard() { alert('Fonctionnalité à venir'); }
+function exportLoyaltyCSV() { alert('Fonctionnalité à venir'); }
+
+function initShippingConfig() {
+    if (!localStorage.getItem('aa_shipping_config')) {
+        localStorage.setItem('aa_shipping_config', JSON.stringify({
+            rates: [{id:'1',country:'France',carrier:'Colissimo',cost:6.50,surcharge:1.50},{id:'2',country:'France',carrier:'Mondial Relay',cost:4.90,surcharge:1.00},{id:'3',country:'Belgique',carrier:'Colissimo',cost:9.90,surcharge:2.00},{id:'4',country:'Belgique',carrier:'Mondial Relay',cost:7.50,surcharge:1.50},{id:'5',country:'Allemagne',carrier:'DHL',cost:11.50,surcharge:2.50},{id:'6',country:'Allemagne',carrier:'Colissimo',cost:13.90,surcharge:2.50},{id:'7',country:'Italie',carrier:'DHL',cost:12.90,surcharge:2.50},{id:'8',country:'Espagne',carrier:'DHL',cost:12.90,surcharge:2.50}],
+            freeThreshold: 150, enableTaxes: false, taxLabel: 'TVA',
+            taxRates: [{country:'France',rate:20},{country:'Belgique',rate:21},{country:'Allemagne',rate:19},{country:'Italie',rate:22},{country:'Espagne',rate:21}],
+            email: 'contact@action-archive.com', defaultMessage: 'Pour les pays non listés, merci de me contacter par email pour un devis.'
+        }));
+    }
+}
+function getShippingConfig() { initShippingConfig(); return JSON.parse(localStorage.getItem('aa_shipping_config')); }
+function saveShippingConfigToStorage(c) { localStorage.setItem('aa_shipping_config', JSON.stringify(c)); }
+function loadShippingConfig() {
+    const c = getShippingConfig();
+    document.getElementById('ship-free-threshold').value = c.freeThreshold || 0;
+    document.getElementById('ship-enable-taxes').checked = c.enableTaxes || false;
+    document.getElementById('ship-tax-label').value = c.taxLabel || 'TVA';
+    document.getElementById('ship-email').value = c.email || '';
+    document.getElementById('ship-default-message').value = c.defaultMessage || '';
+    renderShippingRates(); renderTaxRates(); renderShippingPreview(); updateTaxesStatus();
+}
+function updateTaxesStatus() {
+    const status = document.getElementById('taxes-status');
+    const enabled = document.getElementById('ship-enable-taxes').checked;
+    const c = getShippingConfig();
+    if (enabled) { const count = c.taxRates ? c.taxRates.length : 0; status.innerHTML = `<span class="text-green-700">✓ ACTIVÉ (${count} pays)</span>`; }
+    else { status.innerHTML = `<span class="text-red-700">✗ DÉSACTIVÉ</span>`; }
+}
+function renderShippingRates() {
+    const c = getShippingConfig();
+    const tbody = document.getElementById('shipping-rates-table');
+    if (!c.rates || c.rates.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center italic">Aucun tarif.</td></tr>'; return; }
+    const byC = {};
+    c.rates.forEach(r => { if (!byC[r.country]) byC[r.country] = []; byC[r.country].push(r); });
+    tbody.innerHTML = '';
+    Object.keys(byC).sort().forEach(country => {
+        byC[country].forEach((rate, i) => {
+            const surcharge = rate.surcharge || 0;
+            tbody.innerHTML += `<tr class="border-b border-outline-variant"><td class="p-2 text-sm font-bold">${i===0?country:''}</td><td class="p-2 text-sm">${rate.carrier}</td><td class="p-2 text-sm text-right font-bold text-tertiary">${rate.cost.toFixed(2)} €</td><td class="p-2 text-sm text-right">${surcharge > 0 ? '+' + surcharge.toFixed(2) + ' €' : '-'}</td><td class="p-2 text-center"><button onclick="deleteShippingRate('${rate.id}')" class="text-red-600">🗑️</button></td></tr>`;
+        });
+    });
+}
+function addShippingRate(e) {
+    e.preventDefault();
+    const c = getShippingConfig();
+    const nr = { id: Date.now().toString(), country: document.getElementById('ship-country').value.trim(), carrier: document.getElementById('ship-carrier').value.trim(), cost: parseFloat(document.getElementById('ship-cost').value), surcharge: parseFloat(document.getElementById('ship-surcharge').value) || 0 };
+    if (!nr.country || !nr.carrier || isNaN(nr.cost)) { if (typeof aaToast === 'function') aaToast('Champs requis', 'error'); return false; }
+    c.rates.push(nr); saveShippingConfigToStorage(c);
+    document.getElementById('ship-country').value = ''; document.getElementById('ship-carrier').value = ''; document.getElementById('ship-cost').value = ''; document.getElementById('ship-surcharge').value = '';
+    renderShippingRates(); renderShippingPreview();
+    if (typeof aaToast === 'function') aaToast('Tarif ajouté', 'check_circle');
+    return false;
+}
+function deleteShippingRate(rateId) {
+    const c = getShippingConfig();
+    c.rates = c.rates.filter(r => r.id !== rateId);
+    saveShippingConfigToStorage(c);
+    renderShippingRates(); renderShippingPreview();
+}
+function renderTaxRates() {
+    const c = getShippingConfig();
+    const tbody = document.getElementById('tax-rates-table');
+    if (!c.taxRates || c.taxRates.length === 0) { tbody.innerHTML = '<tr><td colspan="3" class="p-4 text-center italic">Aucun taux.</td></tr>'; return; }
+    tbody.innerHTML = c.taxRates.map((tr, i) => `<tr class="border-b border-outline-variant"><td class="p-2 text-sm font-bold">${tr.country}</td><td class="p-2 text-sm text-right font-bold text-primary">${tr.rate}%</td><td class="p-2 text-center"><button onclick="deleteTaxRate(${i})" class="text-red-600">🗑️</button></td></tr>`).join('');
+}
+function addTaxRate(e) {
+    e.preventDefault();
+    const c = getShippingConfig();
+    const country = document.getElementById('tax-country').value.trim();
+    const rate = parseFloat(document.getElementById('tax-rate').value);
+    if (!country || isNaN(rate)) { if (typeof aaToast === 'function') aaToast('Valeurs invalides', 'error'); return false; }
+    if (!c.taxRates) c.taxRates = [];
+    const existing = c.taxRates.find(t => t.country === country);
+    if (existing) existing.rate = rate;
+    else c.taxRates.push({ country, rate });
+    saveShippingConfigToStorage(c);
+    document.getElementById('tax-country').value = ''; document.getElementById('tax-rate').value = '';
+    renderTaxRates(); updateTaxesStatus();
+    if (typeof aaToast === 'function') aaToast('Taux ajouté', 'check_circle');
+    return false;
+}
+function deleteTaxRate(index) { const c = getShippingConfig(); c.taxRates.splice(index, 1); saveShippingConfigToStorage(c); renderTaxRates(); updateTaxesStatus(); }
+function saveShippingParams() {
+    const c = getShippingConfig();
+    c.freeThreshold = parseFloat(document.getElementById('ship-free-threshold').value) || 0;
+    c.enableTaxes = document.getElementById('ship-enable-taxes').checked;
+    c.taxLabel = document.getElementById('ship-tax-label').value.trim() || 'TVA';
+    c.email = document.getElementById('ship-email').value.trim();
+    c.defaultMessage = document.getElementById('ship-default-message').value.trim();
+    saveShippingConfigToStorage(c);
+    renderShippingPreview(); updateTaxesStatus();
+    if (typeof aaToast === 'function') aaToast('Sauvegardé', 'check_circle');
+}
+function renderShippingPreview() {
+    const c = getShippingConfig();
+    const container = document.getElementById('shipping-preview-customer');
+    let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-3">';
+    const byC = {};
+    c.rates.forEach(r => { if (!byC[r.country]) byC[r.country] = []; byC[r.country].push(r); });
+    Object.keys(byC).sort().forEach(country => {
+        const rates = byC[country];
+        html += `<div class="bg-surface border-2 border-on-background p-3"><p class="font-headline font-black uppercase text-sm mb-2">${country}</p><ul class="text-sm">${rates.map(r => `<li class="flex justify-between"><span>${r.carrier}</span><span class="font-bold">${r.cost.toFixed(2)} €</span></li>`).join('')}</ul></div>`;
+    });
+    html += '</div>';
+    if (c.freeThreshold > 0) html += `<p class="mt-3 bg-green-100 border-2 border-green-600 p-2 text-sm font-bold">🎁 Livraison offerte à partir de ${c.freeThreshold} €</p>`;
+    container.innerHTML = html;
+}
+
+function initSocialConfig() {
+    if (!localStorage.getItem('aa_social_config')) {
+        localStorage.setItem('aa_social_config', JSON.stringify({
+            facebook: { url: 'https://facebook.com/actionarchive', enabled: true },
+            twitter: { url: 'https://twitter.com/actionarchive', enabled: true },
+            instagram: { url: 'https://instagram.com/actionarchive', enabled: true },
+            tiktok: { url: '', enabled: false },
+            youtube: { url: '', enabled: false }
+        }));
+    }
+}
+function getSocialConfig() { initSocialConfig(); return JSON.parse(localStorage.getItem('aa_social_config')); }
+function saveSocialConfigToStorage(c) { localStorage.setItem('aa_social_config', JSON.stringify(c)); }
+function loadSocialConfig() {
+    const c = getSocialConfig();
+    document.getElementById('fb-url').value = c.facebook?.url || ''; document.getElementById('fb-enabled').checked = c.facebook?.enabled || false;
+    document.getElementById('tw-url').value = c.twitter?.url || ''; document.getElementById('tw-enabled').checked = c.twitter?.enabled || false;
+    document.getElementById('ig-url').value = c.instagram?.url || ''; document.getElementById('ig-enabled').checked = c.instagram?.enabled || false;
+    document.getElementById('tk-url').value = c.tiktok?.url || ''; document.getElementById('tk-enabled').checked = c.tiktok?.enabled || false;
+    document.getElementById('yt-url').value = c.youtube?.url || ''; document.getElementById('yt-enabled').checked = c.youtube?.enabled || false;
+    renderSocialPreview();
+}
+function saveSocialConfig() {
+    const c = {
+        facebook: { url: document.getElementById('fb-url').value.trim(), enabled: document.getElementById('fb-enabled').checked },
+        twitter: { url: document.getElementById('tw-url').value.trim(), enabled: document.getElementById('tw-enabled').checked },
+        instagram: { url: document.getElementById('ig-url').value.trim(), enabled: document.getElementById('ig-enabled').checked },
+        tiktok: { url: document.getElementById('tk-url').value.trim(), enabled: document.getElementById('tk-enabled').checked },
+        youtube: { url: document.getElementById('yt-url').value.trim(), enabled: document.getElementById('yt-enabled').checked }
+    };
+    saveSocialConfigToStorage(c);
+    if (typeof aaToast === 'function') aaToast('Sauvegardé', 'check_circle');
+    renderSocialPreview();
+}
+function renderSocialPreview() {
+    const c = getSocialConfig();
+    const container = document.getElementById('social-preview');
+    container.innerHTML = '';
+    if (c.facebook?.enabled) container.innerHTML += `<a href="${c.facebook.url}" target="_blank" class="bg-[#1877F2] text-white p-2">f</a>`;
+    if (c.twitter?.enabled) container.innerHTML += `<a href="${c.twitter.url}" target="_blank" class="bg-black text-white p-2">t</a>`;
+    if (c.instagram?.enabled) container.innerHTML += `<a href="${c.instagram.url}" target="_blank" class="bg-pink-500 text-white p-2">i</a>`;
+    if (c.tiktok?.enabled) container.innerHTML += `<a href="${c.tiktok.url}" target="_blank" class="bg-black text-white p-2">tt</a>`;
+    if (c.youtube?.enabled) container.innerHTML += `<a href="${c.youtube.url}" target="_blank" class="bg-red-600 text-white p-2">y</a>`;
+}
+
+initShippingConfig();
+initSocialConfig();
+
+function syncClientsToLoyalty() {
+    const customers = getLoyaltyCustomers();
+    const user = JSON.parse(localStorage.getItem('aa_user') || 'null');
+    let modified = false;
+    if (user && user.email && !customers.find(c => c.email === user.email)) {
+        customers.push({
+            pseudo: user.pseudo || 'Utilisateur',
+            email: user.email,
+            registeredAt: user.registeredAt || new Date().toISOString(),
+            stars: user.stars || 1,
+            totalSpent: 0,
+            ordersCount: 0,
+            giftsDelivered: 0,
+            purchaseHistory: []
+        });
+        modified = true;
+    }
+    if (modified) saveLoyaltyCustomers(customers);
+}
+
+syncClientsToLoyalty();
+
+(function() {
+    const social = JSON.parse(localStorage.getItem('aa_social_config') || '{}');
+    const nav = document.getElementById('aa-social-nav');
+    if (!nav) return;
+    const items = [{ key: 'facebook', icon: 'facebook', label: 'FACEBOOK' },{ key: 'twitter', icon: 'share', label: 'TWITTER' },{ key: 'instagram', icon: 'camera_alt', label: 'INSTAGRAM' },{ key: 'tiktok', icon: 'music_note', label: 'TIKTOK' },{ key: 'youtube', icon: 'play_circle', label: 'YOUTUBE' }];
+    items.forEach(item => {
+        const data = social[item.key];
+        if (data && data.enabled && data.url) nav.innerHTML += `<a href="${data.url}" target="_blank" class="text-[#ffca4d]"><span class="material-symbols-outlined">${item.icon}</span></a>`;
+    });
+})();
+</script>
+</body>
+</html>

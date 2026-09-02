@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html class="light" lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Inscription - Action Archive</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,900;1,900&family=Work+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = { darkMode: "class", theme: { extend: { colors: {
+            "secondary": "#755700", "surface-container-low": "#fdefd5", "surface-container-high": "#efe1c3",
+            "surface": "#fff5e5", "primary": "#bb0003", "tertiary": "#0f56bf", "on-surface": "#342e1e",
+            "secondary-container": "#ffca4d", "on-background": "#342e1e", "background": "#fff5e5",
+            "surface-variant": "#eadcbc", "on-surface-variant": "#635b48",
+        }, fontFamily: { "headline": ["Epilogue"], "body": ["Work Sans"], "label": ["Work Sans"] } } } }
+    </script>
+    <style>
+        #side-drawer { box-shadow: -8px 0 0 0 rgba(52, 46, 30, 0.2); transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1); }
+        #side-drawer.open { transform: translateX(0); }
+        .drawer-overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .drawer-overlay.open { opacity: 1; pointer-events: auto; }
+        .btn-physical { transition: all 0.1s ease; }
+        .btn-physical:active { transform: translateY(4px); box-shadow: 0px 0px 0px 0px !important; }
+        #aa-cart-badge{position:absolute;top:-7px;right:-7px;min-width:18px;height:18px;background:#ffca4d;color:#342e1e;font-family:'Epilogue',sans-serif;font-weight:900;font-size:10px;border:2px solid #342e1e;border-radius:2px;display:none;align-items:center;justify-content:center;padding:0 3px;}
+        .aa-toast{background:#342e1e;color:#fff5e5;border:3px solid #ffca4d;padding:12px 18px;font-family:'Epilogue',sans-serif;font-weight:900;font-size:13px;text-transform:uppercase;display:flex;align-items:center;gap:10px;max-width:300px;transform:translateX(120%);opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);pointer-events:auto;}
+        .aa-toast.show{transform:translateX(0);opacity:1;}
+        #aa-toasts{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
+        .aa-logo { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease; filter: drop-shadow(2px 2px 0px rgba(52, 46, 30, 0.15)); }
+        .aa-logo-link:hover .aa-logo { transform: rotate(-5deg) scale(1.05); filter: drop-shadow(3px 3px 0px rgba(187, 0, 3, 0.4)); }
+        .aa-stars-badge{position:absolute;top:-7px;right:-7px;min-width:18px;height:18px;background:#ffca4d;color:#342e1e;font-family:'Epilogue',sans-serif;font-weight:900;font-size:10px;border:2px solid #342e1e;border-radius:2px;display:flex;align-items:center;justify-content:center;padding:0 3px;}
+        .aa-nav-gift-badge{position:absolute;bottom:-8px;right:-8px;font-size:14px;display:none;align-items:center;justify-content:center;}
+        @keyframes giftPulse { 0%,100%{box-shadow:0 0 0 0 rgba(255,202,77,0.7);} 50%{box-shadow:0 0 0 6px rgba(255,202,77,0);} }
+        .aa-nav-stars.aa-has-gift { border-color:#ffca4d !important; color:#ffca4d !important; animation: giftPulse 1.5s infinite; }
+        .aa-loyalty-card { background:#fdefd5; border:3px solid #ffca4d; padding:1rem; }
+        
+        /* 🔴 BOUTON MENU ROUGE */
+        .aa-menu-btn {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: #bb0003;
+            color: #fff5e5;
+            border: 3px solid #342e1e;
+            padding: 10px 20px;
+            font-size: 1.05rem;
+            box-shadow: 4px 4px 0 0 #342e1e;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .aa-menu-btn:hover {
+            background: #342e1e;
+            color: #ffca4d;
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 0 #bb0003;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface overflow-x-hidden">
+
+<header class="w-full border-b-4 border-double border-[#bb0003] bg-[#fff5e5] shadow-[4px_4px_0px_0px_rgba(52,46,30,0.2)] z-50 sticky top-0">
+    <div class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
+        <a href="index.html" class="aa-logo-link flex items-center gap-3 group cursor-pointer" title="Retour à l'accueil">
+            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="eager" class="aa-logo h-12 md:h-14 w-auto"/>
+            <span class="text-2xl md:text-3xl font-black italic text-[#bb0003] font-headline uppercase tracking-tighter group-hover:text-[#0f56bf] transition-colors">Action Archive</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-6 font-headline font-black uppercase tracking-tighter text-sm">
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="index.html">Accueil</a>
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="produits.html">Produits</a>
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="info.html">Info</a>
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="panier.html">Commande</a>
+            <a class="text-[#0f56bf] underline decoration-4 underline-offset-8" href="inscription.html">Inscription</a>
+        </nav>
+        <div class="flex items-center gap-2">
+            <a class="aa-nav-stars relative p-2 text-[#755700] border-2 border-[#755700] rounded-sm btn-physical" href="inscription.html" style="display:none;" title="Mon programme fidélité">
+                <span class="material-symbols-outlined">stars</span>
+                <span class="aa-nav-stars-count aa-stars-badge">0</span>
+                <span class="aa-nav-gift-badge">🎁</span>
+            </a>
+            <a class="relative p-2 text-[#bb0003] border-2 border-[#bb0003] rounded-sm btn-physical" href="panier.html" title="Mon panier">
+                <span class="material-symbols-outlined">shopping_cart</span>
+                <span id="aa-cart-badge"></span>
+            </a>
+            <button onclick="toggleDrawer()" class="aa-menu-btn">☰ MENU</button>
+        </div>
+    </div>
+</header>
+
+<div id="drawer-overlay" class="drawer-overlay fixed inset-0 bg-on-background/40 backdrop-blur-sm z-[90]" onclick="toggleDrawer()"></div>
+<aside id="side-drawer" class="fixed top-0 right-0 h-full w-full max-w-[320px] bg-surface-container-high border-l-8 border-primary z-[100] transform translate-x-full overflow-y-auto">
+    <div class="p-8 space-y-8 flex flex-col h-full text-on-surface">
+        <div class="flex justify-between items-center border-b-4 border-on-background/10 pb-6">
+            <h2 class="font-headline font-black text-2xl text-primary italic uppercase">MENU</h2>
+            <button class="text-on-background" onclick="toggleDrawer()"><span class="material-symbols-outlined text-3xl">close</span></button>
+        </div>
+        <nav class="flex flex-col gap-3">
+            <a href="index.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">ACCUEIL</a>
+            <a href="produits.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">PRODUITS</a>
+            <a href="info.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">INFO</a>
+            <a href="panier.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">COMMANDE</a>
+            <a href="inscription.html" class="p-4 bg-surface-container-low border-2 border-primary font-headline font-black uppercase text-primary">INSCRIPTION</a>
+            <a href="admin.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">ADMIN</a>
+        </nav>
+    </div>
+</aside>
+
+<main class="container mx-auto px-6 py-12 min-h-screen max-w-xl">
+    <h1 class="font-headline font-black text-5xl uppercase text-on-background italic mb-8 border-b-4 border-on-background pb-4">⭐ Rejoindre l'Archive</h1>
+    <p class="font-body text-lg mb-8 text-on-surface-variant">Inscris-toi gratuitement pour rejoindre le <strong>Programme Collectionneur</strong> : alertes "Sorties de Grenier" en avant-première, cumul d'étoiles et pièces cadeaux. Réservé aux acheteurs de <strong>reproductions</strong> et de <strong>créations custom</strong>.</p>
+
+    <div id="aa-existing-loyalty" class="hidden aa-loyalty-card mb-6">
+        <p class="font-headline font-black uppercase text-sm mb-2">⭐ Bienvenue !</p>
+        <p class="text-sm">Tu as déjà <strong id="aa-existing-stars">0</strong> étoile(s) et <strong id="aa-existing-orders">0</strong> commande(s) avec cet email.</p>
+        <p class="text-xs mt-2 italic text-on-surface-variant">Crée un compte pour ne rien rater.</p>
+    </div>
+
+    <form onsubmit="handleSignup(event)" class="bg-surface-container-high border-4 border-on-background p-8 shadow-[8px_8px_0px_0px_rgba(187,0,3,1)] space-y-4">
+        <div><label class="font-headline font-black uppercase text-sm block mb-1">Pseudo</label><input name="pseudo" required minlength="3" class="w-full border-2 border-on-background p-3 font-bold bg-surface focus:outline-none focus:border-primary" placeholder="VOTRE PSEUDO"></div>
+        <div><label class="font-headline font-black uppercase text-sm block mb-1">Email</label><input type="email" id="aa-signup-email" name="email" required class="w-full border-2 border-on-background p-3 font-bold bg-surface focus:outline-none focus:border-primary" placeholder="votre@email.com" onblur="checkExistingLoyalty()"></div>
+        <div><label class="font-headline font-black uppercase text-sm block mb-1">Mot de passe</label><input type="password" name="password" required minlength="8" class="w-full border-2 border-on-background p-3 font-bold bg-surface focus:outline-none focus:border-primary" placeholder="MIN. 8 CARACTÈRES"></div>
+        <div><label class="font-headline font-black uppercase text-sm block mb-1">Confirmer</label><input type="password" name="password_confirm" required minlength="8" class="w-full border-2 border-on-background p-3 font-bold bg-surface focus:outline-none focus:border-primary" placeholder="RÉPÈTE"></div>
+        <label class="flex items-start gap-2 font-body text-sm pt-2"><input type="checkbox" required class="mt-1"><span>J'accepte de recevoir les alertes et offres exclusives</span></label>
+        <label class="flex items-start gap-2 font-body text-sm"><input type="checkbox" required class="mt-1"><span>J'accepte les <a href="info.html" class="text-tertiary underline">mentions légales et CGV</a></span></label>
+        <button type="submit" class="btn-physical w-full bg-primary text-on-primary font-headline font-black px-6 py-4 text-xl uppercase shadow-[4px_4px_0px_0px_#755700] mt-4">REJOINDRE L'ARCHIVE</button>
+    </form>
+
+    <p class="text-center mt-6 font-body text-sm">Déjà inscrit ? <a href="#" class="text-tertiary underline font-bold">Se connecter</a></p>
+
+    <div class="mt-12 bg-secondary-container border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_#755700]">
+        <div class="flex items-center gap-2 mb-3">
+            <span class="material-symbols-outlined text-primary">star</span>
+            <h3 class="font-headline font-black text-xl uppercase italic">Programme Collectionneur</h3>
+            <span class="material-symbols-outlined text-primary">star</span>
+        </div>
+        <ul class="font-body space-y-1 text-sm">
+            <li>✓ <strong>1 achat</strong> = 1 étoile</li>
+            <li>✓ <strong>10 étoiles</strong> = 1 pièce cadeau 🎁</li>
+            <li>✓ Alertes exclusives avant tout le monde</li>
+            <li>✓ <strong>+1 étoile de bienvenue</strong> à l'inscription</li>
+        </ul>
+    </div>
+</main>
+
+<footer class="bg-[#342e1e] border-t-8 border-double border-[#755700] w-full py-12 px-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-20">
+    <div class="flex flex-col items-center md:items-start gap-3">
+        <a href="index.html" class="aa-logo-link flex items-center gap-3 cursor-pointer" title="Action Archive">
+            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="lazy" class="aa-logo h-10 w-auto"/>
+            <span class="text-xl md:text-2xl font-black italic text-[#ffca4d] font-headline uppercase tracking-tighter hover:text-white transition-colors">Action Archive</span>
+        </a>
+        <p class="font-body font-medium text-[10px] text-[#ffca4d] tracking-widest uppercase">© 2026 Action Archive INC.</p>
+    </div>
+    <nav id="aa-social-nav" class="flex flex-wrap justify-center gap-10"></nav>
+</footer>
+
+<div id="aa-toasts"></div>
+<script src="aa-core.js"></script>
+<script>
+function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+
+function checkExistingLoyalty() {
+    const email = document.getElementById('aa-signup-email').value.trim().toLowerCase();
+    if (!email) return;
+    const customer = getCustomerByEmail(email);
+    const block = document.getElementById('aa-existing-loyalty');
+    if (customer && (customer.stars > 0 || customer.ordersCount > 0)) {
+        document.getElementById('aa-existing-stars').textContent = customer.stars || 0;
+        document.getElementById('aa-existing-orders').textContent = customer.ordersCount || 0;
+        block.classList.remove('hidden');
+    } else {
+        block.classList.add('hidden');
+    }
+}
+
+function handleSignup(e) {
+    e.preventDefault();
+    const data = new FormData(e.target);
+    const pwd = data.get('password'), pwdC = data.get('password_confirm');
+    if (pwd !== pwdC) { aaToast('Les mots de passe ne correspondent pas', 'error'); return; }
+    const email = data.get('email').trim().toLowerCase();
+    const customer = getCustomerByEmail(email);
+    const user = {
+        pseudo: data.get('pseudo'),
+        email: email,
+        stars: customer?.stars || 0,
+        registeredAt: customer?.registeredAt || new Date().toISOString()
+    };
+    localStorage.setItem('aa_user', JSON.stringify(user));
+    if (customer) {
+        aaToast(`Bon retour ${user.pseudo} ! ${customer.stars} ⭐ cumulées`, 'waving_hand');
+    } else {
+        aaToast('Bienvenue ' + user.pseudo + ' !', 'star');
+    }
+    setTimeout(() => window.location.href = 'index.html', 2000);
+}
+
+(function() {
+    const social = JSON.parse(localStorage.getItem('aa_social_config') || '{}');
+    const nav = document.getElementById('aa-social-nav');
+    if (!nav) return;
+    const items = [{ key: 'facebook', icon: 'facebook', label: 'FACEBOOK' },{ key: 'twitter', icon: 'share', label: 'TWITTER' },{ key: 'instagram', icon: 'camera_alt', label: 'INSTAGRAM' },{ key: 'tiktok', icon: 'music_note', label: 'TIKTOK' },{ key: 'youtube', icon: 'play_circle', label: 'YOUTUBE' }];
+    items.forEach(item => {
+        const data = social[item.key];
+        if (data && data.enabled && data.url) nav.innerHTML += `<a href="${aaEscapeHtml(data.url)}" target="_blank" rel="noopener" class="group flex flex-col items-center gap-1"><div class="bg-[#ffca4d] text-[#342e1e] p-2 rounded-sm group-hover:bg-white transition-colors btn-physical"><span class="material-symbols-outlined">${item.icon}</span></div><span class="font-label font-bold text-[9px] text-[#eadcbc] tracking-widest uppercase">${item.label}</span></a>`;
+    });
+    if (nav.innerHTML === '') nav.innerHTML = '<p class="text-[#eadcbc] text-xs italic">Aucun réseau social</p>';
+})();
+</script>
+</body>
+</html>

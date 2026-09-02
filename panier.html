@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html class="light" lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Ma Commande - Action Archive</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,900;1,900&family=Work+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = { darkMode: "class", theme: { extend: { colors: {
+            "secondary": "#755700", "surface-container-low": "#fdefd5", "surface-container-high": "#efe1c3",
+            "surface": "#fff5e5", "primary": "#bb0003", "tertiary": "#0f56bf", "on-surface": "#342e1e",
+            "secondary-container": "#ffca4d", "on-background": "#342e1e", "background": "#fff5e5",
+            "surface-variant": "#eadcbc", "on-surface-variant": "#635b48",
+        }, fontFamily: { "headline": ["Epilogue"], "body": ["Work Sans"], "label": ["Work Sans"] } } } }
+    </script>
+    <style>
+        #side-drawer { box-shadow: -8px 0 0 0 rgba(52, 46, 30, 0.2); transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1); }
+        #side-drawer.open { transform: translateX(0); }
+        .drawer-overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .drawer-overlay.open { opacity: 1; pointer-events: auto; }
+        .btn-physical { transition: all 0.1s ease; }
+        .btn-physical:active { transform: translateY(4px); box-shadow: 0px 0px 0px 0px !important; }
+        #aa-cart-badge{position:absolute;top:-7px;right:-7px;min-width:18px;height:18px;background:#ffca4d;color:#342e1e;font-family:'Epilogue',sans-serif;font-weight:900;font-size:10px;border:2px solid #342e1e;border-radius:2px;display:none;align-items:center;justify-content:center;padding:0 3px;}
+        .aa-toast{background:#342e1e;color:#fff5e5;border:3px solid #ffca4d;padding:12px 18px;font-family:'Epilogue',sans-serif;font-weight:900;font-size:13px;text-transform:uppercase;display:flex;align-items:center;gap:10px;max-width:300px;transform:translateX(120%);opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);pointer-events:auto;}
+        .aa-toast.show{transform:translateX(0);opacity:1;}
+        #aa-toasts{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
+        .form-input { width:100%; border:2px solid #342e1e; padding:0.75rem; font-weight:700; background:#fff5e5; font-family:'Work Sans',sans-serif; }
+        .form-input:focus { outline:none; border-color:#bb0003; }
+        .step-active { color:#bb0003; } .step-done { color:#00aa00; }
+        .country-notice { background:#fff3cd; border:3px solid #ffaa00; padding:1rem; margin-top:0.5rem; }
+        .aa-logo { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease; filter: drop-shadow(2px 2px 0px rgba(52, 46, 30, 0.15)); }
+        .aa-logo-link:hover .aa-logo { transform: rotate(-5deg) scale(1.05); filter: drop-shadow(3px 3px 0px rgba(187, 0, 3, 0.4)); }
+        .aa-stars-badge{position:absolute;top:-7px;right:-7px;min-width:18px;height:18px;background:#ffca4d;color:#342e1e;font-family:'Epilogue',sans-serif;font-weight:900;font-size:10px;border:2px solid #342e1e;border-radius:2px;display:flex;align-items:center;justify-content:center;padding:0 3px;}
+        .aa-nav-gift-badge{position:absolute;bottom:-8px;right:-8px;font-size:14px;display:none;align-items:center;justify-content:center;}
+        @keyframes giftPulse { 0%,100%{box-shadow:0 0 0 0 rgba(255,202,77,0.7);} 50%{box-shadow:0 0 0 6px rgba(255,202,77,0);} }
+        .aa-nav-stars.aa-has-gift { border-color:#ffca4d !important; color:#ffca4d !important; animation: giftPulse 1.5s infinite; }
+        
+        /* 🔴 BOUTON MENU ROUGE */
+        .aa-menu-btn {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: #bb0003;
+            color: #fff5e5;
+            border: 3px solid #342e1e;
+            padding: 10px 20px;
+            font-size: 1.05rem;
+            box-shadow: 4px 4px 0 0 #342e1e;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .aa-menu-btn:hover {
+            background: #342e1e;
+            color: #ffca4d;
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 0 #bb0003;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface overflow-x-hidden">
+
+<header class="w-full border-b-4 border-double border-[#bb0003] bg-[#fff5e5] shadow-[4px_4px_0px_0px_rgba(52,46,30,0.2)] z-50 sticky top-0">
+    <div class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
+        <a href="index.html" class="aa-logo-link flex items-center gap-3 group cursor-pointer" title="Retour à l'accueil">
+            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="eager" class="aa-logo h-12 md:h-14 w-auto"/>
+            <span class="text-2xl md:text-3xl font-black italic text-[#bb0003] font-headline uppercase tracking-tighter group-hover:text-[#0f56bf] transition-colors">Action Archive</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-6 font-headline font-black uppercase tracking-tighter text-sm">
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="index.html">Accueil</a>
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="produits.html">Produits</a>
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="info.html">Info</a>
+            <a class="text-[#0f56bf] underline decoration-4 underline-offset-8" href="panier.html">Commande</a>
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="inscription.html">Inscription</a>
+        </nav>
+        <div class="flex items-center gap-2">
+            <a class="aa-nav-stars relative p-2 text-[#755700] border-2 border-[#755700] rounded-sm btn-physical" href="inscription.html" style="display:none;" title="Mon programme fidélité">
+                <span class="material-symbols-outlined">stars</span>
+                <span class="aa-nav-stars-count aa-stars-badge">0</span>
+                <span class="aa-nav-gift-badge">🎁</span>
+            </a>
+            <a class="relative p-2 text-[#bb0003] border-2 border-[#bb0003] rounded-sm btn-physical" href="panier.html" title="Mon panier">
+                <span class="material-symbols-outlined">shopping_cart</span>
+                <span id="aa-cart-badge"></span>
+            </a>
+            <button onclick="toggleDrawer()" class="aa-menu-btn">☰ MENU</button>
+        </div>
+    </div>
+</header>
+
+<div id="drawer-overlay" class="drawer-overlay fixed inset-0 bg-on-background/40 backdrop-blur-sm z-[90]" onclick="toggleDrawer()"></div>
+<aside id="side-drawer" class="fixed top-0 right-0 h-full w-full max-w-[320px] bg-surface-container-high border-l-8 border-primary z-[100] transform translate-x-full overflow-y-auto">
+    <div class="p-8 space-y-8 flex flex-col h-full text-on-surface">
+        <div class="flex justify-between items-center border-b-4 border-on-background/10 pb-6">
+            <h2 class="font-headline font-black text-2xl text-primary italic uppercase">MENU</h2>
+            <button class="text-on-background" onclick="toggleDrawer()"><span class="material-symbols-outlined text-3xl">close</span></button>
+        </div>
+        <nav class="flex flex-col gap-3">
+            <a href="index.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">ACCUEIL</a>
+            <a href="produits.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">PRODUITS</a>
+            <a href="info.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">INFO</a>
+            <a href="panier.html" class="p-4 bg-surface-container-low border-2 border-primary font-headline font-black uppercase text-primary">COMMANDE</a>
+            <a href="inscription.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">INSCRIPTION</a>
+            <a href="admin.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">ADMIN</a>
+        </nav>
+    </div>
+</aside>
+
+<main class="container mx-auto px-6 py-12 min-h-screen">
+    <div class="flex items-center justify-center mb-8 flex-wrap gap-2">
+        <div class="flex items-center gap-2" id="step-1-indicator"><span class="material-symbols-outlined step-active">shopping_cart</span><span class="font-headline font-black uppercase text-sm step-active">Panier</span></div>
+        <span class="material-symbols-outlined text-on-surface-variant">arrow_forward</span>
+        <div class="flex items-center gap-2" id="step-2-indicator"><span class="material-symbols-outlined text-on-surface-variant">contact_mail</span><span class="font-headline font-black uppercase text-sm text-on-surface-variant">Coordonnées</span></div>
+        <span class="material-symbols-outlined text-on-surface-variant">arrow_forward</span>
+        <div class="flex items-center gap-2" id="step-3-indicator"><span class="material-symbols-outlined text-on-surface-variant">payments</span><span class="font-headline font-black uppercase text-sm text-on-surface-variant">Paiement</span></div>
+        <span class="material-symbols-outlined text-on-surface-variant">arrow_forward</span>
+        <div class="flex items-center gap-2" id="step-4-indicator"><span class="material-symbols-outlined text-on-surface-variant">check_circle</span><span class="font-headline font-black uppercase text-sm text-on-surface-variant">Confirmation</span></div>
+    </div>
+
+    <div class="bg-fdefd5 border-2 border-on-background p-3 mb-6 text-sm flex items-center gap-2">
+        <span class="material-symbols-outlined text-tertiary">info</span>
+        <span class="font-bold">Vous commandez des <strong>reproductions de boîtes vintage</strong> et/ou des <strong>créations custom</strong>. Aucune boîte d'époque n'est proposée.</span>
+    </div>
+
+    <div id="aa-empty-cart" class="hidden text-center py-20">
+        <span class="material-symbols-outlined text-7xl text-on-surface-variant mb-4 block">shopping_cart_off</span>
+        <p class="font-headline font-black text-2xl uppercase mb-4">Votre panier est vide</p>
+        <a href="produits.html" class="btn-physical inline-block bg-primary text-on-primary font-headline font-black px-8 py-3 uppercase shadow-[4px_4px_0px_0px_#755700]">Découvrir l'archive</a>
+    </div>
+
+    <div id="aa-step-cart" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2">
+            <h2 class="font-headline font-black text-2xl uppercase italic mb-4 border-b-2 border-on-background pb-2">Vos pièces</h2>
+            <div id="aa-cart-items" class="space-y-4"></div>
+        </div>
+        <aside class="lg:col-span-1">
+            <div class="bg-surface-container-high border-4 border-on-background p-6 shadow-[8px_8px_0px_0px_rgba(187,0,3,1)] sticky top-32">
+                <h2 class="font-headline font-black text-2xl uppercase italic mb-4 border-b-2 border-on-background pb-2">Récapitulatif</h2>
+                <div id="aa-recap-lines" class="space-y-2 mb-4"></div>
+                <div class="border-t-4 border-double border-on-background pt-4 mb-6">
+                    <div class="flex justify-between items-baseline"><span class="font-headline font-black text-xl uppercase">Total TTC</span><span id="aa-total" class="font-headline font-black text-4xl text-primary">0,00 €</span></div>
+                </div>
+                <button onclick="goToStep(2)" class="btn-physical w-full bg-primary text-on-primary font-headline font-black px-6 py-4 text-lg uppercase shadow-[4px_4px_0px_0px_#755700] hover:translate-y-[-2px] transition-all">CONTINUER →</button>
+                <button onclick="if(confirm('Vider le panier ?')) { aaClearCart(); renderCart(); }" class="w-full mt-3 text-sm font-bold uppercase text-on-surface-variant hover:text-primary">🗑️ Vider le panier</button>
+            </div>
+        </aside>
+    </div>
+
+    <div id="aa-step-info" class="hidden max-w-2xl mx-auto">
+        <div class="bg-surface-container-high border-4 border-on-background p-8 shadow-[8px_8px_0px_0px_rgba(15,86,191,1)]">
+            <h2 class="font-headline font-black text-3xl uppercase italic mb-2 border-b-2 border-on-background pb-3">Vos coordonnées</h2>
+            <p class="text-sm text-on-surface-variant mb-6 italic">Pour la livraison et le suivi de votre commande</p>
+            <form id="aa-shipping-form" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><label class="font-headline font-black uppercase text-xs block mb-1">Prénom *</label><input type="text" id="aa-firstname" required class="form-input" placeholder="Jean"></div>
+                    <div><label class="font-headline font-black uppercase text-xs block mb-1">Nom *</label><input type="text" id="aa-lastname" required class="form-input" placeholder="Dupont"></div>
+                </div>
+                <div><label class="font-headline font-black uppercase text-xs block mb-1">Email *</label><input type="email" id="aa-email" required class="form-input" placeholder="jean@email.com"></div>
+                <div><label class="font-headline font-black uppercase text-xs block mb-1">Téléphone</label><input type="tel" id="aa-phone" class="form-input" placeholder="+33 6 12 34 56 78"></div>
+                <div><label class="font-headline font-black uppercase text-xs block mb-1">Adresse *</label><input type="text" id="aa-address" required class="form-input" placeholder="12 rue des Greniers"></div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div><label class="font-headline font-black uppercase text-xs block mb-1">Code postal *</label><input type="text" id="aa-zip" required class="form-input" placeholder="75001"></div>
+                    <div><label class="font-headline font-black uppercase text-xs block mb-1">Ville *</label><input type="text" id="aa-city" required class="form-input" placeholder="Paris"></div>
+                    <div><label class="font-headline font-black uppercase text-xs block mb-1">Pays *</label><select id="aa-country" required class="form-input" onchange="updateShippingPreview()"><option value="France">France</option><option value="Belgique">Belgique</option><option value="Allemagne">Allemagne</option><option value="Italie">Italie</option><option value="Espagne">Espagne</option><option value="Luxembourg">Luxembourg</option><option value="Suisse">Suisse</option><option value="Portugal">Portugal</option><option value="Pays-Bas">Pays-Bas</option><option value="Royaume-Uni">Royaume-Uni</option><option value="Canada">Canada</option><option value="USA">USA</option><option value="Autre">Autre (me contacter)</option></select></div>
+                </div>
+                <div id="aa-carrier-choice"></div>
+                <div id="aa-shipping-preview"></div>
+                <div><label class="font-headline font-black uppercase text-xs block mb-1">Notes (optionnel)</label><textarea id="aa-notes" rows="2" class="form-input" placeholder="Instructions de livraison..."></textarea></div>
+                <div class="bg-secondary-container border-2 border-on-background p-4 text-sm">
+                    <label class="flex items-start gap-2 cursor-pointer">
+                        <input type="checkbox" id="aa-newsletter" class="mt-1">
+                        <span class="font-body font-bold">📧 Je veux recevoir les alertes et cumuler des <strong>étoiles de fidélité</strong> !</span>
+                    </label>
+                </div>
+                <div class="flex gap-3 pt-4">
+                    <button type="button" onclick="goToStep(1)" class="btn-physical flex-1 bg-on-background text-surface font-headline font-black px-6 py-4 uppercase shadow-[4px_4px_0px_0px_#755700]">← RETOUR</button>
+                    <button type="button" onclick="goToPayment()" id="aa-pay-btn" class="btn-physical flex-1 bg-primary text-on-primary font-headline font-black px-6 py-4 uppercase shadow-[4px_4px_0px_0px_#755700]">PAYER →</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="aa-step-payment" class="hidden max-w-2xl mx-auto">
+        <div class="bg-surface-container-high border-4 border-on-background p-8 shadow-[8px_8px_0px_0px_rgba(117,87,0,1)]">
+            <h2 class="font-headline font-black text-3xl uppercase italic mb-2 border-b-2 border-on-background pb-3">Paiement sécurisé</h2>
+            <p class="text-sm text-on-surface-variant mb-6 italic">Commande #<span id="aa-order-id-preview">--</span></p>
+            <div id="aa-payment-recap" class="bg-surface border-2 border-on-background p-4 mb-6 space-y-1"></div>
+
+            <button id="aa-paypal-btn" onclick="launchPayPal()" class="btn-physical w-full bg-[#FFC439] text-[#142C38] font-headline font-black px-6 py-5 text-xl uppercase shadow-[6px_6px_0px_0px_#342e1e] hover:translate-y-[-2px] transition-all flex items-center justify-center gap-3 mb-3">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.93 4.778-4.005 7.201-9.138 7.201h-2.19a.563.563 0 0 0-.556.479l-1.187 7.527h-.506l-.24 1.516a.56.56 0 0 0 .554.647h3.882c.46 0 .85-.334.922-.788.06-.26.76-4.852.816-5.09a.932.932 0 0 1 .923-.788h.58c3.76 0 6.705-1.528 7.565-5.946.36-1.847.174-3.388-.777-4.471z"/></svg>
+                <span id="aa-paypal-btn-text">Payer avec PayPal</span>
+            </button>
+
+            <div class="bg-blue-50 border-2 border-tertiary p-3 text-xs mb-4">
+                <p class="font-bold mb-1">🔒 Paiement sécurisé via PayPal</p>
+                <p>Protection acheteur PayPal incluse.</p>
+            </div>
+
+            <button type="button" onclick="goToStep(2)" class="btn-physical w-full mt-3 bg-on-background text-surface font-headline font-black px-6 py-3 uppercase shadow-[4px_4px_0px_0px_#755700]">← RETOUR</button>
+        </div>
+    </div>
+
+    <div id="aa-step-confirmation" class="hidden max-w-2xl mx-auto text-center">
+        <div class="bg-surface-container-high border-4 border-on-background p-12 shadow-[12px_12px_0px_0px_rgba(0,170,0,1)]">
+            <span class="material-symbols-outlined text-8xl text-green-600 mb-4 block">check_circle</span>
+            <h2 class="font-headline font-black text-4xl uppercase italic mb-4">Merci !</h2>
+            <p class="font-body text-lg mb-6">Votre commande a bien été enregistrée et payée.</p>
+            <div class="bg-surface border-4 border-on-background p-6 mb-6">
+                <p class="font-headline font-black uppercase text-sm text-on-surface-variant mb-1">Numéro de commande</p>
+                <p class="font-headline font-black text-3xl text-primary" id="aa-final-order-id">--</p>
+            </div>
+            <div class="bg-fdefd5 border-2 border-on-background p-4 text-left mb-6">
+                <p class="font-headline font-black uppercase text-sm mb-2">📦 Vos pièces</p>
+                <p class="text-sm">Vous recevrez des <strong>reproductions</strong> et/ou des <strong>créations custom</strong>.</p>
+            </div>
+            <a href="index.html" class="btn-physical inline-block bg-primary text-on-primary font-headline font-black px-8 py-3 uppercase shadow-[4px_4px_0px_0px_#755700]">RETOUR À L'ACCUEIL</a>
+        </div>
+    </div>
+</main>
+
+<footer class="bg-[#342e1e] border-t-8 border-double border-[#755700] w-full py-12 px-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-20">
+    <div class="flex flex-col items-center md:items-start gap-3">
+        <a href="index.html" class="aa-logo-link flex items-center gap-3 cursor-pointer" title="Action Archive">
+            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="lazy" class="aa-logo h-10 w-auto"/>
+            <span class="text-xl md:text-2xl font-black italic text-[#ffca4d] font-headline uppercase tracking-tighter hover:text-white transition-colors">Action Archive</span>
+        </a>
+        <p class="font-body font-medium text-[10px] text-[#ffca4d] tracking-widest uppercase">© 2026 Action Archive INC.</p>
+    </div>
+    <nav id="aa-social-nav" class="flex flex-wrap justify-center gap-10"></nav>
+</footer>
+
+<div id="aa-toasts"></div>
+<script src="aa-core.js"></script>
+<script>
+function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+
+function getShippingConfig() { const s = localStorage.getItem('aa_shipping_config'); if (s) return JSON.parse(s); return { rates:[{id:'1',country:'France',carrier:'Colissimo',cost:6.50,surcharge:1.50}], freeThreshold:150, enableTaxes:false, taxLabel:'TVA', taxRates:[], email:'contact@action-archive.com', defaultMessage:'Contactez-nous.' }; }
+
+let currentOrderId = null, currentCarrier = null, currentTotal = 0;
+
+function getRatesForCountry(c) { return getShippingConfig().rates.filter(r => r.country === c); }
+function getTaxInfo(subtotal, country) { const cfg = getShippingConfig(); if (!cfg.enableTaxes) return { amount:0, rate:0, label:cfg.taxLabel||'TVA' }; const t = cfg.taxRates ? cfg.taxRates.find(x => x.country === country) : null; if (!t) return { amount:0, rate:0, label:cfg.taxLabel||'TVA' }; return { amount: subtotal*(t.rate/100), rate: t.rate, label: cfg.taxLabel||'TVA' }; }
+function getTotalQty() { return aaGetCart().reduce((s,i) => s + i.qty, 0); }
+
+function updateShippingPreview() {
+    const country = document.getElementById('aa-country').value;
+    const cfg = getShippingConfig();
+    const sub = aaGetCartTotal();
+    const rates = getRatesForCountry(country);
+    const preview = document.getElementById('aa-shipping-preview');
+    const carrierDiv = document.getElementById('aa-carrier-choice');
+    const payBtn = document.getElementById('aa-pay-btn');
+    if (rates.length === 0) {
+        carrierDiv.innerHTML = '';
+        preview.innerHTML = `<div class="country-notice"><p class="font-headline font-black uppercase text-sm mb-1">🌍 Livraison internationale</p><p class="font-body text-sm">${cfg.defaultMessage}</p><p class="font-body text-sm mt-2">📧 <a href="mailto:${cfg.email}" class="text-tertiary font-bold underline">${cfg.email}</a></p></div>`;
+        payBtn.disabled = true; payBtn.classList.add('opacity-50','cursor-not-allowed'); payBtn.textContent = 'CONTACTEZ-NOUS';
+        currentCarrier = null; return;
+    }
+    payBtn.disabled = false; payBtn.classList.remove('opacity-50','cursor-not-allowed'); payBtn.textContent = 'PAYER →';
+    if (rates.length === 1) { currentCarrier = rates[0]; carrierDiv.innerHTML = `<div class="bg-surface border-2 border-on-background p-3"><p class="font-body text-sm"><span class="material-symbols-outlined align-middle text-tertiary">local_shipping</span> Transporteur : <strong>${rates[0].carrier}</strong> • <strong>${rates[0].cost.toFixed(2)} €</strong></p></div>`; }
+    else { if (!currentCarrier || currentCarrier.country !== country) currentCarrier = rates[0]; carrierDiv.innerHTML = `<label class="font-headline font-black uppercase text-xs block mb-2 mt-3">🚚 Choisis ton transporteur</label><div class="space-y-2">${rates.map(r => `<label class="flex items-center gap-3 p-3 border-2 ${currentCarrier.id===r.id?'border-primary bg-fdefd5':'border-on-background bg-surface'} cursor-pointer hover:border-primary transition-all"><input type="radio" name="aa-carrier" value="${r.id}" ${currentCarrier.id===r.id?'checked':''} onchange="selectCarrier('${r.id}')" class="w-5 h-5"><span class="material-symbols-outlined text-tertiary">local_shipping</span><span class="font-headline font-black uppercase text-sm flex-grow">${r.carrier}</span><span class="font-headline font-black text-tertiary">${r.cost.toFixed(2)} €</span></label>`).join('')}</div>`; }
+    const free = cfg.freeThreshold > 0 && sub >= cfg.freeThreshold;
+    const shipCost = free ? 0 : currentCarrier.cost;
+    const tax = getTaxInfo(sub, country);
+    const total = sub + shipCost + tax.amount;
+    const qty = getTotalQty();
+    const extra = Math.max(0, qty - 3);
+    const surchargeAmount = extra * (currentCarrier.surcharge || 0);
+    let html = `<div class="bg-surface border-2 border-on-background p-4 mt-2"><p class="font-headline font-black uppercase text-sm mb-2">📦 Aperçu (${country})</p><div class="space-y-1 text-sm"><div class="flex justify-between"><span>Sous-total (${qty} article${qty>1?'s':''})</span><span class="font-bold">${formatPrice(sub)}</span></div><div class="flex justify-between"><span>Livraison (${currentCarrier.carrier})</span><span class="font-bold ${free?'text-green-600':''}">${free?'OFFERTE':formatPrice(shipCost)}</span></div>`;
+    if (surchargeAmount > 0) html += `<div class="flex justify-between text-xs"><span class="text-on-surface-variant">↳ Surplus ${extra} art.</span><span class="text-on-surface-variant">+${formatPrice(surchargeAmount)}</span></div>`;
+    if (cfg.enableTaxes && tax.rate > 0) html += `<div class="flex justify-between"><span>${tax.label} (${tax.rate}%)</span><span class="font-bold">${formatPrice(tax.amount)}</span></div>`;
+    html += `<div class="border-t-2 border-on-background pt-2 mt-2 flex justify-between"><span class="font-headline font-black uppercase">Total</span><span class="font-headline font-black text-primary text-lg">${formatPrice(total)}</span></div></div>`;
+    preview.innerHTML = html;
+}
+function selectCarrier(rateId) { const c = document.getElementById('aa-country').value; currentCarrier = getRatesForCountry(c).find(r => r.id === rateId); updateShippingPreview(); }
+
+function goToStep(step) {
+    const cart = aaGetCart();
+    if (step > 1 && cart.length === 0) { aaToast('Votre panier est vide', 'error'); return; }
+    ['cart','info','payment','confirmation'].forEach(s => document.getElementById('aa-step-'+s).classList.add('hidden'));
+    for (let i = 1; i <= 4; i++) { const ind = document.getElementById(`step-${i}-indicator`); ind.querySelector('.material-symbols-outlined').classList.remove('step-active','step-done'); ind.querySelector('.material-symbols-outlined').classList.add('text-on-surface-variant'); ind.querySelector('span:last-child').classList.remove('step-active','step-done'); ind.querySelector('span:last-child').classList.add('text-on-surface-variant'); }
+    for (let i = 1; i < step; i++) { const ind = document.getElementById(`step-${i}-indicator`); ind.querySelector('.material-symbols-outlined').classList.add('step-done'); ind.querySelector('span:last-child').classList.add('step-done'); }
+    const a = document.getElementById(`step-${step}-indicator`); a.querySelector('.material-symbols-outlined').classList.add('step-active'); a.querySelector('.material-symbols-outlined').classList.remove('text-on-surface-variant'); a.querySelector('span:last-child').classList.add('step-active'); a.querySelector('span:last-child').classList.remove('text-on-surface-variant');
+    if (step === 1) document.getElementById('aa-step-cart').classList.remove('hidden');
+    if (step === 2) { document.getElementById('aa-step-info').classList.remove('hidden'); updateShippingPreview(); }
+    if (step === 3) { document.getElementById('aa-step-payment').classList.remove('hidden'); }
+    if (step === 4) document.getElementById('aa-step-confirmation').classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderCart() {
+    const cart = aaGetCart();
+    const c = document.getElementById('aa-cart-items'), e = document.getElementById('aa-empty-cart'), s = document.getElementById('aa-step-cart');
+    if (cart.length === 0) { e.classList.remove('hidden'); s.classList.add('hidden'); return; }
+    e.classList.add('hidden'); s.classList.remove('hidden');
+    c.innerHTML = '';
+    cart.forEach(item => {
+        const sn = (item.name||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
+        c.innerHTML += `<div class="bg-surface-container-high border-4 border-on-background p-4 flex flex-col sm:flex-row gap-4 shadow-[6px_6px_0px_0px_rgba(52,46,30,1)]"><div class="w-full sm:w-32 h-32 border-2 border-on-background overflow-hidden bg-surface">${item.image?`<img src="${item.image}" class="w-full h-full object-cover">`:'<div class="w-full h-full flex items-center justify-center"><span class="material-symbols-outlined text-4xl text-on-surface-variant">image</span></div>'}</div><div class="flex-grow"><h3 class="font-headline font-black text-xl uppercase mb-2">${aaEscapeHtml(item.name||'Article')}</h3><p class="font-body font-bold text-tertiary text-lg">${formatPrice(item.price)} l'unité</p><div class="flex items-center gap-4 mt-3"><div class="flex items-center border-2 border-on-background"><button onclick="aaUpdateQty('${sn}',-1);renderCart();" class="w-8 h-8 bg-on-background text-surface font-black">−</button><span class="w-10 text-center font-headline font-black">${item.qty}</span><button onclick="aaUpdateQty('${sn}',1);renderCart();" class="w-8 h-8 bg-on-background text-surface font-black">+</button></div><span class="font-headline font-black text-xl">${formatPrice(item.price*item.qty)}</span></div></div><button onclick="aaRemoveFromCart('${sn}');renderCart();" class="text-red-600 hover:text-red-800 self-start"><span class="material-symbols-outlined">delete</span></button></div>`;
+    });
+    const sub = aaGetCartTotal();
+    const cfg = getShippingConfig();
+    const country = document.getElementById('aa-country')?.value || 'France';
+    const rates = getRatesForCountry(country);
+    const carrier = rates.length > 0 ? rates[0] : null;
+    const free = carrier && cfg.freeThreshold > 0 && sub >= cfg.freeThreshold;
+    const shipCost = carrier ? (free ? 0 : carrier.cost) : 0;
+    const tax = getTaxInfo(sub, country);
+    const qty = getTotalQty();
+    const extra = Math.max(0, qty-3);
+    const surchargeAmount = extra * (carrier?.surcharge || 0);
+    const total = sub + shipCost + surchargeAmount + tax.amount;
+    let recap = `<div class="flex justify-between font-body font-bold"><span>Sous-total (${qty})</span><span>${formatPrice(sub)}</span></div>`;
+    if (carrier) { recap += `<div class="flex justify-between font-body font-bold text-sm text-on-surface-variant"><span>Livraison (${carrier.carrier}${free?' • OFFERTE':''})</span><span>${free?'<span class="text-green-600">GRATUIT</span>':formatPrice(shipCost)}</span></div>`; if (surchargeAmount > 0) recap += `<div class="flex justify-between font-body font-bold text-xs text-on-surface-variant"><span>+ Surplus ${extra} art.</span><span>${formatPrice(surchargeAmount)}</span></div>`; }
+    else recap += `<div class="flex justify-between font-body font-bold text-sm text-orange-600"><span>Livraison</span><span>À calculer</span></div>`;
+    if (cfg.enableTaxes && tax.rate > 0) recap += `<div class="flex justify-between font-body font-bold text-sm text-on-surface-variant"><span>${tax.label} (${tax.rate}%)</span><span>${formatPrice(tax.amount)}</span></div>`;
+    document.getElementById('aa-recap-lines').innerHTML = recap;
+    document.getElementById('aa-total').textContent = formatPrice(total);
+}
+
+function goToPayment() {
+    const country = document.getElementById('aa-country').value;
+    if (getRatesForCountry(country).length === 0) { aaToast('Pays non disponible', 'error'); return; }
+    const form = document.getElementById('aa-shipping-form');
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+    currentOrderId = generateOrderId();
+    const sub = aaGetCartTotal();
+    const cfg = getShippingConfig();
+    const free = cfg.freeThreshold > 0 && sub >= cfg.freeThreshold;
+    const shipCost = free ? 0 : currentCarrier.cost;
+    const tax = getTaxInfo(sub, country);
+    const qty = getTotalQty();
+    const extra = Math.max(0, qty-3);
+    const surchargeAmount = extra * (currentCarrier.surcharge || 0);
+    currentTotal = sub + shipCost + surchargeAmount + tax.amount;
+    let recap = `<div class="space-y-1 text-sm"><div class="flex justify-between"><span>Sous-total</span><span class="font-bold">${formatPrice(sub)}</span></div><div class="flex justify-between"><span>Livraison (${currentCarrier.carrier})</span><span class="font-bold">${formatPrice(shipCost)}</span></div>`;
+    if (surchargeAmount > 0) recap += `<div class="flex justify-between text-xs"><span>Surplus ${qty-3} art.</span><span class="font-bold">${formatPrice(surchargeAmount)}</span></div>`;
+    if (cfg.enableTaxes && tax.rate > 0) recap += `<div class="flex justify-between"><span>${tax.label} (${tax.rate}%)</span><span class="font-bold">${formatPrice(tax.amount)}</span></div>`;
+    recap += `<div class="border-t-2 border-on-background pt-2 flex justify-between"><span class="font-headline font-black uppercase">Total à payer</span><span class="font-headline font-black text-primary text-lg">${formatPrice(currentTotal)}</span></div></div>`;
+    document.getElementById('aa-payment-recap').innerHTML = recap;
+    document.getElementById('aa-order-id-preview').textContent = currentOrderId;
+    goToStep(3);
+}
+
+function generateOrderId() { const d = new Date(); return `AA-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}-${Math.floor(Math.random()*10000).toString().padStart(4,'0')}`; }
+
+async function launchPayPal() {
+    const btn = document.getElementById('aa-paypal-btn');
+    const btnText = document.getElementById('aa-paypal-btn-text');
+    btn.disabled = true;
+    btnText.innerHTML = '⏳ Connexion à PayPal...';
+    try {
+        const response = await fetch('/.netlify/functions/create-paypal-order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ amount: currentTotal, orderId: currentOrderId, description: `Action Archive - Commande ${currentOrderId}` })
+        });
+        const data = await response.json();
+        if (!response.ok || !data.success) {
+            alert('❌ ERREUR PAYPAL\n\n' + (data.error || 'Inconnue') + '\n\nVérifiez les variables PayPal dans Netlify.');
+            throw new Error(data.error || 'Erreur PayPal');
+        }
+        localStorage.setItem('aa_pending_order', JSON.stringify({ orderId: currentOrderId, paypalOrderId: data.orderId, total: currentTotal }));
+        window.location.href = data.approvalUrl;
+    } catch (err) {
+        console.error('❌ Erreur:', err);
+        aaToast('Erreur : ' + err.message, 'error');
+        btn.disabled = false;
+        btnText.innerHTML = 'Payer avec PayPal';
+    }
+}
+
+renderCart();
+
+(function() {
+    const social = JSON.parse(localStorage.getItem('aa_social_config') || '{}');
+    const nav = document.getElementById('aa-social-nav');
+    if (!nav) return;
+    const items = [{ key: 'facebook', icon: 'facebook', label: 'FACEBOOK' },{ key: 'twitter', icon: 'share', label: 'TWITTER' },{ key: 'instagram', icon: 'camera_alt', label: 'INSTAGRAM' },{ key: 'tiktok', icon: 'music_note', label: 'TIKTOK' },{ key: 'youtube', icon: 'play_circle', label: 'YOUTUBE' }];
+    items.forEach(item => {
+        const data = social[item.key];
+        if (data && data.enabled && data.url) nav.innerHTML += `<a href="${data.url}" target="_blank" rel="noopener" class="flex flex-col items-center gap-1"><div class="bg-[#ffca4d] text-[#342e1e] p-2 rounded-sm hover:bg-white transition-colors"><span class="material-symbols-outlined">${item.icon}</span></div><span class="font-label font-bold text-[9px] text-[#eadcbc] tracking-widest uppercase">${item.label}</span></a>`;
+    });
+    if (nav.innerHTML === '') nav.innerHTML = '<p class="text-[#eadcbc] text-xs italic">Aucun réseau social</p>';
+})();
+</script>
+</body>
+</html>
