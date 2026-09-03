@@ -26,9 +26,6 @@
         .aa-toast{background:#342e1e;color:#fff5e5;border:3px solid #ffca4d;padding:12px 18px;font-family:'Epilogue',sans-serif;font-weight:900;font-size:13px;text-transform:uppercase;display:flex;align-items:center;gap:10px;max-width:300px;transform:translateX(120%);opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);pointer-events:auto;}
         .aa-toast.show{transform:translateX(0);opacity:1;}
         #aa-toasts{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
-        .status-btn { font-family:'Epilogue',sans-serif; font-weight:900; font-size:10px; text-transform:uppercase; padding:4px 8px; border:2px solid #342e1e; cursor:pointer; transition:all .15s; }
-        .status-btn:hover { transform:scale(1.05); }
-        .status-btn.active { box-shadow:2px 2px 0 0 #342e1e; }
         .order-card { background:#fff5e5; border:2px solid #342e1e; padding:12px; margin-bottom:8px; transition:all .2s; }
         .order-card:hover { box-shadow:4px 4px 0 0 #342e1e; transform:translate(-2px,-2px); }
         .stat-card { transition:transform .2s; }
@@ -47,13 +44,8 @@
         .loyalty-card { background:#fff5e5; border:3px solid #342e1e; padding:1rem; transition:all .2s; }
         .loyalty-card:hover { box-shadow:6px 6px 0 0 #342e1e; transform:translate(-2px,-2px); }
         .loyalty-card.has-gift { border-color:#ffca4d; background:#fdefd5; }
-        .loyalty-history { max-height:0; overflow:hidden; transition:max-height .4s ease; }
-        .loyalty-history.open { max-height:500px; }
         .badge-oui { background:#00aa00; color:white; padding:2px 8px; font-family:'Epilogue',sans-serif; font-weight:900; font-size:10px; text-transform:uppercase; border:2px solid #342e1e; }
         .badge-non { background:#eadcbc; color:#635b48; padding:2px 8px; font-family:'Epilogue',sans-serif; font-weight:900; font-size:10px; text-transform:uppercase; border:2px solid #342e1e; }
-        .aa-type-badge { display:inline-block; padding:2px 6px; font-family:'Epilogue',sans-serif; font-weight:900; font-size:9px; text-transform:uppercase; border:2px solid #342e1e; margin-left:4px; }
-        .aa-type-reproduction { background:#0f56bf; color:white; }
-        .aa-type-custom { background:#7b1fa2; color:white; }
         .aa-menu-btn { font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; background: #bb0003; color: #fff5e5; border: 3px solid #342e1e; padding: 10px 20px; font-size: 1.05rem; box-shadow: 4px 4px 0 0 #342e1e; cursor: pointer; transition: all 0.15s ease; }
         .aa-menu-btn:hover { background: #342e1e; color: #ffca4d; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 #bb0003; }
     </style>
@@ -134,58 +126,33 @@
             <button class="tab-btn" onclick="switchTab('social', this)">🌐 Réseaux</button>
         </div>
 
-        <!-- INVENTAIRE -->
         <div id="tab-inventory" class="tab-content active">
             <div class="bg-surface-container-high border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_#bb0003]">
-                <h2 class="font-headline font-black text-2xl uppercase italic mb-2 flex items-center gap-2"><span class="material-symbols-outlined">inventory_2</span> Inventaire local (<span id="aa-local-count">0</span>)</h2>
+                <h2 class="font-headline font-black text-2xl uppercase italic mb-2 flex items-center gap-2"><span class="material-symbols-outlined">inventory_2</span> Inventaire (<span id="aa-local-count">0</span>)</h2>
                 <div class="bg-secondary-container border-2 border-on-background p-3 mb-4 text-sm">
-                    <p>💡 <strong>Mode local uniquement</strong> : produits stockés dans votre navigateur. Cliquez sur <strong>✏️ Modifier</strong> pour éditer un produit.</p>
+                    <p>⚠️ <strong>Système local désactivé.</strong> Tes produits sont gérés directement dans Airtable.</p>
                 </div>
-                <div id="aa-local-list" class="space-y-2 max-h-[600px] overflow-y-auto"><p class="text-center py-8 text-on-surface-variant italic">Aucun produit pour le moment.</p></div>
-            </div>
-        </div>
-
-        <!-- AJOUT -->
-        <div id="tab-add" class="tab-content">
-            <div class="bg-fdefd5 border-2 border-on-background p-4 mb-4" id="aa-edit-mode-banner" style="display:none;">
-                <p class="font-headline font-black uppercase text-sm text-primary mb-1">✏️ MODE ÉDITION</p>
-                <p class="text-sm">Vous modifiez : <strong id="aa-edit-product-name"></strong></p>
-                <button onclick="cancelEdit()" type="button" class="mt-2 text-xs underline">← Annuler et retour à l'inventaire</button>
-            </div>
-            <form id="aa-add-form" onsubmit="return addOrUpdateLocalProduct(event)" class="bg-surface-container-high border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_#0f56bf] space-y-3 max-w-2xl">
-                <h2 class="font-headline font-black text-2xl uppercase italic mb-4 flex items-center gap-2"><span class="material-symbols-outlined">add_box</span> <span id="aa-form-title">Ajouter une pièce</span></h2>
-                <div id="aa-add-error" class="hidden bg-red-100 border-2 border-red-600 text-red-800 p-3 text-sm font-bold"></div>
-                <div id="aa-add-success" class="hidden bg-green-100 border-2 border-green-600 text-green-800 p-3 text-sm font-bold"></div>
-                <div><label class="font-headline font-black uppercase text-xs block mb-1">Nom *</label><input name="Nom" required class="w-full border-2 border-on-background p-2 font-bold bg-surface focus:outline-none focus:border-primary"></div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div><label class="font-headline font-black uppercase text-xs block mb-1">Prix (€) *</label><input name="Prix" type="number" step="0.01" required class="w-full border-2 border-on-background p-2 font-bold bg-surface focus:outline-none focus:border-primary"></div>
-                    <div><label class="font-headline font-black uppercase text-xs block mb-1">Année d'origine</label><input name="Année" type="number" placeholder="1978" class="w-full border-2 border-on-background p-2 font-bold bg-surface focus:outline-none focus:border-primary"></div>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div><label class="font-headline font-black uppercase text-xs block mb-1">Collection</label><input name="Collection" placeholder="Star Wars" class="w-full border-2 border-on-background p-2 font-bold bg-surface focus:outline-none focus:border-primary"></div>
-                    <div>
-                        <label class="font-headline font-black uppercase text-xs block mb-1">Type *</label>
-                        <select name="Type" id="aa-input-type" required class="w-full border-2 border-on-background p-2 font-bold bg-surface focus:outline-none focus:border-primary">
-                            <option value="Reproduction">🔵 Reproduction</option>
-                            <option value="Custom">🟣 Custom</option>
-                        </select>
+                <div id="aa-local-list" class="space-y-2 max-h-[600px] overflow-y-auto">
+                    <div class="text-center py-12">
+                        <p class="font-bold italic text-on-surface-variant mb-2">📦 Le système local n'est plus utilisé</p>
+                        <p class="text-sm">Tes produits sont maintenant gérés directement dans <a href="https://airtable.com" target="_blank" class="text-tertiary underline font-bold">Airtable</a>.</p>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div><label class="font-headline font-black uppercase text-xs block mb-1">État</label><select name="État" class="w-full border-2 border-on-background p-2 font-bold bg-surface focus:outline-none focus:border-primary"><option>Excellent</option><option>Très bon</option><option>Bon</option><option>Correct</option><option>À restaurer</option></select></div>
-                    <div><label class="font-headline font-black uppercase text-xs block mb-1">Statut</label><select name="Statut" class="w-full border-2 border-on-background p-2 font-bold bg-surface focus:outline-none focus:border-primary"><option>Disponible</option><option>Réservé</option><option>Vendu</option></select></div>
-                </div>
-                <div><label class="font-headline font-black uppercase text-xs block mb-1">URL Image recto (Cloudinary) *</label><input name="Image" type="url" required placeholder="https://res.cloudinary.com/..." class="w-full border-2 border-on-background p-2 font-bold bg-surface focus:outline-none focus:border-primary"></div>
-                <div><label class="font-headline font-black uppercase text-xs block mb-1">URL Image verso</label><input name="Lien Verso" type="url" placeholder="https://res.cloudinary.com/..." class="w-full border-2 border-on-background p-2 font-bold bg-surface focus:outline-none focus:border-primary"></div>
-                <div><label class="font-headline font-black uppercase text-xs block mb-1">Description</label><textarea name="Description" rows="3" class="w-full border-2 border-on-background p-2 font-bold bg-surface focus:outline-none focus:border-primary"></textarea></div>
-                <div class="flex gap-2">
-                    <button type="submit" class="btn-physical flex-1 bg-tertiary text-on-primary font-headline font-black py-3 uppercase shadow-[4px_4px_0px_0px_#755700]"><span id="aa-submit-text">✓ AJOUTER À L'INVENTAIRE LOCAL</span></button>
-                    <button type="button" id="aa-cancel-edit-btn" onclick="cancelEdit()" class="hidden btn-physical bg-on-background text-surface font-headline font-black px-6 py-3 uppercase shadow-[4px_4px_0px_0px_#342e1e]">ANNULER</button>
-                </div>
-            </form>
+            </div>
         </div>
 
-        <!-- COMMANDES -->
+        <div id="tab-add" class="tab-content">
+            <div class="bg-surface-container-high border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_#0f56bf]">
+                <h2 class="font-headline font-black text-2xl uppercase italic mb-4 flex items-center gap-2"><span class="material-symbols-outlined">add_box</span> Ajout de produit</h2>
+                <div class="bg-fdefd5 border-2 border-on-background p-6 text-center">
+                    <span class="material-symbols-outlined text-6xl text-on-surface-variant mb-4 block">cloud_off</span>
+                    <p class="font-headline font-black uppercase text-lg mb-2">⚠️ Fonctionnalité désactivée</p>
+                    <p class="font-body text-on-surface-variant mb-4">L'ajout de produits se fait maintenant directement dans Airtable.</p>
+                    <a href="https://airtable.com" target="_blank" class="btn-physical inline-block bg-tertiary text-on-primary font-headline font-black px-6 py-3 uppercase shadow-[4px_4px_0px_0px_#342e1e]">🔗 Ouvrir Airtable</a>
+                </div>
+            </div>
+        </div>
+
         <div id="tab-orders" class="tab-content">
             <div class="bg-surface-container-high border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_#0f56bf]">
                 <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
@@ -196,7 +163,6 @@
             </div>
         </div>
 
-        <!-- STATS -->
         <div id="tab-stats" class="tab-content">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                 <div class="stat-card bg-surface-container-high border-4 border-on-background p-6 text-center shadow-[4px_4px_0px_0px_#0f56bf]"><span class="material-symbols-outlined text-3xl text-tertiary">shopping_bag</span><p class="font-headline font-black text-4xl text-tertiary mt-2" id="stat-total-orders">0</p><p class="font-headline font-black uppercase text-xs mt-2">Commandes</p></div>
@@ -222,7 +188,6 @@
             </div>
         </div>
 
-        <!-- CLIENTS -->
         <div id="tab-customers" class="tab-content">
             <div class="bg-surface-container-high border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_#bb0003]">
                 <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
@@ -231,10 +196,8 @@
                         <select id="customers-filter" onchange="loadCustomers()" class="border-2 border-on-background p-2 font-bold bg-surface text-xs uppercase">
                             <option value="all">Tous</option>
                             <option value="inscrits">✓ Inscrits uniquement</option>
-                            <option value="non-insrits">✗ Non inscrits uniquement</option>
+                            <option value="non-inscrits">✗ Non inscrits uniquement</option>
                         </select>
-                        <button onclick="exportCustomersCSV()" class="btn-physical bg-tertiary text-on-primary font-headline font-black px-4 py-2 text-sm uppercase shadow-[2px_2px_0px_0px_#342e1e]">📥 CSV</button>
-                        <button onclick="copyEmailsToClipboard()" class="btn-physical bg-secondary text-surface font-headline font-black px-4 py-2 text-sm uppercase shadow-[2px_2px_0px_0px_#342e1e]">📋 Copier</button>
                     </div>
                 </div>
                 <div class="bg-surface border-2 border-on-background max-h-[600px] overflow-y-auto">
@@ -246,7 +209,6 @@
                                 <th class="font-headline font-black uppercase text-xs p-3 text-center">Source</th>
                                 <th class="font-headline font-black uppercase text-xs p-3 text-center">📧 INSCRITS</th>
                                 <th class="font-headline font-black uppercase text-xs p-3 text-center">Commandes</th>
-                                <th class="font-headline font-black uppercase text-xs p-3 text-center">⚙️ Actions</th>
                             </tr>
                         </thead>
                         <tbody id="aa-customers-list"></tbody>
@@ -255,7 +217,6 @@
             </div>
         </div>
 
-        <!-- FIDÉLITÉ -->
         <div id="tab-loyalty" class="tab-content">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                 <div class="stat-card bg-surface-container-high border-4 border-on-background p-6 text-center shadow-[4px_4px_0px_0px_#ffca4d]"><span class="material-symbols-outlined text-3xl text-secondary">group</span><p class="font-headline font-black text-4xl text-on-background mt-2" id="loyalty-stat-clients">0</p><p class="font-headline font-black uppercase text-xs mt-2">Clients fidèles</p></div>
@@ -264,24 +225,14 @@
                 <div class="stat-card bg-surface-container-high border-4 border-on-background p-6 text-center shadow-[4px_4px_0px_0px_#00aa00]"><span class="material-symbols-outlined text-3xl text-green-700">emoji_events</span><p class="font-headline font-black text-base md:text-lg text-green-700 mt-2 truncate" id="loyalty-stat-top">-</p><p class="font-headline font-black uppercase text-xs mt-2">Top client</p></div>
             </div>
             <div class="bg-surface-container-high border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_#ffca4d]">
-                <div class="flex flex-wrap items-center gap-3 mb-4">
-                    <div class="search-big flex-grow" style="box-shadow:4px 4px 0 0 #342e1e; border-width:2px;">
-                        <span class="material-symbols-outlined">search</span>
-                        <input id="loyalty-search" onkeyup="renderLoyaltyList()" type="search" placeholder="RECHERCHER UN CLIENT...">
-                    </div>
-                    <select id="loyalty-filter" onchange="renderLoyaltyList()" class="border-2 border-on-background p-2 font-bold bg-surface">
-                        <option value="all">Tous les clients</option>
-                        <option value="with-gift">🎁 Avec cadeau à remettre</option>
-                        <option value="top10">🏆 Top 10 (€)</option>
-                        <option value="top-stars">⭐ Top 10 (étoiles)</option>
-                    </select>
-                    <button onclick="exportLoyaltyCSV()" class="btn-physical bg-tertiary text-on-primary font-headline font-black px-4 py-2 text-sm uppercase shadow-[2px_2px_0px_0px_#342e1e]">📥 Export CSV</button>
+                <div class="search-big mb-4" style="box-shadow:4px 4px 0 0 #342e1e; border-width:2px;">
+                    <span class="material-symbols-outlined">search</span>
+                    <input id="loyalty-search" onkeyup="renderLoyaltyList()" type="search" placeholder="RECHERCHER UN CLIENT...">
                 </div>
                 <div id="aa-loyalty-list" class="space-y-3 max-h-[700px] overflow-y-auto"><p class="text-center py-8 text-on-surface-variant italic">Chargement...</p></div>
             </div>
         </div>
 
-        <!-- LIVRAISON -->
         <div id="tab-shipping" class="tab-content">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="bg-surface-container-high border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_#0f56bf]">
@@ -340,7 +291,6 @@
             </div>
         </div>
 
-        <!-- RÉSEAUX -->
         <div id="tab-social" class="tab-content">
             <div class="bg-surface-container-high border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_#0f56bf] max-w-3xl">
                 <h2 class="font-headline font-black text-2xl uppercase italic mb-2 flex items-center gap-2"><span class="material-symbols-outlined">share</span> Réseaux sociaux</h2>
@@ -359,7 +309,7 @@
                     </div>
                     <div class="bg-surface border-2 border-on-background p-4">
                         <div class="flex items-center gap-3 mb-2"><div class="bg-black text-white p-2"><span class="material-symbols-outlined">music_note</span></div><label class="font-headline font-black uppercase text-sm flex-grow">TikTok</label><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="tk-enabled" class="w-4 h-4"><span class="text-xs font-bold uppercase">Afficher</span></label></div>
-                        <input id="tw-url" type="url" placeholder="https://tiktok.com/@ton-compte" class="w-full border-2 border-on-background p-2 font-bold bg-surface text-sm">
+                        <input id="tk-url" type="url" placeholder="https://tiktok.com/@ton-compte" class="w-full border-2 border-on-background p-2 font-bold bg-surface text-sm">
                     </div>
                     <div class="bg-surface border-2 border-on-background p-4">
                         <div class="flex items-center gap-3 mb-2"><div class="bg-red-600 text-white p-2"><span class="material-symbols-outlined">play_circle</span></div><label class="font-headline font-black uppercase text-sm flex-grow">YouTube</label><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="yt-enabled" class="w-4 h-4"><span class="text-xs font-bold uppercase">Afficher</span></label></div>
@@ -390,29 +340,17 @@
 const ADMIN_PWD = 'action1982';
 const LOCAL_PRODUCTS_KEY = 'aa_local_products';
 
-let editingIndex = -1;
-
 function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
 function aaEscapeAttr(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
-function getLocalProducts() { try { return JSON.parse(localStorage.getItem(LOCAL_PRODUCTS_KEY) || '[]'); } catch (e) { return []; } }
-function saveLocalProducts(p) { localStorage.setItem(LOCAL_PRODUCTS_KEY, JSON.stringify(p)); }
-
-// 🆕 CORRECTION : detectTypeStrict renvoie juste "custom" ou "reproduction" (minuscule pour l'AFFICHAGE), mais ne modifie PAS la valeur originale
+function getLocalProducts() { return []; }
+function saveLocalProducts(p) { /* no-op */ }
 function detectTypeStrict(f) {
     if (!f) return 'reproduction';
-    const rawType = f.Type || f.type || '';
+    const rawType = f.Type || f.type || ''; 
     const t = String(rawType).trim().toLowerCase();
     if (t === 'custom' || t.startsWith('custom') || t.includes('custom')) return 'custom';
     return 'reproduction';
-}
-
-// 🆕 Helper pour récupérer le label affiché (Custom/Reproduction)
-function getTypeLabel(f) {
-    if (!f) return 'Reproduction';
-    const rawType = f.Type || f.type || '';
-    if (String(rawType).trim().toLowerCase().includes('custom')) return 'Custom';
-    return 'Reproduction';
 }
 
 function switchTab(tabId, btn) {
@@ -423,7 +361,6 @@ function switchTab(tabId, btn) {
     if (tabId === 'orders') loadOrders();
     if (tabId === 'stats') loadStats();
     if (tabId === 'customers') loadCustomers();
-    if (tabId === 'inventory') loadLocalInventory();
     if (tabId === 'shipping') loadShippingConfig();
     if (tabId === 'social') loadSocialConfig();
     if (tabId === 'loyalty') loadLoyalty();
@@ -434,7 +371,6 @@ function adminLogin(e) {
     if (document.getElementById('admin-pwd').value === ADMIN_PWD) {
         document.getElementById('aa-admin-login').classList.add('hidden');
         document.getElementById('aa-admin-panel').classList.remove('hidden');
-        loadLocalInventory();
         loadOrders();
         loadStats();
         loadCustomers();
@@ -457,133 +393,7 @@ function toggleDrawer() {
     document.body.style.overflow = drawer.classList.contains('open') ? 'hidden' : '';
 }
 
-// 🆕 CORRECTION : on ne touche plus au champ Type (on garde la casse originale)
-function addOrUpdateLocalProduct(e) {
-    e.preventDefault();
-    const fields = Object.fromEntries(new FormData(e.target));
-    const cleaned = {};
-    for (const [k, v] of Object.entries(fields)) {
-        if (v && v.toString().trim() !== '') cleaned[k] = (k === 'Prix' ? parseFloat(v) : v);
-    }
-    // ✅ NE PLUS modifier cleaned.Type — on garde la valeur exacte du select ("Custom" ou "Reproduction")
-    if (!cleaned.Type) cleaned.Type = 'Reproduction';
-    if (!cleaned.Image) {
-        document.getElementById('aa-add-error').innerHTML = '<strong>Erreur :</strong> URL image obligatoire.';
-        document.getElementById('aa-add-error').classList.remove('hidden');
-        return false;
-    }
-    const products = getLocalProducts();
-    if (editingIndex >= 0) {
-        cleaned.id = products[editingIndex].id;
-        products[editingIndex] = cleaned;
-        const successBox = document.getElementById('aa-add-success');
-        successBox.textContent = '✓ Produit modifié avec succès ! (' + cleaned.Type + ')';
-        successBox.classList.remove('hidden');
-        if (typeof aaToast === 'function') aaToast('Produit modifié ! (' + cleaned.Type + ')', 'check_circle');
-    } else {
-        cleaned.id = 'local_' + Date.now();
-        products.push(cleaned);
-        const successBox = document.getElementById('aa-add-success');
-        successBox.textContent = '✓ Pièce ajoutée ! (' + products.length + ' au total) — Type : ' + cleaned.Type;
-        successBox.classList.remove('hidden');
-        if (typeof aaToast === 'function') aaToast('Pièce ajoutée ! (' + cleaned.Type + ')', 'check_circle');
-    }
-    saveLocalProducts(products);
-    cancelEdit();
-    setTimeout(loadLocalInventory, 300);
-    return false;
-}
-
-// 🆕 CORRECTION : utilise la valeur EXACTE du Type, pas transformée
-function editLocalProduct(index) {
-    const products = getLocalProducts();
-    const p = products[index];
-    if (!p) return;
-    editingIndex = index;
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('tab-add').classList.add('active');
-    document.querySelectorAll('.tab-btn')[1].classList.add('active');
-    const form = document.getElementById('aa-add-form');
-    form.Nom.value = p.Nom || '';
-    form.Prix.value = p.Prix || '';
-    form.Année.value = p.Année || '';
-    form.Collection.value = p.Collection || '';
-    // ✅ Garder la valeur EXACTE pour que le select s'affiche correctement
-    form.Type.value = p.Type || 'Reproduction';
-    form.État.value = p.État || 'Excellent';
-    form.Statut.value = p.Statut || 'Disponible';
-    form.Image.value = p.Image || '';
-    form['Lien Verso'].value = p['Lien Verso'] || '';
-    form.Description.value = p.Description || '';
-    document.getElementById('aa-edit-mode-banner').style.display = 'block';
-    document.getElementById('aa-edit-product-name').textContent = p.Nom;
-    document.getElementById('aa-form-title').textContent = 'Modifier la pièce';
-    document.getElementById('aa-submit-text').textContent = '💾 ENREGISTRER LES MODIFICATIONS';
-    document.getElementById('aa-cancel-edit-btn').classList.remove('hidden');
-    window.scrollTo(0, 0);
-    if (typeof aaToast === 'function') aaToast('Mode édition - Type : ' + (p.Type || 'Reproduction'), 'edit');
-}
-
-function cancelEdit() {
-    editingIndex = -1;
-    document.getElementById('aa-add-form').reset();
-    document.getElementById('aa-input-type').value = 'Reproduction';
-    document.getElementById('aa-edit-mode-banner').style.display = 'none';
-    document.getElementById('aa-form-title').textContent = 'Ajouter une pièce';
-    document.getElementById('aa-submit-text').textContent = '✓ AJOUTER À L\'INVENTAIRE LOCAL';
-    document.getElementById('aa-cancel-edit-btn').classList.add('hidden');
-    document.getElementById('aa-add-error').classList.add('hidden');
-    document.getElementById('aa-add-success').classList.add('hidden');
-}
-
-function loadLocalInventory() {
-    const products = getLocalProducts();
-    const list = document.getElementById('aa-local-list');
-    document.getElementById('aa-local-count').textContent = products.length;
-    if (products.length === 0) { list.innerHTML = '<p class="text-center py-8 text-on-surface-variant italic">Aucun produit pour le moment.</p>'; return; }
-    list.innerHTML = '';
-    products.forEach((f, index) => {
-        const cs = f.Statut || 'Disponible';
-        const type = detectTypeStrict(f);
-        const typeText = type === 'custom' ? '🟣 CUSTOM' : '🔵 REPRODUCTION';
-        const typeClass = type === 'custom' ? 'aa-type-custom' : 'aa-type-reproduction';
-        const imgUrl = f.Image || '';
-        list.innerHTML += `<div class="bg-surface border-2 border-on-background p-3 flex flex-col sm:flex-row gap-3">
-            <div class="flex-shrink-0 w-20 h-20 bg-surface-container-lowest border-2 border-outline-variant overflow-hidden">${imgUrl ? `<img src="${aaEscapeHtml(imgUrl)}" class="w-full h-full object-cover" onerror="this.src='data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'80\\' height=\\'80\\'><rect width=\\'80\\' height=\\'80\\' fill=\\'#eadcbc\\'/></svg>')">` : '?'}</div>
-            <div class="flex-grow">
-                <p class="font-headline font-black uppercase text-sm">${aaEscapeHtml(f.Nom || 'Sans nom')}<span class="aa-type-badge ${typeClass}">${typeText}</span></p>
-                <p class="text-xs text-on-surface-variant font-bold mt-1">${formatPrice(f.Prix)} ${f.Année ? '• ' + f.Année : ''}</p>
-            </div>
-            <div class="flex flex-col gap-1">
-                <button onclick="editLocalProduct(${index})" class="bg-tertiary text-on-primary font-headline font-black px-3 py-1 text-xs uppercase border-2 border-on-background shadow-[2px_2px_0px_0px_#342e1e] hover:translate-y-[-1px]">✏️ MODIFIER</button>
-                <button onclick="changeLocalStatus(${index},'Disponible')" class="status-btn ${cs==='Disponible'?'bg-green-600 text-white active':'bg-surface text-on-surface-variant'}">✓</button>
-                <button onclick="changeLocalStatus(${index},'Réservé')" class="status-btn ${cs==='Réservé'?'bg-yellow-500 text-black active':'bg-surface text-on-surface-variant'}">⏳</button>
-                <button onclick="changeLocalStatus(${index},'Vendu')" class="status-btn ${cs==='Vendu'?'bg-red-600 text-white active':'bg-surface text-on-surface-variant'}">✗</button>
-                <button onclick="deleteLocalProduct(${index})" class="bg-red-600 text-white font-headline font-black px-3 py-1 text-xs uppercase border-2 border-on-background shadow-[2px_2px_0px_0px_#342e1e]">🗑️ SUPPR</button>
-            </div>
-        </div>`;
-    });
-}
-
-function changeLocalStatus(index, newStatus) {
-    const products = getLocalProducts();
-    if (products[index]) {
-        products[index].Statut = newStatus;
-        saveLocalProducts(products);
-        loadLocalInventory();
-        if (typeof aaToast === 'function') aaToast('Statut → ' + newStatus, 'check_circle');
-    }
-}
-
-function deleteLocalProduct(index) {
-    if (!confirm('Supprimer ce produit ?')) return;
-    const products = getLocalProducts();
-    products.splice(index, 1);
-    saveLocalProducts(products);
-    loadLocalInventory();
-    if (typeof aaToast === 'function') aaToast('Supprimé', 'delete');
-}
+function formatPrice(price) { const num = parseFloat(price); if (isNaN(num)) return (price || 0) + ' €'; return num.toFixed(2) + ' €'; }
 
 function loadOrders() {
     const allOrders = JSON.parse(localStorage.getItem('aa_orders') || '[]');
@@ -626,7 +436,6 @@ function loadStats() {
     archived.sort((a, b) => new Date(b.sentDate || b.date) - new Date(a.sentDate || a.date));
     tbody.innerHTML = '';
     archived.forEach(o => {
-        const itemList = (o.items || []).map(i => i.name).join(', ');
         tbody.innerHTML += `<tr class="border-b border-outline-variant"><td class="p-2 text-xs font-bold text-primary">#${o.id}</td><td class="p-2 text-xs">${o.sentDate ? new Date(o.sentDate).toLocaleDateString('fr-FR') : ''}</td><td class="p-2 text-xs">${aaEscapeHtml(o.customer?.name || '')}</td><td class="p-2 text-xs">${aaEscapeHtml(o.customer?.country || '')}</td><td class="p-2 text-xs text-center">${(o.items || []).reduce((s, i) => s + i.qty, 0)}</td><td class="p-2 text-xs text-right font-bold text-primary">${formatPrice(o.total)}</td><td class="p-2 text-xs text-center"><span class="px-1 py-0.5 bg-tertiary text-white text-[9px] font-bold">${o.paymentMethod || 'N/A'}</span></td><td class="p-2 text-center"><button onclick="deleteArchivedOrder('${o.id}')" class="text-red-600">🗑️</button></td></tr>`;
     });
 }
@@ -638,9 +447,7 @@ function loadCustomers() {
     const orders = JSON.parse(localStorage.getItem('aa_orders') || '[]');
     const user = JSON.parse(localStorage.getItem('aa_user') || 'null');
     const filter = document.getElementById('customers-filter')?.value || 'all';
-    if (filter === 'non-insrits') {
-        document.getElementById('customers-filter').value = 'non-inscrits';
-    }
+    if (filter === 'non-insrits') { document.getElementById('customers-filter').value = 'non-inscrits'; }
     const all = [...customers];
     orders.forEach(o => { if (o.customer?.email && !all.find(c => c.email === o.customer.email)) all.push({ pseudo: o.customer.name, email: o.customer.email, source: 'commande', ordersCount: 0, stars: 0, registeredAt: o.date || new Date().toISOString() }); });
     if (user && !all.find(c => c.email === user.email)) all.push({ pseudo: user.pseudo, email: user.email, source: 'inscription', ordersCount: 0, stars: 1, registeredAt: user.registeredAt || new Date().toISOString() });
@@ -648,45 +455,22 @@ function loadCustomers() {
     let filtered = all;
     if (filter === 'inscrits') filtered = all.filter(c => isInscrit(c.email));
     if (filter === 'non-inscrits') filtered = all.filter(c => !isInscrit(c.email));
-    const inscritsCount = all.filter(c => isInscrit(c.email)).length;
     document.getElementById('customers-count').textContent = all.length;
-    const fl = document.getElementById('customers-filter');
-    if (fl) { const o1 = fl.querySelector('option[value="inscrits"]'); if (o1) o1.textContent = `✓ Inscrits (${inscritsCount})`; const o2 = fl.querySelector('option[value="non-inscrits"]'); if (o2) o2.textContent = `✗ Non inscrits (${all.length - inscritsCount})`; }
     const list = document.getElementById('aa-customers-list');
-    if (filtered.length === 0) { list.innerHTML = '<tr><td colspan="6" class="p-8 text-center italic">Aucun client.</td></tr>'; return; }
+    if (filtered.length === 0) { list.innerHTML = '<tr><td colspan="5" class="p-8 text-center italic">Aucun client.</td></tr>'; return; }
     list.innerHTML = '';
-    filtered.forEach((c, idx) => {
+    filtered.forEach((c) => {
         const i = isInscrit(c.email);
         const sb = i ? '<span class="badge-oui">✓ OUI</span>' : '<span class="badge-non">✗ NON</span>';
         const src = c.source === 'commande' ? '🛒' : '✉️';
-        const pseudoSafe = aaEscapeHtml(c.pseudo || 'Sans pseudo');
-        const emailSafe = aaEscapeHtml(c.email || '');
-        list.innerHTML += `<tr class="border-b border-outline-variant hover:bg-fdefd5">
-            <td class="p-3"><div class="flex items-center gap-3"><div class="w-9 h-9 bg-on-background text-surface flex items-center justify-center font-headline font-black text-sm flex-shrink-0">${(c.pseudo || c.email || '?')[0].toUpperCase()}</div><span class="font-headline font-black uppercase text-sm">${pseudoSafe}</span></div></td>
-            <td class="p-3 text-xs">${emailSafe}</td>
+        list.innerHTML += `<tr class="border-b border-outline-variant">
+            <td class="p-3"><div class="flex items-center gap-3"><div class="w-9 h-9 bg-on-background text-surface flex items-center justify-center font-headline font-black text-sm flex-shrink-0">${(c.pseudo || c.email || '?')[0].toUpperCase()}</div><span class="font-headline font-black uppercase text-sm">${aaEscapeHtml(c.pseudo || 'Sans pseudo')}</span></div></td>
+            <td class="p-3 text-xs">${aaEscapeHtml(c.email || '')}</td>
             <td class="p-3 text-center">${src}</td>
             <td class="p-3 text-center">${sb}</td>
             <td class="p-3 text-center"><span class="font-headline font-black text-tertiary">${c.ordersCount || 0}</span></td>
-            <td class="p-3 text-center">
-                <button onclick="deleteCustomer('${c.email}')" class="bg-red-600 text-white font-headline font-black px-3 py-1 text-xs uppercase border-2 border-on-background shadow-[2px_2px_0px_0px_#342e1e] hover:bg-red-800">🗑️ SUPPR</button>
-            </td>
         </tr>`;
     });
-}
-
-function deleteCustomer(email) {
-    if (!confirm('Supprimer définitivement ce client ?')) return;
-    if (!confirm('Confirmation finale : supprimer ' + email + ' ?')) return;
-    const customers = getLoyaltyCustomers();
-    const updatedCustomers = customers.filter(c => c.email !== email);
-    saveLoyaltyCustomers(updatedCustomers);
-    const user = JSON.parse(localStorage.getItem('aa_user') || 'null');
-    if (user && user.email === email) { localStorage.removeItem('aa_user'); }
-    const sessionEmail = localStorage.getItem('aa_session_email');
-    if (sessionEmail === email) { localStorage.removeItem('aa_session_email'); }
-    if (typeof aaToast === 'function') aaToast('Client ' + email + ' supprimé', 'delete');
-    loadCustomers();
-    loadLoyalty();
 }
 
 function loadLoyalty() {
@@ -703,13 +487,8 @@ function loadLoyalty() {
 function renderLoyaltyList() {
     const customers = getLoyaltyCustomers();
     const search = (document.getElementById('loyalty-search')?.value || '').toLowerCase();
-    const filter = document.getElementById('loyalty-filter')?.value || 'all';
-    const all = getLoyaltyCustomers();
-    let filtered = [...all];
+    let filtered = [...customers];
     if (search) filtered = filtered.filter(c => (c.pseudo || '').toLowerCase().includes(search) || (c.email || '').toLowerCase().includes(search));
-    if (filter === 'with-gift') filtered = filtered.filter(c => getGiftsPending(c) > 0);
-    if (filter === 'top10') filtered = filtered.sort((a, b) => (b.totalSpent || 0) - (a.totalSpent || 0)).slice(0, 10);
-    if (filter === 'top-stars') filtered = filtered.sort((a, b) => (b.stars || 0) - (a.stars || 0)).slice(0, 10);
     const list = document.getElementById('aa-loyalty-list');
     if (filtered.length === 0) { list.innerHTML = '<p class="text-center py-8 italic">Aucun client fidèle.</p>'; return; }
     list.innerHTML = filtered.map(c => {
@@ -722,69 +501,24 @@ function renderLoyaltyList() {
                     <div>
                         <p class="font-headline font-black uppercase text-base">${aaEscapeHtml(c.pseudo || '')}</p>
                         <p class="text-xs text-on-surface-variant">${aaEscapeHtml(c.email || '')}</p>
-                        <p class="text-[10px] text-on-surface-variant mt-1">Inscrit le ${new Date(c.registeredAt).toLocaleDateString('fr-FR')}</p>
                     </div>
                 </div>
                 <div class="flex flex-wrap gap-2 items-center">
                     <div class="bg-surface border-2 border-on-background px-3 py-1 text-center"><p class="text-[9px] font-headline font-black uppercase text-on-surface-variant">Étoiles</p><p class="font-headline font-black text-lg text-secondary">⭐ ${c.stars || 0}</p></div>
                     <div class="bg-surface border-2 border-on-background px-3 py-1 text-center"><p class="text-[9px] font-headline font-black uppercase text-on-surface-variant">Commandes</p><p class="font-headline font-black text-lg text-tertiary">🛒 ${c.ordersCount || 0}</p></div>
                     <div class="bg-surface border-2 border-on-background px-3 py-1 text-center"><p class="text-[9px] font-headline font-black uppercase text-on-surface-variant">Total</p><p class="font-headline font-black text-lg text-green-700">${formatPrice(c.totalSpent || 0)}</p></div>
-                    ${hasGift ? `<div class="bg-primary text-on-primary px-3 py-1 text-center animate-pop-in"><p class="text-[9px] font-headline font-black uppercase">🎁 À remettre</p><p class="font-headline font-black text-lg">${gifts}</p></div>` : ''}
-                </div>
-            </div>
-            <div class="flex items-center justify-between flex-wrap gap-2 mt-3 pt-3 border-t-2 border-outline-variant">
-                <div class="text-[10px] text-on-surface-variant">
-                    <span class="font-bold">Dernière commande :</span> ${c.lastOrderDate ? new Date(c.lastOrderDate).toLocaleDateString('fr-FR') : '-'}
-                    ${(c.stars || 0) >= 10 ? ` • <span class="font-bold text-primary">${Math.floor((c.stars || 0) / 10)}</span> cadeau(x) gagné(s), <span class="font-bold">${c.giftsDelivered || 0}</span> remis` : ''}
-                </div>
-                <div class="flex flex-wrap gap-1">
-                    <button onclick="adjustStarsPrompt('${c.email}')" class="status-btn bg-tertiary text-white text-[10px]">⭐ +1</button>
-                    ${hasGift ? `<button onclick="doMarkGiftDelivered('${c.email}')" class="status-btn bg-primary text-on-primary text-[10px]">🎁 Marquer remis</button>` : ''}
-                    <button onclick="deleteLoyaltyClient('${c.email}')" class="bg-red-600 text-white font-headline font-black px-3 py-1 text-[10px] uppercase border-2 border-on-background">🗑️ Suppr</button>
                 </div>
             </div>
         </div>`;
     }).join('');
 }
 
-function adjustStarsPrompt(email) {
-    const customer = getCustomerByEmail(email);
-    if (!customer) return;
-    const delta = prompt(`Ajuster les étoiles de ${customer.pseudo}\n\nÉtoiles actuelles : ${customer.stars}\n\nEntrez un nombre (positif ou négatif) :`, '1');
-    if (delta === null) return;
-    const n = parseInt(delta, 10);
-    if (isNaN(n)) { if (typeof aaToast === 'function') aaToast('Nombre invalide', 'error'); return; }
-    if (adjustStars(email, n)) { if (typeof aaToast === 'function') aaToast('Étoiles → ' + (customer.stars + n), 'stars'); loadLoyalty(); }
-    else if (typeof aaToast === 'function') aaToast('Erreur', 'error');
-}
-
-function doMarkGiftDelivered(email) {
-    if (!confirm('Marquer le cadeau comme remis pour ce client ?')) return;
-    if (markGiftDelivered(email)) { if (typeof aaToast === 'function') aaToast('Cadeau marqué comme remis !', 'redeem'); loadLoyalty(); }
-    else if (typeof aaToast === 'function') aaToast('Aucun cadeau en attente', 'error');
-}
-
-function deleteLoyaltyClient(email) {
-    if (!confirm('Supprimer ' + email + ' du programme de fidélité ?')) return;
-    if (!confirm('Confirmation finale ?')) return;
-    const customers = getLoyaltyCustomers();
-    const updated = customers.filter(c => c.email !== email);
-    saveLoyaltyCustomers(updated);
-    if (typeof aaToast === 'function') aaToast('Client retiré de la fidélité', 'delete');
-    loadLoyalty();
-}
-
-function exportCustomersCSV() { alert('Fonctionnalité à venir'); }
-function copyEmailsToClipboard() { alert('Fonctionnalité à venir'); }
-function exportLoyaltyCSV() { alert('Fonctionnalité à venir'); }
-
 function initShippingConfig() {
     if (!localStorage.getItem('aa_shipping_config')) {
         localStorage.setItem('aa_shipping_config', JSON.stringify({
-            rates: [{id:'1',country:'France',carrier:'Colissimo',cost:6.50,surcharge:1.50},{id:'2',country:'France',carrier:'Mondial Relay',cost:4.90,surcharge:1.00},{id:'3',country:'Belgique',carrier:'Colissimo',cost:9.90,surcharge:2.00},{id:'4',country:'Belgique',carrier:'Mondial Relay',cost:7.50,surcharge:1.50},{id:'5',country:'Allemagne',carrier:'DHL',cost:11.50,surcharge:2.50},{id:'6',country:'Allemagne',carrier:'Colissimo',cost:13.90,surcharge:2.50},{id:'7',country:'Italie',carrier:'DHL',cost:12.90,surcharge:2.50},{id:'8',country:'Espagne',carrier:'DHL',cost:12.90,surcharge:2.50}],
+            rates: [{id:'1',country:'France',carrier:'Colissimo',cost:6.50,surcharge:1.50},{id:'2',country:'France',carrier:'Mondial Relay',cost:4.90,surcharge:1.00}],
             freeThreshold: 150, enableTaxes: false, taxLabel: 'TVA',
-            taxRates: [{country:'France',rate:20},{country:'Belgique',rate:21},{country:'Allemagne',rate:19},{country:'Italie',rate:22},{country:'Espagne',rate:21}],
-            email: 'contact@action-archive.com', defaultMessage: 'Pour les pays non listés, merci de me contacter par email pour un devis.'
+            email: 'contact@action-archive.com', defaultMessage: 'Pour les pays non listés, contactez-nous.'
         }));
     }
 }
@@ -802,22 +536,17 @@ function loadShippingConfig() {
 function updateTaxesStatus() {
     const status = document.getElementById('taxes-status');
     const enabled = document.getElementById('ship-enable-taxes').checked;
-    const c = getShippingConfig();
-    if (enabled) { const count = c.taxRates ? c.taxRates.length : 0; status.innerHTML = `<span class="text-green-700">✓ ACTIVÉ (${count} pays)</span>`; }
-    else { status.innerHTML = `<span class="text-red-700">✗ DÉSACTIVÉ</span>`; }
+    if (enabled) { status.innerHTML = '<span class="text-green-700">✓ ACTIVÉ</span>'; }
+    else { status.innerHTML = '<span class="text-red-700">✗ DÉSACTIVÉ</span>'; }
 }
 function renderShippingRates() {
     const c = getShippingConfig();
     const tbody = document.getElementById('shipping-rates-table');
     if (!c.rates || c.rates.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center italic">Aucun tarif.</td></tr>'; return; }
-    const byC = {};
-    c.rates.forEach(r => { if (!byC[r.country]) byC[r.country] = []; byC[r.country].push(r); });
     tbody.innerHTML = '';
-    Object.keys(byC).sort().forEach(country => {
-        byC[country].forEach((rate, i) => {
-            const surcharge = rate.surcharge || 0;
-            tbody.innerHTML += `<tr class="border-b border-outline-variant"><td class="p-2 text-sm font-bold">${i===0?country:''}</td><td class="p-2 text-sm">${rate.carrier}</td><td class="p-2 text-sm text-right font-bold text-tertiary">${rate.cost.toFixed(2)} €</td><td class="p-2 text-sm text-right">${surcharge > 0 ? '+' + surcharge.toFixed(2) + ' €' : '-'}</td><td class="p-2 text-center"><button onclick="deleteShippingRate('${rate.id}')" class="text-red-600">🗑️</button></td></tr>`;
-        });
+    c.rates.forEach((rate, i) => {
+        const surcharge = rate.surcharge || 0;
+        tbody.innerHTML += `<tr class="border-b border-outline-variant"><td class="p-2 text-sm font-bold">${rate.country}</td><td class="p-2 text-sm">${rate.carrier}</td><td class="p-2 text-sm text-right font-bold text-tertiary">${rate.cost.toFixed(2)} €</td><td class="p-2 text-sm text-right">${surcharge > 0 ? '+' + surcharge.toFixed(2) + ' €' : '-'}</td><td class="p-2 text-center"><button onclick="deleteShippingRate('${rate.id}')" class="text-red-600">🗑️</button></td></tr>`;
     });
 }
 function addShippingRate(e) {
@@ -827,7 +556,7 @@ function addShippingRate(e) {
     if (!nr.country || !nr.carrier || isNaN(nr.cost)) { if (typeof aaToast === 'function') aaToast('Champs requis', 'error'); return false; }
     c.rates.push(nr); saveShippingConfigToStorage(c);
     document.getElementById('ship-country').value = ''; document.getElementById('ship-carrier').value = ''; document.getElementById('ship-cost').value = ''; document.getElementById('ship-surcharge').value = '';
-    renderShippingRates(); renderShippingPreview();
+    renderShippingRates();
     if (typeof aaToast === 'function') aaToast('Tarif ajouté', 'check_circle');
     return false;
 }
@@ -835,7 +564,7 @@ function deleteShippingRate(rateId) {
     const c = getShippingConfig();
     c.rates = c.rates.filter(r => r.id !== rateId);
     saveShippingConfigToStorage(c);
-    renderShippingRates(); renderShippingPreview();
+    renderShippingRates();
 }
 function renderTaxRates() {
     const c = getShippingConfig();
@@ -868,22 +597,8 @@ function saveShippingParams() {
     c.email = document.getElementById('ship-email').value.trim();
     c.defaultMessage = document.getElementById('ship-default-message').value.trim();
     saveShippingConfigToStorage(c);
-    renderShippingPreview(); updateTaxesStatus();
+    updateTaxesStatus();
     if (typeof aaToast === 'function') aaToast('Sauvegardé', 'check_circle');
-}
-function renderShippingPreview() {
-    const c = getShippingConfig();
-    const container = document.getElementById('shipping-preview-customer');
-    let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-3">';
-    const byC = {};
-    c.rates.forEach(r => { if (!byC[r.country]) byC[r.country] = []; byC[r.country].push(r); });
-    Object.keys(byC).sort().forEach(country => {
-        const rates = byC[country];
-        html += `<div class="bg-surface border-2 border-on-background p-3"><p class="font-headline font-black uppercase text-sm mb-2">${country}</p><ul class="text-sm">${rates.map(r => `<li class="flex justify-between"><span>${r.carrier}</span><span class="font-bold">${r.cost.toFixed(2)} €</span></li>`).join('')}</ul></div>`;
-    });
-    html += '</div>';
-    if (c.freeThreshold > 0) html += `<p class="mt-3 bg-green-100 border-2 border-green-600 p-2 text-sm font-bold">🎁 Livraison offerte à partir de ${c.freeThreshold} €</p>`;
-    container.innerHTML = html;
 }
 
 function initSocialConfig() {
@@ -933,28 +648,6 @@ function renderSocialPreview() {
 
 initShippingConfig();
 initSocialConfig();
-
-function syncClientsToLoyalty() {
-    const customers = getLoyaltyCustomers();
-    const user = JSON.parse(localStorage.getItem('aa_user') || 'null');
-    let modified = false;
-    if (user && user.email && !customers.find(c => c.email === user.email)) {
-        customers.push({
-            pseudo: user.pseudo || 'Utilisateur',
-            email: user.email,
-            registeredAt: user.registeredAt || new Date().toISOString(),
-            stars: user.stars || 1,
-            totalSpent: 0,
-            ordersCount: 0,
-            giftsDelivered: 0,
-            purchaseHistory: []
-        });
-        modified = true;
-    }
-    if (modified) saveLoyaltyCustomers(customers);
-}
-
-syncClientsToLoyalty();
 
 (function() {
     const social = JSON.parse(localStorage.getItem('aa_social_config') || '{}');

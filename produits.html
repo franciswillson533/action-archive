@@ -38,32 +38,8 @@
         .aa-type-custom { background: #7b1fa2; color: white; }
         .aa-menu-btn { font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; background: #bb0003; color: #fff5e5; border: 3px solid #342e1e; padding: 10px 20px; font-size: 1.05rem; box-shadow: 4px 4px 0 0 #342e1e; cursor: pointer; transition: all 0.15s ease; }
         .aa-menu-btn:hover { background: #342e1e; color: #ffca4d; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 #bb0003; }
-        .aa-active-filter-badge { 
-            display: inline-flex; 
-            align-items: center; 
-            gap: 0.5rem; 
-            background: #bb0003; 
-            color: #fff5e5; 
-            font-family: 'Epilogue', sans-serif; 
-            font-weight: 900; 
-            text-transform: uppercase; 
-            font-size: 0.75rem; 
-            padding: 0.4rem 0.8rem; 
-            border: 2px solid #342e1e; 
-            box-shadow: 3px 3px 0 0 #342e1e; 
-            margin-right: 0.5rem; 
-            margin-bottom: 0.5rem;
-        }
-        .aa-active-filter-badge button { 
-            background: none; 
-            border: none; 
-            color: #ffca4d; 
-            cursor: pointer; 
-            font-weight: 900; 
-            font-size: 1rem; 
-            padding: 0; 
-            line-height: 1; 
-        }
+        .aa-active-filter-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: #bb0003; color: #fff5e5; font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; font-size: 0.75rem; padding: 0.4rem 0.8rem; border: 2px solid #342e1e; box-shadow: 3px 3px 0 0 #342e1e; margin-right: 0.5rem; margin-bottom: 0.5rem; }
+        .aa-active-filter-badge button { background: none; border: none; color: #ffca4d; cursor: pointer; font-weight: 900; font-size: 1rem; padding: 0; line-height: 1; }
     </style>
 </head>
 <body class="bg-surface font-body text-on-surface overflow-x-hidden">
@@ -134,11 +110,10 @@
     </div>
     
     <div id="aa-product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <p class="col-span-full text-center py-12 font-bold italic text-on-surface-variant">Chargement...</p>
+        <p class="col-span-full text-center py-12 font-bold italic text-on-surface-variant">Chargement depuis Airtable...</p>
     </div>
 </main>
 
-<!-- 🆕 FOOTER RÉPARÉ : même chemin d'image que le header -->
 <footer class="bg-[#342e1e] border-t-8 border-double border-[#755700] w-full py-12 px-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-20">
     <div class="flex flex-col items-center md:items-start gap-3">
         <a href="index.html" class="aa-logo-link flex items-center gap-3 cursor-pointer" title="Action Archive">
@@ -168,34 +143,54 @@ function detectTypeStrict(f) {
     return 'reproduction';
 }
 
-// 🆕 TRI ALÉATOIRE — change tous les 5 jours, même ordre pour tout le monde
+function formatPrice(price) { const num = parseFloat(price); if (isNaN(num)) return price + ' €'; return num.toFixed(2) + ' €'; }
+
+function getImageUrl(field) {
+    if (!field) return null;
+    if (typeof field === 'string') {
+        if (field.startsWith('http://') || field.startsWith('https://')) return field;
+        if (field.startsWith('v1/') || field.includes('cloudinary')) return 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + field;
+        return field;
+    }
+    if (Array.isArray(field)) {
+        if (field.length === 0) return null;
+        const first = field[0];
+        if (typeof first === 'string') {
+            if (first.startsWith('http')) return first;
+            return 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + first;
+        }
+        if (typeof first === 'object') {
+            if (first.url) return first.url;
+            if (first.secure_url) return first.secure_url;
+            if (first.filename) return 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + first.filename;
+        }
+    }
+    if (typeof field === 'object') {
+        if (field.url) return field.url;
+        if (field.secure_url) return field.secure_url;
+        if (field.filename) return 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + field.filename;
+    }
+    return null;
+}
+
 function shuffleBy5DaySeed(products) {
     if (!products || products.length === 0) return products;
-    
-    // Calcul du numéro de la période de 5 jours actuelle
-    // 5 jours en millisecondes
     const FIVE_DAYS_MS = 5 * 24 * 60 * 60 * 1000;
     const periodIndex = Math.floor(Date.now() / FIVE_DAYS_MS);
-    
-    // Copie pour ne pas modifier l'original
     const shuffled = [...products];
-    
-    // Algorithme pseudo-aléatoire reproductible (Fisher-Yates avec seed)
-    // Même seed = même résultat = tout le monde voit la même chose pendant 5 jours
     let seed = periodIndex;
     for (let i = shuffled.length - 1; i > 0; i--) {
-        // PRNG simple et déterministe
         seed = (seed * 9301 + 49297) % 233280;
         const rand = seed / 233280;
         const j = Math.floor(rand * (i + 1));
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
-    
     return shuffled;
 }
 
+const SHADOW_COLORS = ["rgba(15,86,191,1)", "rgba(187,0,3,1)", "rgba(117,87,0,1)", "rgba(52,46,30,1)"];
 let allProducts = [];
-let shuffledProducts = []; // 🆕 version mélangée
+let shuffledProducts = [];
 let currentFilter = { type: 'all', search: '', decade: null, brands: [] };
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -203,10 +198,7 @@ if (urlParams.get('type')) currentFilter.type = urlParams.get('type');
 if (urlParams.get('decade')) currentFilter.decade = urlParams.get('decade');
 if (urlParams.get('search')) {
     currentFilter.search = urlParams.get('search').toLowerCase();
-    setTimeout(() => {
-        const input = document.getElementById('aa-search-input');
-        if (input) input.value = urlParams.get('search');
-    }, 200);
+    setTimeout(() => { const input = document.getElementById('aa-search-input'); if (input) input.value = urlParams.get('search'); }, 200);
 }
 if (urlParams.get('brands')) {
     currentFilter.brands = urlParams.get('brands').split(',').map(b => b.trim()).filter(b => b);
@@ -218,50 +210,16 @@ function renderActiveFilters() {
     if (!container) return;
     let html = '';
     let hasFilter = false;
-    
-    if (currentFilter.decade) {
-        hasFilter = true;
-        html += `<div class="aa-active-filter-badge">🎯 Années ${currentFilter.decade} <button onclick="clearDecade()" title="Retirer">✕</button></div>`;
-    }
-    if (currentFilter.brands && currentFilter.brands.length > 0) {
-        hasFilter = true;
-        const label = currentFilter.brands.join(' / ');
-        html += `<div class="aa-active-filter-badge">🏷️ ${aaEscapeHtml(label)} <button onclick="clearBrands()" title="Retirer">✕</button></div>`;
-    }
-    if (currentFilter.search) {
-        hasFilter = true;
-        html += `<div class="aa-active-filter-badge">🔍 "${aaEscapeHtml(currentFilter.search)}" <button onclick="clearSearch()" title="Retirer">✕</button></div>`;
-    }
-    
+    if (currentFilter.decade) { hasFilter = true; html += `<div class="aa-active-filter-badge">🎯 Années ${currentFilter.decade} <button onclick="clearDecade()" title="Retirer">✕</button></div>`; }
+    if (currentFilter.brands && currentFilter.brands.length > 0) { hasFilter = true; html += `<div class="aa-active-filter-badge">🏷️ ${aaEscapeHtml(currentFilter.brands.join(' / '))} <button onclick="clearBrands()" title="Retirer">✕</button></div>`; }
+    if (currentFilter.search) { hasFilter = true; html += `<div class="aa-active-filter-badge">🔍 "${aaEscapeHtml(currentFilter.search)}" <button onclick="clearSearch()" title="Retirer">✕</button></div>`; }
     container.innerHTML = html;
     if (resetBtn) resetBtn.classList.toggle('hidden', !hasFilter);
 }
 
-function clearDecade() {
-    currentFilter.decade = null;
-    const url = new URL(window.location);
-    url.searchParams.delete('decade');
-    window.history.replaceState({}, '', url);
-    applyFilters();
-}
-
-function clearBrands() {
-    currentFilter.brands = [];
-    const url = new URL(window.location);
-    url.searchParams.delete('brands');
-    window.history.replaceState({}, '', url);
-    applyFilters();
-}
-
-function clearSearch() {
-    currentFilter.search = '';
-    const input = document.getElementById('aa-search-input');
-    if (input) input.value = '';
-    const url = new URL(window.location);
-    url.searchParams.delete('search');
-    window.history.replaceState({}, '', url);
-    applyFilters();
-}
+function clearDecade() { currentFilter.decade = null; const url = new URL(window.location); url.searchParams.delete('decade'); window.history.replaceState({}, '', url); applyFilters(); }
+function clearBrands() { currentFilter.brands = []; const url = new URL(window.location); url.searchParams.delete('brands'); window.history.replaceState({}, '', url); applyFilters(); }
+function clearSearch() { currentFilter.search = ''; const input = document.getElementById('aa-search-input'); if (input) input.value = ''; const url = new URL(window.location); url.searchParams.delete('search'); window.history.replaceState({}, '', url); applyFilters(); }
 
 function resetAllFilters() {
     currentFilter = { type: 'all', search: '', decade: null, brands: [] };
@@ -284,25 +242,20 @@ function setFilter(name, value, btn) {
 function applyFilters() {
     currentFilter.search = (document.getElementById('aa-search-input')?.value || '').toLowerCase();
     renderActiveFilters();
-    
-    // 🆕 On filtre à partir de la version mélangée (ordre aléatoire stable 5j)
     const filtered = shuffledProducts.filter(record => {
         const f = record.fields || record;
         if (currentFilter.type !== 'all' && detectTypeStrict(f) !== currentFilter.type) return false;
-        
         if (currentFilter.decade) {
             const year = parseInt(f.Année);
             if (isNaN(year)) return false;
             const decadeStart = parseInt(currentFilter.decade);
             if (year < decadeStart || year >= decadeStart + 10) return false;
         }
-        
         if (currentFilter.brands && currentFilter.brands.length > 0) {
             const haystack = `${f.Nom || ''} ${f.Collection || ''} ${f.Description || ''}`.toLowerCase();
             const match = currentFilter.brands.some(brand => haystack.includes(brand.toLowerCase()));
             if (!match) return false;
         }
-        
         if (currentFilter.search) {
             const s = currentFilter.search;
             const searchable = `${f.Nom || ''} ${f.Collection || ''} ${f.Année || ''} ${f.Description || ''}`.toLowerCase();
@@ -330,19 +283,15 @@ function renderProducts(products) {
             ? { text: '🟣 CUSTOM', className: 'aa-type-custom' }
             : { text: '🔵 REPRODUCTION', className: 'aa-type-reproduction' };
         const badgeHtml = `<span class="aa-type-badge ${badge.className}">${badge.text}</span>`;
-        
         const imgRecto = getImageUrl(f['Lien Recto']) || getImageUrl(f.Image) || FALLBACK_IMG;
         const price = parseFloat(f.Prix) || 0;
         const nameHtml = aaEscapeHtml(f.Nom || 'Sans nom');
         const imgAttr = aaEscapeAttr(imgRecto);
         const productId = record.id;
-        
         let statusBadge = '';
         if (isVendu) statusBadge = `<div class="absolute top-2 right-2 bg-red-600 text-white px-2 py-1 font-headline font-black text-xs">VENDU</div>`;
         else if (f.Statut === 'Réservé') statusBadge = `<div class="absolute top-2 right-2 bg-yellow-500 text-black px-2 py-1 font-headline font-black text-xs">RÉSERVÉ</div>`;
-        
         const addButton = isVendu ? '' : `<button class="btn-add-cart btn-physical bg-on-background text-surface px-2 py-1.5 font-headline font-black text-[10px] uppercase shadow-[2px_2px_0px_0px_#342e1e]" data-id="${productId}" data-name="${aaEscapeAttr(f.Nom || '')}" data-price="${price}" data-url="produit.html?id=${productId}" data-image="${imgAttr}">AJOUTER</button>`;
-        
         grid.innerHTML += `<div class="group bg-surface-container-high border-4 border-on-background p-3 flex flex-col animate-pop-in" style="box-shadow: 6px 6px 0px 0px ${shadowColor};">
             <div class="bg-surface-container-lowest border-2 border-outline-variant aspect-[3/4] mb-3 relative overflow-hidden">
                 ${badgeHtml}
@@ -365,7 +314,13 @@ function attachAddToCart() {
         if (btn.dataset.bound) return;
         btn.dataset.bound = '1';
         btn.addEventListener('click', function() {
-            aaAddToCart(this.dataset.name, parseFloat(this.dataset.price), this.dataset.url, this.dataset.image);
+            const cart = JSON.parse(localStorage.getItem('aa_cart') || '[]');
+            const name = this.dataset.name;
+            const existing = cart.find(i => i.name === name);
+            if (existing) { existing.qty++; } else { cart.push({ name, price: parseFloat(this.dataset.price), url: this.dataset.url, image: this.dataset.image, qty: 1 }); }
+            localStorage.setItem('aa_cart', JSON.stringify(cart));
+            if (typeof aaUpdateBadge === 'function') aaUpdateBadge();
+            if (typeof aaToast === 'function') aaToast(name + ' ajouté !', 'shopping_cart');
             const o = this.textContent;
             this.textContent = '✓ AJOUTÉ';
             this.classList.add('bg-green-600');
@@ -374,9 +329,21 @@ function attachAddToCart() {
     });
 }
 
+async function fetchProducts() {
+    try {
+        const response = await fetch('/.netlify/functions/airtable-proxy');
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        const data = await response.json();
+        return Array.isArray(data) ? data : [];
+    } catch (error) {
+        console.error('Erreur chargement produits:', error);
+        document.getElementById('aa-product-grid').innerHTML = '<div class="col-span-full text-center py-12"><p class="text-red-600 font-bold">❌ Impossible de charger les produits.</p><p class="text-sm mt-2">Vérifie la console (F12) pour plus de détails.</p></div>';
+        return [];
+    }
+}
+
 async function init() {
     allProducts = await fetchProducts();
-    // 🆕 Mélange stable sur 5 jours
     shuffledProducts = shuffleBy5DaySeed(allProducts);
     applyFilters();
 }
