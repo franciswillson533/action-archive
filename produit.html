@@ -18,11 +18,16 @@
     <style>
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 80% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
         .animate-pop-in { animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        /* 🆕 Bouton ajouter clignotant */
         @keyframes urgentBlink {
             0%, 100% { transform: scale(1); box-shadow: 6px 6px 0 0 #342e1e; }
             50% { transform: scale(1.03); box-shadow: 8px 8px 0 0 #ffca4d; }
         }
         .aa-btn-blink { animation: urgentBlink 1.2s ease-in-out infinite; }
+        /* 🆕 Zoom au survol de l'image */
+        .zoom-container { overflow: hidden; cursor: zoom-in; }
+        .zoom-container img { transition: transform 0.4s ease; }
+        .zoom-container:hover img { transform: scale(1.15); }
         #side-drawer { box-shadow: -8px 0 0 0 rgba(52, 46, 30, 0.2); transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1); }
         #side-drawer.open { transform: translateX(0); }
         .drawer-overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
@@ -46,8 +51,6 @@
         .aa-type-custom-big { background: #7b1fa2; color: white; }
         .aa-menu-btn { font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; background: #bb0003; color: #fff5e5; border: 3px solid #342e1e; padding: 10px 20px; font-size: 1.05rem; box-shadow: 4px 4px 0 0 #342e1e; cursor: pointer; transition: all 0.15s ease; }
         .aa-menu-btn:hover { background: #342e1e; color: #ffca4d; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 #bb0003; }
-        .aa-hover-hint { position: absolute; bottom: 12px; right: 12px; background: rgba(0, 0, 0, 0.7); color: #ffca4d; padding: 6px 12px; font-family: 'Epilogue', sans-serif; font-weight: 900; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
-        .aa-img-container:hover .aa-hover-hint { opacity: 1; }
     </style>
 </head>
 <body class="bg-surface font-body text-on-surface overflow-x-hidden">
@@ -109,10 +112,10 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <div>
-                <div class="aa-img-container bg-surface-container-lowest border-4 border-on-background shadow-[12px_12px_0px_0px_rgba(52,46,30,1)] overflow-hidden aspect-square relative cursor-pointer">
-                    <img id="aa-main-img" src="" alt="" class="w-full h-full object-cover transition-opacity duration-200">
+                <!-- 🆕 Image avec zoom au survol -->
+                <div class="zoom-container bg-surface-container-lowest border-4 border-on-background shadow-[12px_12px_0px_0px_rgba(52,46,30,1)] aspect-square relative">
+                    <img id="aa-main-img" src="" alt="" class="w-full h-full object-cover">
                     <span id="aa-type-badge-big" class="aa-type-badge-big absolute top-4 left-4" style="display:none;"></span>
-                    <div class="aa-hover-hint">🔄 Survolez pour voir le verso</div>
                 </div>
             </div>
 
@@ -155,6 +158,7 @@
                             <button class="aa-qty-btn" id="aa-qty-plus">+</button>
                         </div>
                     </div>
+                    <!-- 🆕 Bouton ajouter clignotant -->
                     <button id="aa-add-btn" class="aa-btn-blink w-full bg-primary text-on-primary font-headline font-black px-6 py-4 text-xl uppercase shadow-[6px_6px_0px_0px_#342e1e] hover:translate-y-[-2px] transition-all">
                         🛒 AJOUTER AU PANIER
                     </button>
@@ -164,7 +168,6 @@
     </div>
 </main>
 
-<!-- 🆕 FOOTER RÉPARÉ : même chemin d'image que le header -->
 <footer class="bg-[#342e1e] border-t-8 border-double border-[#755700] w-full py-12 px-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-20">
     <div class="flex flex-col items-center md:items-start gap-3">
         <a href="index.html" class="aa-logo-link flex items-center gap-3 cursor-pointer" title="Action Archive">
@@ -184,7 +187,8 @@ function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&
 let currentProduct = null;
 let currentQty = 1;
 let currentImgRecto = null;
-let currentImgVerso = null;
+
+const PLACEHOLDER_IMG = "data:image/svg+xml;charset=utf-8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600"><rect width="600" height="600" fill="#eadcbc"/><text x="300" y="300" text-anchor="middle" font-family="Arial Black" font-size="24" font-weight="900" fill="#635b48">PHOTO INDISPONIBLE</text></svg>');
 
 function changeQty(delta) {
     currentQty = Math.max(1, currentQty + delta);
@@ -192,15 +196,18 @@ function changeQty(delta) {
 }
 
 function addCurrentToCart() {
-    if (!currentProduct) { aaToast('Erreur : produit non chargé', 'error'); return; }
+    if (!currentProduct) { if (typeof aaToast === 'function') aaToast('Erreur : produit non chargé', 'error'); return; }
     const f = currentProduct.fields || currentProduct;
     const name = f.Nom || 'Produit sans nom';
     const price = parseFloat(f.Prix) || 0;
     const image = currentImgRecto || '';
-    const productId = currentProduct.id;
-    const url = `produit.html?id=${productId}`;
-    aaAddToCart(name, price, url, image);
-    aaToast(name + ' ajouté au panier !', 'shopping_cart');
+    const url = window.location.href;
+    const cart = JSON.parse(localStorage.getItem('aa_cart') || '[]');
+    const existing = cart.find(i => i.name === name);
+    if (existing) { existing.qty += currentQty; } else { cart.push({ name, price, url, image, qty: currentQty }); }
+    localStorage.setItem('aa_cart', JSON.stringify(cart));
+    if (typeof aaUpdateBadge === 'function') aaUpdateBadge();
+    if (typeof aaToast === 'function') aaToast(name + ' (x' + currentQty + ') ajouté au panier !', 'shopping_cart');
 }
 
 function detectProductType(f) {
@@ -211,6 +218,34 @@ function detectProductType(f) {
     return 'reproduction';
 }
 
+function getImageUrl(field) {
+    if (!field) return null;
+    if (typeof field === 'string') {
+        if (field.startsWith('http://') || field.startsWith('https://')) return field;
+        if (field.startsWith('v1/') || field.includes('cloudinary')) return 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + field;
+        return field;
+    }
+    if (Array.isArray(field)) {
+        if (field.length === 0) return null;
+        const first = field[0];
+        if (typeof first === 'string') {
+            if (first.startsWith('http')) return first;
+            return 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + first;
+        }
+        if (typeof first === 'object') {
+            if (first.url) return first.url;
+            if (first.secure_url) return first.secure_url;
+            if (first.filename) return 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + first.filename;
+        }
+    }
+    if (typeof field === 'object') {
+        if (field.url) return field.url;
+        if (field.secure_url) return field.secure_url;
+        if (field.filename) return 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + field.filename;
+    }
+    return null;
+}
+
 async function loadProduct() {
     const params = new URLSearchParams(window.location.search);
     const productId = params.get('id');
@@ -218,84 +253,68 @@ async function loadProduct() {
         document.getElementById('aa-loading').innerHTML = '<p class="text-red-600 font-bold">ID manquant dans l\'URL</p>';
         return;
     }
-    const records = await fetchProducts();
-    const record = records.find(r => String(r.id) === String(productId));
-    if (!record) {
-        document.getElementById('aa-loading').innerHTML = `<p class="text-red-600 font-bold">Produit introuvable.</p><p class="text-sm">ID: ${productId} | ${records.length} produits chargés</p>`;
-        return;
-    }
-    currentProduct = record;
-    const f = record.fields || record;
-    const type = detectProductType(f);
-
-    document.getElementById('aa-loading').classList.add('hidden');
-    document.getElementById('aa-product-detail').classList.remove('hidden');
-
-    let rawRecto = f['Lien Recto'] || f.Image || f.image;
-    if (typeof rawRecto === 'object' && rawRecto !== null) {
-        rawRecto = rawRecto.url || rawRecto.secure_url || rawRecto[0]?.url || '';
-    }
-    if (Array.isArray(rawRecto)) { rawRecto = rawRecto[0]?.url || rawRecto[0] || ''; }
-    if (typeof rawRecto === 'string' && rawRecto && !rawRecto.startsWith('http')) {
-        rawRecto = 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + rawRecto;
-    }
-    currentImgRecto = rawRecto || '';
-
-    let rawVerso = f['Lien Verso'];
-    if (typeof rawVerso === 'object' && rawVerso !== null) {
-        rawVerso = rawVerso.url || rawVerso.secure_url || rawVerso[0]?.url || '';
-    }
-    if (Array.isArray(rawVerso)) { rawVerso = rawVerso[0]?.url || rawVerso[0] || ''; }
-    if (typeof rawVerso === 'string' && rawVerso && !rawVerso.startsWith('http')) {
-        rawVerso = 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + rawVerso;
-    }
-    currentImgVerso = rawVerso || currentImgRecto;
-
-    const mainImg = document.getElementById('aa-main-img');
-    const imgContainer = mainImg.parentElement;
-    if (currentImgRecto) {
-        mainImg.src = currentImgRecto;
-        mainImg.onerror = function() { this.onerror = null; this.src = PLACEHOLDER_IMG; this.style.objectFit = 'contain'; this.style.background = '#eadcbc'; };
-        if (currentImgVerso && currentImgVerso !== currentImgRecto) {
-            imgContainer.onmouseenter = function() { mainImg.style.opacity = '0'; setTimeout(() => { mainImg.src = currentImgVerso; mainImg.style.opacity = '1'; }, 150); };
-            imgContainer.onmouseleave = function() { mainImg.style.opacity = '0'; setTimeout(() => { mainImg.src = currentImgRecto; mainImg.style.opacity = '1'; }, 150); };
+    try {
+        const response = await fetch('/.netlify/functions/airtable-proxy');
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        const records = await response.json();
+        const record = records.find(r => String(r.id) === String(productId));
+        if (!record) {
+            document.getElementById('aa-loading').innerHTML = `<p class="text-red-600 font-bold">Produit introuvable.</p><p class="text-sm">ID: ${productId} | ${records.length} produits chargés</p>`;
+            return;
         }
-    } else {
-        mainImg.src = PLACEHOLDER_IMG;
-        mainImg.style.objectFit = 'contain';
-        mainImg.style.background = '#eadcbc';
-    }
+        currentProduct = record;
+        const f = record.fields || record;
+        const type = detectProductType(f);
 
-    const typeBadgeBig = document.getElementById('aa-type-badge-big');
-    if (type === 'custom') {
-        typeBadgeBig.textContent = '🟣 CUSTOM';
-        typeBadgeBig.className = 'aa-type-badge-big aa-type-custom-big';
-    } else {
-        typeBadgeBig.textContent = '🔵 REPRODUCTION';
-        typeBadgeBig.className = 'aa-type-badge-big aa-type-reproduction-big';
-    }
-    typeBadgeBig.style.display = 'inline-flex';
+        document.getElementById('aa-loading').classList.add('hidden');
+        document.getElementById('aa-product-detail').classList.remove('hidden');
 
-    const collection = f.Collection || f.Série || 'Archive Générale';
-    document.getElementById('aa-product-name').textContent = f.Nom || 'Sans nom';
-    document.getElementById('aa-product-collection').textContent = collection;
-    document.getElementById('aa-collection-tag').textContent = collection;
-    document.getElementById('aa-product-price').textContent = formatPrice(f.Prix);
-    document.getElementById('aa-product-desc').textContent = f.Description || 'Reproduction de boîte vintage.';
+        currentImgRecto = getImageUrl(f['Lien Recto']) || getImageUrl(f.Image) || '';
 
-    const badge = document.getElementById('aa-status-badge');
-    const statut = f.Statut || 'Disponible';
-    badge.textContent = statut.toUpperCase();
-    badge.className = 'inline-block px-3 py-1 font-headline font-black text-xs uppercase border-2 border-on-background ';
-    if (statut === 'Vendu' || statut === 'Indisponible') {
-        badge.classList.add('bg-red-600', 'text-white');
-        document.getElementById('aa-add-btn').disabled = true;
-        document.getElementById('aa-add-btn').textContent = '✗ INDISPONIBLE';
-        document.getElementById('aa-add-btn').classList.add('opacity-50', 'cursor-not-allowed');
-    } else if (statut === 'Réservé') {
-        badge.classList.add('bg-yellow-500', 'text-black');
-    } else {
-        badge.classList.add('bg-green-600', 'text-white');
+        const mainImg = document.getElementById('aa-main-img');
+        if (currentImgRecto) {
+            mainImg.src = currentImgRecto;
+            mainImg.onerror = function() { this.onerror = null; this.src = PLACEHOLDER_IMG; this.style.objectFit = 'contain'; this.style.background = '#eadcbc'; };
+        } else {
+            mainImg.src = PLACEHOLDER_IMG;
+            mainImg.style.objectFit = 'contain';
+            mainImg.style.background = '#eadcbc';
+        }
+
+        const typeBadgeBig = document.getElementById('aa-type-badge-big');
+        if (type === 'custom') {
+            typeBadgeBig.textContent = '🟣 CUSTOM';
+            typeBadgeBig.className = 'aa-type-badge-big aa-type-custom-big';
+        } else {
+            typeBadgeBig.textContent = '🔵 REPRODUCTION';
+            typeBadgeBig.className = 'aa-type-badge-big aa-type-reproduction-big';
+        }
+        typeBadgeBig.style.display = 'inline-flex';
+
+        const collection = f.Collection || f.Série || 'Archive Générale';
+        document.getElementById('aa-product-name').textContent = f.Nom || 'Sans nom';
+        document.getElementById('aa-product-collection').textContent = collection;
+        document.getElementById('aa-collection-tag').textContent = collection;
+        document.getElementById('aa-product-price').textContent = typeof formatPrice === 'function' ? formatPrice(f.Prix) : (parseFloat(f.Prix) || 0).toFixed(2) + ' €';
+        document.getElementById('aa-product-desc').textContent = f.Description || 'Reproduction de boîte vintage.';
+
+        const badge = document.getElementById('aa-status-badge');
+        const statut = f.Statut || 'Disponible';
+        badge.textContent = statut.toUpperCase();
+        badge.className = 'inline-block px-3 py-1 font-headline font-black text-xs uppercase border-2 border-on-background ';
+        if (statut === 'Vendu' || statut === 'Indisponible') {
+            badge.classList.add('bg-red-600', 'text-white');
+            document.getElementById('aa-add-btn').disabled = true;
+            document.getElementById('aa-add-btn').textContent = '✗ INDISPONIBLE';
+            document.getElementById('aa-add-btn').classList.add('opacity-50', 'cursor-not-allowed');
+        } else if (statut === 'Réservé') {
+            badge.classList.add('bg-yellow-500', 'text-black');
+        } else {
+            badge.classList.add('bg-green-600', 'text-white');
+        }
+    } catch (error) {
+        console.error('Erreur chargement produit:', error);
+        document.getElementById('aa-loading').innerHTML = `<p class="text-red-600 font-bold">❌ Impossible de charger le produit.</p><p class="text-sm mt-2">${error.message}</p>`;
     }
 }
 

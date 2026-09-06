@@ -40,6 +40,38 @@
         .aa-menu-btn:hover { background: #342e1e; color: #ffca4d; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 #bb0003; }
         .aa-active-filter-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: #bb0003; color: #fff5e5; font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; font-size: 0.75rem; padding: 0.4rem 0.8rem; border: 2px solid #342e1e; box-shadow: 3px 3px 0 0 #342e1e; margin-right: 0.5rem; margin-bottom: 0.5rem; }
         .aa-active-filter-badge button { background: none; border: none; color: #ffca4d; cursor: pointer; font-weight: 900; font-size: 1rem; padding: 0; line-height: 1; }
+
+        /* 🆕 MODIF 3 : Loupe clignotante */
+        @keyframes searchPulse {
+            0%, 100% { color: #342e1e; transform: scale(1); }
+            50% { color: #bb0003; transform: scale(1.2); }
+        }
+        .search-big .material-symbols-outlined {
+            animation: searchPulse 1.4s ease-in-out infinite;
+            display: inline-block;
+            transition: color 0.3s;
+        }
+
+        /* 🆕 MODIF 7 : Hover verso */
+        .product-img-container {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 3/4;
+        }
+        .product-img-container img {
+            transition: opacity 0.25s ease;
+        }
+        .product-img-container .verso {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+        }
+        .product-img-container:hover .recto {
+            opacity: 0;
+        }
+        .product-img-container:hover .verso {
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="bg-surface font-body text-on-surface overflow-x-hidden">
@@ -85,7 +117,8 @@
 </aside>
 
 <main class="container mx-auto px-6 py-12 min-h-screen">
-    <h1 class="font-headline font-black text-5xl uppercase text-on-background italic mb-2 border-b-4 border-on-background pb-4">🗄️ Toutes les Reproductions & Custom</h1>
+    <!-- 🆕 MODIF 1+2 : Emoji retiré, titre réduit 20% et en bleu -->
+    <h1 class="font-headline font-black uppercase italic mb-2 border-b-4 border-on-background pb-4" style="font-size: 2.5rem; color: #0f56bf;">Toutes les Reproductions & Custom</h1>
     <p class="text-on-surface-variant font-bold italic mb-6">Filtrez par type, collection ou décennie pour trouver votre bonheur.</p>
 
     <div id="aa-active-filters" class="mb-4"></div>
@@ -104,9 +137,10 @@
         </div>
     </div>
     
-    <div class="flex items-center justify-between mb-6 bg-secondary-container border-2 border-on-background p-3">
-        <span class="font-headline font-black uppercase text-sm"><span id="aa-results-count">0</span> pièce(s) trouvée(s)</span>
-        <button id="aa-reset-filters" onclick="resetAllFilters()" class="hidden text-xs font-bold uppercase text-primary hover:underline">↻ Réinitialiser les filtres</button>
+    <!-- 🆕 MODIF 4 : Compteur plus lisible -->
+    <div class="flex items-center justify-between mb-6 border-2 border-on-background p-3" style="background: #342e1e; color: #ffca4d;">
+        <span class="font-headline font-black uppercase text-base"><span id="aa-results-count">0</span> pièce(s) trouvée(s)</span>
+        <button id="aa-reset-filters" onclick="resetAllFilters()" class="hidden text-xs font-bold uppercase text-secondary-container hover:underline">↻ Réinitialiser les filtres</button>
     </div>
     
     <div id="aa-product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -285,19 +319,26 @@ function renderProducts(products) {
             : { text: '🔵 REPRODUCTION', className: 'aa-type-reproduction' };
         const badgeHtml = `<span class="aa-type-badge ${badge.className}">${badge.text}</span>`;
         const imgRecto = getImageUrl(f['Lien Recto']) || getImageUrl(f.Image) || FALLBACK_IMG;
+        // 🆕 MODIF 7 : image verso
+        const imgVerso = getImageUrl(f['Lien Verso']) || imgRecto;
         const price = parseFloat(f.Prix) || 0;
         const nameHtml = aaEscapeHtml(f.Nom || 'Sans nom');
-        const imgAttr = aaEscapeAttr(imgRecto);
+        const imgAttrRecto = aaEscapeAttr(imgRecto);
+        const imgAttrVerso = aaEscapeAttr(imgVerso);
         const productId = record.id;
         let statusBadge = '';
         if (isVendu) statusBadge = `<div class="absolute top-2 right-2 bg-red-600 text-white px-2 py-1 font-headline font-black text-xs">VENDU</div>`;
         else if (f.Statut === 'Réservé') statusBadge = `<div class="absolute top-2 right-2 bg-yellow-500 text-black px-2 py-1 font-headline font-black text-xs">RÉSERVÉ</div>`;
-        const addButton = isVendu ? '' : `<button class="btn-add-cart btn-physical bg-on-background text-surface px-2 py-1.5 font-headline font-black text-[10px] uppercase shadow-[2px_2px_0px_0px_#342e1e]" data-id="${productId}" data-name="${aaEscapeAttr(f.Nom || '')}" data-price="${price}" data-url="produit.html?id=${productId}" data-image="${imgAttr}">AJOUTER</button>`;
+        // 🆕 MODIF 6 : bouton AJOUTER en rouge
+        const addButton = isVendu ? '' : `<button class="btn-add-cart btn-physical bg-primary text-on-primary px-2 py-1.5 font-headline font-black text-[10px] uppercase shadow-[2px_2px_0px_0px_#342e1e]" data-id="${productId}" data-name="${aaEscapeAttr(f.Nom || '')}" data-price="${price}" data-url="produit.html?id=${productId}" data-image="${imgAttrRecto}">AJOUTER</button>`;
         grid.innerHTML += `<div class="group bg-surface-container-high border-4 border-on-background p-3 flex flex-col animate-pop-in" style="box-shadow: 6px 6px 0px 0px ${shadowColor};">
-            <div class="bg-surface-container-lowest border-2 border-outline-variant aspect-[3/4] mb-3 relative overflow-hidden">
+            <div class="product-img-container bg-surface-container-lowest border-2 border-outline-variant mb-3 relative">
                 ${badgeHtml}
                 ${statusBadge}
-                <a href="produit.html?id=${productId}"><img src="${imgAttr}" onerror="handleImgError(this)" class="w-full h-full object-cover" alt="${nameHtml}"></a>
+                <a href="produit.html?id=${productId}">
+                    <img src="${imgAttrRecto}" onerror="handleImgError(this)" class="recto w-full h-full object-cover" alt="${nameHtml}">
+                    <img src="${imgAttrVerso}" onerror="this.style.display='none'" class="verso w-full h-full object-cover" alt="${nameHtml} verso">
+                </a>
             </div>
             <h3 class="font-headline font-black text-base uppercase mb-1"><a class="hover:text-primary" href="produit.html?id=${productId}">${nameHtml}</a></h3>
             <p class="font-body text-[10px] text-on-surface-variant font-bold mb-2 italic">${aaEscapeHtml(f.Collection || '')}${f.Année ? ' • ' + f.Année : ''}</p>
@@ -350,10 +391,12 @@ async function init() {
 }
 init();
 
+// 🆕 MODIF 5 : Filtres plus contrastés
 document.head.insertAdjacentHTML('beforeend', `<style>
-.aa-filter-btn { font-family:'Epilogue',sans-serif; font-weight:900; font-size:11px; text-transform:uppercase; padding:6px 14px; border:2px solid #342e1e; cursor:pointer; letter-spacing:0.05em; background:#fdefd5; color:#342e1e; }
-.aa-filter-btn:hover { background:#efe1c3; }
-.aa-filter-btn.active { background:#bb0003; color:#fff5e5; box-shadow:2px 2px 0 0 #342e1e; }
+.aa-filter-btn { font-family:'Epilogue',sans-serif; font-weight:900; font-size:11px; text-transform:uppercase; padding:6px 14px; border:2px solid #342e1e; cursor:pointer; letter-spacing:0.05em; background:#fff5e5; color:#342e1e; transition: all 0.15s ease; }
+.aa-filter-btn:hover { background:#fdefd5; transform: translateY(-1px); }
+.aa-filter-btn.active { color:#fff5e5; box-shadow:3px 3px 0 0 #342e1e; transform: translate(-1px, -1px); }
+.aa-filter-btn[data-value="all"].active { background:#bb0003; }
 .aa-filter-btn.reproduction.active { background:#0f56bf; }
 .aa-filter-btn.custom.active { background:#7b1fa2; }
 </style>`);
