@@ -1,35 +1,20 @@
-export async function onRequest(context) {
-  const request = context.request;
-  const env = context.env;
+export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Password');
 
-  const AIRTABLE_TOKEN = env.AIRTABLE_TOKEN;
-  const AIRTABLE_BASE_ID = env.AIRTABLE_BASE_ID;
-  const AIRTABLE_TABLE_NAME = env.AIRTABLE_TABLE_NAME || 'Products';
-
-  const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Password',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS'
-  };
-
-  if (request.method === 'OPTIONS') {
-    return new Response('', { status: 200, headers: corsHeaders });
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
   }
 
-  // 🔑 Récupération du header (Cloudflare passe les headers en lowercase)
-  const adminPassword = request.headers.get('x-admin-password');
-  if (adminPassword !== env.ADMIN_PASSWORD) {
-    return new Response(
-      JSON.stringify({ error: 'Unauthorized' }),
-      { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+  if (req.headers['x-admin-password'] !== process.env.ADMIN_PASSWORD) {
+    return res.status(401).json({ error: 'Unauthorized' });
   }
 
   try {
-    const body = await request.text();
-    const { action, recordId, fields } = JSON.parse(body || '{}');
+    const { action, recordId, fields } = req.body || {};
 
-    let url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}`;
+    let url = `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/${process.env.AIRTABLE_TABLE_NAME || 'Products'}`;
     let method = 'POST';
 
     if (action === 'patch' && recordId) {
@@ -43,7 +28,7 @@ export async function onRequest(context) {
     const fetchOptions = {
       method,
       headers: {
-        'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+        'Authorization': `Bearer ${process.env.AIRTABLE_TOKEN}`,
         'Content-Type': 'application/json'
       }
     };
@@ -54,14 +39,8 @@ export async function onRequest(context) {
 
     const response = await fetch(url, fetchOptions);
     const data = await response.json();
-    return new Response(
-      JSON.stringify(data),
-      { status: response.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
-  } catch (error) {
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    return res.status(response.status).json(data);
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
   }
 }

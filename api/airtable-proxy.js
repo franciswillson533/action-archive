@@ -1,24 +1,19 @@
-export default async function handler(request, env) {
-  const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'GET, OPTIONS',
-    'Content-Type': 'application/json'
-  };
-
-  if (request.method === 'OPTIONS') {
-    return new Response('', { status: 200, headers });
+export default async function handler(req, res) {
+  // CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
   }
 
-  const AIRTABLE_TOKEN = env.AIRTABLE_TOKEN;
-  const AIRTABLE_BASE_ID = env.AIRTABLE_BASE_ID;
-  const AIRTABLE_TABLE_NAME = env.AIRTABLE_TABLE_NAME;
+  const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN;
+  const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
+  const AIRTABLE_TABLE_NAME = process.env.AIRTABLE_TABLE_NAME;
 
   if (!AIRTABLE_TOKEN || !AIRTABLE_BASE_ID || !AIRTABLE_TABLE_NAME) {
-    return new Response(
-      JSON.stringify({ error: 'Variables Airtable manquantes' }),
-      { status: 500, headers }
-    );
+    return res.status(500).json({ error: 'Variables Airtable manquantes' });
   }
 
   try {
@@ -26,7 +21,6 @@ export default async function handler(request, env) {
     let offset = null;
 
     do {
-      // ✅ Pas de encodeURIComponent
       const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}?pageSize=100${offset ? '&offset=' + offset : ''}`;
 
       const response = await fetch(url, {
@@ -34,10 +28,8 @@ export default async function handler(request, env) {
       });
 
       if (!response.ok) {
-        return new Response(
-          JSON.stringify({ error: `Airtable ${response.status}` }),
-          { status: response.status, headers }
-        );
+        const errText = await response.text();
+        return res.status(response.status).json({ error: `Airtable ${response.status}`, details: errText });
       }
 
       const data = await response.json();
@@ -45,14 +37,8 @@ export default async function handler(request, env) {
       offset = data.offset;
     } while (offset);
 
-    return new Response(JSON.stringify(allRecords), {
-      status: 200,
-      headers
-    });
+    return res.status(200).json(allRecords);
   } catch (error) {
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 500, headers }
-    );
+    return res.status(500).json({ error: error.message });
   }
 }
