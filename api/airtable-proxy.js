@@ -1,33 +1,58 @@
 export default async function handler(request, env) {
-  const url = new URL(request.url);
-  const proxyUrl = `${url.origin}/api/airtable-proxy`;
-  
   const headers = {
-    'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'GET, OPTIONS'
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Content-Type': 'application/json'
   };
 
   if (request.method === 'OPTIONS') {
     return new Response('', { status: 200, headers });
   }
 
-  try {
-    const response = await fetch(proxyUrl);
-    const data = await response.json();
-    
+  const AIRTABLE_TOKEN = env.AIRTABLE_TOKEN;
+  const AIRTABLE_BASE_ID = env.AIRTABLE_BASE_ID;
+  const AIRTABLE_TABLE_NAME = env.AIRTABLE_TABLE_NAME;
+
+  if (!AIRTABLE_TOKEN || !AIRTABLE_BASE_ID || !AIRTABLE_TABLE_NAME) {
     return new Response(
-      JSON.stringify(data),
-      { 
-        status: 200, 
-        headers: { ...headers, 'Cache-Control': 'public, max-age=300' } 
-      }
+      JSON.stringify({ error: 'Variables Airtable manquantes' }),
+      { status: 500, headers }
     );
+  }
+
+  try {
+    let allRecords = [];
+    let offset = null;
+
+    do {
+      // ✅ Pas de encodeURIComponent
+      const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}?pageSize=100${offset ? '&offset=' + offset : ''}`;
+
+      const response = await fetch(url, {
+        headers: { 'Authorization': `Bearer ${AIRTABLE_TOKEN}` }
+      });
+
+      if (!response.ok) {
+        return new Response(
+          JSON.stringify({ error: `Airtable ${response.status}` }),
+          { status: response.status, headers }
+        );
+      }
+
+      const data = await response.json();
+      allRecords = allRecords.concat(data.records || []);
+      offset = data.offset;
+    } while (offset);
+
+    return new Response(JSON.stringify(allRecords), {
+      status: 200,
+      headers
+    });
   } catch (error) {
     return new Response(
-      JSON.stringify([]),
-      { status: 200, headers }
+      JSON.stringify({ error: error.message }),
+      { status: 500, headers }
     );
   }
 }
