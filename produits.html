@@ -2,8 +2,12 @@
 <html class="light" lang="fr">
 <head>
     <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Catalogue - Action Archive</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="robots" content="index, follow"/>
+    <meta name="description" content="Catalogue Action Archive - Toutes nos reproductions et créations custom de boîtes vintage pour figurines de collection. Filtrez par type, collection ou décennie."/>
+    <link rel="canonical" href="https://action-archive.com/produits.html"/>
+    <title>Catalogue - Action Archive | Toutes les Reproductions & Custom</title>
+
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,900;1,900&family=Work+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -41,7 +45,6 @@
         .aa-active-filter-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: #bb0003; color: #fff5e5; font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; font-size: 0.75rem; padding: 0.4rem 0.8rem; border: 2px solid #342e1e; box-shadow: 3px 3px 0 0 #342e1e; margin-right: 0.5rem; margin-bottom: 0.5rem; }
         .aa-active-filter-badge button { background: none; border: none; color: #ffca4d; cursor: pointer; font-weight: 900; font-size: 1rem; padding: 0; line-height: 1; }
 
-        /* 🆕 MODIF 3 : Loupe clignotante */
         @keyframes searchPulse {
             0%, 100% { color: #342e1e; transform: scale(1); }
             50% { color: #bb0003; transform: scale(1.2); }
@@ -52,7 +55,7 @@
             transition: color 0.3s;
         }
 
-        /* 🆕 MODIF 7 : Hover verso */
+        /* 🆕 Hover verso */
         .product-img-container {
             position: relative;
             overflow: hidden;
@@ -72,6 +75,48 @@
         .product-img-container:hover .verso {
             opacity: 1;
         }
+
+        /* 🆕 STYLE BOUTON AJOUTER - lettres blanches sur fond rouge */
+        .btn-add-cart {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #bb0003;
+            color: #ffffff !important;
+            padding: 8px 12px;
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 900;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: 2px solid #342e1e;
+            box-shadow: 3px 3px 0 0 #342e1e;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            line-height: 1;
+        }
+        .btn-add-cart:hover {
+            background: #342e1e;
+            color: #ffca4d !important;
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 0 #bb0003;
+        }
+        .btn-add-cart:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0 0 0 0 #bb0003;
+        }
+        .btn-add-cart .add-icon {
+            font-size: 14px;
+            font-weight: 900;
+        }
+
+        /* 🆕 FILTRES CONTRASTÉS */
+        .aa-filter-btn { font-family:'Epilogue',sans-serif; font-weight:900; font-size:11px; text-transform:uppercase; padding:6px 14px; border:2px solid #342e1e; cursor:pointer; letter-spacing:0.05em; background:#fff5e5; color:#342e1e; transition: all 0.15s ease; }
+        .aa-filter-btn:hover { background:#fdefd5; transform: translateY(-1px); }
+        .aa-filter-btn.active { color:#fff5e5; box-shadow:3px 3px 0 0 #342e1e; transform: translate(-1px, -1px); }
+        .aa-filter-btn[data-value="all"].active { background:#bb0003; }
+        .aa-filter-btn.reproduction.active { background:#0f56bf; }
+        .aa-filter-btn.custom.active { background:#7b1fa2; }
     </style>
 </head>
 <body class="bg-surface font-body text-on-surface overflow-x-hidden">
@@ -79,7 +124,7 @@
 <header class="w-full border-b-4 border-double border-[#bb0003] bg-[#fff5e5] shadow-[4px_4px_0px_0px_rgba(52,46,30,0.2)] z-50 sticky top-0">
     <div class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
         <a href="index.html" class="aa-logo-link flex items-center gap-3 group cursor-pointer" title="Retour à l'accueil">
-            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="eager" class="aa-logo h-12 md:h-14 w-auto"/>
+            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Logo Action Archive - Retour à l'accueil" loading="eager" class="aa-logo h-12 md:h-14 w-auto"/>
             <span class="text-2xl md:text-3xl font-black italic text-[#bb0003] font-headline uppercase tracking-tighter group-hover:text-[#0f56bf] transition-colors">Action Archive</span>
         </a>
         <nav class="hidden md:flex items-center gap-6 font-headline font-black uppercase tracking-tighter text-sm">
@@ -117,8 +162,11 @@
 </aside>
 
 <main class="container mx-auto px-6 py-12 min-h-screen">
-    <!-- 🆕 MODIF 1+2 : Emoji retiré, titre réduit 20% et en bleu -->
-    <h1 class="font-headline font-black uppercase italic mb-2 border-b-4 border-on-background pb-4" style="font-size: 2.5rem; color: #0f56bf;">Toutes les Reproductions & Custom</h1>
+    <!-- ✅ MODIF : Titre sur 2 lignes -->
+    <h1 class="font-headline font-black uppercase italic mb-2 border-b-4 border-on-background pb-4 leading-tight" style="font-size: 2.5rem; color: #0f56bf;">
+        Toutes les<br/>
+        Reproductions <span style="color: #7b1fa2;">&amp; Custom</span>
+    </h1>
     <p class="text-on-surface-variant font-bold italic mb-6">Filtrez par type, collection ou décennie pour trouver votre bonheur.</p>
 
     <div id="aa-active-filters" class="mb-4"></div>
@@ -137,7 +185,6 @@
         </div>
     </div>
     
-    <!-- 🆕 MODIF 4 : Compteur plus lisible -->
     <div class="flex items-center justify-between mb-6 border-2 border-on-background p-3" style="background: #342e1e; color: #ffca4d;">
         <span class="font-headline font-black uppercase text-base"><span id="aa-results-count">0</span> pièce(s) trouvée(s)</span>
         <button id="aa-reset-filters" onclick="resetAllFilters()" class="hidden text-xs font-bold uppercase text-secondary-container hover:underline">↻ Réinitialiser les filtres</button>
@@ -151,7 +198,7 @@
 <footer class="bg-[#342e1e] border-t-8 border-double border-[#755700] w-full py-12 px-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-20">
     <div class="flex flex-col items-center md:items-start gap-3">
         <a href="index.html" class="aa-logo-link flex items-center gap-3 cursor-pointer" title="Action Archive">
-            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="lazy" class="aa-logo h-10 w-auto"/>
+            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Logo Action Archive - Retour à l'accueil" loading="lazy" class="aa-logo h-10 w-auto"/>
             <span class="text-xl md:text-2xl font-black italic text-[#ffca4d] font-headline uppercase tracking-tighter hover:text-white transition-colors">Action Archive</span>
         </a>
         <p class="font-body font-medium text-[10px] text-[#ffca4d] tracking-widest uppercase">© 2026 Action Archive INC.</p>
@@ -221,8 +268,6 @@ function shuffleBy5DaySeed(products) {
     }
     return shuffled;
 }
-
-// ⚠️ SHADOW_COLORS supprimé ici car déjà déclaré dans aa-core.js
 
 let allProducts = [];
 let shuffledProducts = [];
@@ -319,7 +364,6 @@ function renderProducts(products) {
             : { text: '🔵 REPRODUCTION', className: 'aa-type-reproduction' };
         const badgeHtml = `<span class="aa-type-badge ${badge.className}">${badge.text}</span>`;
         const imgRecto = getImageUrl(f['Lien Recto']) || getImageUrl(f.Image) || FALLBACK_IMG;
-        // 🆕 MODIF 7 : image verso
         const imgVerso = getImageUrl(f['Lien Verso']) || imgRecto;
         const price = parseFloat(f.Prix) || 0;
         const nameHtml = aaEscapeHtml(f.Nom || 'Sans nom');
@@ -329,15 +373,16 @@ function renderProducts(products) {
         let statusBadge = '';
         if (isVendu) statusBadge = `<div class="absolute top-2 right-2 bg-red-600 text-white px-2 py-1 font-headline font-black text-xs">VENDU</div>`;
         else if (f.Statut === 'Réservé') statusBadge = `<div class="absolute top-2 right-2 bg-yellow-500 text-black px-2 py-1 font-headline font-black text-xs">RÉSERVÉ</div>`;
-        // 🆕 MODIF 6 : bouton AJOUTER en rouge
-        const addButton = isVendu ? '' : `<button class="btn-add-cart btn-physical bg-primary text-on-primary px-2 py-1.5 font-headline font-black text-[10px] uppercase shadow-[2px_2px_0px_0px_#342e1e]" data-id="${productId}" data-name="${aaEscapeAttr(f.Nom || '')}" data-price="${price}" data-url="produit.html?id=${productId}" data-image="${imgAttrRecto}">AJOUTER</button>`;
+        // ✅ MODIF : bouton AJOUTER - lettres blanches sur fond rouge, icône +, hover noir/jaune
+        const addButton = isVendu ? '' : `<button class="btn-add-cart" data-id="${productId}" data-name="${aaEscapeAttr(f.Nom || '')}" data-price="${price}" data-url="produit.html?id=${productId}" data-image="${imgAttrRecto}"><span class="add-icon">+</span> AJOUTER</button>`;
+        // ✅ MODIF : loading="lazy" sur les images
         grid.innerHTML += `<div class="group bg-surface-container-high border-4 border-on-background p-3 flex flex-col animate-pop-in" style="box-shadow: 6px 6px 0px 0px ${shadowColor};">
             <div class="product-img-container bg-surface-container-lowest border-2 border-outline-variant mb-3 relative">
                 ${badgeHtml}
                 ${statusBadge}
                 <a href="produit.html?id=${productId}">
-                    <img src="${imgAttrRecto}" onerror="handleImgError(this)" class="recto w-full h-full object-cover" alt="${nameHtml}">
-                    <img src="${imgAttrVerso}" onerror="this.style.display='none'" class="verso w-full h-full object-cover" alt="${nameHtml} verso">
+                    <img src="${imgAttrRecto}" onerror="handleImgError(this)" loading="lazy" class="recto w-full h-full object-cover" alt="${nameHtml}">
+                    <img src="${imgAttrVerso}" onerror="this.style.display='none'" loading="lazy" class="verso w-full h-full object-cover" alt="${nameHtml} verso">
                 </a>
             </div>
             <h3 class="font-headline font-black text-base uppercase mb-1"><a class="hover:text-primary" href="produit.html?id=${productId}">${nameHtml}</a></h3>
@@ -363,10 +408,10 @@ function attachAddToCart() {
             localStorage.setItem('aa_cart', JSON.stringify(cart));
             if (typeof aaUpdateBadge === 'function') aaUpdateBadge();
             if (typeof aaToast === 'function') aaToast(name + ' ajouté !', 'shopping_cart');
-            const o = this.textContent;
-            this.textContent = '✓ AJOUTÉ';
-            this.classList.add('bg-green-600');
-            setTimeout(() => { this.textContent = o; this.classList.remove('bg-green-600'); }, 1200);
+            const o = this.innerHTML;
+            this.innerHTML = '<span class="add-icon">✓</span> AJOUTÉ';
+            this.classList.add('added');
+            setTimeout(() => { this.innerHTML = o; this.classList.remove('added'); }, 1200);
         });
     });
 }
@@ -391,16 +436,6 @@ async function init() {
 }
 init();
 
-// 🆕 MODIF 5 : Filtres plus contrastés
-document.head.insertAdjacentHTML('beforeend', `<style>
-.aa-filter-btn { font-family:'Epilogue',sans-serif; font-weight:900; font-size:11px; text-transform:uppercase; padding:6px 14px; border:2px solid #342e1e; cursor:pointer; letter-spacing:0.05em; background:#fff5e5; color:#342e1e; transition: all 0.15s ease; }
-.aa-filter-btn:hover { background:#fdefd5; transform: translateY(-1px); }
-.aa-filter-btn.active { color:#fff5e5; box-shadow:3px 3px 0 0 #342e1e; transform: translate(-1px, -1px); }
-.aa-filter-btn[data-value="all"].active { background:#bb0003; }
-.aa-filter-btn.reproduction.active { background:#0f56bf; }
-.aa-filter-btn.custom.active { background:#7b1fa2; }
-</style>`);
-
 (function() {
     const social = JSON.parse(localStorage.getItem('aa_social_config') || '{}');
     const nav = document.getElementById('aa-social-nav');
@@ -412,5 +447,13 @@ document.head.insertAdjacentHTML('beforeend', `<style>
     });
 })();
 </script>
+
+<!-- ✅ STYLE AJOUTÉ POUR ÉTAT "AJOUTÉ" -->
+<style>
+.btn-add-cart.added {
+    background: #16a34a !important;
+    color: #ffffff !important;
+}
+</style>
 </body>
 </html>
