@@ -2,7 +2,7 @@
 <html class="light" lang="fr">
 <head>
     <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Produit - Action Archive</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,900;1,900&family=Work+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
@@ -18,11 +18,13 @@
     <style>
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 80% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
         .animate-pop-in { animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        /* 🆕 Bouton ajouter clignotant */
         @keyframes urgentBlink {
             0%, 100% { transform: scale(1); box-shadow: 6px 6px 0 0 #342e1e; }
             50% { transform: scale(1.03); box-shadow: 8px 8px 0 0 #ffca4d; }
         }
         .aa-btn-blink { animation: urgentBlink 1.2s ease-in-out infinite; }
+        /* 🆕 Zoom au survol de l'image */
         .zoom-container { overflow: hidden; cursor: zoom-in; }
         .zoom-container img { transition: transform 0.4s ease; }
         .zoom-container:hover img { transform: scale(1.15); }
@@ -110,6 +112,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <div>
+                <!-- 🆕 Image avec zoom au survol -->
                 <div class="zoom-container bg-surface-container-lowest border-4 border-on-background shadow-[12px_12px_0px_0px_rgba(52,46,30,1)] aspect-square relative">
                     <img id="aa-main-img" src="" alt="" class="w-full h-full object-cover">
                     <span id="aa-type-badge-big" class="aa-type-badge-big absolute top-4 left-4" style="display:none;"></span>
@@ -155,6 +158,7 @@
                             <button class="aa-qty-btn" id="aa-qty-plus">+</button>
                         </div>
                     </div>
+                    <!-- 🆕 Bouton ajouter clignotant -->
                     <button id="aa-add-btn" class="aa-btn-blink w-full bg-primary text-on-primary font-headline font-black px-6 py-4 text-xl uppercase shadow-[6px_6px_0px_0px_#342e1e] hover:translate-y-[-2px] transition-all">
                         🛒 AJOUTER AU PANIER
                     </button>
@@ -178,14 +182,13 @@
 <div id="aa-toasts"></div>
 <script src="aa-core.js"></script>
 <script>
-// ✅ PLACEHOLDER_IMG défini localement (fallback si pas dans aa-core.js)
-const PLACEHOLDER_IMG = "data:image/svg+xml;charset=utf-8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400"><rect width="400" height="400" fill="#eadcbc"/><text x="200" y="200" text-anchor="middle" font-family="Arial Black" font-size="20" font-weight="900" fill="#635b48">PHOTO INDISPONIBLE</text></svg>');
-
 function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
 
 let currentProduct = null;
 let currentQty = 1;
 let currentImgRecto = null;
+
+
 
 function changeQty(delta) {
     currentQty = Math.max(1, currentQty + delta);
@@ -243,9 +246,6 @@ function getImageUrl(field) {
     return null;
 }
 
-// ✅ MODIF VERCEL : URL compatible
-const API_URL = '/api/airtable-proxy';
-
 async function loadProduct() {
     const params = new URLSearchParams(window.location.search);
     const productId = params.get('id');
@@ -254,7 +254,7 @@ async function loadProduct() {
         return;
     }
     try {
-        const response = await fetch(API_URL);
+        const response = await fetch('/.netlify/functions/airtable-proxy');
         if (!response.ok) throw new Error('HTTP ' + response.status);
         const records = await response.json();
         const record = records.find(r => String(r.id) === String(productId));
@@ -295,7 +295,6 @@ async function loadProduct() {
         document.getElementById('aa-product-name').textContent = f.Nom || 'Sans nom';
         document.getElementById('aa-product-collection').textContent = collection;
         document.getElementById('aa-collection-tag').textContent = collection;
-        // ✅ Fallback formatPrice
         document.getElementById('aa-product-price').textContent = typeof formatPrice === 'function' ? formatPrice(f.Prix) : (parseFloat(f.Prix) || 0).toFixed(2) + ' €';
         document.getElementById('aa-product-desc').textContent = f.Description || 'Reproduction de boîte vintage.';
 

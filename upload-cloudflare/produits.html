@@ -55,6 +55,7 @@
             transition: color 0.3s;
         }
 
+        /* 🆕 Hover verso */
         .product-img-container {
             position: relative;
             overflow: hidden;
@@ -75,6 +76,7 @@
             opacity: 1;
         }
 
+        /* 🆕 STYLE BOUTON AJOUTER - lettres blanches sur fond rouge */
         .btn-add-cart {
             display: inline-flex;
             align-items: center;
@@ -108,6 +110,7 @@
             font-weight: 900;
         }
 
+        /* 🆕 FILTRES CONTRASTÉS */
         .aa-filter-btn { font-family:'Epilogue',sans-serif; font-weight:900; font-size:11px; text-transform:uppercase; padding:6px 14px; border:2px solid #342e1e; cursor:pointer; letter-spacing:0.05em; background:#fff5e5; color:#342e1e; transition: all 0.15s ease; }
         .aa-filter-btn:hover { background:#fdefd5; transform: translateY(-1px); }
         .aa-filter-btn.active { color:#fff5e5; box-shadow:3px 3px 0 0 #342e1e; transform: translate(-1px, -1px); }
@@ -159,6 +162,7 @@
 </aside>
 
 <main class="container mx-auto px-6 py-12 min-h-screen">
+    <!-- ✅ MODIF : Titre sur 2 lignes -->
     <h1 class="font-headline font-black uppercase italic mb-2 border-b-4 border-on-background pb-4 leading-tight" style="font-size: 2.5rem; color: #0f56bf;">
         Toutes les<br/>
         Reproductions <span style="color: #7b1fa2;">&amp; Custom</span>
@@ -369,7 +373,9 @@ function renderProducts(products) {
         let statusBadge = '';
         if (isVendu) statusBadge = `<div class="absolute top-2 right-2 bg-red-600 text-white px-2 py-1 font-headline font-black text-xs">VENDU</div>`;
         else if (f.Statut === 'Réservé') statusBadge = `<div class="absolute top-2 right-2 bg-yellow-500 text-black px-2 py-1 font-headline font-black text-xs">RÉSERVÉ</div>`;
+        // ✅ MODIF : bouton AJOUTER - lettres blanches sur fond rouge, icône +, hover noir/jaune
         const addButton = isVendu ? '' : `<button class="btn-add-cart" data-id="${productId}" data-name="${aaEscapeAttr(f.Nom || '')}" data-price="${price}" data-url="produit.html?id=${productId}" data-image="${imgAttrRecto}"><span class="add-icon">+</span> AJOUTER</button>`;
+        // ✅ MODIF : loading="lazy" sur les images
         grid.innerHTML += `<div class="group bg-surface-container-high border-4 border-on-background p-3 flex flex-col animate-pop-in" style="box-shadow: 6px 6px 0px 0px ${shadowColor};">
             <div class="product-img-container bg-surface-container-lowest border-2 border-outline-variant mb-3 relative">
                 ${badgeHtml}
@@ -412,8 +418,7 @@ function attachAddToCart() {
 
 async function fetchProducts() {
     try {
-        // ✅ MODIF VERCEL : URL compatible
-        const response = await fetch('/api/airtable-proxy');
+        const response = await fetch('/.netlify/functions/airtable-proxy');
         if (!response.ok) throw new Error('HTTP ' + response.status);
         const data = await response.json();
         return Array.isArray(data) ? data : [];
@@ -443,6 +448,7 @@ init();
 })();
 </script>
 
+<!-- ✅ STYLE AJOUTÉ POUR ÉTAT "AJOUTÉ" -->
 <style>
 .btn-add-cart.added {
     background: #16a34a !important;
