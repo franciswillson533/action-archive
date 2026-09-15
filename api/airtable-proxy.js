@@ -14,20 +14,29 @@ export default async function handler(req, res) {
   }
 
   try {
-    // ✅ Version simple : 1 seule requête, 100 produits max
-    const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}?pageSize=100`;
-    
-    const response = await fetch(url, {
-      headers: { 'Authorization': `Bearer ${AIRTABLE_TOKEN}` }
-    });
+    let allRecords = [];
+    let offset = null;
+    let pageCount = 0;
+    const MAX_PAGES = 5; // ✅ Limite de sécurité (500 produits max)
 
-    if (!response.ok) {
-      const err = await response.text();
-      return res.status(response.status).json({ error: `Airtable ${response.status}`, details: err });
-    }
+    do {
+      const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}?pageSize=100${offset ? '&offset=' + offset : ''}`;
 
-    const data = await response.json();
-    return res.status(200).json(data.records || []);
+      const response = await fetch(url, {
+        headers: { 'Authorization': `Bearer ${AIRTABLE_TOKEN}` }
+      });
+
+      if (!response.ok) {
+        return res.status(response.status).json({ error: `Airtable ${response.status}` });
+      }
+
+      const data = await response.json();
+      allRecords = allRecords.concat(data.records || []);
+      offset = data.offset;
+      pageCount++;
+    } while (offset && pageCount < MAX_PAGES);
+
+    return res.status(200).json(allRecords);
   } catch (e) {
     return res.status(500).json({ error: e.message });
   }
