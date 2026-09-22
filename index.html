@@ -38,11 +38,15 @@
         .aa-nav-stars.aa-has-gift { border-color:#ffca4d !important; color:#ffca4d !important; animation: giftPulse 1.5s infinite; }
         .aa-section-title { display:flex; align-items:center; gap:1rem; margin-bottom:2rem; padding-bottom:1rem; border-bottom:4px solid #342e1e; }
         .aa-section-title h2 { font-family:'Epilogue',sans-serif; font-weight:900; font-size:2rem; text-transform:uppercase; color:#342e1e; letter-spacing:-0.02em; font-style:italic; }
-        .aa-section-title .aa-section-icon { background:#bb0003; color:#ffca4d; width:50px; height:50px; display:flex; align-items:center; justify-content:center; border:3px solid #342e1e; flex-shrink:0; }
         .aa-objective-banner { background:#bb0003; color:#fff5e5; border-top:4px solid #342e1e; border-bottom:4px solid #342e1e; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:0.95rem; letter-spacing:0.02em; padding:0.7rem 1.5rem; text-align:center; }
         .aa-objective-banner strong { color:#ffca4d; }
-        .aa-trust-bar { background:#342e1e; color:#ffca4d; padding:1rem 1.5rem; }
-        .aa-trust-item { display:flex; align-items:center; gap:0.5rem; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:0.8rem; letter-spacing:0.05em; }
+        .aa-trust-bar { background:#342e1e; color:#ffca4d; padding:1.25rem 1.5rem; transform: rotate(-1.5deg); margin: 1rem -1rem; box-shadow: 0 6px 0 0 #bb0003; }
+        .aa-trust-row { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:0.6rem 1.2rem; }
+        .aa-trust-item { display:flex; align-items:center; gap:0.6rem; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:0.85rem; letter-spacing:0.05em; position:relative; padding-right:1.2rem; }
+        .aa-trust-item .material-symbols-outlined { font-size: 1.6rem; }
+        .aa-trust-item::after { content:"◆"; color:#bb0003; font-size:1rem; position:absolute; right:0; top:50%; transform:translateY(-50%); user-select:none; }
+        .aa-trust-item:last-child { padding-right:0; }
+        .aa-trust-item:last-child::after { display:none; }
         .aa-menu-btn { font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; background: #bb0003; color: #fff5e5; border: 3px solid #342e1e; padding: 10px 20px; font-size: 1.05rem; box-shadow: 4px 4px 0 0 #342e1e; cursor: pointer; transition: all 0.15s ease; }
         .aa-menu-btn:hover { background: #342e1e; color: #ffca4d; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 #bb0003; }
 
@@ -96,24 +100,31 @@
         }
         .aa-shortcut-toutvoir .aa-shortcut-img { background: #ffca4d; }
 
-        /* CARROUSEL */
+        /* CARROUSEL GÉANT */
         .aa-carousel-wrap {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 0.75rem;
-            margin-top: 1.5rem;
+            margin-top: 0;
+            position: relative;
         }
         .aa-carousel {
-            width: 220px;
-            height: 220px;
+            width: 380px;
+            height: 380px;
+            max-width: 100%;
             border-radius: 50%;
             background: #f5f5f7;
-            border: 4px solid #342e1e;
-            box-shadow: 6px 6px 0 0 #bb0003;
+            border: 5px solid #342e1e;
+            box-shadow: 10px 10px 0 0 #bb0003, 0 0 0 6px #ffca4d;
             position: relative;
             overflow: hidden;
             cursor: pointer;
+            transform: rotate(-3deg);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .aa-carousel:hover {
+            transform: rotate(-3deg) scale(1.03);
         }
         .aa-carousel-slide {
             position: absolute;
@@ -124,7 +135,7 @@
             justify-content: center;
             opacity: 0;
             transition: opacity 1.2s ease-in-out;
-            padding: 12px;
+            padding: 18px;
         }
         .aa-carousel-slide.active {
             opacity: 1;
@@ -141,10 +152,11 @@
             display: flex;
             gap: 6px;
             align-items: center;
+            transform: rotate(3deg);
         }
         .aa-carousel-dot {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             background: #eadcbc;
             border: 2px solid #342e1e;
@@ -172,8 +184,8 @@
             text-transform: uppercase;
             letter-spacing: 0.02em;
             text-align: center;
-            margin-top: 1.5rem;
-            margin-bottom: 0.5rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
             line-height: 1.3;
             text-shadow: 2px 2px 0 #342e1e, -1px -1px 0 #342e1e, 1px -1px 0 #342e1e, -1px 1px 0 #342e1e;
             animation: yellowBlink 0.8s ease-in-out infinite;
@@ -202,6 +214,129 @@
         .aa-hero-tapisse > * {
             position: relative;
             z-index: 2;
+        }
+
+        /* HERO 60/40 ASYMÉTRIQUE */
+        .aa-hero-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 2.5rem;
+            align-items: center;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+        .aa-hero-left {
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .aa-hero-right {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .aa-hero-stamp {
+            background: #bb0003;
+            color: #ffca4d;
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            padding: 0.5rem 1.1rem;
+            border: 3px solid #342e1e;
+            box-shadow: 4px 4px 0 0 #342e1e;
+            transform: rotate(-4deg);
+            z-index: 10;
+            margin-bottom: -0.5rem;
+            align-self: center;
+            position: relative;
+        }
+        @media (max-width: 900px) {
+            .aa-hero-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .aa-hero-left { text-align: center; align-items: center; }
+            .aa-carousel { width: 320px; height: 320px; }
+            .aa-hero-stamp { font-size: 0.75rem; padding: 0.4rem 0.9rem; }
+        }
+        @media (max-width: 480px) {
+            .aa-carousel { width: 280px; height: 280px; }
+        }
+
+        /* BANDEAU BLEU PROGRAMME */
+        .aa-programme {
+            background: #0f56bf;
+            color: #fff5e5;
+            position: relative;
+            overflow: hidden;
+            padding: 3.5rem 0;
+            border-top: 4px solid #342e1e;
+            border-bottom: 4px solid #342e1e;
+        }
+        .aa-programme::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(255, 202, 77, 0.15) 2px, transparent 0);
+            background-size: 14px 14px;
+            pointer-events: none;
+        }
+        .aa-programme-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 2.5rem;
+            align-items: center;
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        .aa-programme-left {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .aa-programme-right {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.25rem;
+        }
+        .aa-programme-card {
+            background: #342e1e;
+            border: 4px solid #ffca4d;
+            box-shadow: 6px 6px 0 0 #ffca4d;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .aa-programme-pill {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            padding: 0.7rem 1.1rem;
+            border: 3px solid #fff5e5;
+            font-size: 1rem;
+            letter-spacing: 0.02em;
+            background: #bb0003;
+            color: #fff5e5;
+        }
+        .aa-programme-pill.alt {
+            background: #755700;
+            color: #ffca4d;
+        }
+        .aa-programme-arrow {
+            color: #ffca4d;
+            font-size: 1.8rem;
+        }
+        @media (max-width: 800px) {
+            .aa-programme-grid { grid-template-columns: 1fr; gap: 1.5rem; text-align: center; }
+            .aa-programme-left { align-items: center; text-align: center; }
         }
     </style>
 </head>
@@ -257,26 +392,30 @@
 </aside>
 
 <main class="flex-grow">
-    <!-- HERO TAPISSÉ DE LOGO -->
+    <!-- HERO TAPISSÉ DE LOGO - 60/40 ASYMÉTRIQUE -->
     <section class="aa-hero-tapisse overflow-hidden">
-        <div class="container mx-auto px-6">
-            <div class="max-w-4xl mx-auto text-center flex flex-col items-center">
-                <h1 class="font-headline font-black text-5xl md:text-7xl text-primary uppercase tracking-tighter leading-none mb-6">
+        <div class="aa-hero-grid">
+            <!-- COLONNE GAUCHE : TEXTE -->
+            <div class="aa-hero-left">
+                <h1 class="font-headline font-black text-5xl md:text-6xl lg:text-7xl text-primary uppercase tracking-tighter leading-none mb-6">
                     BOÎTES VINTAGE<br/>POUR COLLECTIONNEURS
                 </h1>
-                <p class="font-body text-lg md:text-2xl text-on-surface-variant font-bold leading-tight mb-6">
+                <p class="font-body text-lg md:text-2xl text-on-surface font-bold leading-tight mb-6">
                     Reproductions soignées et pièces custom pour figurines et jouets des années 70–90.
                 </p>
                 <p class="font-body text-base md:text-lg text-on-surface-variant italic leading-tight mb-8">
                     Boîte d'origine perdue ou abîmée ?<br>
-                    <strong>Redonnez vie à votre collection.</strong>
+                    <strong class="text-primary">Redonnez vie à votre collection.</strong>
                 </p>
-                <div class="flex flex-wrap gap-3 justify-center">
-                    <a href="produits.html" class="btn-physical bg-primary text-on-primary font-headline font-black px-8 py-4 text-lg uppercase shadow-[4px_4px_0px_0px_#755700] hover:translate-y-[-2px] transition-all text-center">🛒 VOIR LA BOUTIQUE</a>
+                <div class="flex flex-wrap gap-3">
+                    <a href="produits.html" class="btn-physical bg-[#ffca4d] text-[#342e1e] font-headline font-black px-8 py-4 text-lg uppercase shadow-[4px_4px_0px_0px_#342e1e] hover:translate-y-[-2px] transition-all text-center">🛒 VOIR LA BOUTIQUE</a>
                 </div>
+            </div>
 
-                <!-- CARROUSEL -->
+            <!-- COLONNE DROITE : TAMPON + CARROUSEL GÉANT -->
+            <div class="aa-hero-right">
                 <div class="aa-carousel-wrap">
+                    <span class="aa-hero-stamp">★ NOUVEAU ★</span>
                     <div class="aa-carousel" id="aaCarousel">
                         <div class="aa-carousel-slide active">
                             <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788011003/pomelli_photoshoot_image_4_5_0708_4_vtsewo.png" alt="Archive vintage 1" loading="lazy">
@@ -296,26 +435,27 @@
                         <div class="aa-carousel-slide">
                             <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788011071/pomelli_photoshoot_image_9_16_0710_8_bino9g.png" alt="Archive vintage 6" loading="lazy">
                         </div>
-                        <!-- 🆕 Image n°7 mise à jour -->
                         <div class="aa-carousel-slide">
                             <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788036557/pomelli_photoshoot_image_2k_0829_2_rlkydr.png" alt="Archive vintage 7" loading="lazy">
                         </div>
                     </div>
                     <div class="aa-carousel-dots" id="aaCarouselDots"></div>
                 </div>
-
             </div>
         </div>
     </section>
 
-    <section class="aa-trust-bar">
+    <!-- TRUST BAR TILTÉE - REFONTE -->
+    <section class="py-6 bg-surface">
         <div class="container mx-auto px-6">
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
-                <div class="aa-trust-item justify-center"><span class="material-symbols-outlined text-secondary-container">verified_user</span> PayPal sécurisé</div>
-                <div class="aa-trust-item justify-center"><span class="material-symbols-outlined text-secondary-container">public</span> Depuis la France</div>
-                <div class="aa-trust-item justify-center"><span class="material-symbols-outlined text-secondary-container">inventory_2</span> Emballage soigné</div>
-                <div class="aa-trust-item justify-center"><span class="material-symbols-outlined text-secondary-container">local_shipping</span> Suivi de livraison</div>
-                <div class="aa-trust-item justify-center"><span class="material-symbols-outlined text-secondary-container">assignment_return</span> Retour 14 jours</div>
+            <div class="aa-trust-bar">
+                <div class="aa-trust-row">
+                    <div class="aa-trust-item"><span class="material-symbols-outlined">verified_user</span> PayPal sécurisé</div>
+                    <div class="aa-trust-item"><span class="material-symbols-outlined">public</span> Depuis la France</div>
+                    <div class="aa-trust-item"><span class="material-symbols-outlined">inventory_2</span> Emballage soigné</div>
+                    <div class="aa-trust-item"><span class="material-symbols-outlined">local_shipping</span> Suivi de livraison</div>
+                    <div class="aa-trust-item"><span class="material-symbols-outlined">assignment_return</span> Retour 14 jours</div>
+                </div>
             </div>
         </div>
     </section>
@@ -324,8 +464,7 @@
     <section class="py-16 bg-surface border-b-4 border-on-background">
         <div class="container mx-auto px-6">
             <div class="aa-section-title">
-                <div class="aa-section-icon"><span class="material-symbols-outlined text-3xl">explore</span></div>
-                <h2>🔍 RACCOURCIS DE RECHERCHE</h2>
+                <h2>RACCOURCIS DE RECHERCHE</h2>
             </div>
             <p class="text-on-surface-variant italic font-bold mb-8 text-center">Trouve ta pièce en un clic, par marque ou par décennie.</p>
 
@@ -408,26 +547,27 @@
         </div>
     </section>
 
-    <!-- PROGRAMME COLLECTIONNEUR avec texte clignotant -->
-    <section class="py-16 relative overflow-hidden bg-primary text-on-primary">
-        <div class="absolute inset-0 halftone opacity-20"></div>
-        <div class="container mx-auto px-6 relative z-10">
-            <div class="max-w-4xl mx-auto flex flex-col items-center text-center space-y-6">
-                <h2 class="font-headline font-black text-4xl md:text-6xl uppercase tracking-tighter">🎁 PROGRAMME<br/>COLLECTIONNEUR</h2>
-                <p class="font-body text-lg md:text-xl font-bold max-w-2xl">Cumulez des étoiles à chaque achat et recevez des <strong>pièces gratuites</strong> !</p>
-                <div class="flex flex-col items-center gap-4 bg-on-background p-6 border-4 border-secondary-container shadow-[8px_8px_0px_0px_#755700] rotate-1">
-                    <div class="flex items-center gap-4 text-surface">
-                        <div class="flex items-center bg-primary px-4 py-2 border-2 border-surface shadow-[4px_4px_0px_0px_#fff]"><span class="font-headline font-black text-lg uppercase">1 ACHAT = 1 ⭐</span></div>
-                        <span class="material-symbols-outlined text-3xl text-secondary-container">double_arrow</span>
-                        <div class="flex items-center bg-secondary px-4 py-2 border-2 border-surface shadow-[4px_4px_0px_0px_#fff]"><span class="font-headline font-black text-lg uppercase">10 ⭐ = 1 🎁</span></div>
+    <!-- PROGRAMME COLLECTIONNEUR - BANDEAU BLEU 2 COLONNES -->
+    <section class="aa-programme">
+        <div class="container mx-auto px-6">
+            <div class="aa-programme-grid">
+                <!-- GAUCHE : TITRE + DESCRIPTION -->
+                <div class="aa-programme-left">
+                    <h2 class="font-headline font-black text-4xl md:text-5xl uppercase tracking-tighter text-[#ffca4d]" style="font-style:italic;">🎁 PROGRAMME<br/>COLLECTIONNEUR</h2>
+                    <p class="font-body text-lg md:text-xl font-bold max-w-xl">Cumulez des étoiles à chaque achat et recevez des <strong class="text-[#ffca4d]">pièces gratuites</strong> !</p>
+                    <div class="aa-programme-card">
+                        <span class="aa-programme-pill">1 ACHAT = 1 ⭐</span>
+                        <span class="aa-programme-arrow">➜</span>
+                        <span class="aa-programme-pill alt">10 ⭐ = 1 🎁</span>
                     </div>
                 </div>
-
-                <p class="aa-blink-yellow">
-                    ⭐ Inscrivez vous gratuitement et recevez votre première étoile offerte ! ⭐
-                </p>
-
-                <a href="inscription.html" class="btn-physical inline-flex items-center gap-3 bg-secondary text-on-secondary font-headline font-black px-10 py-5 text-2xl uppercase rounded-md shadow-[6px_6px_0px_0px_#342e1e] hover:translate-y-[-3px] hover:scale-105 transition-all duration-200">S'INSCRIRE GRATUITEMENT</a>
+                <!-- DROITE : CTA + TEXTE CLIGNOTANT -->
+                <div class="aa-programme-right">
+                    <p class="aa-blink-yellow">
+                        ⭐ Inscrivez-vous gratuitement<br>et recevez votre<br>première étoile offerte ! ⭐
+                    </p>
+                    <a href="inscription.html" class="btn-physical inline-flex items-center gap-3 bg-[#ffca4d] text-[#342e1e] font-headline font-black px-10 py-5 text-2xl uppercase rounded-md shadow-[6px_6px_0px_0px_#342e1e] hover:translate-y-[-3px] hover:scale-105 transition-all duration-200">S'INSCRIRE GRATUITEMENT</a>
+                </div>
             </div>
         </div>
     </section>
