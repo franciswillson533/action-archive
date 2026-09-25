@@ -2,21 +2,18 @@
 <html class="light" lang="fr">
 <head>
     <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"/>
     <meta name="author" content="Action Archive"/>
     <meta name="language" content="French"/>
     <meta name="geo.region" content="FR"/>
 
-    <!-- 🔎 SEO TITLE & DESCRIPTION -->
     <title>Informations, Contact & Mentions Légales - Action Archive | Boîtes Vintage Repro & Custom</title>
     <meta name="description" content="Action Archive : spécialiste des reproductions de boîtes vintage et créations custom pour figurines de collection (années 70-90). Livraison France & Europe, paiement PayPal sécurisé, programme fidélité. Réponse sous 24-48h."/>
     <meta name="keywords" content="boîte vintage, reproduction boîte jouet, boîte figurine collection, custom boîte vintage, Action Archive, boîte Star Wars vintage, boîte MIB, MOC figurine, packaging collector, boîte G.I. Joe, boîte Transformers, restauration collection, boîte vintage reproduction, achat boîte figurine, boîte jouet années 80, packaging vintage custom"/>
 
-    <!-- 🔗 CANONICAL -->
     <link rel="canonical" href="https://action-archive.com/info.html"/>
 
-    <!-- 🌐 OPEN GRAPH -->
     <meta property="og:type" content="website"/>
     <meta property="og:site_name" content="Action Archive"/>
     <meta property="og:locale" content="fr_FR"/>
@@ -28,18 +25,15 @@
     <meta property="og:image:height" content="630"/>
     <meta property="og:image:alt" content="Logo Action Archive - Reproductions de boîtes vintage pour figurines"/>
 
-    <!-- 🐦 TWITTER CARD -->
     <meta name="twitter:card" content="summary_large_image"/>
     <meta name="twitter:title" content="Action Archive - Boîtes Vintage Repro & Custom pour Figurines"/>
     <meta name="twitter:description" content="Reproductions soignées et créations custom originales pour redonner vie à tes collections de figurines vintage."/>
     <meta name="twitter:image" content="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png"/>
     <meta name="twitter:image:alt" content="Action Archive - Spécialiste boîtes vintage figurines"/>
 
-    <!-- 🎨 FAVICON -->
     <link rel="icon" type="image/png" href="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png"/>
     <link rel="apple-touch-icon" href="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png"/>
 
-    <!-- 🧠 STRUCTURED DATA -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -193,6 +187,18 @@
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.1); }
         }
+
+        /* ✅ MODIF MOBILE : titre réduit sur mobile */
+        @media (max-width: 768px) {
+            .aa-info-title {
+                font-size: 2rem !important;
+                line-height: 1.1 !important;
+            }
+            .aa-info-intro {
+                font-size: 1rem !important;
+                text-align: center !important;
+            }
+        }
     </style>
 </head>
 <body class="bg-surface font-body text-on-surface overflow-x-hidden">
@@ -245,10 +251,12 @@
 
 <main class="container mx-auto px-6 py-12 min-h-screen max-w-4xl">
 
-    <!-- 🏷️ TITRE H1 -->
-    <h1 class="font-headline font-black text-5xl uppercase text-on-background italic mb-4 border-b-4 border-on-background pb-4">📋 Informations & Contact</h1>
-    <p class="font-body text-lg text-on-surface-variant mb-8 leading-relaxed">
-        Tout savoir sur <strong>Action Archive</strong>, spécialiste de la <strong>reproduction de boîtes vintage</strong> et des <strong>créations custom originales</strong> pour figurines de collection. Livraison France & Europe, paiement sécurisé, programme fidélité.
+    <!-- 🏷️ TITRE H1 (sans icône, classe responsive ajoutée) -->
+    <h1 class="aa-info-title font-headline font-black text-5xl uppercase text-on-background italic mb-4 border-b-4 border-on-background pb-4">Informations & Contact</h1>
+    
+    <!-- ✅ MODIF : Texte en bleu -->
+    <p class="aa-info-intro font-body text-lg text-tertiary mb-8 leading-relaxed">
+        Tout savoir sur <strong class="text-on-background">Action Archive</strong>, spécialiste de la <strong class="text-on-background">reproduction de boîtes vintage</strong> et des <strong class="text-on-background">créations custom originales</strong> pour figurines de collection. Livraison France & Europe, paiement sécurisé, programme fidélité.
     </p>
 
     <!-- 🖼️ PHOTOS CÔTÉ À CÔTÉ -->
@@ -339,7 +347,6 @@
     <section class="mb-12" id="contact">
         <h2 class="font-headline font-black text-3xl uppercase text-primary mb-4 italic">📧 Contacte-nous</h2>
 
-        <!-- 🔔 BADGE RÉPONSE -->
         <div class="mb-6 flex items-center gap-3 flex-wrap">
             <span class="aa-response-badge">
                 <span class="material-symbols-outlined aa-pulse" style="font-size:18px;">schedule</span>
@@ -348,10 +355,8 @@
             <span class="font-body text-sm italic text-on-surface-variant">⏰ Du lundi au vendredi</span>
         </div>
 
-        <!-- 📬 CARTE FORMULAIRE -->
         <div class="bg-surface-container-high border-4 border-on-background p-6 md:p-8 shadow-[8px_8px_0px_0px_rgba(187,0,3,1)]">
             
-            <!-- 🏷️ EN-TÊTE AVEC LOGO -->
             <div class="flex items-center gap-4 mb-6 pb-6 border-b-4 border-double border-on-background/20">
                 <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1786006674/copy_of_3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Logo Action Archive - Contact" loading="lazy" class="h-16 md:h-20 w-auto aa-logo"/>
                 <div>
@@ -360,30 +365,25 @@
                 </div>
             </div>
 
-            <!-- 📝 FORMULAIRE -->
             <form action="https://formsubmit.co/franciswillsdon533@gmail.com" method="POST" class="space-y-4">
                 
-                <!-- ⚙️ CONFIG FORMSUBMIT -->
                 <input type="hidden" name="_subject" value="📧 Nouveau message depuis Action Archive"/>
                 <input type="hidden" name="_template" value="table"/>
                 <input type="hidden" name="_captcha" value="false"/>
                 <input type="hidden" name="_next" value="https://action-archive.com/info.html?sent=1"/>
                 <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off"/>
 
-                <!-- 🧑 NOM -->
                 <div>
                     <label for="aa-name" class="font-headline font-black uppercase text-sm block mb-2 text-on-background">👤 Nom complet <span class="text-primary">*</span></label>
                     <input type="text" id="aa-name" name="Nom" required placeholder="Ton nom et prénom" class="aa-input"/>
                 </div>
 
-                <!-- 📧 EMAIL -->
                 <div>
                     <label for="aa-email" class="font-headline font-black uppercase text-sm block mb-2 text-on-background">📧 Adresse e-mail <span class="text-primary">*</span></label>
                     <input type="email" id="aa-email" name="Email" required placeholder="ton.email@exemple.com" class="aa-input"/>
                     <p class="text-xs italic text-on-surface-variant mt-1">Utilisée uniquement pour te répondre 🔒</p>
                 </div>
 
-                <!-- 🎯 SUJET -->
                 <div>
                     <label for="aa-subject" class="font-headline font-black uppercase text-sm block mb-2 text-on-background">🎯 Sujet <span class="text-primary">*</span></label>
                     <select id="aa-subject" name="Sujet" required class="aa-input">
@@ -398,13 +398,11 @@
                     </select>
                 </div>
 
-                <!-- 💬 MESSAGE -->
                 <div>
                     <label for="aa-message" class="font-headline font-black uppercase text-sm block mb-2 text-on-background">💬 Ton message <span class="text-primary">*</span></label>
                     <textarea id="aa-message" name="Message" required rows="6" placeholder="Décris ta demande ici... Sois précis, ça nous aide à te répondre plus vite !" class="aa-input" style="resize:vertical; min-height:140px;"></textarea>
                 </div>
 
-                <!-- 🛡️ RGPD -->
                 <div class="bg-surface-container-low border-2 border-on-background p-3 text-xs font-body">
                     <label class="flex items-start gap-2 cursor-pointer">
                         <input type="checkbox" required class="mt-1 accent-[#bb0003]"/>
@@ -412,7 +410,6 @@
                     </label>
                 </div>
 
-                <!-- 🚀 BOUTON ENVOI -->
                 <button type="submit" class="aa-submit">
                     ✉️ Envoyer mon message
                 </button>
@@ -508,7 +505,6 @@ function closeLightbox() {
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 
-// 🎉 TOAST APRÈS ENVOI
 (function(){
     const params = new URLSearchParams(window.location.search);
     if (params.get('sent') === '1') {
