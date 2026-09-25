@@ -32,7 +32,7 @@
         #aa-toasts{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
         .aa-logo { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease; filter: drop-shadow(2px 2px 0px rgba(52, 46, 30, 0.15)); }
         .aa-logo-link:hover .aa-logo { transform: rotate(-5deg) scale(1.05); filter: drop-shadow(3px 3px 0px rgba(187, 0, 3, 0.4)); }
-        .aa-stars-badge{position:absolute;top:-7px;right:-7px;min-width:18px;height:18px;background:#ffca4d;color:#342e1e;font-family:'Epilogue',sans-serif;font-weight:900;font-size:10px;border:2px solid #342e1e;border-radius:2px;display:flex;align-items:center;justify-content:center;padding:0 3px;}
+        .aa-stars-badge{position:absolute;top:-7px;right:-8px;min-width:18px;height:18px;background:#ffca4d;color:#342e1e;font-family:'Epilogue',sans-serif;font-weight:900;font-size:10px;border:2px solid #342e1e;border-radius:2px;display:flex;align-items:center;justify-content:center;padding:0 3px;}
         .aa-nav-gift-badge{position:absolute;bottom:-8px;right:-8px;font-size:14px;display:none;align-items:center;justify-content:center;}
         @keyframes giftPulse { 0%,100%{box-shadow:0 0 0 0 rgba(255,202,77,0.7);} 50%{box-shadow:0 0 0 6px rgba(255,202,77,0);} }
         .aa-nav-stars.aa-has-gift { border-color:#ffca4d !important; color:#ffca4d !important; animation: giftPulse 1.5s infinite; }
@@ -42,10 +42,9 @@
         .aa-objective-banner strong { color:#ffca4d; }
         .aa-trust-bar { background:#342e1e; color:#ffca4d; padding:1.25rem 1.5rem; transform: rotate(-1.5deg); margin: 1rem -1rem; box-shadow: 0 6px 0 0 #bb0003; }
         .aa-trust-row { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:0.6rem 1.2rem; }
-        .aa-trust-item { display:flex; align-items:center; gap:0.6rem; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:0.85rem; letter-spacing:0.05em; position:relative; padding-right:1.2rem; }
+        .aa-trust-item { display:flex; align-items:center; gap:0.6rem; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:0.85rem; letter-spacing:0.05em; position:relative; padding-right:0; }
         .aa-trust-item .material-symbols-outlined { font-size: 1.6rem; }
-        .aa-trust-item::after { content:"◆"; color:#bb0003; font-size:1rem; position:absolute; right:0; top:50%; transform:translateY(-50%); user-select:none; }
-        .aa-trust-item:last-child { padding-right:0; }
+        .aa-trust-item::after { content: none; }
         .aa-trust-item:last-child::after { display:none; }
         .aa-menu-btn { font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; background: #bb0003; color: #fff5e5; border: 3px solid #342e1e; padding: 10px 20px; font-size: 1.05rem; box-shadow: 4px 4px 0 0 #342e1e; cursor: pointer; transition: all 0.15s ease; }
         .aa-menu-btn:hover { background: #342e1e; color: #ffca4d; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 #bb0003; }
@@ -212,6 +211,7 @@
             z-index: 2;
         }
 
+        /* ✅ MODIF : inversion de l'ordre sur mobile = colonne droite en premier */
         .aa-hero-grid {
             display: grid;
             grid-template-columns: 1.4fr 1fr;
@@ -249,14 +249,38 @@
             align-self: center;
             position: relative;
         }
+
+        /* ✅ MODIF MOBILE : Carrousel EN BAS + texte centré + titre réduit */
         @media (max-width: 900px) {
-            .aa-hero-grid { grid-template-columns: 1fr; gap: 2rem; }
-            .aa-hero-left { text-align: center; align-items: center; }
-            .aa-carousel { width: 320px; height: 320px; }
-            .aa-hero-stamp { font-size: 0.75rem; padding: 0.4rem 0.9rem; }
+            .aa-hero-grid { 
+                grid-template-columns: 1fr; 
+                gap: 1.5rem;
+            }
+            /* Inverse l'ordre : texte d'abord, carrousel après */
+            .aa-hero-left { order: 1; }
+            .aa-hero-right { order: 2; }
+            .aa-hero-left { 
+                text-align: center !important; 
+                align-items: center !important; 
+            }
+            .aa-hero-left h1 {
+                font-size: 2rem !important;
+                line-height: 1.05;
+                margin-bottom: 1rem !important;
+            }
+            .aa-hero-left p {
+                font-size: 1rem !important;
+                margin-bottom: 1rem !important;
+                text-align: center !important;
+            }
+            .aa-carousel { width: 260px; height: 260px; }
+            .aa-hero-stamp { font-size: 0.7rem; padding: 0.3rem 0.8rem; }
         }
         @media (max-width: 480px) {
-            .aa-carousel { width: 280px; height: 280px; }
+            .aa-carousel { width: 220px; height: 220px; }
+            .aa-hero-left h1 {
+                font-size: 1.7rem !important;
+            }
         }
 
         .aa-programme {
@@ -305,7 +329,7 @@
             padding: 1.25rem 1.5rem;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.5rem;  /* ✅ MODIF : gap réduit car plus de flèche */
             flex-wrap: wrap;
             justify-content: center;
         }
@@ -324,10 +348,9 @@
             background: #755700;
             color: #ffca4d;
         }
-        .aa-programme-arrow {
-            color: #ffca4d;
-            font-size: 1.8rem;
-        }
+        /* ✅ MODIF : flèche ➜ supprimée */
+        .aa-programme-arrow { display: none; }
+
         @media (max-width: 800px) {
             .aa-programme-grid { grid-template-columns: 1fr; gap: 1.5rem; text-align: center; }
             .aa-programme-left { align-items: center; text-align: center; }
@@ -485,7 +508,6 @@
                 </a>
                 <a href="produits.html?brands=Popy" class="aa-shortcut-btn">
                     <div class="aa-shortcut-img">
-                        <!-- ✅ MODIF : Nouvelle image Popy -->
                         <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1790074873/Black_robot_logo_design_2K_wcpl36.jpg" alt="Popy" loading="lazy"/>
                     </div>
                     <span class="aa-shortcut-label">POPY</span>
@@ -522,7 +544,6 @@
                 </a>
                 <a href="produits.html?brands=Ceji,Arbois" class="aa-shortcut-btn">
                     <div class="aa-shortcut-img">
-                        <!-- ✅ MODIF : Nouvelle image Action Joe -->
                         <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1790074866/Action_Man_logo_translation_2K_20260922123114_dry3rp.jpg" alt="Action Joe" loading="lazy"/>
                     </div>
                     <span class="aa-shortcut-label">ACTION JOE</span>
@@ -544,9 +565,9 @@
                 <div class="aa-programme-left">
                     <h2 class="font-headline font-black text-4xl md:text-5xl uppercase tracking-tighter text-[#ffca4d]" style="font-style:italic;">🎁 PROGRAMME<br/>COLLECTIONNEUR</h2>
                     <p class="font-body text-lg md:text-xl font-bold max-w-xl">Cumulez des étoiles à chaque achat et recevez des <strong class="text-[#ffca4d]">pièces gratuites</strong> !</p>
+                    <!-- ✅ MODIF : flèche ➜ supprimée -->
                     <div class="aa-programme-card">
                         <span class="aa-programme-pill">1 ACHAT = 1 ⭐</span>
-                        <span class="aa-programme-arrow">➜</span>
                         <span class="aa-programme-pill alt">10 ⭐ = 1 🎁</span>
                     </div>
                 </div>
