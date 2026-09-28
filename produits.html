@@ -2,7 +2,7 @@
 <html class="light" lang="fr">
 <head>
     <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <meta name="robots" content="index, follow"/>
     <meta name="description" content="Catalogue Action Archive - Toutes nos reproductions et créations custom de boîtes vintage pour figurines de collection. Filtrez par type, collection ou décennie."/>
     <link rel="canonical" href="https://action-archive.com/produits.html"/>
@@ -114,6 +114,41 @@
         .aa-filter-btn[data-value="all"].active { background:#bb0003; }
         .aa-filter-btn.reproduction.active { background:#0f56bf; }
         .aa-filter-btn.custom.active { background:#7b1fa2; }
+
+        /* ✅ MODIF : Titre H1 responsive (classe ajoutée) */
+        .aa-products-title {
+            font-size: 2.5rem;
+            color: #0f56bf;
+        }
+        .aa-products-subtitle {
+            font-size: 1rem;
+        }
+
+        @media (max-width: 900px) {
+            .aa-products-title {
+                font-size: 1.8rem !important;
+                text-align: center !important;
+            }
+            .aa-products-subtitle {
+                font-size: 0.95rem !important;
+                text-align: center !important;
+            }
+            .search-big {
+                padding: 0.6rem 0.8rem !important;
+            }
+            .search-big input {
+                font-size: 12px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .aa-products-title {
+                font-size: 1.5rem !important;
+            }
+            .aa-products-subtitle {
+                font-size: 0.85rem !important;
+            }
+        }
     </style>
 </head>
 <body class="bg-surface font-body text-on-surface overflow-x-hidden">
@@ -159,11 +194,12 @@
 </aside>
 
 <main class="container mx-auto px-6 py-12 min-h-screen">
-    <h1 class="font-headline font-black uppercase italic mb-2 border-b-4 border-on-background pb-4 leading-tight" style="font-size: 2.5rem; color: #0f56bf;">
+    <!-- ✅ MODIF : classes ajoutées pour responsive -->
+    <h1 class="aa-products-title font-headline font-black uppercase italic mb-2 border-b-4 border-on-background pb-4 leading-tight">
         Toutes les<br/>
         Reproductions <span style="color: #7b1fa2;">&amp; Custom</span>
     </h1>
-    <p class="text-on-surface-variant font-bold italic mb-6">Filtrez par type, collection ou décennie pour trouver votre bonheur.</p>
+    <p class="aa-products-subtitle text-on-surface-variant font-bold italic mb-6">Filtrez par type, collection ou décennie pour trouver votre bonheur.</p>
 
     <div id="aa-active-filters" class="mb-4"></div>
     
@@ -412,7 +448,6 @@ function attachAddToCart() {
 
 async function fetchProducts() {
     try {
-        // ✅ MODIF VERCEL : URL compatible
         const response = await fetch('/api/airtable-proxy');
         if (!response.ok) throw new Error('HTTP ' + response.status);
         const data = await response.json();
