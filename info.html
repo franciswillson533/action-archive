@@ -115,15 +115,20 @@
             box-shadow: 6px 6px 0 0 #bb0003;
         }
         
-        .aa-archive-img { transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer; }
-        .aa-archive-img:hover { transform: rotate(0deg) translateY(-4px) scale(1.02) !important; }
+        /* ✅ MODIF : plus de transform sur les vidéos (pas d'effet hover) */
+        .aa-archive-video { 
+            width: 100%; 
+            height: auto; 
+            display: block; 
+            background: #342e1e;
+        }
+        
         .aa-lightbox { position: fixed; inset: 0; background: rgba(52, 46, 30, 0.95); z-index: 200; display: none; align-items: center; justify-content: center; padding: 2rem; cursor: zoom-out; }
         .aa-lightbox.open { display: flex; animation: fadeIn 0.3s ease; }
-        .aa-lightbox img { max-width: 90vw; max-height: 90vh; border: 6px solid #342e1e; box-shadow: 12px 12px 0px 0px #ffca4d; }
+        .aa-lightbox video { max-width: 90vw; max-height: 90vh; border: 6px solid #342e1e; box-shadow: 12px 12px 0px 0px #ffca4d; }
         .aa-lightbox-close { position: absolute; top: 20px; right: 20px; background: #ffca4d; color: #342e1e; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border: 3px solid #342e1e; cursor: pointer; font-family: 'Epilogue', sans-serif; font-weight: 900; font-size: 24px; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* 📨 FORMULAIRE */
         .aa-input {
             width: 100%;
             background: #fff5e5;
@@ -188,7 +193,6 @@
             50% { transform: scale(1.1); }
         }
 
-        /* ✅ MODIF MOBILE : titre réduit sur mobile */
         @media (max-width: 768px) {
             .aa-info-title {
                 font-size: 2rem !important;
@@ -251,30 +255,45 @@
 
 <main class="container mx-auto px-6 py-12 min-h-screen max-w-4xl">
 
-    <!-- 🏷️ TITRE H1 (sans icône, classe responsive ajoutée) -->
     <h1 class="aa-info-title font-headline font-black text-5xl uppercase text-on-background italic mb-4 border-b-4 border-on-background pb-4">Informations & Contact</h1>
     
-    <!-- ✅ MODIF : Texte en bleu -->
     <p class="aa-info-intro font-body text-lg text-tertiary mb-8 leading-relaxed">
         Tout savoir sur <strong class="text-on-background">Action Archive</strong>, spécialiste de la <strong class="text-on-background">reproduction de boîtes vintage</strong> et des <strong class="text-on-background">créations custom originales</strong> pour figurines de collection. Livraison France & Europe, paiement sécurisé, programme fidélité.
     </p>
 
-    <!-- 🖼️ PHOTOS CÔTÉ À CÔTÉ -->
+    <!-- ✅ MODIF : Vidéos droites, sans rotation ni hover -->
     <section class="mb-12">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <figure class="bg-surface-container-high border-4 border-on-background p-3 shadow-[6px_6px_0px_0px_rgba(187,0,3,1)] rotate-[-1deg] aa-archive-img">
-                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335842/pomelli_photoshoot_image_9_16_0704_lqbkfh.png" alt="Reproduction boîte vintage Star Wars Action Archive - Packaging figurine collection années 80" loading="lazy" class="w-full h-auto"/>
-                <figcaption class="font-label font-bold text-[10px] uppercase tracking-widest text-on-surface-variant mt-3 text-center">📦 Reproduction boîte vintage — Pièce d'archive pour collectionneurs</figcaption>
+            <figure class="bg-surface-container-high border-4 border-on-background p-3 shadow-[6px_6px_0px_0px_rgba(187,0,3,1)]">
+                <video 
+                    src="https://res.cloudinary.com/uvnbvhiw/video/upload/v1790637493/pomelli_creative_video_9_16_0929_geyjb7.mp4" 
+                    class="aa-archive-video" 
+                    autoplay 
+                    muted 
+                    loop 
+                    playsinline
+                    preload="auto"
+                    style="aspect-ratio: 9/16; object-fit: cover;">
+                </video>
+                <figcaption class="font-label font-bold text-[10px] uppercase tracking-widest text-on-surface-variant mt-3 text-center">🎬 Reproduction boîte vintage — Pièce d'archive pour collectionneurs</figcaption>
             </figure>
-            <figure class="bg-surface-container-high border-4 border-on-background p-3 shadow-[6px_6px_0px_0px_rgba(15,86,191,1)] rotate-[1deg] aa-archive-img">
-                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783340700/pomelli_photoshoot_image_9_16_0706_1_s6xz8j.png" alt="Reproduction boîte vintage Star Wars Action Archive - Packaging figurine collection années 80" loading="lazy" class="w-full h-auto"/>
-                <figcaption class="font-label font-bold text-[10px] uppercase tracking-widest text-on-surface-variant mt-3 text-center">📦 Reproduction boîte vintage — Pièce d'archive pour collectionneurs</figcaption>
+            <figure class="bg-surface-container-high border-4 border-on-background p-3 shadow-[6px_6px_0px_0px_rgba(15,86,191,1)]">
+                <video 
+                    src="https://res.cloudinary.com/uvnbvhiw/video/upload/v1790637511/pomelli_creative_video_9_16_0929_1_xnutv4.mp4" 
+                    class="aa-archive-video" 
+                    autoplay 
+                    muted 
+                    loop 
+                    playsinline
+                    preload="auto"
+                    style="aspect-ratio: 9/16; object-fit: cover;">
+                </video>
+                <figcaption class="font-label font-bold text-[10px] uppercase tracking-widest text-on-surface-variant mt-3 text-center">🎬 Reproduction boîte vintage — Pièce d'archive pour collectionneurs</figcaption>
             </figure>
         </div>
-        <p class="text-center font-body text-xs italic text-on-surface-variant mt-3">ℹ️ Ces photos représentent des <strong>reproductions</strong> (et non des customs).</p>
+        <p class="text-center font-body text-xs italic text-on-surface-variant mt-3">ℹ️ Ces vidéos représentent des <strong>reproductions</strong> (et non des customs).</p>
     </section>
 
-    <!-- ✅ NOTRE OBJECTIF -->
     <section class="mb-12 bg-secondary-container border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_rgba(187,0,3,1)]">
         <h2 class="font-headline font-black text-3xl uppercase text-primary mb-4 italic">🎯 Notre objectif</h2>
         <p class="font-body text-lg leading-relaxed mb-3"><strong>Action Archive</strong> est spécialisée dans la <strong>préservation et la vente de boîtes vintage</strong> pour figurines et jouets de collection des années 70 à 90.</p>
@@ -282,7 +301,6 @@
         <p class="font-body text-base italic text-on-surface-variant"><strong>⚠️ À noter :</strong> nous ne vendons <strong>aucune boîte vintage d'époque</strong>. Nous proposons exclusivement des <strong>reproductions soignées</strong> et des <strong>créations custom originales</strong>.</p>
     </section>
 
-    <!-- ✅ LES 2 TYPES DE PIÈCES -->
     <section class="mb-12">
         <h2 class="font-headline font-black text-3xl uppercase text-primary mb-4 italic">📦 Ce que je propose</h2>
         <div class="space-y-3">
@@ -299,7 +317,6 @@
         </div>
     </section>
 
-    <!-- ❓ FAQ -->
     <section class="mb-12">
         <h2 class="font-headline font-black text-3xl uppercase text-primary mb-4 italic">❓ Questions fréquentes</h2>
         <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer">Vendez-vous des boîtes originales d'époque ?</summary><p class="mt-3 font-body"><strong>Non.</strong> Toutes les pièces vendues sur Action Archive sont des <strong>reproductions</strong> (impression haute qualité) ou des <strong>créations custom</strong> originales. Aucune boîte vintage d'époque n'est proposée à la vente. Cela garantit une traçabilité et une transparence totale.</p></details>
@@ -313,7 +330,6 @@
         <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer">Vous ne trouvez pas la boîte que je cherche ?</summary><p class="mt-3 font-body">Contactez-nous via le formulaire ci-dessous ou par email à <strong>contact@action-archive.com</strong>. Nous pouvons étudier les demandes spécifiques.</p></details>
     </section>
 
-    <!-- 🚚 LIVRAISON & PAIEMENT -->
     <section class="mb-12">
         <h2 class="font-headline font-black text-3xl uppercase text-primary mb-4 italic">🚚 Livraison & Paiement</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -343,7 +359,6 @@
         </div>
     </section>
 
-    <!-- 📨 FORMULAIRE DE CONTACT -->
     <section class="mb-12" id="contact">
         <h2 class="font-headline font-black text-3xl uppercase text-primary mb-4 italic">📧 Contacte-nous</h2>
 
@@ -421,7 +436,6 @@
         </div>
     </section>
 
-    <!-- 📱 AUTRES MOYENS -->
     <section class="mb-12">
         <h3 class="font-headline font-black text-2xl uppercase text-primary mb-4 italic">📱 Autres moyens de nous joindre</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -443,7 +457,6 @@
         </div>
     </section>
 
-    <!-- ⚖️ MENTIONS LÉGALES -->
     <section class="mb-12">
         <h2 class="font-headline font-black text-3xl uppercase text-primary mb-4 italic">⚖️ Mentions Légales & CGV</h2>
         <div class="bg-surface-container-high border-4 border-on-background p-6 text-sm font-body space-y-2 mb-6">
@@ -475,7 +488,7 @@
 <!-- LIGHTBOX -->
 <div id="aa-lightbox" class="aa-lightbox" onclick="closeLightbox()">
     <button class="aa-lightbox-close" onclick="closeLightbox()" aria-label="Fermer">✕</button>
-    <img id="aa-lightbox-img" src="" alt="Image agrandie"/>
+    <video id="aa-lightbox-video" controls style="display:none; max-width: 90vw; max-height: 90vh; border: 6px solid #342e1e; box-shadow: 12px 12px 0px 0px #ffca4d;"></video>
 </div>
 
 <footer class="bg-[#342e1e] border-t-8 border-double border-[#755700] w-full py-12 px-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-20">
@@ -494,13 +507,10 @@
 <script>
 function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
 
-function openLightbox(src) {
-    document.getElementById('aa-lightbox').classList.add('open');
-    document.getElementById('aa-lightbox-img').src = src;
-    document.body.style.overflow = 'hidden';
-}
 function closeLightbox() {
     document.getElementById('aa-lightbox').classList.remove('open');
+    const v = document.getElementById('aa-lightbox-video');
+    if (v) { v.pause(); v.src = ''; v.style.display = 'none'; }
     document.body.style.overflow = '';
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
