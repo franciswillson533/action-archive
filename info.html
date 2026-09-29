@@ -115,8 +115,7 @@
             box-shadow: 6px 6px 0 0 #bb0003;
         }
         
-        /* ✅ MODIF : plus de transform sur les vidéos (pas d'effet hover) */
-        .aa-archive-video { 
+        .aa-archive-video, .aa-archive-img { 
             width: 100%; 
             height: auto; 
             display: block; 
@@ -125,7 +124,7 @@
         
         .aa-lightbox { position: fixed; inset: 0; background: rgba(52, 46, 30, 0.95); z-index: 200; display: none; align-items: center; justify-content: center; padding: 2rem; cursor: zoom-out; }
         .aa-lightbox.open { display: flex; animation: fadeIn 0.3s ease; }
-        .aa-lightbox video { max-width: 90vw; max-height: 90vh; border: 6px solid #342e1e; box-shadow: 12px 12px 0px 0px #ffca4d; }
+        .aa-lightbox video, .aa-lightbox img { max-width: 90vw; max-height: 90vh; border: 6px solid #342e1e; box-shadow: 12px 12px 0px 0px #ffca4d; }
         .aa-lightbox-close { position: absolute; top: 20px; right: 20px; background: #ffca4d; color: #342e1e; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border: 3px solid #342e1e; cursor: pointer; font-family: 'Epilogue', sans-serif; font-weight: 900; font-size: 24px; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
@@ -261,7 +260,6 @@
         Tout savoir sur <strong class="text-on-background">Action Archive</strong>, spécialiste de la <strong class="text-on-background">reproduction de boîtes vintage</strong> et des <strong class="text-on-background">créations custom originales</strong> pour figurines de collection. Livraison France & Europe, paiement sécurisé, programme fidélité.
     </p>
 
-    <!-- ✅ MODIF : Vidéos droites, sans rotation ni hover -->
     <section class="mb-12">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <figure class="bg-surface-container-high border-4 border-on-background p-3 shadow-[6px_6px_0px_0px_rgba(187,0,3,1)]">
@@ -457,6 +455,34 @@
         </div>
     </section>
 
+    <!-- ✅ NOUVEAU : Vidéo + Photo juste avant les Mentions Légales -->
+    <section class="mb-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <figure class="bg-surface-container-high border-4 border-on-background p-3 shadow-[6px_6px_0px_0px_rgba(15,86,191,1)]">
+                <video 
+                    src="https://res.cloudinary.com/uvnbvhiw/video/upload/v1790640412/pomelli_creative_video_9_16_0929_2_nwue5h.mp4" 
+                    class="aa-archive-video" 
+                    autoplay 
+                    muted 
+                    loop 
+                    playsinline
+                    preload="auto"
+                    style="aspect-ratio: 9/16; object-fit: cover;">
+                </video>
+                <figcaption class="font-label font-bold text-[10px] uppercase tracking-widest text-on-surface-variant mt-3 text-center">🎬 Reproduction en vidéo</figcaption>
+            </figure>
+            <figure class="bg-surface-container-high border-4 border-on-background p-3 shadow-[6px_6px_0px_0px_rgba(187,0,3,1)]">
+                <img 
+                    src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1790640443/pomelli_creative_image_9_16_0929_zzywd8.png" 
+                    alt="Reproduction boîte vintage Action Archive" 
+                    class="aa-archive-img"
+                    loading="lazy"
+                    style="aspect-ratio: 9/16; object-fit: cover;">
+                <figcaption class="font-label font-bold text-[10px] uppercase tracking-widest text-on-surface-variant mt-3 text-center">📦 Reproduction en image</figcaption>
+            </figure>
+        </div>
+    </section>
+
     <section class="mb-12">
         <h2 class="font-headline font-black text-3xl uppercase text-primary mb-4 italic">⚖️ Mentions Légales & CGV</h2>
         <div class="bg-surface-container-high border-4 border-on-background p-6 text-sm font-body space-y-2 mb-6">
@@ -489,6 +515,7 @@
 <div id="aa-lightbox" class="aa-lightbox" onclick="closeLightbox()">
     <button class="aa-lightbox-close" onclick="closeLightbox()" aria-label="Fermer">✕</button>
     <video id="aa-lightbox-video" controls style="display:none; max-width: 90vw; max-height: 90vh; border: 6px solid #342e1e; box-shadow: 12px 12px 0px 0px #ffca4d;"></video>
+    <img id="aa-lightbox-img" src="" alt="Image agrandie" style="display:none;"/>
 </div>
 
 <footer class="bg-[#342e1e] border-t-8 border-double border-[#755700] w-full py-12 px-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-20">
@@ -510,7 +537,9 @@ function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&
 function closeLightbox() {
     document.getElementById('aa-lightbox').classList.remove('open');
     const v = document.getElementById('aa-lightbox-video');
+    const i = document.getElementById('aa-lightbox-img');
     if (v) { v.pause(); v.src = ''; v.style.display = 'none'; }
+    if (i) { i.src = ''; i.style.display = 'none'; }
     document.body.style.overflow = '';
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
