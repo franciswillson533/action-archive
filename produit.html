@@ -84,7 +84,7 @@
 </header>
 
 <div id="drawer-overlay" class="drawer-overlay fixed inset-0 bg-on-background/40 backdrop-blur-sm z-[90]" onclick="toggleDrawer()"></div>
-<aside id="side-drawer" class="fixed top-0 right-0 h-full w-full max-w-[320px] bg-surface-container-high border-l-8 border-primary z-[100] transform translate-xfull overflow-y-auto">
+<aside id="side-drawer" class="fixed top-0 right-0 h-full w-full max-w-[320px] bg-surface-container-high border-l-8 border-primary z-[100] transform translate-x-full overflow-y-auto">
     <div class="p-8 space-y-8 flex flex-col h-full text-on-surface">
         <div class="flex justify-between items-center border-b-4 border-on-background/10 pb-6">
             <h2 class="font-headline font-black text-2xl text-primary italic uppercase">MENU</h2>
@@ -182,9 +182,6 @@
 <div id="aa-toasts"></div>
 <script src="aa-core.js"></script>
 <script>
-// ✅ PLACEHOLDER_IMG défini localement (fallback si pas dans aa-core.js)
-
-
 function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
 
 let currentProduct = null;
@@ -275,11 +272,12 @@ async function loadProduct() {
         currentImgRecto = getImageUrl(f['Lien Recto']) || getImageUrl(f.Image) || '';
 
         const mainImg = document.getElementById('aa-main-img');
+        // ✅ FIX : pas de PLACEHOLDER_IMG, on met juste une image de fond si vide
         if (currentImgRecto) {
             mainImg.src = currentImgRecto;
-            mainImg.onerror = function() { this.onerror = null; this.src = PLACEHOLDER_IMG; this.style.objectFit = 'contain'; this.style.background = '#eadcbc'; };
+            mainImg.onerror = function() { this.onerror = null; this.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><rect width="400" height="400" fill="#eadcbc"/><text x="200" y="200" text-anchor="middle" font-family="Arial" font-size="20" fill="#635b48">PHOTO INDISPONIBLE</text></svg>'); this.style.objectFit = 'contain'; this.style.background = '#eadcbc'; };
         } else {
-            mainImg.src = PLACEHOLDER_IMG;
+            mainImg.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><rect width="400" height="400" fill="#eadcbc"/><text x="200" y="200" text-anchor="middle" font-family="Arial" font-size="20" fill="#635b48">PHOTO INDISPONIBLE</text></svg>');
             mainImg.style.objectFit = 'contain';
             mainImg.style.background = '#eadcbc';
         }
@@ -339,9 +337,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const items = [{ key: 'facebook', icon: 'facebook', label: 'FACEBOOK' },{ key: 'twitter', icon: 'share', label: 'TWITTER' },{ key: 'instagram', icon: 'camera_alt', label: 'INSTAGRAM' },{ key: 'tiktok', icon: 'music_note', label: 'TIKTOK' },{ key: 'youtube', icon: 'play_circle', label: 'YOUTUBE' }];
     items.forEach(item => {
         const data = social[item.key];
-        if (data && data.enabled && data.url) nav.innerHTML += `<a href="${aaEscapeHtml(data.url)}" target="_blank" rel="noopener" class="group flex flex-col items-center gap-1"><div class="bg-[#ffca4d] text-[#342e1e] p-2 rounded-sm group-hover:bg-white transition-colors btn-physical"><span class="material-symbols-outlined">${item.icon}</span></div><span class="font-label font-bold text-[9px] text-[#eadcbc] tracking-widest uppercase">${item.label}</span></a>`;
+        if (data && data.enabled && data.url) nav.innerHTML += `<a href="${aaEscapeHtml(data.url)}" target="_blank" rel="noopener" class="text-[#ffca4d]"><span class="material-symbols-outlined">${item.icon}</span></a>`;
     });
-    if (nav.innerHTML === '') nav.innerHTML = '<p class="text-[#eadcbc] text-xs italic">Aucun réseau social</p>';
 })();
 </script>
 </body>
