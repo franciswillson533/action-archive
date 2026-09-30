@@ -2,7 +2,7 @@
 <html class="light" lang="fr">
 <head>
     <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="width=device-width, initial-scale=1.0"/>
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"/>
     <meta name="author" content="Action Archive"/>
     <meta name="language" content="French"/>
@@ -115,16 +115,11 @@
             box-shadow: 6px 6px 0 0 #bb0003;
         }
         
-        .aa-archive-video, .aa-archive-img { 
-            width: 100%; 
-            height: auto; 
-            display: block; 
-            background: #342e1e;
-        }
-        
+        .aa-archive-img { transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer; }
+        .aa-archive-img:hover { transform: rotate(0deg) translateY(-4px) scale(1.02) !important; }
         .aa-lightbox { position: fixed; inset: 0; background: rgba(52, 46, 30, 0.95); z-index: 200; display: none; align-items: center; justify-content: center; padding: 2rem; cursor: zoom-out; }
         .aa-lightbox.open { display: flex; animation: fadeIn 0.3s ease; }
-        .aa-lightbox video, .aa-lightbox img { max-width: 90vw; max-height: 90vh; border: 6px solid #342e1e; box-shadow: 12px 12px 0px 0px #ffca4d; }
+        .aa-lightbox img { max-width: 90vw; max-height: 90vh; border: 6px solid #342e1e; box-shadow: 12px 12px 0px 0px #ffca4d; }
         .aa-lightbox-close { position: absolute; top: 20px; right: 20px; background: #ffca4d; color: #342e1e; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border: 3px solid #342e1e; cursor: pointer; font-family: 'Epilogue', sans-serif; font-weight: 900; font-size: 24px; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
@@ -212,10 +207,12 @@
             <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Logo Action Archive - Spécialiste boîtes vintage figurines" loading="eager" class="aa-logo h-12 md:h-14 w-auto"/>
             <span class="text-2xl md:text-3xl font-black italic text-[#bb0003] font-headline uppercase tracking-tighter group-hover:text-[#0f56bf] transition-colors">Action Archive</span>
         </a>
+        <!-- ✅ AJOUT : Lien Toys History -->
         <nav class="hidden md:flex items-center gap-6 font-headline font-black uppercase tracking-tighter text-sm">
             <a class="text-[#342e1e] hover:text-[#bb0003]" href="index.html">Accueil</a>
             <a class="text-[#342e1e] hover:text-[#bb0003]" href="produits.html">Produits</a>
             <a class="text-[#0f56bf] underline decoration-4 underline-offset-8" href="info.html">Info</a>
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="toys-history.html">Toys History</a>
             <a class="text-[#342e1e] hover:text-[#bb0003]" href="panier.html">Commande</a>
             <a class="text-[#342e1e] hover:text-[#bb0003]" href="inscription.html">Inscription</a>
         </nav>
@@ -235,16 +232,18 @@
 </header>
 
 <div id="drawer-overlay" class="drawer-overlay fixed inset-0 bg-on-background/40 backdrop-blur-sm z-[90]" onclick="toggleDrawer()"></div>
-<aside id="side-drawer" class="fixed top-0 right-0 h-full w-full max-w-[320px] bg-surface-container-high border-l-8 border-primary z-[100] transform translate-x-full overflow-y-auto">
+<aside id="side-drawer" class="fixed top-0 right-0 h-full w-full max-w-[320px] bg-surface-container-high border-l-8 border-primary z-[100] transform translate-xfull overflow-y-auto">
     <div class="p-8 space-y-8 flex flex-col h-full text-on-surface">
         <div class="flex justify-between items-center border-b-4 border-on-background/10 pb-6">
             <h2 class="font-headline font-black text-2xl text-primary italic uppercase">MENU</h2>
             <button class="text-on-background" onclick="toggleDrawer()"><span class="material-symbols-outlined text-3xl">close</span></button>
         </div>
+        <!-- ✅ AJOUT : Lien Toys History -->
         <nav class="flex flex-col gap-3">
             <a href="index.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">ACCUEIL</a>
             <a href="produits.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">PRODUITS</a>
             <a href="info.html" class="p-4 bg-surface-container-low border-2 border-primary font-headline font-black uppercase text-primary">INFO</a>
+            <a href="toys-history.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">TOYS HISTORY</a>
             <a href="panier.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">COMMANDE</a>
             <a href="inscription.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">INSCRIPTION</a>
             <a href="admin.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">ADMIN</a>
@@ -254,42 +253,23 @@
 
 <main class="container mx-auto px-6 py-12 min-h-screen max-w-4xl">
 
-    <h1 class="aa-info-title font-headline font-black text-5xl uppercase text-on-background italic mb-4 border-b-4 border-on-background pb-4">Informations & Contact</h1>
-    
-    <p class="aa-info-intro font-body text-lg text-tertiary mb-8 leading-relaxed">
-        Tout savoir sur <strong class="text-on-background">Action Archive</strong>, spécialiste de la <strong class="text-on-background">reproduction de boîtes vintage</strong> et des <strong class="text-on-background">créations custom originales</strong> pour figurines de collection. Livraison France & Europe, paiement sécurisé, programme fidélité.
+    <h1 class="aa-info-title font-headline font-black text-5xl uppercase text-on-background italic mb-4 border-b-4 border-on-background pb-4">📋 Informations & Contact</h1>
+    <p class="aa-info-intro font-body text-lg text-on-surface-variant mb-8 leading-relaxed">
+        Tout savoir sur <strong>Action Archive</strong>, spécialiste de la <strong>reproduction de boîtes vintage</strong> et des <strong>créations custom originales</strong> pour figurines de collection. Livraison France & Europe, paiement sécurisé, programme fidélité.
     </p>
 
     <section class="mb-12">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <figure class="bg-surface-container-high border-4 border-on-background p-3 shadow-[6px_6px_0px_0px_rgba(187,0,3,1)]">
-                <video 
-                    src="https://res.cloudinary.com/uvnbvhiw/video/upload/v1790637493/pomelli_creative_video_9_16_0929_geyjb7.mp4" 
-                    class="aa-archive-video" 
-                    autoplay 
-                    muted 
-                    loop 
-                    playsinline
-                    preload="auto"
-                    style="aspect-ratio: 9/16; object-fit: cover;">
-                </video>
-                <figcaption class="font-label font-bold text-[10px] uppercase tracking-widest text-on-surface-variant mt-3 text-center">🎬 Reproduction boîte vintage — Pièce d'archive pour collectionneurs</figcaption>
+            <figure class="bg-surface-container-high border-4 border-on-background p-3 shadow-[6px_6px_0px_0px_rgba(187,0,3,1)] rotate-[-1deg] aa-archive-img">
+                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335842/pomelli_photoshoot_image_9_16_0704_lqbkfh.png" alt="Reproduction boîte vintage Star Wars Action Archive - Packaging figurine collection années 80" loading="lazy" class="w-full h-auto"/>
+                <figcaption class="font-label font-bold text-[10px] uppercase tracking-widest text-on-surface-variant mt-3 text-center">📦 Reproduction boîte vintage — Pièce d'archive pour collectionneurs</figcaption>
             </figure>
-            <figure class="bg-surface-container-high border-4 border-on-background p-3 shadow-[6px_6px_0px_0px_rgba(15,86,191,1)]">
-                <video 
-                    src="https://res.cloudinary.com/uvnbvhiw/video/upload/v1790637511/pomelli_creative_video_9_16_0929_1_xnutv4.mp4" 
-                    class="aa-archive-video" 
-                    autoplay 
-                    muted 
-                    loop 
-                    playsinline
-                    preload="auto"
-                    style="aspect-ratio: 9/16; object-fit: cover;">
-                </video>
-                <figcaption class="font-label font-bold text-[10px] uppercase tracking-widest text-on-surface-variant mt-3 text-center">🎬 Reproduction boîte vintage — Pièce d'archive pour collectionneurs</figcaption>
+            <figure class="bg-surface-container-high border-4 border-on-background p-3 shadow-[6px_6px_0px_0px_rgba(15,86,191,1)] rotate-[1deg] aa-archive-img">
+                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783340700/pomelli_photoshoot_image_9_16_0706_1_s6xz8j.png" alt="Reproduction boîte vintage Star Wars Action Archive - Packaging figurine collection années 80" loading="lazy" class="w-full h-auto"/>
+                <figcaption class="font-label font-bold text-[10px] uppercase tracking-widest text-on-surface-variant mt-3 text-center">📦 Reproduction boîte vintage — Pièce d'archive pour collectionneurs</figcaption>
             </figure>
         </div>
-        <p class="text-center font-body text-xs italic text-on-surface-variant mt-3">ℹ️ Ces vidéos représentent des <strong>reproductions</strong> (et non des customs).</p>
+        <p class="text-center font-body text-xs italic text-on-surface-variant mt-3">ℹ️ Ces photos représentent des <strong>reproductions</strong> (et non des customs).</p>
     </section>
 
     <section class="mb-12 bg-secondary-container border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_rgba(187,0,3,1)]">
@@ -455,34 +435,6 @@
         </div>
     </section>
 
-    <!-- ✅ NOUVEAU : Vidéo + Photo juste avant les Mentions Légales -->
-    <section class="mb-12">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <figure class="bg-surface-container-high border-4 border-on-background p-3 shadow-[6px_6px_0px_0px_rgba(15,86,191,1)]">
-                <video 
-                    src="https://res.cloudinary.com/uvnbvhiw/video/upload/v1790640412/pomelli_creative_video_9_16_0929_2_nwue5h.mp4" 
-                    class="aa-archive-video" 
-                    autoplay 
-                    muted 
-                    loop 
-                    playsinline
-                    preload="auto"
-                    style="aspect-ratio: 9/16; object-fit: cover;">
-                </video>
-                <figcaption class="font-label font-bold text-[10px] uppercase tracking-widest text-on-surface-variant mt-3 text-center">🎬 Reproduction en vidéo</figcaption>
-            </figure>
-            <figure class="bg-surface-container-high border-4 border-on-background p-3 shadow-[6px_6px_0px_0px_rgba(187,0,3,1)]">
-                <img 
-                    src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1790640443/pomelli_creative_image_9_16_0929_zzywd8.png" 
-                    alt="Reproduction boîte vintage Action Archive" 
-                    class="aa-archive-img"
-                    loading="lazy"
-                    style="aspect-ratio: 9/16; object-fit: cover;">
-                <figcaption class="font-label font-bold text-[10px] uppercase tracking-widest text-on-surface-variant mt-3 text-center">📦 Reproduction en image</figcaption>
-            </figure>
-        </div>
-    </section>
-
     <section class="mb-12">
         <h2 class="font-headline font-black text-3xl uppercase text-primary mb-4 italic">⚖️ Mentions Légales & CGV</h2>
         <div class="bg-surface-container-high border-4 border-on-background p-6 text-sm font-body space-y-2 mb-6">
@@ -514,8 +466,7 @@
 <!-- LIGHTBOX -->
 <div id="aa-lightbox" class="aa-lightbox" onclick="closeLightbox()">
     <button class="aa-lightbox-close" onclick="closeLightbox()" aria-label="Fermer">✕</button>
-    <video id="aa-lightbox-video" controls style="display:none; max-width: 90vw; max-height: 90vh; border: 6px solid #342e1e; box-shadow: 12px 12px 0px 0px #ffca4d;"></video>
-    <img id="aa-lightbox-img" src="" alt="Image agrandie" style="display:none;"/>
+    <img id="aa-lightbox-img" src="" alt="Image agrandie"/>
 </div>
 
 <footer class="bg-[#342e1e] border-t-8 border-double border-[#755700] w-full py-12 px-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-20">
@@ -534,12 +485,13 @@
 <script>
 function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
 
+function openLightbox(src) {
+    document.getElementById('aa-lightbox').classList.add('open');
+    document.getElementById('aa-lightbox-img').src = src;
+    document.body.style.overflow = 'hidden';
+}
 function closeLightbox() {
     document.getElementById('aa-lightbox').classList.remove('open');
-    const v = document.getElementById('aa-lightbox-video');
-    const i = document.getElementById('aa-lightbox-img');
-    if (v) { v.pause(); v.src = ''; v.style.display = 'none'; }
-    if (i) { i.src = ''; i.style.display = 'none'; }
     document.body.style.overflow = '';
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
