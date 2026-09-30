@@ -365,7 +365,7 @@ aaSliderViewport.addEventListener('touchstart', (e) => {
 aaSliderViewport.addEventListener('touchend', (e) => {
     const aaTouchEndX = e.changedTouches[0].screenX;
     const aaSwipeDistance = aaTouchEndX - aaTouchStartX;
-    if (Math.abs(aaSwipeDistance) > 50) {
+    if (Math.abs(aaSwipeDistance) > 300) {
         if (aaSwipeDistance < 0) aaNext();
         else aaPrev();
     }
