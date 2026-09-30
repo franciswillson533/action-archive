@@ -63,7 +63,6 @@
             <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="eager" class="aa-logo h-12 md:h-14 w-auto"/>
             <span class="text-2xl md:text-3xl font-black italic text-[#bb0003] font-headline uppercase tracking-tighter group-hover:text-[#0f56bf] transition-colors">Action Archive</span>
         </a>
-        <!-- ✅ AJOUT : Lien Toys History -->
         <nav class="hidden md:flex items-center gap-6 font-headline font-black uppercase tracking-tighter text-sm">
             <a class="text-[#342e1e] hover:text-[#bb0003]" href="index.html">Accueil</a>
             <a class="text-[#342e1e] hover:text-[#bb0003]" href="produits.html">Produits</a>
@@ -94,7 +93,6 @@
             <h2 class="font-headline font-black text-2xl text-primary italic uppercase">MENU</h2>
             <button class="text-on-background" onclick="toggleDrawer()"><span class="material-symbols-outlined text-3xl">close</span></button>
         </div>
-        <!-- ✅ AJOUT : Lien Toys History -->
         <nav class="flex flex-col gap-3">
             <a href="index.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">ACCUEIL</a>
             <a href="produits.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">PRODUITS</a>
@@ -203,9 +201,8 @@ function handleSignup(e) {
     const items = [{ key: 'facebook', icon: 'facebook', label: 'FACEBOOK' },{ key: 'twitter', icon: 'share', label: 'TWITTER' },{ key: 'instagram', icon: 'camera_alt', label: 'INSTAGRAM' },{ key: 'tiktok', icon: 'music_note', label: 'TIKTOK' },{ key: 'youtube', icon: 'play_circle', label: 'YOUTUBE' }];
     items.forEach(item => {
         const data = social[item.key];
-        if (data && data.enabled && data.url) nav.innerHTML += `<a href="${aaEscapeAttr(data.url)}" target="_blank" rel="noopener" class="group flex flex-col items-center gap-1"><div class="bg-[#ffca4d] text-[#342e1e] p-2 rounded-sm group-hover:bg-white transition-colors btn-physical"><span class="material-symbols-outlined">${item.icon}</span></div><span class="font-label font-bold text-[9px] text-[#eadcbc] tracking-widest uppercase">${item.label}</span></a>`;
+        if (data && data.enabled && data.url) nav.innerHTML += `<a href="${data.url}" target="_blank" class="text-[#ffca4d]"><span class="material-symbols-outlined">${item.icon}</span></a>`;
     });
-    if (nav.innerHTML === '') nav.innerHTML = '<p class="text-[#eadcbc] text-xs italic">Aucun réseau social</p>';
 })();
 </script>
 </body>
