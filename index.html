@@ -211,7 +211,6 @@
             z-index: 2;
         }
 
-        /* ✅ MODIF : inversion de l'ordre sur mobile = colonne droite en premier */
         .aa-hero-grid {
             display: grid;
             grid-template-columns: 1.4fr 1fr;
@@ -250,13 +249,11 @@
             position: relative;
         }
 
-        /* ✅ MODIF MOBILE : Carrousel EN BAS + texte centré + titre réduit */
         @media (max-width: 900px) {
             .aa-hero-grid { 
                 grid-template-columns: 1fr; 
                 gap: 1.5rem;
             }
-            /* Inverse l'ordre : texte d'abord, carrousel après */
             .aa-hero-left { order: 1; }
             .aa-hero-right { order: 2; }
             .aa-hero-left { 
@@ -329,7 +326,7 @@
             padding: 1.25rem 1.5rem;
             display: flex;
             align-items: center;
-            gap: 0.5rem;  /* ✅ MODIF : gap réduit car plus de flèche */
+            gap: 0.5rem;
             flex-wrap: wrap;
             justify-content: center;
         }
@@ -348,7 +345,6 @@
             background: #755700;
             color: #ffca4d;
         }
-        /* ✅ MODIF : flèche ➜ supprimée */
         .aa-programme-arrow { display: none; }
 
         @media (max-width: 800px) {
@@ -369,10 +365,12 @@
             <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="eager" class="aa-logo h-12 md:h-14 w-auto"/>
             <span class="text-2xl md:text-3xl font-black italic text-[#bb0003] font-headline uppercase tracking-tighter group-hover:text-[#0f56bf] transition-colors">Action Archive</span>
         </a>
+        <!-- ✅ LIEN TOYS HISTORY AJOUTÉ -->
         <nav class="hidden md:flex items-center gap-6 font-headline font-black uppercase tracking-tighter text-sm">
             <a class="text-[#0f56bf] underline decoration-4 underline-offset-8" href="index.html">Accueil</a>
             <a class="text-[#342e1e] hover:text-[#bb0003]" href="produits.html">Produits</a>
             <a class="text-[#342e1e] hover:text-[#bb0003]" href="info.html">Info</a>
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="toys-history.html">Toys History</a>
             <a class="text-[#342e1e] hover:text-[#bb0003]" href="panier.html">Commande</a>
             <a class="text-[#342e1e] hover:text-[#bb0003]" href="inscription.html">Inscription</a>
         </nav>
@@ -398,10 +396,12 @@
             <h2 class="font-headline font-black text-2xl text-primary italic uppercase">MENU</h2>
             <button class="text-on-background" onclick="toggleDrawer()"><span class="material-symbols-outlined text-3xl">close</span></button>
         </div>
+        <!-- ✅ LIEN TOYS HISTORY AJOUTÉ -->
         <nav class="flex flex-col gap-3">
             <a href="index.html" class="p-4 bg-surface-container-low border-2 border-primary font-headline font-black uppercase text-primary">ACCUEIL</a>
             <a href="produits.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">PRODUITS</a>
             <a href="info.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">INFO</a>
+            <a href="toys-history.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">TOYS HISTORY</a>
             <a href="panier.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">COMMANDE</a>
             <a href="inscription.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">INSCRIPTION</a>
         </nav>
@@ -565,7 +565,6 @@
                 <div class="aa-programme-left">
                     <h2 class="font-headline font-black text-4xl md:text-5xl uppercase tracking-tighter text-[#ffca4d]" style="font-style:italic;">🎁 PROGRAMME<br/>COLLECTIONNEUR</h2>
                     <p class="font-body text-lg md:text-xl font-bold max-w-xl">Cumulez des étoiles à chaque achat et recevez des <strong class="text-[#ffca4d]">pièces gratuites</strong> !</p>
-                    <!-- ✅ MODIF : flèche ➜ supprimée -->
                     <div class="aa-programme-card">
                         <span class="aa-programme-pill">1 ACHAT = 1 ⭐</span>
                         <span class="aa-programme-pill alt">10 ⭐ = 1 🎁</span>
