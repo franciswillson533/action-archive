@@ -59,7 +59,6 @@
             <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="eager" class="aa-logo h-12 md:h-14 w-auto"/>
             <span class="text-2xl md:text-3xl font-black italic text-[#bb0003] font-headline uppercase tracking-tighter group-hover:text-[#0f56bf] transition-colors">Action Archive</span>
         </a>
-        <!-- ✅ AJOUT : Lien Toys History -->
         <nav class="hidden md:flex items-center gap-6 font-headline font-black uppercase tracking-tighter text-sm">
             <a class="text-[#342e1e] hover:text-[#bb0003]" href="index.html">Accueil</a>
             <a class="text-[#342e1e] hover:text-[#bb0003]" href="produits.html">Produits</a>
@@ -90,7 +89,6 @@
             <h2 class="font-headline font-black text-2xl text-primary italic uppercase">MENU</h2>
             <button class="text-on-background" onclick="toggleDrawer()"><span class="material-symbols-outlined text-3xl">close</span></button>
         </div>
-        <!-- ✅ AJOUT : Lien Toys History -->
         <nav class="flex flex-col gap-3">
             <a href="index.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">ACCUEIL</a>
             <a href="produits.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">PRODUITS</a>
@@ -141,9 +139,9 @@
 
                 <div class="bg-tertiary border-4 border-on-background p-4 shadow-[4px_4px_0px_0px_#342e1e]">
                     <div class="flex items-start gap-3">
-                        <span class="material-symbols-outlined text-3xl text-on-primary flex-shrink-0">info</span>
+                        <span class="material-symbols-outlined text-3xl text-white flex-shrink-0">info</span>
                         <div>
-                            <p class="font-headline font-black uppercase text-on-primary text-base leading-tight">
+                            <p class="font-headline font-black uppercase text-white text-base leading-tight">
                                 <strong>Possibilité de demander un devis ou un renseignement sur la page <a href="info.html" class="underline hover:text-secondary-container">INFO</a></strong>
                             </p>
                         </div>
@@ -159,7 +157,7 @@
                             <button class="aa-qty-btn" id="aa-qty-plus">+</button>
                         </div>
                     </div>
-                    <button id="aa-add-btn" class="aa-btn-blink w-full bg-primary text-on-primary font-headline font-black px-6 py-4 text-xl uppercase shadow-[6px_6px_0px_0px_#342e1e] hover:translate-y-[-2px] transition-all">
+                    <button id="aa-add-btn" class="aa-btn-blink w-full bg-primary text-white font-headline font-black px-6 py-4 text-xl uppercase shadow-[6px_6px_0px_0px_#342e1e] hover:translate-y-[-2px] transition-all">
                         🛒 AJOUTER AU PANIER
                     </button>
                 </div>
@@ -272,7 +270,6 @@ async function loadProduct() {
         currentImgRecto = getImageUrl(f['Lien Recto']) || getImageUrl(f.Image) || '';
 
         const mainImg = document.getElementById('aa-main-img');
-        // ✅ FIX : pas de PLACEHOLDER_IMG, on met juste une image de fond si vide
         if (currentImgRecto) {
             mainImg.src = currentImgRecto;
             mainImg.onerror = function() { this.onerror = null; this.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><rect width="400" height="400" fill="#eadcbc"/><text x="200" y="200" text-anchor="middle" font-family="Arial" font-size="20" fill="#635b48">PHOTO INDISPONIBLE</text></svg>'); this.style.objectFit = 'contain'; this.style.background = '#eadcbc'; };
