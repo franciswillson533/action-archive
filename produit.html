@@ -49,6 +49,121 @@
         .aa-type-custom-big { background: #7b1fa2; color: white; }
         .aa-menu-btn { font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; background: #bb0003; color: #fff5e5; border: 3px solid #342e1e; padding: 10px 20px; font-size: 1.05rem; box-shadow: 4px 4px 0 0 #342e1e; cursor: pointer; transition: all 0.15s ease; }
         .aa-menu-btn:hover { background: #342e1e; color: #ffca4d; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 #bb0003; }
+
+        /* ✅ NOUVEAU : Description cliquable */
+        .aa-desc-clickable {
+            cursor: pointer;
+            transition: all 0.15s ease;
+            position: relative;
+            padding: 8px 12px;
+            margin: -8px -12px;
+            border: 2px dashed transparent;
+        }
+        .aa-desc-clickable:hover {
+            background: #fff;
+            border-color: #bb0003;
+            box-shadow: 3px 3px 0 0 #bb0003;
+        }
+        .aa-desc-clickable::after {
+            content: '🔍 Agrandir';
+            position: absolute;
+            top: -10px;
+            right: -8px;
+            background: #bb0003;
+            color: white;
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 900;
+            font-size: 10px;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border: 2px solid #342e1e;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+            letter-spacing: 0.05em;
+        }
+        .aa-desc-clickable:hover::after {
+            opacity: 1;
+        }
+
+        /* ✅ NOUVEAU : Lightbox description */
+        .aa-desc-lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(52, 46, 30, 0.95);
+            z-index: 300;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            cursor: zoom-out;
+        }
+        .aa-desc-lightbox.open {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+        .aa-desc-lightbox-content {
+            background: #fff5e5;
+            border: 6px solid #342e1e;
+            box-shadow: 12px 12px 0 0 #ffca4d;
+            max-width: 800px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            padding: 3rem 2rem 2rem;
+        }
+        .aa-desc-lightbox-title {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: #bb0003;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 4px solid #342e1e;
+        }
+        .aa-desc-lightbox-text {
+            font-family: 'Work Sans', sans-serif;
+            color: #342e1e;
+            font-size: 1.5rem;
+            line-height: 1.6;
+            font-weight: 500;
+            word-wrap: break-word;
+        }
+        .aa-desc-lightbox-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #ffca4d;
+            color: #342e1e;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #342e1e;
+            cursor: pointer;
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 900;
+            font-size: 24px;
+            transition: all 0.15s ease;
+            z-index: 10;
+        }
+        .aa-desc-lightbox-close:hover {
+            background: #bb0003;
+            color: #fff5e5;
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0 0 #342e1e;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        @media (max-width: 768px) {
+            .aa-desc-lightbox-content { padding: 3rem 1.25rem 1.5rem; }
+            .aa-desc-lightbox-text { font-size: 1.2rem; }
+            .aa-desc-lightbox-title { font-size: 1.2rem; }
+            .aa-desc-lightbox-close { width: 44px; height: 44px; font-size: 20px; top: 8px; right: 8px; }
+        }
     </style>
 </head>
 <body class="bg-surface font-body text-on-surface overflow-x-hidden">
@@ -132,9 +247,10 @@
                     <span id="aa-product-price" class="font-headline font-black text-5xl text-tertiary"></span>
                 </div>
 
+                <!-- ✅ NOUVEAU : Description cliquable -->
                 <div>
                     <h3 class="font-headline font-black text-xl uppercase text-on-background mb-2">Description</h3>
-                    <p id="aa-product-desc" class="font-body text-on-surface-variant leading-relaxed"></p>
+                    <p id="aa-product-desc" class="aa-desc-clickable font-body text-on-surface-variant leading-relaxed" onclick="openDescLightbox()" title="Cliquer pour agrandir"></p>
                 </div>
 
                 <div class="bg-tertiary border-4 border-on-background p-4 shadow-[4px_4px_0px_0px_#342e1e]">
@@ -165,6 +281,15 @@
         </div>
     </div>
 </main>
+
+<!-- ✅ NOUVEAU : Lightbox pour la description -->
+<div id="aa-desc-lightbox" class="aa-desc-lightbox" onclick="closeDescLightbox()">
+    <div class="aa-desc-lightbox-content" onclick="event.stopPropagation()">
+        <button class="aa-desc-lightbox-close" onclick="closeDescLightbox()" aria-label="Fermer">✕</button>
+        <h3 class="aa-desc-lightbox-title">📄 Description complète</h3>
+        <p id="aa-desc-lightbox-text" class="aa-desc-lightbox-text"></p>
+    </div>
+</div>
 
 <footer class="bg-[#342e1e] border-t-8 border-double border-[#755700] w-full py-12 px-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-20">
     <div class="flex flex-col items-center md:items-start gap-3">
@@ -205,6 +330,26 @@ function addCurrentToCart() {
     if (typeof aaUpdateBadge === 'function') aaUpdateBadge();
     if (typeof aaToast === 'function') aaToast(name + ' (x' + currentQty + ') ajouté au panier !', 'shopping_cart');
 }
+
+// ✅ NOUVEAU : Ouverture / fermeture de la lightbox description
+function openDescLightbox() {
+    const desc = document.getElementById('aa-product-desc');
+    const descText = document.getElementById('aa-desc-lightbox-text');
+    if (!desc || !descText) return;
+    descText.textContent = desc.textContent || desc.innerText || 'Aucune description disponible.';
+    document.getElementById('aa-desc-lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDescLightbox() {
+    document.getElementById('aa-desc-lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+// Fermeture avec Escape
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeDescLightbox();
+});
 
 function detectProductType(f) {
     if (!f) return 'reproduction';
