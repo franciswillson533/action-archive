@@ -1,8 +1,8 @@
-=<!DOCTYPE html>
+<!DOCTYPE html>
 <html class="light" lang="fr">
 <head>
     <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"/>
     <meta name="author" content="Action Archive"/>
     <meta name="language" content="French"/>
@@ -81,24 +81,39 @@
         }, fontFamily: { "headline": ["Epilogue"], "body": ["Work Sans"], "label": ["Work Sans"] } } } }
     </script>
     <style>
-        /* ✅ Base reset */
-        *, *::before, *::after { box-sizing: border-box; }
-        html { -webkit-text-size-adjust: 100%; }
-
         #side-drawer { box-shadow: -8px 0 0 0 rgba(52, 46, 30, 0.2); transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1); }
         #side-drawer.open { transform: translateX(0); }
         .drawer-overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .drawer-overlay.open { opacity: 1; pointer-events: auto; }
         .btn-physical { transition: all 0.1s ease; }
         .btn-physical:active { transform: translateY(4px); box-shadow: 0px 0px 0px 0px !important; }
-        #aa-cart-badge{position:absolute;top:-7px;right:-8px;min-width:18px;height:18px;background:#ffca4d;color:#342e1e;font-family:'Epilogue',sans-serif;font-weight:900;font-size:10px;border:2px solid #342e1e;border-radius:2px;display:none;align-items:center;justify-content:center;padding:0 3px;}
+        #aa-cart-badge{position:absolute;top:-7px;right:-7px;min-width:18px;height:18px;background:#ffca4d;color:#342e1e;font-family:'Epilogue',sans-serif;font-weight:900;font-size:10px;border:2px solid #342e1e;border-radius:2px;display:none;align-items:center;justify-content:center;padding:0 3px;}
         .aa-toast{background:#342e1e;color:#fff5e5;border:3px solid #ffca4d;padding:12px 18px;font-family:'Epilogue',sans-serif;font-weight:900;font-size:13px;text-transform:uppercase;display:flex;align-items:center;gap:10px;max-width:300px;transform:translateX(120%);opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);pointer-events:auto;}
         .aa-toast.show{transform:translateX(0);opacity:1;}
         #aa-toasts{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
         .aa-logo { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease; filter: drop-shadow(2px 2px 0px rgba(52, 46, 30, 0.15)); }
         .aa-logo-link:hover .aa-logo { transform: rotate(-5deg) scale(1.05); filter: drop-shadow(3px 3px 0px rgba(187, 0, 3, 0.4)); }
-        .aa-menu-btn { font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; background: #bb0003; color: #fff5e5; border: 3px solid #342e1e; padding: 10px 20px; font-size: 1.05rem; box-shadow: 4px 4px 0 0 #342e1e; cursor: pointer; transition: all 0.15s ease; }
-        .aa-menu-btn:hover { background: #342e1e; color: #ffca4d; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 #bb0003; }
+        
+        .aa-menu-btn {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: #bb0003;
+            color: #fff5e5;
+            border: 3px solid #342e1e;
+            padding: 10px 20px;
+            font-size: 1.05rem;
+            box-shadow: 4px 4px 0 0 #342e1e;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .aa-menu-btn:hover {
+            background: #342e1e;
+            color: #ffca4d;
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 0 #bb0003;
+        }
         
         .aa-archive-video, .aa-archive-img { 
             width: 100%; 
@@ -119,11 +134,10 @@
             border: 3px solid #342e1e;
             padding: 12px 14px;
             font-family: 'Work Sans', sans-serif;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
             color: #342e1e;
             transition: all 0.15s ease;
-            -webkit-appearance: none;
         }
         .aa-input:focus {
             outline: none;
@@ -146,7 +160,6 @@
             cursor: pointer;
             transition: all 0.15s ease;
             width: 100%;
-            -webkit-appearance: none;
         }
         .aa-submit:hover {
             background: #342e1e;
@@ -179,59 +192,14 @@
             50% { transform: scale(1.1); }
         }
 
-        /* ============== RESPONSIVE MOBILE ============== */
         @media (max-width: 768px) {
-            /* Header : logo + bouton plus petits */
-            header .h-12, header .md\\:h-14 { height: 2.5rem !important; }
-            header span.font-black { font-size: 1.25rem !important; }
-            header .aa-menu-btn { padding: 8px 14px !important; font-size: 0.85rem !important; }
-
-            /* Titre principal */
             .aa-info-title {
-                font-size: 1.8rem !important;
+                font-size: 2rem !important;
                 line-height: 1.1 !important;
-                text-align: center !important;
             }
-
-            /* Paragraphe d'intro */
             .aa-info-intro {
                 font-size: 1rem !important;
                 text-align: center !important;
-                line-height: 1.5 !important;
-            }
-
-            /* Titres de section */
-            h2.aa-title {
-                font-size: 1.4rem !important;
-                text-align: center !important;
-                margin-bottom: 1rem !important;
-            }
-
-            /* Sections : padding réduit */
-            section { padding: 1rem !important; margin-bottom: 2rem !important; }
-
-            /* Vidéos et images en colonne sur mobile */
-            .grid-cols-1.md\\:grid-cols-2 {
-                grid-template-columns: 1fr !important;
-                gap: 1rem !important;
-            }
-
-            /* Padding du main */
-            main { padding: 1rem !important; }
-
-            /* Formulaire : pleine largeur */
-            form .aa-input { font-size: 16px !important; } /* Évite le zoom iOS */
-        }
-
-        @media (max-width: 480px) {
-            .aa-info-title {
-                font-size: 1.5rem !important;
-            }
-            .aa-info-intro {
-                font-size: 0.95rem !important;
-            }
-            h2.aa-title {
-                font-size: 1.2rem !important;
             }
         }
     </style>
@@ -239,17 +207,15 @@
 <body class="bg-surface font-body text-on-surface overflow-x-hidden">
 
 <header class="w-full border-b-4 border-double border-[#bb0003] bg-[#fff5e5] shadow-[4px_4px_0px_0px_rgba(52,46,30,0.2)] z-50 sticky top-0">
-    <div class="flex justify-between items-center w-full px-4 md:px-6 py-3 md:py-4 max-w-screen-2xl mx-auto">
+    <div class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
         <a href="index.html" class="aa-logo-link flex items-center gap-3 group cursor-pointer" title="Retour à l'accueil">
-            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Logo Action Archive - Spécialiste boîtes vintage figurines" loading="eager" class="aa-logo h-10 md:h-14 w-auto"/>
-            <span class="text-xl md:text-3xl font-black italic text-[#bb0003] font-headline uppercase tracking-tighter group-hover:text-[#0f56bf] transition-colors">Action Archive</span>
+            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Logo Action Archive - Spécialiste boîtes vintage figurines" loading="eager" class="aa-logo h-12 md:h-14 w-auto"/>
+            <span class="text-2xl md:text-3xl font-black italic text-[#bb0003] font-headline uppercase tracking-tighter group-hover:text-[#0f56bf] transition-colors">Action Archive</span>
         </a>
-        <!-- ✅ AJOUT : Lien Toys History -->
         <nav class="hidden md:flex items-center gap-6 font-headline font-black uppercase tracking-tighter text-sm">
             <a class="text-[#342e1e] hover:text-[#bb0003]" href="index.html">Accueil</a>
             <a class="text-[#342e1e] hover:text-[#bb0003]" href="produits.html">Produits</a>
-            <a class="text-[#342e1e] hover:text-[#bb0003]" href="info.html">Info</a>
-            <a class="text-[#342e1e] hover:text-[#bb0003]" href="toys-history.html">Toys History</a>
+            <a class="text-[#0f56bf] underline decoration-4 underline-offset-8" href="info.html">Info</a>
             <a class="text-[#342e1e] hover:text-[#bb0003]" href="panier.html">Commande</a>
             <a class="text-[#342e1e] hover:text-[#bb0003]" href="inscription.html">Inscription</a>
         </nav>
@@ -279,7 +245,6 @@
             <a href="index.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">ACCUEIL</a>
             <a href="produits.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">PRODUITS</a>
             <a href="info.html" class="p-4 bg-surface-container-low border-2 border-primary font-headline font-black uppercase text-primary">INFO</a>
-            <a href="toys-history.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">TOYS HISTORY</a>
             <a href="panier.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">COMMANDE</a>
             <a href="inscription.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">INSCRIPTION</a>
             <a href="admin.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">ADMIN</a>
@@ -287,16 +252,16 @@
     </div>
 </aside>
 
-<main class="container mx-auto px-4 md:px-6 py-6 md:py-12 min-h-screen max-w-4xl">
+<main class="container mx-auto px-6 py-12 min-h-screen max-w-4xl">
 
-    <h1 class="aa-info-title font-headline font-black text-3xl md:text-5xl uppercase text-on-background italic mb-4 border-b-4 border-on-background pb-4">Informations & Contact</h1>
+    <h1 class="aa-info-title font-headline font-black text-5xl uppercase text-on-background italic mb-4 border-b-4 border-on-background pb-4">Informations & Contact</h1>
     
-    <p class="aa-info-intro font-body text-base md:text-lg text-tertiary mb-6 md:mb-8 leading-relaxed">
+    <p class="aa-info-intro font-body text-lg text-tertiary mb-8 leading-relaxed">
         Tout savoir sur <strong class="text-on-background">Action Archive</strong>, spécialiste de la <strong class="text-on-background">reproduction de boîtes vintage</strong> et des <strong class="text-on-background">créations custom originales</strong> pour figurines de collection. Livraison France & Europe, paiement sécurisé, programme fidélité.
     </p>
 
-    <section class="mb-8 md:mb-12">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+    <section class="mb-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <figure class="bg-surface-container-high border-4 border-on-background p-3 shadow-[6px_6px_0px_0px_rgba(187,0,3,1)]">
                 <video 
                     src="https://res.cloudinary.com/uvnbvhiw/video/upload/v1790637493/pomelli_creative_video_9_16_0929_geyjb7.mp4" 
@@ -308,7 +273,7 @@
                     preload="auto"
                     style="aspect-ratio: 9/16; object-fit: cover;">
                 </video>
-                <figcaption class="font-label font-bold text-[10px] uppercase tracking-widest text-on-surface-variant mt-3 text-center">🎬 Reproduction boîte vintage</figcaption>
+                <figcaption class="font-label font-bold text-[10px] uppercase tracking-widest text-on-surface-variant mt-3 text-center">🎬 Reproduction boîte vintage — Pièce d'archive pour collectionneurs</figcaption>
             </figure>
             <figure class="bg-surface-container-high border-4 border-on-background p-3 shadow-[6px_6px_0px_0px_rgba(15,86,191,1)]">
                 <video 
@@ -321,21 +286,21 @@
                     preload="auto"
                     style="aspect-ratio: 9/16; object-fit: cover;">
                 </video>
-                <figcaption class="font-label font-bold text-[10px] uppercase tracking-widest text-on-surface-variant mt-3 text-center">🎬 Reproduction boîte vintage</figcaption>
+                <figcaption class="font-label font-bold text-[10px] uppercase tracking-widest text-on-surface-variant mt-3 text-center">🎬 Reproduction boîte vintage — Pièce d'archive pour collectionneurs</figcaption>
             </figure>
         </div>
         <p class="text-center font-body text-xs italic text-on-surface-variant mt-3">ℹ️ Ces vidéos représentent des <strong>reproductions</strong> (et non des customs).</p>
     </section>
 
-    <section class="mb-8 md:mb-12 bg-secondary-container border-4 border-on-background p-5 md:p-6 shadow-[6px_6px_0px_0px_rgba(187,0,3,1)]">
-        <h2 class="aa-title font-headline font-black text-xl md:text-3xl uppercase text-primary mb-4 italic text-center md:text-left">🎯 Notre objectif</h2>
-        <p class="font-body text-base md:text-lg leading-relaxed mb-3"><strong>Action Archive</strong> est spécialisée dans la <strong>préservation et la vente de boîtes vintage</strong> pour figurines et jouets de collection des années 70 à 90.</p>
-        <p class="font-body text-base md:text-lg leading-relaxed mb-3"><strong>Notre mission :</strong> permettre aux collectionneurs de <strong>redonner vie à leurs collections</strong> lorsque la boîte d'origine a été perdue, abîmée ou jetée.</p>
-        <p class="font-body text-sm md:text-base italic text-on-surface-variant"><strong>⚠️ À noter :</strong> nous ne vendons <strong>aucune boîte vintage d'époque</strong>. Nous proposons exclusivement des <strong>reproductions soignées</strong> et des <strong>créations custom originales</strong>.</p>
+    <section class="mb-12 bg-secondary-container border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_rgba(187,0,3,1)]">
+        <h2 class="font-headline font-black text-3xl uppercase text-primary mb-4 italic">🎯 Notre objectif</h2>
+        <p class="font-body text-lg leading-relaxed mb-3"><strong>Action Archive</strong> est spécialisée dans la <strong>préservation et la vente de boîtes vintage</strong> pour figurines et jouets de collection des années 70 à 90.</p>
+        <p class="font-body text-lg leading-relaxed mb-3"><strong>Notre mission :</strong> permettre aux collectionneurs de <strong>redonner vie à leurs collections</strong> lorsque la boîte d'origine a été perdue, abîmée ou jetée.</p>
+        <p class="font-body text-base italic text-on-surface-variant"><strong>⚠️ À noter :</strong> nous ne vendons <strong>aucune boîte vintage d'époque</strong>. Nous proposons exclusivement des <strong>reproductions soignées</strong> et des <strong>créations custom originales</strong>.</p>
     </section>
 
-    <section class="mb-8 md:mb-12">
-        <h2 class="aa-title font-headline font-black text-xl md:text-3xl uppercase text-primary mb-4 italic text-center md:text-left">📦 Ce que je propose</h2>
+    <section class="mb-12">
+        <h2 class="font-headline font-black text-3xl uppercase text-primary mb-4 italic">📦 Ce que je propose</h2>
         <div class="space-y-3">
             <div class="bg-surface-container-high border-4 border-on-background p-5 border-l-8" style="border-left-color: #0f56bf;">
                 <p class="font-headline font-black text-xl uppercase" style="color: #0f56bf;">🔵 REPRODUCTIONS</p>
@@ -350,27 +315,27 @@
         </div>
     </section>
 
-    <section class="mb-8 md:mb-12">
-        <h2 class="aa-title font-headline font-black text-xl md:text-3xl uppercase text-primary mb-4 italic text-center md:text-left">❓ Questions fréquentes</h2>
-        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer text-sm md:text-base">Vendez-vous des boîtes originales d'époque ?</summary><p class="mt-3 font-body text-sm md:text-base"><strong>Non.</strong> Toutes les pièces vendues sur Action Archive sont des <strong>reproductions</strong> (impression haute qualité) ou des <strong>créations custom</strong> originales. Aucune boîte vintage d'époque n'est proposée à la vente. Cela garantit une traçabilité et une transparence totale.</p></details>
-        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer text-sm md:text-base">Quelle est la différence entre une reproduction et une boîte originale ?</summary><p class="mt-3 font-body text-sm md:text-base">Une <strong>boîte originale</strong> a été imprimée dans les années 70-90 et a traversé le temps. Une <strong>reproduction</strong> est imprimée aujourd'hui, en haute qualité, à partir des visuels d'origine.</p></details>
-        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer text-sm md:text-base">À quoi servent vos reproductions ?</summary><p class="mt-3 font-body text-sm md:text-base">Elles permettent aux collectionneurs de <strong>remplacer une boîte manquante ou trop abîmée</strong> et de présenter leurs figurines dans leur écrin d'origine. Elles peuvent aussi servir pour des expositions, des dioramas, ou simplement pour le plaisir d'avoir une collection complète.</p></details>
-        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer text-sm md:text-base">Vos reproductions sont-elles fidèles à l'original ?</summary><p class="mt-3 font-body text-sm md:text-base">Oui, nous apportons un soin particulier aux couleurs, polices et dimensions. Cependant, les techniques d'impression modernes peuvent donner un rendu légèrement différent de l'impression offset d'époque.</p></details>
-        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer text-sm md:text-base">Quels sont les délais de livraison ?</summary><p class="mt-3 font-body text-sm md:text-base"><strong>France :</strong> 3-7 jours • <strong>Europe :</strong> 7-14 jours • <strong>International :</strong> 14-21 jours. Chaque colis dispose d'un numéro de suivi.</p></details>
-        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer text-sm md:text-base">Puis-je retourner un article ?</summary><p class="mt-3 font-body text-sm md:text-base">Oui, vous disposez de <strong>14 jours après réception</strong> pour retourner un article dans son état d'origine. Les frais de retour sont à votre charge sauf en cas de défaut.</p></details>
-        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer text-sm md:text-base">Comment sont emballées les pièces ?</summary><p class="mt-3 font-body text-sm md:text-base">Chaque pièce est protégée avec du papier bulle et du calage dans des enveloppes ou boîtes renforcées. Nous traitons vos commandes comme si c'étaient les nôtres.</p></details>
-        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer text-sm md:text-base">Comment fonctionne le programme fidélité ?</summary><p class="mt-3 font-body text-sm md:text-base"><strong>1 achat = 1 ⭐</strong>. Atteignez <strong>10 étoiles</strong> et recevez une pièce cadeau 🎁 offerte + 1 étoile de bienvenue à l'inscription.</p></details>
-        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer text-sm md:text-base">Vous ne trouvez pas la boîte que je cherche ?</summary><p class="mt-3 font-body text-sm md:text-base">Contactez-nous via le formulaire ci-dessous ou par email à <strong>contact@action-archive.com</strong>. Nous pouvons étudier les demandes spécifiques.</p></details>
+    <section class="mb-12">
+        <h2 class="font-headline font-black text-3xl uppercase text-primary mb-4 italic">❓ Questions fréquentes</h2>
+        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer">Vendez-vous des boîtes originales d'époque ?</summary><p class="mt-3 font-body"><strong>Non.</strong> Toutes les pièces vendues sur Action Archive sont des <strong>reproductions</strong> (impression haute qualité) ou des <strong>créations custom</strong> originales. Aucune boîte vintage d'époque n'est proposée à la vente. Cela garantit une traçabilité et une transparence totale.</p></details>
+        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer">Quelle est la différence entre une reproduction et une boîte originale ?</summary><p class="mt-3 font-body">Une <strong>boîte originale</strong> a été imprimée dans les années 70-90 et a traversé le temps. Une <strong>reproduction</strong> est imprimée aujourd'hui, en haute qualité, à partir des visuels d'origine.</p></details>
+        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer">À quoi servent vos reproductions ?</summary><p class="mt-3 font-body">Elles permettent aux collectionneurs de <strong>remplacer une boîte manquante ou trop abîmée</strong> et de présenter leurs figurines dans leur écrin d'origine. Elles peuvent aussi servir pour des expositions, des dioramas, ou simplement pour le plaisir d'avoir une collection complète.</p></details>
+        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer">Vos reproductions sont-elles fidèles à l'original ?</summary><p class="mt-3 font-body">Oui, nous apportons un soin particulier aux couleurs, polices et dimensions. Cependant, les techniques d'impression modernes peuvent donner un rendu légèrement différent de l'impression offset d'époque.</p></details>
+        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer">Quels sont les délais de livraison ?</summary><p class="mt-3 font-body"><strong>France :</strong> 3-7 jours • <strong>Europe :</strong> 7-14 jours • <strong>International :</strong> 14-21 jours. Chaque colis dispose d'un numéro de suivi.</p></details>
+        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer">Puis-je retourner un article ?</summary><p class="mt-3 font-body">Oui, vous disposez de <strong>14 jours après réception</strong> pour retourner un article dans son état d'origine. Les frais de retour sont à votre charge sauf en cas de défaut.</p></details>
+        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer">Comment sont emballées les pièces ?</summary><p class="mt-3 font-body">Chaque pièce est protégée avec du papier bulle et du calage dans des enveloppes ou boîtes renforcées. Nous traitons vos commandes comme si c'étaient les nôtres.</p></details>
+        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer">Comment fonctionne le programme fidélité ?</summary><p class="mt-3 font-body"><strong>1 achat = 1 ⭐</strong>. Atteignez <strong>10 étoiles</strong> et recevez une pièce cadeau 🎁 offerte + 1 étoile de bienvenue à l'inscription.</p></details>
+        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer">Vous ne trouvez pas la boîte que je cherche ?</summary><p class="mt-3 font-body">Contactez-nous via le formulaire ci-dessous ou par email à <strong>contact@action-archive.com</strong>. Nous pouvons étudier les demandes spécifiques.</p></details>
     </section>
 
-    <section class="mb-8 md:mb-12">
-        <h2 class="aa-title font-headline font-black text-xl md:text-3xl uppercase text-primary mb-4 italic text-center md:text-left">🚚 Livraison & Paiement</h2>
+    <section class="mb-12">
+        <h2 class="font-headline font-black text-3xl uppercase text-primary mb-4 italic">🚚 Livraison & Paiement</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-surface-container-high border-4 border-on-background p-5 md:p-6">
-                <span class="material-symbols-outlined text-3xl md:text-4xl text-tertiary">local_shipping</span>
-                <h3 class="font-headline font-black text-lg md:text-xl uppercase mt-2">Livraison</h3>
-                <p class="font-body text-sm md:text-base mt-2"><strong>Expédition depuis la France 🇫🇷</strong></p>
-                <ul class="text-xs md:text-sm space-y-1 mt-2 font-bold">
+            <div class="bg-surface-container-high border-4 border-on-background p-6">
+                <span class="material-symbols-outlined text-4xl text-tertiary">local_shipping</span>
+                <h3 class="font-headline font-black text-xl uppercase mt-2">Livraison</h3>
+                <p class="font-body mt-2"><strong>Expédition depuis la France 🇫🇷</strong></p>
+                <ul class="text-sm space-y-1 mt-2 font-bold">
                     <li>✓ Mondial Relay, Colissimo, DHL</li>
                     <li>✓ Frais calculés au moment du paiement</li>
                     <li>✓ Livraison offerte dès 150 € d'achat</li>
@@ -378,11 +343,11 @@
                     <li>✓ Suivi de livraison inclus</li>
                 </ul>
             </div>
-            <div class="bg-surface-container-high border-4 border-on-background p-5 md:p-6">
-                <span class="material-symbols-outlined text-3xl md:text-4xl text-tertiary">payments</span>
-                <h3 class="font-headline font-black text-lg md:text-xl uppercase mt-2">Paiement sécurisé</h3>
-                <p class="font-body text-sm md:text-base mt-2"><strong>Via PayPal 🅿️</strong></p>
-                <ul class="text-xs md:text-sm space-y-1 mt-2 font-bold">
+            <div class="bg-surface-container-high border-4 border-on-background p-6">
+                <span class="material-symbols-outlined text-4xl text-tertiary">payments</span>
+                <h3 class="font-headline font-black text-xl uppercase mt-2">Paiement sécurisé</h3>
+                <p class="font-body mt-2"><strong>Via PayPal 🅿️</strong></p>
+                <ul class="text-sm space-y-1 mt-2 font-bold">
                     <li>✓ Paiement sécurisé SSL</li>
                     <li>✓ Protection acheteur PayPal</li>
                     <li>✓ Paiement en 4x sans frais possible</li>
@@ -392,24 +357,24 @@
         </div>
     </section>
 
-    <section class="mb-8 md:mb-12" id="contact">
-        <h2 class="aa-title font-headline font-black text-xl md:text-3xl uppercase text-primary mb-4 italic text-center md:text-left">📧 Contacte-nous</h2>
+    <section class="mb-12" id="contact">
+        <h2 class="font-headline font-black text-3xl uppercase text-primary mb-4 italic">📧 Contacte-nous</h2>
 
-        <div class="mb-6 flex items-center gap-3 flex-wrap justify-center md:justify-start">
+        <div class="mb-6 flex items-center gap-3 flex-wrap">
             <span class="aa-response-badge">
                 <span class="material-symbols-outlined aa-pulse" style="font-size:18px;">schedule</span>
                 Réponse sous 24-48h ouvrées
             </span>
-            <span class="font-body text-xs md:text-sm italic text-on-surface-variant">⏰ Du lundi au vendredi</span>
+            <span class="font-body text-sm italic text-on-surface-variant">⏰ Du lundi au vendredi</span>
         </div>
 
-        <div class="bg-surface-container-high border-4 border-on-background p-5 md:p-8 shadow-[8px_8px_0px_0px_rgba(187,0,3,1)]">
+        <div class="bg-surface-container-high border-4 border-on-background p-6 md:p-8 shadow-[8px_8px_0px_0px_rgba(187,0,3,1)]">
             
-            <div class="flex items-center gap-4 mb-6 pb-6 border-b-4 border-double border-on-background/20 flex-col sm:flex-row text-center sm:text-left">
+            <div class="flex items-center gap-4 mb-6 pb-6 border-b-4 border-double border-on-background/20">
                 <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1786006674/copy_of_3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Logo Action Archive - Contact" loading="lazy" class="h-16 md:h-20 w-auto aa-logo"/>
                 <div>
-                    <p class="font-headline font-black text-lg md:text-xl uppercase text-on-background italic leading-tight">Une question ? Un projet ?</p>
-                    <p class="font-body text-sm md:text-base text-on-surface-variant mt-1">Écris-nous, on te répond vite ! 🚀</p>
+                    <p class="font-headline font-black text-xl uppercase text-on-background italic leading-tight">Une question ? Un projet ?</p>
+                    <p class="font-body text-sm text-on-surface-variant mt-1">Écris-nous, on te répond vite ! 🚀</p>
                 </div>
             </div>
 
@@ -469,29 +434,30 @@
         </div>
     </section>
 
-    <section class="mb-8 md:mb-12">
-        <h3 class="aa-title font-headline font-black text-lg md:text-2xl uppercase text-primary mb-4 italic text-center md:text-left">📱 Autres moyens de nous joindre</h3>
+    <section class="mb-12">
+        <h3 class="font-headline font-black text-2xl uppercase text-primary mb-4 italic">📱 Autres moyens de nous joindre</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="bg-surface-container-high border-4 border-on-background p-5 text-center">
-                <span class="material-symbols-outlined text-3xl md:text-4xl text-tertiary">mail</span>
-                <p class="font-headline font-black uppercase mt-2 text-sm md:text-base">Email direct</p>
-                <a href="mailto:contact@action-archive.com" class="font-body text-xs md:text-sm underline break-all">contact@action-archive.com</a>
+                <span class="material-symbols-outlined text-4xl text-tertiary">mail</span>
+                <p class="font-headline font-black uppercase mt-2">Email direct</p>
+                <a href="mailto:contact@action-archive.com" class="font-body text-sm underline break-all">contact@action-archive.com</a>
             </div>
             <div class="bg-surface-container-high border-4 border-on-background p-5 text-center">
-                <span class="material-symbols-outlined text-3xl md:text-4xl text-tertiary">groups</span>
-                <p class="font-headline font-black uppercase mt-2 text-sm md:text-base">Réseaux sociaux</p>
-                <p class="font-body text-xs md:text-sm">Facebook, Instagram & TikTok</p>
+                <span class="material-symbols-outlined text-4xl text-tertiary">groups</span>
+                <p class="font-headline font-black uppercase mt-2">Réseaux sociaux</p>
+                <p class="font-body text-sm">Facebook, Instagram & TikTok</p>
             </div>
             <div class="bg-surface-container-high border-4 border-on-background p-5 text-center">
-                <span class="material-symbols-outlined text-3xl md:text-4xl text-tertiary">schedule</span>
-                <p class="font-headline font-black uppercase mt-2 text-sm md:text-base">Délai de réponse</p>
-                <p class="font-body text-xs md:text-sm"><strong>24-48h ouvrées</strong></p>
+                <span class="material-symbols-outlined text-4xl text-tertiary">schedule</span>
+                <p class="font-headline font-black uppercase mt-2">Délai de réponse</p>
+                <p class="font-body text-sm"><strong>24-48h ouvrées</strong></p>
             </div>
         </div>
     </section>
 
-    <section class="mb-8 md:mb-12">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+    <!-- ✅ NOUVEAU : Vidéo + Photo juste avant les Mentions Légales -->
+    <section class="mb-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <figure class="bg-surface-container-high border-4 border-on-background p-3 shadow-[6px_6px_0px_0px_rgba(15,86,191,1)]">
                 <video 
                     src="https://res.cloudinary.com/uvnbvhiw/video/upload/v1790640412/pomelli_creative_video_9_16_0929_2_nwue5h.mp4" 
@@ -517,9 +483,9 @@
         </div>
     </section>
 
-    <section class="mb-8 md:mb-12">
-        <h2 class="aa-title font-headline font-black text-xl md:text-3xl uppercase text-primary mb-4 italic text-center md:text-left">⚖️ Mentions Légales & CGV</h2>
-        <div class="bg-surface-container-high border-4 border-on-background p-5 md:p-6 text-xs md:text-sm font-body space-y-2 mb-6">
+    <section class="mb-12">
+        <h2 class="font-headline font-black text-3xl uppercase text-primary mb-4 italic">⚖️ Mentions Légales & CGV</h2>
+        <div class="bg-surface-container-high border-4 border-on-background p-6 text-sm font-body space-y-2 mb-6">
             <p><strong>Éditeur du site :</strong> Action Archive</p>
             <p><strong>Statut juridique :</strong> [À compléter - Auto-entrepreneur / Micro-entreprise / EURL]</p>
             <p><strong>SIRET :</strong> [À compléter]</p>
@@ -530,8 +496,8 @@
             <p><strong>Directeur de la publication :</strong> [Votre nom]</p>
             <p><strong>Hébergeur :</strong> Netlify, Inc. — 512 2nd Street, Suite 200, San Francisco, CA 94107, USA</p>
         </div>
-        <div class="bg-surface-container-high border-4 border-on-background p-5 md:p-6 text-xs md:text-sm font-body space-y-2 mb-6">
-            <h3 class="font-headline font-black text-lg md:text-xl uppercase text-primary mb-2">📜 Conditions Générales de Vente (CGV)</h3>
+        <div class="bg-surface-container-high border-4 border-on-background p-6 text-sm font-body space-y-2 mb-6">
+            <h3 class="font-headline font-black text-xl uppercase text-primary mb-2">📜 Conditions Générales de Vente (CGV)</h3>
             <p><strong>1. Prix :</strong> Les prix sont indiqués en euros TTC (TVA non applicable, art. 293 B du CGI). Les frais de port sont calculés au moment de la commande selon la destination.</p>
             <p><strong>2. Nature des produits :</strong> Les pièces vendues sont exclusivement des <strong>reproductions imprimées</strong> ou des <strong>créations originales custom</strong>. Aucune boîte vintage d'époque n'est proposée à la vente.</p>
             <p><strong>3. Commande :</strong> Toute commande vaut acceptation des présentes CGV. La confirmation par email vaut conclusion du contrat.</p>
@@ -552,8 +518,8 @@
     <img id="aa-lightbox-img" src="" alt="Image agrandie" style="display:none;"/>
 </div>
 
-<footer class="bg-[#342e1e] border-t-8 border-double border-[#755700] w-full py-8 md:py-12 px-6 md:px-10 flex flex-col md:flex-row justify-between items-center gap-6 md:gap-8 mt-20">
-    <div class="flex flex-col items-center md:items-start gap-3 text-center md:text-left">
+<footer class="bg-[#342e1e] border-t-8 border-double border-[#755700] w-full py-12 px-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-20">
+    <div class="flex flex-col items-center md:items-start gap-3">
         <a href="index.html" class="aa-logo-link flex items-center gap-3 cursor-pointer" title="Action Archive">
             <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Logo Action Archive - Retour à l'accueil" loading="lazy" class="aa-logo h-10 w-auto"/>
             <span class="text-xl md:text-2xl font-black italic text-[#ffca4d] font-headline uppercase tracking-tighter hover:text-white transition-colors">Action Archive</span>
@@ -599,8 +565,9 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbo
     const items = [{ key: 'facebook', icon: 'facebook', label: 'FACEBOOK' },{ key: 'twitter', icon: 'share', label: 'TWITTER' },{ key: 'instagram', icon: 'camera_alt', label: 'INSTAGRAM' },{ key: 'tiktok', icon: 'music_note', label: 'TIKTOK' },{ key: 'youtube', icon: 'play_circle', label: 'YOUTUBE' }];
     items.forEach(item => {
         const data = social[item.key];
-        if (data && data.enabled && data.url) nav.innerHTML += `<a href="${data.url}" target="_blank" class="text-[#ffca4d]"><span class="material-symbols-outlined">${item.icon}</span></a>`;
+        if (data && data.enabled && data.url) nav.innerHTML += `<a href="${aaEscapeHtml(data.url)}" target="_blank" rel="noopener" class="group flex flex-col items-center gap-1"><div class="bg-[#ffca4d] text-[#342e1e] p-2 rounded-sm group-hover:bg-white transition-colors btn-physical"><span class="material-symbols-outlined">${item.icon}</span></div><span class="font-label font-bold text-[9px] text-[#eadcbc] tracking-widest uppercase">${item.label}</span></a>`;
     });
+    if (nav.innerHTML === '') nav.innerHTML = '<p class="text-[#eadcbc] text-xs italic">Aucun réseau social</p>';
 })();
 </script>
 </body>
