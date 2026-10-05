@@ -8,6 +8,19 @@
     <link rel="canonical" href="https://action-archive.com/toys-history.html"/>
     <title>Toys History - Action Archive | L'Histoire du Jouet Vintage 70-90</title>
 
+    <!-- 🚀 Preconnexion & DNS prefetch -->
+    <link rel="dns-prefetch" href="//res.cloudinary.com"/>
+    <link rel="dns-prefetch" href="//fonts.googleapis.com"/>
+    <link rel="dns-prefetch" href="//fonts.gstatic.com"/>
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+
+    <!-- 🚀 Preload image 1 (LCP) -->
+    <link rel="preload" as="image" href="https://res.cloudinary.com/uvnbvhiw/image/upload/f_auto,q_auto,w_1200/v1790788322/Utilise_les_3_images_plus_202605110122_cdhlss.jpg" fetchpriority="high"/>
+
+    <!-- 🚀 Preload fonts CSS -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,900;1,900&family=Work+Sans:wght@400;500;700;800&display=swap"/>
+
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,900;1,900&family=Work+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -20,6 +33,12 @@
         }, fontFamily: { "headline": ["Epilogue"], "body": ["Work Sans"], "label": ["Work Sans"] } } } }
     </script>
     <style>
+        /* 🏎️ CRITICAL CSS - above the fold inliné */
+        body { background: #fff5e5; font-family: 'Work Sans', sans-serif; color: #342e1e; overflow-x: hidden; margin: 0; }
+        .aa-objective-banner { background: #bb0003; color: #fff5e5; border-top: 4px solid #342e1e; border-bottom: 4px solid #342e1e; font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; font-size: 0.95rem; letter-spacing: 0.02em; padding: 0.7rem 1.5rem; text-align: center; }
+        .aa-objective-banner strong { color: #ffca4d; }
+        header.aa-header { width: 100%; border-bottom: 4px double #bb0003; background: #fff5e5; box-shadow: 4px 4px 0 0 rgba(52,46,30,0.2); position: sticky; top: 0; z-index: 50; }
+
         #side-drawer { box-shadow: -8px 0 0 0 rgba(52, 46, 30, 0.2); transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1); }
         #side-drawer.open { transform: translateX(0); }
         .drawer-overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
@@ -34,10 +53,8 @@
         .aa-logo-link:hover .aa-logo { transform: rotate(-5deg) scale(1.05); filter: drop-shadow(3px 3px 0px rgba(187, 0, 3, 0.4)); }
         .aa-menu-btn { font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; background: #bb0003; color: #fff5e5; border: 3px solid #342e1e; padding: 10px 20px; font-size: 1.05rem; box-shadow: 4px 4px 0 0 #342e1e; cursor: pointer; transition: all 0.15s ease; }
         .aa-menu-btn:hover { background: #342e1e; color: #ffca4d; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 #bb0003; }
-        .aa-objective-banner { background: #bb0003; color: #fff5e5; border-top: 4px solid #342e1e; border-bottom: 4px solid #342e1e; font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; font-size: 0.95rem; letter-spacing: 0.02em; padding: 0.7rem 1.5rem; text-align: center; }
-        .aa-objective-banner strong { color: #ffca4d; }
 
-        /* ===== SLIDER DOUX ===== */
+        /* ===== SLIDER ===== */
         .aa-slider-viewport {
             position: relative;
             width: 100%;
@@ -55,6 +72,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
+            /* Le viewport capte le clic pour lightbox */
         }
 
         .aa-slider-img {
@@ -66,17 +84,17 @@
             display: block;
             opacity: 0;
             transform: scale(1.02);
-            transition: opacity 0.7s ease, transform 0.7s ease;
+            transition: opacity 0.5s ease, transform 0.5s ease;
             user-select: none;
             -webkit-user-drag: none;
             pointer-events: none;
+            background: #342e1e;
         }
         .aa-slider-img.active {
             opacity: 1;
             transform: scale(1);
         }
 
-        /* ✅ FLÈCHES ROUGES AUX EXTRÉMITÉS */
         .aa-slider-arrow {
             position: absolute;
             top: 50%;
@@ -162,8 +180,124 @@
             object-fit: cover;
         }
 
+        /* ============================================================
+           🔍 LOUPE AU SURVOL - DESKTOP UNIQUEMENT
+           ============================================================ */
+        @media (hover: hover) and (pointer: fine) {
+            .aa-slider-img.active {
+                pointer-events: auto;
+                cursor: zoom-in;
+            }
+            .aa-slider-stack::after {
+                content: "";
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 70px;
+                height: 70px;
+                transform: translate(-50%, -50%) scale(0.5);
+                background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='10.5' cy='10.5' r='6.5'/><line x1='15.5' y1='15.5' x2='21' y2='21'/></svg>");
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center;
+                filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.7));
+                opacity: 0;
+                transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+                pointer-events: none;
+                z-index: 10;
+            }
+            .aa-slider-stack:hover::after {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            .aa-slider-thumb {
+                cursor: zoom-in;
+            }
+        }
+
+        /* ============================================================
+           🖼️ LIGHTBOX AU CLIC - DESKTOP + MOBILE
+           ============================================================ */
+        .aa-lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(52, 46, 30, 0.95);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            cursor: zoom-out;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .aa-lightbox.open {
+            display: flex;
+            opacity: 1;
+        }
+        .aa-lightbox-img {
+            max-width: 95vw;
+            max-height: 90vh;
+            width: auto;
+            height: auto;
+            border: 6px solid #342e1e;
+            box-shadow: 12px 12px 0 0 #ffca4d;
+            object-fit: contain;
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .aa-lightbox.open .aa-lightbox-img {
+            transform: scale(1);
+        }
+        .aa-lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #ffca4d;
+            color: #342e1e;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #342e1e;
+            box-shadow: 4px 4px 0 0 #bb0003;
+            cursor: pointer;
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 900;
+            font-size: 24px;
+            transition: all 0.15s ease;
+            z-index: 10000;
+        }
+        .aa-lightbox-close:hover {
+            background: #342e1e;
+            color: #ffca4d;
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 0 #bb0003;
+        }
+        .aa-lightbox-close:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0 0 0 0 #bb0003;
+        }
+        .aa-lightbox-counter {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #342e1e;
+            color: #ffca4d;
+            padding: 8px 16px;
+            border: 3px solid #ffca4d;
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 900;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+        }
+        .aa-lightbox-counter span {
+            color: #fff5e5;
+        }
+
         @media (max-width: 768px) {
-            /* ✅ Sur mobile, flèches plus petites et masquées si écran trop petit */
             .aa-slider-arrow {
                 width: 48px;
                 height: 48px;
@@ -172,9 +306,16 @@
             .aa-slider-arrow.right { right: -24px; }
             .aa-slider-thumbs { display: none; }
             .aa-slider-counter { font-size: 0.95rem; }
+            .aa-lightbox-close {
+                top: 12px;
+                right: 12px;
+                width: 44px;
+                height: 44px;
+                font-size: 20px;
+            }
+            .aa-lightbox { padding: 1rem; }
         }
         @media (max-width: 480px) {
-            /* Sur très petits écrans, on cache les flèches latérales (swipe suffit) */
             .aa-slider-arrow { display: none; }
         }
     </style>
@@ -185,10 +326,10 @@
     📚 TOYS HISTORY — <strong>PLONGE DANS L'HISTOIRE</strong> DU JOUET VINTAGE 70-90 📚
 </div>
 
-<header class="w-full border-b-4 border-double border-[#bb0003] bg-[#fff5e5] shadow-[4px_4px_0px_0px_rgba(52,46,30,0.2)] z-50 sticky top-0">
+<header class="aa-header w-full border-b-4 border-double border-[#bb0003] bg-[#fff5e5] shadow-[4px_4px_0px_0px_rgba(52,46,30,0.2)] z-50 sticky top-0">
     <div class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
         <a href="index.html" class="aa-logo-link flex items-center gap-3 group cursor-pointer" title="Retour à l'accueil">
-            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Logo Action Archive - Retour à l'accueil" loading="eager" class="aa-logo h-12 md:h-14 w-auto"/>
+            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/f_auto,q_auto,w_140/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Logo Action Archive - Retour à l'accueil" loading="eager" fetchpriority="high" class="aa-logo h-12 md:h-14 w-auto" width="56" height="56"/>
             <span class="text-2xl md:text-3xl font-black italic text-[#bb0003] font-headline uppercase tracking-tighter group-hover:text-[#0f56bf] transition-colors">Action Archive</span>
         </a>
         <nav class="hidden md:flex items-center gap-6 font-headline font-black uppercase tracking-tighter text-sm">
@@ -239,31 +380,24 @@
         Découvre l'histoire du jouet vintage à travers les décennies. Figurines, boîtes, publicités et anecdotes des années <strong class="text-on-background">70-90</strong>.
     </p>
 
-    <!-- ============== LE SLIDER DOUX ============== -->
     <div class="aa-slider-viewport" id="aaSliderViewport">
-        
-        <!-- ✅ FLÈCHES ROUGES AUX EXTRÉMITÉS -->
         <button class="aa-slider-arrow left" id="aaPrevBtn" aria-label="Image précédente">
             <span class="material-symbols-outlined" style="font-size:32px;">chevron_left</span>
         </button>
         <button class="aa-slider-arrow right" id="aaNextBtn" aria-label="Image suivante">
             <span class="material-symbols-outlined" style="font-size:32px;">chevron_right</span>
         </button>
-
         <div class="aa-slider-stack" id="aaSliderStack"></div>
     </div>
 
-    <!-- Compteur sous le slider -->
     <div class="aa-slider-counter">
         Image <span id="aaCurrentPage">1</span> / <span id="aaTotalPages">22</span>
     </div>
 
-    <!-- Miniatures (desktop seulement) -->
     <div class="aa-slider-thumbs" id="aaSliderThumbs"></div>
 
-    <!-- Instructions mobile -->
     <p class="text-center text-xs italic text-on-surface-variant mt-6 md:hidden">
-        👆 Swipe à gauche/droite pour changer d'image
+        👆 Swipe pour changer • Tap pour agrandir
     </p>
 
 </main>
@@ -271,7 +405,7 @@
 <footer class="bg-[#342e1e] border-t-8 border-double border-[#755700] w-full py-12 px-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-20">
     <div class="flex flex-col items-center md:items-start gap-3">
         <a href="index.html" class="aa-logo-link flex items-center gap-3 cursor-pointer" title="Action Archive">
-            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="lazy" class="aa-logo h-10 w-auto"/>
+            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/f_auto,q_auto,w_140/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="lazy" class="aa-logo h-10 w-auto" width="40" height="40"/>
             <span class="text-xl md:text-2xl font-black italic text-[#ffca4d] font-headline uppercase tracking-tighter hover:text-white transition-colors">Action Archive</span>
         </a>
         <p class="font-body font-medium text-[10px] text-[#ffca4d] tracking-widest uppercase">© 2026 Action Archive INC.</p>
@@ -279,15 +413,24 @@
     <nav id="aa-social-nav" class="flex flex-wrap justify-center gap-10"></nav>
 </footer>
 
+<!-- 🖼️ LIGHTBOX -->
+<div id="aaLightbox" class="aa-lightbox" onclick="aaCloseLightbox(event)">
+    <button class="aa-lightbox-close" onclick="aaCloseLightbox(event)" aria-label="Fermer">✕</button>
+    <img id="aaLightboxImg" class="aa-lightbox-img" src="" alt="Image agrandie"/>
+    <div class="aa-lightbox-counter">
+        <span id="aaLightboxCounter">1 / 34</span>
+    </div>
+</div>
+
 <div id="aa-toasts"></div>
-<script src="aa-core.js"></script>
+<script src="aa-core.js" defer></script>
 <script>
-/* ============================================================
-   📚 TOYS HISTORY - LISTE DES IMAGES
-   👉 Modifie les URLs ci-dessous (séparées par des virgules)
-   👉 Dernière ligne SANS virgule
-   ============================================================ */
-const aaBookImages = [
+function aaOptimizeUrl(url, w) {
+    if (url.includes('f_auto')) return url;
+    return url.replace('/image/upload/', `/image/upload/f_auto,q_auto,w_${w}/`);
+}
+
+const aaBookImagesRaw = [
     "https://res.cloudinary.com/uvnbvhiw/image/upload/v1790788322/Utilise_les_3_images_plus_202605110122_cdhlss.jpg",
     "https://res.cloudinary.com/uvnbvhiw/image/upload/v1790788374/Utilise_les_3_images_plus_202605110208_1_xwcf3j.jpg",
     "https://res.cloudinary.com/uvnbvhiw/image/upload/v1790788419/Utilise_les_3_images_plus_202605110230_l6bgqw.jpg",
@@ -313,18 +456,21 @@ const aaBookImages = [
     "https://res.cloudinary.com/uvnbvhiw/image/upload/v1790795864/Vintage_action_figure_image_prompts_2K_20260930205408_xih13r.jpg",
     "https://res.cloudinary.com/uvnbvhiw/image/upload/v1790796602/Superheroes_punching_and_flying___2K_20260930212545_wxqyx8.jpg",
     "https://res.cloudinary.com/uvnbvhiw/image/upload/v1790988097/Placer_les_personnages_dans_une_202606091844_icvgjx.jpg",
-	"https://res.cloudinary.com/uvnbvhiw/image/upload/v1790988191/Am%C3%A9liorer_la_nettet%C3%A9__raviver_les_202605152040_rptk7d.jpg",
-	"https://res.cloudinary.com/uvnbvhiw/image/upload/v1791192498/BIGJIMpage25_vrk6be.jpg",
-	"https://res.cloudinary.com/uvnbvhiw/image/upload/v1791192509/BIGJIMpage26b_pnjuej.jpg",
-	"https://res.cloudinary.com/uvnbvhiw/image/upload/v1791191650/BIGJIMpage28_mun9uf.jpg",
+    "https://res.cloudinary.com/uvnbvhiw/image/upload/v1790988191/Am%C3%A9liorer_la_nettet%C3%A9__raviver_les_202605152040_rptk7d.jpg",
+    "https://res.cloudinary.com/uvnbvhiw/image/upload/v1791192498/BIGJIMpage25_vrk6be.jpg",
+    "https://res.cloudinary.com/uvnbvhiw/image/upload/v1791192509/BIGJIMpage26b_pnjuej.jpg",
+    "https://res.cloudinary.com/uvnbvhiw/image/upload/v1791191650/BIGJIMpage28_mun9uf.jpg",
     "https://res.cloudinary.com/uvnbvhiw/image/upload/v1791191727/BIGJIMpage30_r1o5rm.jpg",
-	"https://res.cloudinary.com/uvnbvhiw/image/upload/v1791191624/BIGJIMpage26_gnbsfm.jpg",
-	"https://res.cloudinary.com/uvnbvhiw/image/upload/v1791191634/BIGJIMpage27_qmruqr.jpg",
-	"https://res.cloudinary.com/uvnbvhiw/image/upload/v1791191681/BIGJIMpage29_pzpp50.jpg",
-	"https://res.cloudinary.com/uvnbvhiw/image/upload/v1791191736/BIGJIMpage30b_wr94c3.jpg"
-	
+    "https://res.cloudinary.com/uvnbvhiw/image/upload/v1791191624/BIGJIMpage26_gnbsfm.jpg",
+    "https://res.cloudinary.com/uvnbvhiw/image/upload/v1791191634/BIGJIMpage27_qmruqr.jpg",
+    "https://res.cloudinary.com/uvnbvhiw/image/upload/v1791191681/BIGJIMpage29_pzpp50.jpg",
+    "https://res.cloudinary.com/uvnbvhiw/image/upload/v1791191736/BIGJIMpage30b_wr94c3.jpg"
 ];
-/* ============================================================ */
+
+const aaBookImages = aaBookImagesRaw.map(u => aaOptimizeUrl(u, 1200));
+const aaThumbImages = aaBookImagesRaw.map(u => aaOptimizeUrl(u, 100));
+// 🖼️ URL HD pour le lightbox (taille originale haute qualité)
+const aaLightboxImages = aaBookImagesRaw.map(u => aaOptimizeUrl(u, 2400));
 
 let aaCurrentIndex = 0;
 const aaTotalImages = aaBookImages.length;
@@ -336,21 +482,39 @@ const aaTotalPagesEl = document.getElementById('aaTotalPages');
 const aaSliderThumbs = document.getElementById('aaSliderThumbs');
 const aaSliderViewport = document.getElementById('aaSliderViewport');
 
-// Créer toutes les images dans le DOM
-aaBookImages.forEach((src, i) => {
+const aaWINDOW = 2;
+const aaImgPool = [];
+for (let i = 0; i < 5; i++) {
     const img = document.createElement('img');
-    img.src = src;
-    img.alt = `Toys History - Image ${i + 1}`;
     img.className = 'aa-slider-img';
+    img.decoding = 'async';
     img.loading = 'lazy';
-    if (i === 0) img.classList.add('active');
     aaSliderStack.appendChild(img);
-});
-
-const aaImgs = aaSliderStack.querySelectorAll('.aa-slider-img');
+    aaImgPool.push(img);
+}
 
 function aaUpdateSlider() {
-    aaImgs.forEach((img, i) => img.classList.toggle('active', i === aaCurrentIndex));
+    const start = Math.max(0, aaCurrentIndex - aaWINDOW);
+    const end = Math.min(aaTotalImages - 1, aaCurrentIndex + aaWINDOW);
+    const range = end - start + 1;
+
+    for (let slot = 0; slot < 5; slot++) {
+        const img = aaImgPool[slot];
+        const actualIndex = start + slot;
+
+        if (slot < range) {
+            img.src = aaBookImages[actualIndex];
+            img.alt = `Toys History - Image ${actualIndex + 1}`;
+            img.style.display = 'block';
+            img.loading = (actualIndex === aaCurrentIndex) ? 'eager' : 'lazy';
+            img.classList.toggle('active', actualIndex === aaCurrentIndex);
+        } else {
+            img.removeAttribute('src');
+            img.style.display = 'none';
+            img.classList.remove('active');
+        }
+    }
+
     aaCurrentPageEl.textContent = aaCurrentIndex + 1;
     aaTotalPagesEl.textContent = aaTotalImages;
     aaPrevBtn.classList.toggle('disabled', aaCurrentIndex === 0);
@@ -374,15 +538,18 @@ function aaPrev() {
     }
 }
 
-aaPrevBtn.addEventListener('click', aaPrev);
+aaPrevBtn.addEventListener('click', aaNext);
 aaNextBtn.addEventListener('click', aaNext);
+// Correction: prev → aaPrev
+aaPrevBtn.removeEventListener('click', aaNext);
+aaPrevBtn.addEventListener('click', aaPrev);
 
 document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft') aaPrev();
     if (e.key === 'ArrowRight') aaNext();
 });
 
-// SWIPE MOBILE (seuil 200px)
+// SWIPE MOBILE
 let aaTouchStartX = 0;
 aaSliderViewport.addEventListener('touchstart', (e) => {
     aaTouchStartX = e.changedTouches[0].screenX;
@@ -396,18 +563,75 @@ aaSliderViewport.addEventListener('touchend', (e) => {
     }
 }, { passive: true });
 
+/* ============================================================
+   🖼️ LIGHTBOX AU CLIC - Desktop + Mobile
+   ============================================================ */
+const aaLightbox = document.getElementById('aaLightbox');
+const aaLightboxImg = document.getElementById('aaLightboxImg');
+const aaLightboxCounter = document.getElementById('aaLightboxCounter');
+let aaLightboxOpen = false;
+
+function aaOpenLightbox(index) {
+    aaCurrentIndex = index;
+    aaUpdateSlider();
+    aaLightboxImg.src = aaLightboxImages[index];
+    aaLightboxCounter.textContent = `${index + 1} / ${aaTotalImages}`;
+    aaLightbox.classList.add('open');
+    aaLightboxOpen = true;
+    document.body.style.overflow = 'hidden';
+}
+
+function aaCloseLightbox(event) {
+    if (event) {
+        // Si on clique sur l'image elle-même, on ne ferme pas
+        if (event.target === aaLightboxImg) return;
+    }
+    aaLightbox.classList.remove('open');
+    aaLightboxOpen = false;
+    document.body.style.overflow = '';
+}
+
+// Clic/Tap sur le slider → ouvre le lightbox
+aaSliderViewport.addEventListener('click', (e) => {
+    // Ignore si on clique sur les flèches
+    if (e.target.closest('.aa-slider-arrow')) return;
+    if (!aaLightboxOpen) {
+        aaOpenLightbox(aaCurrentIndex);
+    }
+});
+
+// Fermeture avec Escape
+document.addEventListener('keydown', (e) => {
+    if (!aaLightboxOpen) return;
+    if (e.key === 'Escape') aaCloseLightbox();
+    if (e.key === 'ArrowLeft' && aaCurrentIndex > 0) {
+        aaCurrentIndex--;
+        aaUpdateSlider();
+        aaLightboxImg.src = aaLightboxImages[aaCurrentIndex];
+        aaLightboxCounter.textContent = `${aaCurrentIndex + 1} / ${aaTotalImages}`;
+    }
+    if (e.key === 'ArrowRight' && aaCurrentIndex < aaTotalImages - 1) {
+        aaCurrentIndex++;
+        aaUpdateSlider();
+        aaLightboxImg.src = aaLightboxImages[aaCurrentIndex];
+        aaLightboxCounter.textContent = `${aaCurrentIndex + 1} / ${aaTotalImages}`;
+    }
+});
+
 // Miniatures
-aaBookImages.forEach((src, i) => {
+aaBookImagesRaw.forEach((src, i) => {
     const thumb = document.createElement('div');
     thumb.className = 'aa-slider-thumb';
     const img = document.createElement('img');
-    img.src = src;
+    img.src = aaThumbImages[i];
     img.alt = `Miniature ${i + 1}`;
     img.loading = 'lazy';
+    img.decoding = 'async';
     thumb.appendChild(img);
     thumb.addEventListener('click', () => {
         aaCurrentIndex = i;
         aaUpdateSlider();
+        aaSliderViewport.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
     aaSliderThumbs.appendChild(thumb);
 });
