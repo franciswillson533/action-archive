@@ -8,17 +8,12 @@
     <link rel="canonical" href="https://action-archive.com/toys-history.html"/>
     <title>Toys History - Action Archive | L'Histoire du Jouet Vintage 70-90</title>
 
-    <!-- 🚀 Preconnexion & DNS prefetch -->
     <link rel="dns-prefetch" href="//res.cloudinary.com"/>
     <link rel="dns-prefetch" href="//fonts.googleapis.com"/>
     <link rel="dns-prefetch" href="//fonts.gstatic.com"/>
     <link rel="preconnect" href="https://res.cloudinary.com" crossorigin/>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-
-    <!-- 🚀 Preload image 1 (LCP) -->
     <link rel="preload" as="image" href="https://res.cloudinary.com/uvnbvhiw/image/upload/f_auto,q_auto,w_1200/v1790788322/Utilise_les_3_images_plus_202605110122_cdhlss.jpg" fetchpriority="high"/>
-
-    <!-- 🚀 Preload fonts CSS -->
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,900;1,900&family=Work+Sans:wght@400;500;700;800&display=swap"/>
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -33,7 +28,6 @@
         }, fontFamily: { "headline": ["Epilogue"], "body": ["Work Sans"], "label": ["Work Sans"] } } } }
     </script>
     <style>
-        /* 🏎️ CRITICAL CSS - above the fold inliné */
         body { background: #fff5e5; font-family: 'Work Sans', sans-serif; color: #342e1e; overflow-x: hidden; margin: 0; }
         .aa-objective-banner { background: #bb0003; color: #fff5e5; border-top: 4px solid #342e1e; border-bottom: 4px solid #342e1e; font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; font-size: 0.95rem; letter-spacing: 0.02em; padding: 0.7rem 1.5rem; text-align: center; }
         .aa-objective-banner strong { color: #ffca4d; }
@@ -54,7 +48,6 @@
         .aa-menu-btn { font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; background: #bb0003; color: #fff5e5; border: 3px solid #342e1e; padding: 10px 20px; font-size: 1.05rem; box-shadow: 4px 4px 0 0 #342e1e; cursor: pointer; transition: all 0.15s ease; }
         .aa-menu-btn:hover { background: #342e1e; color: #ffca4d; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 #bb0003; }
 
-        /* ===== SLIDER ===== */
         .aa-slider-viewport {
             position: relative;
             width: 100%;
@@ -66,15 +59,12 @@
             box-shadow: 8px 8px 0 0 rgba(187, 0, 3, 1);
             overflow: visible;
         }
-
         .aa-slider-stack {
             position: relative;
             width: 100%;
             height: 100%;
             overflow: hidden;
-            /* Le viewport capte le clic pour lightbox */
         }
-
         .aa-slider-img {
             position: absolute;
             inset: 0;
@@ -94,7 +84,6 @@
             opacity: 1;
             transform: scale(1);
         }
-
         .aa-slider-arrow {
             position: absolute;
             top: 50%;
@@ -114,24 +103,11 @@
             font-family: 'Epilogue', sans-serif;
             font-weight: 900;
         }
-        .aa-slider-arrow:hover {
-            background: #342e1e;
-            color: #ffca4d;
-            box-shadow: 8px 8px 0 0 #bb0003;
-            transform: translateY(calc(-50% - 2px));
-        }
-        .aa-slider-arrow:active {
-            transform: translateY(calc(-50% + 2px));
-            box-shadow: 0 0 0 0 #bb0003;
-        }
+        .aa-slider-arrow:hover { background: #342e1e; color: #ffca4d; box-shadow: 8px 8px 0 0 #bb0003; transform: translateY(calc(-50% - 2px)); }
+        .aa-slider-arrow:active { transform: translateY(calc(-50% + 2px)); box-shadow: 0 0 0 0 #bb0003; }
         .aa-slider-arrow.left { left: -32px; }
         .aa-slider-arrow.right { right: -32px; }
-        .aa-slider-arrow.disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-
+        .aa-slider-arrow.disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
         .aa-slider-counter {
             text-align: center;
             font-family: 'Epilogue', sans-serif;
@@ -141,11 +117,7 @@
             letter-spacing: 0.05em;
             margin-top: 1.5rem;
         }
-        .aa-slider-counter span {
-            color: #bb0003;
-            font-size: 1.4rem;
-        }
-
+        .aa-slider-counter span { color: #bb0003; font-size: 1.4rem; }
         .aa-slider-thumbs {
             display: flex;
             gap: 8px;
@@ -168,26 +140,11 @@
             flex-shrink: 0;
         }
         .aa-slider-thumb:hover { opacity: 0.85; transform: translateY(-2px); }
-        .aa-slider-thumb.active {
-            opacity: 1;
-            border-color: #bb0003;
-            box-shadow: 3px 3px 0 0 #342e1e;
-            transform: translateY(-2px);
-        }
-        .aa-slider-thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .aa-slider-thumb.active { opacity: 1; border-color: #bb0003; box-shadow: 3px 3px 0 0 #342e1e; transform: translateY(-2px); }
+        .aa-slider-thumb img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* ============================================================
-           🔍 LOUPE AU SURVOL - DESKTOP UNIQUEMENT
-           ============================================================ */
         @media (hover: hover) and (pointer: fine) {
-            .aa-slider-img.active {
-                pointer-events: auto;
-                cursor: zoom-in;
-            }
+            .aa-slider-img.active { pointer-events: auto; cursor: zoom-in; }
             .aa-slider-stack::after {
                 content: "";
                 position: absolute;
@@ -206,49 +163,60 @@
                 pointer-events: none;
                 z-index: 10;
             }
-            .aa-slider-stack:hover::after {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
-            }
-            .aa-slider-thumb {
-                cursor: zoom-in;
-            }
+            .aa-slider-stack:hover::after { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            .aa-slider-thumb { cursor: zoom-in; }
         }
 
         /* ============================================================
-           🖼️ LIGHTBOX AU CLIC - DESKTOP + MOBILE
+           🖼️ LIGHTBOX + ZOOM PROGRESSIF
            ============================================================ */
         .aa-lightbox {
             position: fixed;
             inset: 0;
-            background: rgba(52, 46, 30, 0.95);
+            background: rgba(52, 46, 30, 0.96);
             z-index: 9999;
             display: none;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
-            cursor: zoom-out;
+            padding: 0;
             opacity: 0;
             transition: opacity 0.3s ease;
+            overflow: hidden;
         }
-        .aa-lightbox.open {
+        .aa-lightbox.open { display: flex; opacity: 1; }
+
+        .aa-lightbox-img-wrap {
+            width: 100%;
+            height: 100%;
             display: flex;
-            opacity: 1;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            cursor: zoom-in;
+            touch-action: none;
         }
+        .aa-lightbox-img-wrap.zoomed { cursor: grab; }
+        .aa-lightbox-img-wrap.dragging { cursor: grabbing; }
+
         .aa-lightbox-img {
             max-width: 95vw;
-            max-height: 90vh;
+            max-height: 92vh;
             width: auto;
             height: auto;
             border: 6px solid #342e1e;
             box-shadow: 12px 12px 0 0 #ffca4d;
             object-fit: contain;
-            transform: scale(0.95);
+            transform-origin: center center;
             transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            user-select: none;
+            -webkit-user-drag: none;
+            display: block;
         }
-        .aa-lightbox.open .aa-lightbox-img {
-            transform: scale(1);
-        }
+        .aa-lightbox-img.zoom-1 { transform: scale(1); }
+        .aa-lightbox-img.zoom-2 { transform: scale(2); }
+        .aa-lightbox-img.zoom-3 { transform: scale(3); }
+        .aa-lightbox-img.no-transition { transition: none; }
+
         .aa-lightbox-close {
             position: absolute;
             top: 20px;
@@ -269,16 +237,9 @@
             transition: all 0.15s ease;
             z-index: 10000;
         }
-        .aa-lightbox-close:hover {
-            background: #342e1e;
-            color: #ffca4d;
-            transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0 0 #bb0003;
-        }
-        .aa-lightbox-close:active {
-            transform: translate(2px, 2px);
-            box-shadow: 0 0 0 0 #bb0003;
-        }
+        .aa-lightbox-close:hover { background: #342e1e; color: #ffca4d; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 #bb0003; }
+        .aa-lightbox-close:active { transform: translate(2px, 2px); box-shadow: 0 0 0 0 #bb0003; }
+
         .aa-lightbox-counter {
             position: absolute;
             bottom: 24px;
@@ -292,28 +253,67 @@
             font-weight: 900;
             font-size: 0.9rem;
             letter-spacing: 0.05em;
+            z-index: 10000;
+            pointer-events: none;
         }
-        .aa-lightbox-counter span {
-            color: #fff5e5;
+        .aa-lightbox-counter span { color: #fff5e5; }
+
+        .aa-zoom-hint {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            background: #342e1e;
+            color: #ffca4d;
+            padding: 8px 14px;
+            border: 3px solid #ffca4d;
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 900;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            z-index: 10000;
+            pointer-events: none;
+            opacity: 0.9;
         }
+        .aa-zoom-hint span { color: #fff5e5; }
+
+        .aa-lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 56px;
+            height: 56px;
+            background: #ffca4d;
+            color: #342e1e;
+            border: 3px solid #342e1e;
+            box-shadow: 4px 4px 0 0 #bb0003;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 900;
+            font-size: 28px;
+            transition: all 0.15s ease;
+            z-index: 10000;
+        }
+        .aa-lightbox-nav:hover { background: #342e1e; color: #ffca4d; transform: translateY(calc(-50% - 2px)); box-shadow: 6px 6px 0 0 #bb0003; }
+        .aa-lightbox-nav.left { left: 20px; }
+        .aa-lightbox-nav.right { right: 20px; }
+        .aa-lightbox-nav.disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
 
         @media (max-width: 768px) {
-            .aa-slider-arrow {
-                width: 48px;
-                height: 48px;
-            }
+            .aa-slider-arrow { width: 48px; height: 48px; }
             .aa-slider-arrow.left { left: -24px; }
             .aa-slider-arrow.right { right: -24px; }
             .aa-slider-thumbs { display: none; }
             .aa-slider-counter { font-size: 0.95rem; }
-            .aa-lightbox-close {
-                top: 12px;
-                right: 12px;
-                width: 44px;
-                height: 44px;
-                font-size: 20px;
-            }
-            .aa-lightbox { padding: 1rem; }
+            .aa-lightbox-close { top: 12px; right: 12px; width: 44px; height: 44px; font-size: 20px; }
+            .aa-lightbox-img { max-width: 98vw; max-height: 90vh; }
+            .aa-lightbox-nav { width: 44px; height: 44px; font-size: 22px; }
+            .aa-lightbox-nav.left { left: 8px; }
+            .aa-lightbox-nav.right { right: 8px; }
+            .aa-zoom-hint { top: 12px; left: 12px; font-size: 0.7rem; padding: 6px 10px; }
+            .aa-lightbox-counter { bottom: 12px; font-size: 0.75rem; padding: 6px 12px; }
         }
         @media (max-width: 480px) {
             .aa-slider-arrow { display: none; }
@@ -374,7 +374,6 @@
 </aside>
 
 <main class="container mx-auto px-4 md:px-6 py-8 md:py-12 min-h-screen max-w-6xl">
-
     <h1 class="font-headline font-black text-4xl md:text-6xl uppercase text-on-background italic mb-4 text-center">📚 Toys History</h1>
     <p class="font-body text-base md:text-lg text-tertiary mb-8 leading-relaxed text-center max-w-2xl mx-auto font-bold italic">
         Découvre l'histoire du jouet vintage à travers les décennies. Figurines, boîtes, publicités et anecdotes des années <strong class="text-on-background">70-90</strong>.
@@ -393,13 +392,10 @@
     <div class="aa-slider-counter">
         Image <span id="aaCurrentPage">1</span> / <span id="aaTotalPages">22</span>
     </div>
-
     <div class="aa-slider-thumbs" id="aaSliderThumbs"></div>
-
     <p class="text-center text-xs italic text-on-surface-variant mt-6 md:hidden">
         👆 Swipe pour changer • Tap pour agrandir
     </p>
-
 </main>
 
 <footer class="bg-[#342e1e] border-t-8 border-double border-[#755700] w-full py-12 px-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-20">
@@ -413,10 +409,15 @@
     <nav id="aa-social-nav" class="flex flex-wrap justify-center gap-10"></nav>
 </footer>
 
-<!-- 🖼️ LIGHTBOX -->
-<div id="aaLightbox" class="aa-lightbox" onclick="aaCloseLightbox(event)">
-    <button class="aa-lightbox-close" onclick="aaCloseLightbox(event)" aria-label="Fermer">✕</button>
-    <img id="aaLightboxImg" class="aa-lightbox-img" src="" alt="Image agrandie"/>
+<!-- 🖼️ LIGHTBOX + ZOOM -->
+<div id="aaLightbox" class="aa-lightbox">
+    <button class="aa-lightbox-close" id="aaLightboxClose" aria-label="Fermer">✕</button>
+    <div class="aa-zoom-hint" id="aaZoomHint">🔍 CLIQUE POUR ZOOMER</div>
+    <button class="aa-lightbox-nav left" id="aaLightboxPrev" aria-label="Précédente">‹</button>
+    <button class="aa-lightbox-nav right" id="aaLightboxNext" aria-label="Suivante">›</button>
+    <div class="aa-lightbox-img-wrap" id="aaLightboxWrap">
+        <img id="aaLightboxImg" class="aa-lightbox-img zoom-1" src="" alt="Image agrandie" draggable="false"/>
+    </div>
     <div class="aa-lightbox-counter">
         <span id="aaLightboxCounter">1 / 34</span>
     </div>
@@ -469,7 +470,7 @@ const aaBookImagesRaw = [
 
 const aaBookImages = aaBookImagesRaw.map(u => aaOptimizeUrl(u, 1200));
 const aaThumbImages = aaBookImagesRaw.map(u => aaOptimizeUrl(u, 100));
-// 🖼️ URL HD pour le lightbox (taille originale haute qualité)
+// 🖼️ HD pour le lightbox (taille originale)
 const aaLightboxImages = aaBookImagesRaw.map(u => aaOptimizeUrl(u, 2400));
 
 let aaCurrentIndex = 0;
@@ -501,7 +502,6 @@ function aaUpdateSlider() {
     for (let slot = 0; slot < 5; slot++) {
         const img = aaImgPool[slot];
         const actualIndex = start + slot;
-
         if (slot < range) {
             img.src = aaBookImages[actualIndex];
             img.alt = `Toys History - Image ${actualIndex + 1}`;
@@ -514,7 +514,6 @@ function aaUpdateSlider() {
             img.classList.remove('active');
         }
     }
-
     aaCurrentPageEl.textContent = aaCurrentIndex + 1;
     aaTotalPagesEl.textContent = aaTotalImages;
     aaPrevBtn.classList.toggle('disabled', aaCurrentIndex === 0);
@@ -530,7 +529,6 @@ function aaNext() {
         aaUpdateSlider();
     }
 }
-
 function aaPrev() {
     if (aaCurrentIndex > 0) {
         aaCurrentIndex--;
@@ -538,18 +536,15 @@ function aaPrev() {
     }
 }
 
-aaPrevBtn.addEventListener('click', aaNext);
-aaNextBtn.addEventListener('click', aaNext);
-// Correction: prev → aaPrev
-aaPrevBtn.removeEventListener('click', aaNext);
 aaPrevBtn.addEventListener('click', aaPrev);
+aaNextBtn.addEventListener('click', aaNext);
 
 document.addEventListener('keydown', (e) => {
+    if (document.getElementById('aaLightbox').classList.contains('open')) return;
     if (e.key === 'ArrowLeft') aaPrev();
     if (e.key === 'ArrowRight') aaNext();
 });
 
-// SWIPE MOBILE
 let aaTouchStartX = 0;
 aaSliderViewport.addEventListener('touchstart', (e) => {
     aaTouchStartX = e.changedTouches[0].screenX;
@@ -564,12 +559,52 @@ aaSliderViewport.addEventListener('touchend', (e) => {
 }, { passive: true });
 
 /* ============================================================
-   🖼️ LIGHTBOX AU CLIC - Desktop + Mobile
+   🖼️ LIGHTBOX + ZOOM PROGRESSIF
    ============================================================ */
 const aaLightbox = document.getElementById('aaLightbox');
 const aaLightboxImg = document.getElementById('aaLightboxImg');
+const aaLightboxWrap = document.getElementById('aaLightboxWrap');
 const aaLightboxCounter = document.getElementById('aaLightboxCounter');
-let aaLightboxOpen = false;
+const aaLightboxCloseBtn = document.getElementById('aaLightboxClose');
+const aaLightboxPrevBtn = document.getElementById('aaLightboxPrev');
+const aaLightboxNextBtn = document.getElementById('aaLightboxNext');
+const aaZoomHint = document.getElementById('aaZoomHint');
+
+let aaZoomLevel = 1;
+let aaPanX = 0;
+let aaPanY = 0;
+let aaIsDragging = false;
+let aaDragStartX = 0;
+let aaDragStartY = 0;
+let aaDragStartPanX = 0;
+let aaDragStartPanY = 0;
+
+function aaApplyZoom() {
+    aaLightboxImg.classList.remove('zoom-1', 'zoom-2', 'zoom-3');
+    aaLightboxImg.classList.add(`zoom-${aaZoomLevel}`);
+    aaLightboxWrap.classList.toggle('zoomed', aaZoomLevel > 1);
+
+    if (aaZoomLevel === 1) {
+        aaZoomHint.innerHTML = '🔍 CLIQUE POUR ZOOMER';
+        aaPanX = 0;
+        aaPanY = 0;
+        aaLightboxImg.style.transform = `scale(${aaZoomLevel}) translate(0, 0)`;
+    } else {
+        aaZoomHint.innerHTML = `🔍 ZOOM <span>${aaZoomLevel}x</span>`;
+        aaLightboxImg.style.transformOrigin = 'center center';
+    }
+
+    // Le scale est sur la classe CSS, le translate est inline
+    aaLightboxImg.style.setProperty('--aa-pan-x', `${aaPanX}px`);
+    aaLightboxImg.style.setProperty('--aa-pan-y', `${aaPanY}px`);
+}
+
+function aaSetZoom(level) {
+    aaZoomLevel = level;
+    aaPanX = 0;
+    aaPanY = 0;
+    aaApplyZoom();
+}
 
 function aaOpenLightbox(index) {
     aaCurrentIndex = index;
@@ -577,45 +612,169 @@ function aaOpenLightbox(index) {
     aaLightboxImg.src = aaLightboxImages[index];
     aaLightboxCounter.textContent = `${index + 1} / ${aaTotalImages}`;
     aaLightbox.classList.add('open');
-    aaLightboxOpen = true;
+    aaSetZoom(1);
     document.body.style.overflow = 'hidden';
+    aaUpdateLightboxNav();
 }
 
-function aaCloseLightbox(event) {
-    if (event) {
-        // Si on clique sur l'image elle-même, on ne ferme pas
-        if (event.target === aaLightboxImg) return;
-    }
+function aaCloseLightbox() {
     aaLightbox.classList.remove('open');
-    aaLightboxOpen = false;
+    aaSetZoom(1);
+    aaLightboxImg.src = '';
     document.body.style.overflow = '';
 }
 
-// Clic/Tap sur le slider → ouvre le lightbox
-aaSliderViewport.addEventListener('click', (e) => {
-    // Ignore si on clique sur les flèches
-    if (e.target.closest('.aa-slider-arrow')) return;
-    if (!aaLightboxOpen) {
-        aaOpenLightbox(aaCurrentIndex);
-    }
-});
+function aaUpdateLightboxNav() {
+    aaLightboxPrevBtn.classList.toggle('disabled', aaCurrentIndex === 0);
+    aaLightboxNextBtn.classList.toggle('disabled', aaCurrentIndex === aaTotalImages - 1);
+}
 
-// Fermeture avec Escape
-document.addEventListener('keydown', (e) => {
-    if (!aaLightboxOpen) return;
-    if (e.key === 'Escape') aaCloseLightbox();
-    if (e.key === 'ArrowLeft' && aaCurrentIndex > 0) {
-        aaCurrentIndex--;
-        aaUpdateSlider();
-        aaLightboxImg.src = aaLightboxImages[aaCurrentIndex];
-        aaLightboxCounter.textContent = `${aaCurrentIndex + 1} / ${aaTotalImages}`;
-    }
-    if (e.key === 'ArrowRight' && aaCurrentIndex < aaTotalImages - 1) {
+function aaLightboxNext() {
+    if (aaCurrentIndex < aaTotalImages - 1) {
         aaCurrentIndex++;
         aaUpdateSlider();
         aaLightboxImg.src = aaLightboxImages[aaCurrentIndex];
         aaLightboxCounter.textContent = `${aaCurrentIndex + 1} / ${aaTotalImages}`;
+        aaSetZoom(1);
+        aaUpdateLightboxNav();
     }
+}
+
+function aaLightboxPrev() {
+    if (aaCurrentIndex > 0) {
+        aaCurrentIndex--;
+        aaUpdateSlider();
+        aaLightboxImg.src = aaLightboxImages[aaCurrentIndex];
+        aaLightboxCounter.textContent = `${aaCurrentIndex + 1} / ${aaTotalImages}`;
+        aaSetZoom(1);
+        aaUpdateLightboxNav();
+    }
+}
+
+// Clic sur slider → ouvre
+aaSliderViewport.addEventListener('click', (e) => {
+    if (e.target.closest('.aa-slider-arrow')) return;
+    if (!aaLightbox.classList.contains('open')) {
+        aaOpenLightbox(aaCurrentIndex);
+    }
+});
+
+// Clic sur image dans le lightbox → cycle de zoom
+aaLightboxWrap.addEventListener('click', (e) => {
+    if (aaIsDragging) return;
+    e.stopPropagation();
+    aaZoomLevel = aaZoomLevel >= 3 ? 1 : aaZoomLevel + 1;
+    aaSetZoom(aaZoomLevel);
+});
+
+// Clic sur overlay (hors image) → ferme
+aaLightbox.addEventListener('click', (e) => {
+    if (e.target === aaLightbox) aaCloseLightbox();
+});
+
+aaLightboxCloseBtn.addEventListener('click', aaCloseLightbox);
+aaLightboxNextBtn.addEventListener('click', aaLightboxNext);
+aaLightboxPrevBtn.addEventListener('click', aaLightboxPrev);
+
+// Drag pour bouger l'image zoomée
+aaLightboxWrap.addEventListener('mousedown', (e) => {
+    if (aaZoomLevel === 1) return;
+    aaIsDragging = false;
+    aaDragStartX = e.clientX;
+    aaDragStartY = e.clientY;
+    aaDragStartPanX = aaPanX;
+    aaDragStartPanY = aaPanY;
+    aaLightboxWrap.classList.add('dragging');
+});
+
+document.addEventListener('mousemove', (e) => {
+    if (aaZoomLevel === 1 || aaDragStartX === 0) return;
+    if (!(e.buttons & 1)) return;
+    aaIsDragging = true;
+    const dx = e.clientX - aaDragStartX;
+    const dy = e.clientY - aaDragStartY;
+    aaPanX = aaDragStartPanX + dx / aaZoomLevel;
+    aaPanY = aaDragStartPanY + dy / aaZoomLevel;
+    aaLightboxImg.style.transform = `scale(${aaZoomLevel}) translate(${aaPanX}px, ${aaPanY}px)`;
+});
+
+document.addEventListener('mouseup', () => {
+    aaDragStartX = 0;
+    aaDragStartY = 0;
+    aaLightboxWrap.classList.remove('dragging');
+    setTimeout(() => { aaIsDragging = false; }, 50);
+});
+
+// Touch (mobile) : pinch to zoom + drag
+let aaLastTouchDist = 0;
+let aaLastTouchX = 0;
+let aaLastTouchY = 0;
+let aaTouchStartTime = 0;
+
+aaLightboxWrap.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 2) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        aaLastTouchDist = Math.hypot(dx, dy);
+    } else if (e.touches.length === 1 && aaZoomLevel > 1) {
+        aaLastTouchX = e.touches[0].clientX;
+        aaLastTouchY = e.touches[0].clientY;
+        aaTouchStartTime = Date.now();
+    }
+}, { passive: true });
+
+aaLightboxWrap.addEventListener('touchmove', (e) => {
+    if (e.touches.length === 2) {
+        e.preventDefault();
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const dist = Math.hypot(dx, dy);
+        if (aaLastTouchDist > 0) {
+            const delta = dist / aaLastTouchDist;
+            if (delta > 1.2 && aaZoomLevel < 3) {
+                aaSetZoom(aaZoomLevel + 1);
+                aaLastTouchDist = dist;
+            } else if (delta < 0.8 && aaZoomLevel > 1) {
+                aaSetZoom(aaZoomLevel - 1);
+                aaLastTouchDist = dist;
+            }
+        }
+    } else if (e.touches.length === 1 && aaZoomLevel > 1) {
+        e.preventDefault();
+        const dx = e.touches[0].clientX - aaLastTouchX;
+        const dy = e.touches[0].clientY - aaLastTouchY;
+        aaPanX += dx / aaZoomLevel;
+        aaPanY += dy / aaZoomLevel;
+        aaLightboxImg.style.transform = `scale(${aaZoomLevel}) translate(${aaPanX}px, ${aaPanY}px)`;
+        aaLastTouchX = e.touches[0].clientX;
+        aaLastTouchY = e.touches[0].clientY;
+    }
+}, { passive: false });
+
+aaLightboxWrap.addEventListener('touchend', (e) => {
+    aaLastTouchDist = 0;
+    // Double tap pour reset
+    if (e.changedTouches.length === 1 && aaZoomLevel > 1) {
+        const dt = Date.now() - aaTouchStartTime;
+        if (dt < 200) {
+            aaSetZoom(1);
+        }
+    }
+});
+
+// Clavier
+document.addEventListener('keydown', (e) => {
+    if (!aaLightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') aaCloseLightbox();
+    if (e.key === 'ArrowLeft') aaLightboxPrev();
+    if (e.key === 'ArrowRight') aaLightboxNext();
+    if (e.key === '+' || e.key === '=') {
+        if (aaZoomLevel < 3) aaSetZoom(aaZoomLevel + 1);
+    }
+    if (e.key === '-' || e.key === '_') {
+        if (aaZoomLevel > 1) aaSetZoom(aaZoomLevel - 1);
+    }
+    if (e.key === '0') aaSetZoom(1);
 });
 
 // Miniatures
