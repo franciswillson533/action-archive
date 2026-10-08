@@ -192,6 +192,42 @@
             50% { transform: scale(1.1); }
         }
 
+        /* ✅ Petit bonus : bandeau de confirmation */
+        .aa-sent-banner {
+            background: #ffca4d;
+            border: 4px solid #342e1e;
+            box-shadow: 8px 8px 0 0 #bb0003;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        .aa-sent-banner-icon {
+            font-size: 2.5rem;
+            line-height: 1;
+        }
+        .aa-sent-banner-text {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: #342e1e;
+            font-size: 1rem;
+            letter-spacing: 0.02em;
+        }
+        .aa-sent-banner-text strong {
+            color: #bb0003;
+            display: block;
+            font-size: 1.2rem;
+            margin-bottom: 2px;
+        }
+        @keyframes popIn { 
+            0% { transform: scale(0.8); opacity: 0; } 
+            80% { transform: scale(1.05); opacity: 1; } 
+            100% { transform: scale(1); opacity: 1; } 
+        }
+
         @media (max-width: 768px) {
             .aa-info-title {
                 font-size: 2rem !important;
@@ -200,6 +236,11 @@
             .aa-info-intro {
                 font-size: 1rem !important;
                 text-align: center !important;
+            }
+            .aa-sent-banner {
+                flex-direction: column;
+                text-align: center;
+                padding: 1.2rem;
             }
         }
     </style>
@@ -246,7 +287,6 @@
             <a href="index.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">ACCUEIL</a>
             <a href="produits.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">PRODUITS</a>
             <a href="info.html" class="p-4 bg-surface-container-low border-2 border-primary font-headline font-black uppercase text-primary">INFO</a>
-            <!-- ✅ Bouton Toys History dans le menu latéral -->
             <a href="toys-history.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">TOYS HISTORY</a>
             <a href="panier.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">COMMANDE</a>
             <a href="inscription.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">INSCRIPTION</a>
@@ -262,6 +302,15 @@
     <p class="aa-info-intro font-body text-lg text-tertiary mb-8 leading-relaxed">
         Tout savoir sur <strong class="text-on-background">Action Archive</strong>, spécialiste de la <strong class="text-on-background">reproduction de boîtes vintage</strong> et des <strong class="text-on-background">créations custom originales</strong> pour figurines de collection. Livraison France & Europe, paiement sécurisé, programme fidélité.
     </p>
+
+    <!-- ✅ Petit bonus : bandeau de confirmation (caché par défaut) -->
+    <div id="aa-sent-banner" class="aa-sent-banner" style="display:none;">
+        <div class="aa-sent-banner-icon">✅</div>
+        <div class="aa-sent-banner-text">
+            <strong>Message envoyé avec succès !</strong>
+            Tu recevras une réponse sous 24-48h ouvrées.
+        </div>
+    </div>
 
     <section class="mb-12">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -381,12 +430,14 @@
                 </div>
             </div>
 
+            <!-- ✅ Formulaire : redirige vers l'accueil après envoi -->
             <form action="https://formsubmit.co/franciswillson533@gmail.com" method="POST" class="space-y-4">
                 
                 <input type="hidden" name="_subject" value="📧 Nouveau message depuis Action Archive"/>
                 <input type="hidden" name="_template" value="table"/>
                 <input type="hidden" name="_captcha" value="false"/>
-                <input type="hidden" name="_next" value="https://action-archive.com/info.html?sent=1"/>
+                <!-- ✅ Redirection vers la page d'accueil -->
+                <input type="hidden" name="_next" value="https://action-archive.com/index.html"/>
                 <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off"/>
 
                 <div>
@@ -458,7 +509,6 @@
         </div>
     </section>
 
-    <!-- ✅ NOUVEAU : Vidéo + Photo juste avant les Mentions Légales -->
     <section class="mb-12">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <figure class="bg-surface-container-high border-4 border-on-background p-3 shadow-[6px_6px_0px_0px_rgba(15,86,191,1)]">
@@ -497,7 +547,7 @@
             <p><strong>Email :</strong> contact@action-archive.com</p>
             <p><strong>Téléphone :</strong> [À compléter]</p>
             <p><strong>Directeur de la publication :</strong> [Votre nom]</p>
-            <p><strong>Hébergeur :</strong> Netlify, Inc. — 512 2nd Street, Suite 200, San Francisco, CA 94107, USA</p>
+            <p><strong>Hébergeur :</strong> Vercel Inc. — 340 S Lemon Ave #4133, Walnut, CA 91789, USA</p>
         </div>
         <div class="bg-surface-container-high border-4 border-on-background p-6 text-sm font-body space-y-2 mb-6">
             <h3 class="font-headline font-black text-xl uppercase text-primary mb-2">📜 Conditions Générales de Vente (CGV)</h3>
@@ -547,17 +597,19 @@ function closeLightbox() {
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 
+// ✅ Petit bonus : si on arrive avec ?sent=1 (cas d'un retour manuel), afficher le bandeau
 (function(){
     const params = new URLSearchParams(window.location.search);
     if (params.get('sent') === '1') {
-        setTimeout(() => {
-            if (typeof aaToast === 'function') {
-                aaToast('✅ Message envoyé ! Tu recevras une réponse sous 24-48h.');
-            } else {
-                alert('✅ Message envoyé ! Tu recevras une réponse sous 24-48h.');
-            }
+        const banner = document.getElementById('aa-sent-banner');
+        if (banner) {
+            banner.style.display = 'flex';
+            setTimeout(() => {
+                banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+            // Nettoyer l'URL
             window.history.replaceState({}, '', window.location.pathname);
-        }, 500);
+        }
     }
 })();
 
