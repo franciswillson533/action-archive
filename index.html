@@ -351,47 +351,6 @@
             .aa-programme-grid { grid-template-columns: 1fr; gap: 1.5rem; text-align: center; }
             .aa-programme-left { align-items: center; text-align: center; }
         }
-
-        /* ============================================= */
-        /*  CURSEUR VISAGE                               */
-        /* ============================================= */
-        #face-cursor {
-            --taille: 56px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: var(--taille);
-            height: calc(var(--taille) * 225 / 205);
-            pointer-events: none;
-            visibility: hidden;
-            z-index: 2147483647;
-            filter: drop-shadow(0 2px 2px #0005);
-            will-change: transform;
-        }
-        #face-cursor svg {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-        }
-        #face-cursor .bouche-ouverte {
-            display: none;
-        }
-        #face-cursor.appui .bouche-fermee {
-            display: none;
-        }
-        #face-cursor.appui .bouche-ouverte {
-            display: block;
-        }
-        @media (any-hover: hover) and (any-pointer: fine) {
-            html.curseur-visage-actif,
-            html.curseur-visage-actif * {
-                cursor: none !important;
-            }
-            html.curseur-visage-actif #face-cursor {
-                visibility: visible;
-            }
-        }
     </style>
 </head>
 <body class="bg-surface font-body text-on-surface overflow-x-hidden">
@@ -406,6 +365,7 @@
             <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="eager" class="aa-logo h-12 md:h-14 w-auto"/>
             <span class="text-2xl md:text-3xl font-black italic text-[#bb0003] font-headline uppercase tracking-tighter group-hover:text-[#0f56bf] transition-colors">Action Archive</span>
         </a>
+        <!-- ✅ LIEN TOYS HISTORY AJOUTÉ -->
         <nav class="hidden md:flex items-center gap-6 font-headline font-black uppercase tracking-tighter text-sm">
             <a class="text-[#0f56bf] underline decoration-4 underline-offset-8" href="index.html">Accueil</a>
             <a class="text-[#342e1e] hover:text-[#bb0003]" href="produits.html">Produits</a>
@@ -436,6 +396,7 @@
             <h2 class="font-headline font-black text-2xl text-primary italic uppercase">MENU</h2>
             <button class="text-on-background" onclick="toggleDrawer()"><span class="material-symbols-outlined text-3xl">close</span></button>
         </div>
+        <!-- ✅ LIEN TOYS HISTORY AJOUTÉ -->
         <nav class="flex flex-col gap-3">
             <a href="index.html" class="p-4 bg-surface-container-low border-2 border-primary font-headline font-black uppercase text-primary">ACCUEIL</a>
             <a href="produits.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">PRODUITS</a>
@@ -632,32 +593,6 @@
 </footer>
 
 <div id="aa-toasts"></div>
-
-<!-- ============================================= -->
-<!--  CURSEUR VISAGE (HTML + JS)                   -->
-<!-- ============================================= -->
-<div id="face-cursor" aria-hidden="true">
-    <!-- Visage de gauche : au repos. -->
-    <svg class="bouche-fermee" viewBox="30 35 205 225" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-            <clipPath id="decoupe-visage-repos">
-                <path d="M43 113 C42 76 65 50 104 45 C133 37 165 44 186 58 C211 74 220 99 218 132 C218 160 210 182 198 202 C185 229 162 254 136 257 C108 254 84 234 69 210 C51 187 39 158 43 113Z" />
-            </clipPath>
-        </defs>
-        <image width="616" height="429" clip-path="url(#decoupe-visage-repos)" />
-    </svg>
-
-    <!-- Visage de droite : pendant le clic. -->
-    <svg class="bouche-ouverte" viewBox="370 35 205 225" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-            <clipPath id="decoupe-visage-clic">
-                <path d="M385 115 C386 77 407 49 446 44 C478 37 514 44 535 62 C555 81 560 108 557 138 C556 163 547 187 535 207 C520 234 498 254 473 257 C446 254 421 235 408 210 C389 187 379 155 385 115Z" />
-            </clipPath>
-        </defs>
-        <image width="616" height="429" clip-path="url(#decoupe-visage-clic)" />
-    </svg>
-</div>
-
 <script src="aa-core.js"></script>
 <script>
 function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
@@ -708,94 +643,6 @@ function aaEscapeAttr(s) { if (s == null) return ''; return String(s).replace(/&
         const data = social[item.key];
         if (data && data.enabled && data.url) nav.innerHTML += `<a href="${aaEscapeAttr(data.url)}" target="_blank" class="text-[#ffca4d]"><span class="material-symbols-outlined">${item.icon}</span></a>`;
     });
-})();
-
-/* =============================================
-   CURSEUR VISAGE — JavaScript
-   ============================================= */
-(() => {
-    // 👉 Remplace cette URL par celle hébergée sur ton site
-    //    (ex: "/images/visages.jpg") pour la production.
-    const IMAGE_URL = "https://d2lm3begjhzc49.cloudfront.net/chat-uploads/chat/user/6ac6d533064edad00b5bd057/6ac6d90217012f4f94d29735/012865df-img935.jpg";
-
-    const curseur = document.getElementById("face-cursor");
-    if (!curseur) return;
-
-    const racine = document.documentElement;
-    const compatible = window.matchMedia(
-        "(any-hover: hover) and (any-pointer: fine)"
-    );
-
-    let imagePrete = false;
-    let debutAppui = 0;
-    let fermeture = null;
-
-    curseur.querySelectorAll("image").forEach((image) => {
-        image.setAttribute("href", IMAGE_URL);
-    });
-
-    function masquer() {
-        racine.classList.remove("curseur-visage-actif");
-        curseur.classList.remove("appui");
-        clearTimeout(fermeture);
-    }
-
-    // Le curseur natif reste disponible si l'image ne charge pas.
-    const prechargement = new Image();
-    prechargement.onload  = () => { imagePrete = true; };
-    prechargement.onerror = () => { imagePrete = false; masquer(); };
-    prechargement.src = IMAGE_URL;
-
-    function positionner(event) {
-        if (
-            !imagePrete ||
-            !compatible.matches ||
-            event.pointerType !== "mouse"
-        ) {
-            masquer();
-            return false;
-        }
-
-        // Le centre du visage correspond au point de clic.
-        curseur.style.transform =
-            `translate3d(${event.clientX}px, ${event.clientY}px, 0) ` +
-            "translate(-50%, -50%)";
-
-        racine.classList.add("curseur-visage-actif");
-        return true;
-    }
-
-    window.addEventListener("pointermove", positionner, { passive: true });
-
-    window.addEventListener("pointerdown", (event) => {
-        if (event.button !== 0 || !positionner(event)) return;
-        clearTimeout(fermeture);
-        debutAppui = performance.now();
-        curseur.classList.add("appui");
-    }, { passive: true });
-
-    window.addEventListener("pointerup", (event) => {
-        if (event.button !== 0 || event.pointerType !== "mouse") return;
-        clearTimeout(fermeture);
-
-        // Rend l'expression visible même lors d'un clic très rapide.
-        const delai = Math.max(0, 140 - (performance.now() - debutAppui));
-        fermeture = setTimeout(() => {
-            curseur.classList.remove("appui");
-        }, delai);
-    }, { passive: true });
-
-    // Rétablit le curseur normal quand on quitte la page.
-    document.documentElement.addEventListener("pointerleave", masquer);
-    window.addEventListener("blur", masquer);
-    window.addEventListener("pointercancel", masquer);
-    document.addEventListener("visibilitychange", () => {
-        if (document.hidden) masquer();
-    });
-    document.addEventListener("keydown", (event) => {
-        if (event.key === "Tab") masquer();
-    });
-    compatible.addEventListener("change", masquer);
 })();
 </script>
 </body>
