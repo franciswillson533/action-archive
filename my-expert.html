@@ -4,7 +4,7 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <meta name="robots" content="index, follow"/>
-    <meta name="description" content="My Expert - Posez vos questions à notre expert IA des jouets vintage 70-90 : figurines, boîtes, marques, valeurs et histoire du jouet."/>
+    <meta name="description" content="My Expert - Discutez en direct avec notre expert IA des jouets vintage 70-90 : figurines, boîtes, marques, valeurs et histoire du jouet."/>
     <link rel="canonical" href="https://action-archive.com/my-expert.html"/>
     <title>My Expert - Action Archive | L'Expert IA des Jouets Vintage 70-90</title>
 
@@ -35,7 +35,7 @@
         .aa-menu-btn { font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; background: #bb0003; color: #fff5e5; border: 3px solid #342e1e; padding: 10px 20px; font-size: 1.05rem; box-shadow: 4px 4px 0 0 #342e1e; cursor: pointer; transition: all 0.15s ease; }
         .aa-menu-btn:hover { background: #342e1e; color: #ffca4d; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 #bb0003; }
 
-        /* ✅ STYLES SPÉCIFIQUES MY EXPERT */
+        /* ====== MY EXPERT - CHAT UI ====== */
         .aa-expert-robot {
             font-size: 5rem;
             display: inline-block;
@@ -56,81 +56,9 @@
             padding: 1.5rem;
             transition: all 0.2s ease;
         }
-        .aa-expert-card:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 10px 10px 0 0 #bb0003;
-        }
-        .aa-expert-card-icon {
-            font-size: 2.5rem;
-            display: block;
-            margin-bottom: 0.5rem;
-        }
+        .aa-expert-card:hover { transform: translate(-2px, -2px); box-shadow: 10px 10px 0 0 #bb0003; }
+        .aa-expert-card-icon { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; }
 
-        .aa-expert-chat-frame {
-            background: #342e1e;
-            border: 6px solid #342e1e;
-            box-shadow: 12px 12px 0 0 #ffca4d;
-            padding: 1.5rem;
-            position: relative;
-        }
-        .aa-expert-chat-frame::before {
-            content: "";
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%) rotate(-2deg);
-            width: 0;
-            height: 0;
-            border-left: 20px solid transparent;
-            border-right: 20px solid transparent;
-            border-bottom: 20px solid #342e1e;
-        }
-        .aa-expert-chat-frame::after {
-            content: "💬";
-            position: absolute;
-            top: -32px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 1.5rem;
-            background: #ffca4d;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 3px solid #342e1e;
-            z-index: 2;
-        }
-
-        .aa-pulse-typing {
-            display: inline-flex;
-            gap: 4px;
-            align-items: center;
-        }
-        .aa-pulse-typing span {
-            width: 8px;
-            height: 8px;
-            background: #ffca4d;
-            border-radius: 50%;
-            animation: aaTyping 1.4s ease-in-out infinite;
-        }
-        .aa-pulse-typing span:nth-child(2) { animation-delay: 0.2s; }
-        .aa-pulse-typing span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes aaTyping {
-            0%, 60%, 100% { transform: scale(0.8); opacity: 0.5; }
-            30% { transform: scale(1.3); opacity: 1; }
-        }
-
-        @keyframes aaExpertGlow {
-            0%, 100% { box-shadow: 12px 12px 0 0 #ffca4d; }
-            50% { box-shadow: 12px 12px 0 0 #bb0003, 0 0 40px rgba(255, 202, 77, 0.6); }
-        }
-        .aa-expert-chat-frame-glow {
-            animation: aaExpertGlow 2.5s ease-in-out infinite;
-        }
-
-        /* ✅ SUGGESTIONS CLIQUABLES (à côté du chat) */
         .aa-suggestion-pill {
             display: inline-block;
             padding: 0.6rem 1rem;
@@ -151,39 +79,193 @@
             box-shadow: 3px 3px 0 0 #bb0003;
         }
 
-        /* ✅ ASHNA WIDGET CONTAINER (encadré rouge personnalisé) */
-        #ashna-widget-container {
-            background: #fff5e5;
-            min-height: 500px;
-            border: 3px dashed #342e1e;
+        .aa-suggestion-pill:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* ====== CHAT CONTAINER ====== */
+        .aa-chat-wrap {
+            background: #342e1e;
+            border: 6px solid #342e1e;
+            box-shadow: 12px 12px 0 0 #ffca4d;
             position: relative;
+        }
+
+        .aa-chat-header {
+            background: #bb0003;
+            color: #fff5e5;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 4px solid #342e1e;
+        }
+        .aa-chat-avatar {
+            width: 48px;
+            height: 48px;
+            background: #ffca4d;
+            border: 3px solid #342e1e;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            font-size: 1.5rem;
+            flex-shrink: 0;
         }
-        #ashna-widget-container::before {
-            content: "🤖 L'expert écrit ici en direct ⤵";
-            position: absolute;
-            top: 12px;
-            left: 50%;
-            transform: translateX(-50%);
+        .aa-chat-name { font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; font-size: 1.1rem; line-height: 1; }
+        .aa-chat-status { font-family: 'Work Sans', sans-serif; font-size: 0.75rem; font-weight: 700; opacity: 0.9; display: flex; align-items: center; gap: 0.4rem; }
+        .aa-chat-online { width: 8px; height: 8px; background: #4ade80; border-radius: 50%; box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.3); animation: aaPulseDot 1.5s ease-in-out infinite; }
+        @keyframes aaPulseDot { 0%, 100% { box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.3); } 50% { box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); } }
+
+        .aa-chat-reset {
+            margin-left: auto;
+            background: transparent;
+            border: 2px solid #fff5e5;
+            color: #fff5e5;
+            padding: 0.4rem 0.75rem;
             font-family: 'Epilogue', sans-serif;
             font-weight: 900;
-            font-size: 0.85rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
-            color: #bb0003;
-            background: #ffca4d;
-            padding: 4px 12px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .aa-chat-reset:hover { background: #fff5e5; color: #bb0003; }
+
+        .aa-chat-messages {
+            background: #fdefd5;
+            background-image: radial-gradient(rgba(52, 46, 30, 0.05) 1px, transparent 0);
+            background-size: 12px 12px;
+            height: 450px;
+            overflow-y: auto;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .aa-msg {
+            max-width: 80%;
+            padding: 0.75rem 1rem;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            word-wrap: break-word;
             border: 2px solid #342e1e;
-            letter-spacing: 0.02em;
+            position: relative;
+        }
+        .aa-msg-user {
+            align-self: flex-end;
+            background: #0f56bf;
+            color: white;
+            border-color: #342e1e;
+            box-shadow: 3px 3px 0 0 #342e1e;
+            border-radius: 14px 14px 2px 14px;
+        }
+        .aa-msg-bot {
+            align-self: flex-start;
+            background: #fff5e5;
+            color: #342e1e;
+            border-color: #342e1e;
+            box-shadow: 3px 3px 0 0 #bb0003;
+            border-radius: 14px 14px 14px 2px;
+        }
+        .aa-msg-error {
+            align-self: center;
+            background: #fde2e2;
+            color: #bb0003;
+            border-color: #bb0003;
+            max-width: 90%;
+            text-align: center;
+        }
+        .aa-msg-label {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 900;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+            opacity: 0.85;
+        }
+
+        .aa-typing {
+            align-self: flex-start;
+            background: #fff5e5;
+            border: 2px solid #342e1e;
+            box-shadow: 3px 3px 0 0 #bb0003;
+            padding: 0.85rem 1.1rem;
+            display: inline-flex;
+            gap: 4px;
+            align-items: center;
+            border-radius: 14px 14px 14px 2px;
+        }
+        .aa-typing span {
+            width: 8px;
+            height: 8px;
+            background: #bb0003;
+            border-radius: 50%;
+            animation: aaTyping 1.4s ease-in-out infinite;
+        }
+        .aa-typing span:nth-child(2) { animation-delay: 0.2s; }
+        .aa-typing span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes aaTyping { 0%, 60%, 100% { transform: scale(0.8); opacity: 0.5; } 30% { transform: scale(1.3); opacity: 1; } }
+
+        .aa-chat-input-wrap {
+            background: #fff5e5;
+            border-top: 4px solid #342e1e;
+            padding: 0.75rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+        .aa-chat-input {
+            flex: 1;
+            background: #fff5e5;
+            border: 3px solid #342e1e;
+            padding: 0.75rem 1rem;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #342e1e;
+            outline: none;
+        }
+        .aa-chat-input:focus {
+            background: #fff;
+            box-shadow: 3px 3px 0 0 #bb0003;
+            transform: translate(-1px, -1px);
+        }
+        .aa-chat-input:disabled { opacity: 0.5; cursor: not-allowed; }
+        .aa-chat-send {
+            background: #bb0003;
+            color: white;
+            border: 3px solid #342e1e;
+            padding: 0 1.25rem;
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 0 #342e1e;
+            transition: all 0.15s ease;
+        }
+        .aa-chat-send:hover { background: #342e1e; color: #ffca4d; transform: translate(-1px, -1px); }
+        .aa-chat-send:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; transform: none; }
+
+        .aa-chat-empty {
+            text-align: center;
+            color: #635b48;
+            font-style: italic;
+            font-size: 0.9rem;
+            padding: 1rem;
         }
 
         @media (max-width: 768px) {
             .aa-expert-robot { font-size: 3.5rem; }
             .aa-expert-card { padding: 1rem; }
             .aa-expert-card-icon { font-size: 1.8rem; }
-            #ashna-widget-container { min-height: 400px; padding: 1.5rem; }
+            .aa-chat-messages { height: 400px; }
+            .aa-msg { max-width: 88%; font-size: 0.9rem; }
         }
     </style>
 </head>
@@ -242,28 +324,22 @@
     </div>
 </aside>
 
-<main class="container mx-auto px-4 md:px-6 py-8 md:py-12 min-h-screen max-w-5xl">
+<main class="container mx-auto px-4 md:px-6 py-8 md:py-12 min-h-screen max-w-4xl">
 
-    <!-- ============== INTRO ============== -->
+    <!-- INTRO -->
     <div class="text-center mb-8">
         <div class="aa-expert-robot mb-4">🤖</div>
-        <h1 class="font-headline font-black text-4xl md:text-6xl uppercase text-on-background italic tracking-tighter mb-4">
-            My Expert
-        </h1>
+        <h1 class="font-headline font-black text-4xl md:text-6xl uppercase text-on-background italic tracking-tighter mb-4">My Expert</h1>
         <p class="font-body text-lg md:text-2xl text-tertiary font-bold italic mb-3 max-w-2xl mx-auto">
             Posez vos questions à notre expert IA des jouets vintage 70-90 🎮
         </p>
         <p class="font-body text-sm md:text-base text-on-surface-variant max-w-2xl mx-auto">
             Cet expert connaît tout sur les <strong>figurines</strong>, les <strong>boîtes</strong>, les <strong>marques</strong> et les <strong>collections vintage</strong>. Idéal pour identifier une pièce, connaître sa valeur, ou en savoir plus sur une époque.
         </p>
-        <div class="mt-4 inline-flex items-center gap-2 bg-[#ffca4d] border-2 border-[#342e1e] px-4 py-2 font-headline font-black text-xs uppercase">
-            <span class="aa-pulse-typing"><span></span><span></span><span></span></span>
-            En ligne et prêt à répondre
-        </div>
     </div>
 
-    <!-- ============== 4 CARTES "CE QU'IL SAIT FAIRE" ============== -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-10">
+    <!-- 4 CARTES -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8">
         <div class="aa-expert-card">
             <span class="aa-expert-card-icon">🔍</span>
             <p class="font-headline font-black uppercase text-sm md:text-base text-primary">Identifier</p>
@@ -286,26 +362,38 @@
         </div>
     </div>
 
-    <!-- ============== SUGGESTIONS ============== -->
+    <!-- SUGGESTIONS -->
     <div class="mb-6 text-center">
-        <p class="font-headline font-black uppercase text-sm text-on-background mb-3 italic">💡 Essaye par exemple :</p>
-        <div class="flex flex-wrap gap-2 justify-center">
-            <span class="aa-suggestion-pill">C'est quoi un Action Joe ?</span>
-            <span class="aa-suggestion-pill">Valeur d'un Big Jim ?</span>
-            <span class="aa-suggestion-pill">Figurines Star Wars 1977</span>
-            <span class="aa-suggestion-pill">Marques françaises 80s</span>
-            <span class="aa-suggestion-pill">Reproduire ma boîte</span>
+        <p class="font-headline font-black uppercase text-sm text-on-background mb-3 italic">💡 Clique pour essayer :</p>
+        <div class="flex flex-wrap gap-2 justify-center" id="aaSuggestions">
+            <button class="aa-suggestion-pill" data-q="C'est quoi un Action Joe ?">C'est quoi un Action Joe ?</button>
+            <button class="aa-suggestion-pill" data-q="Quelle est la valeur d'un Big Jim des années 70 ?">Valeur d'un Big Jim ?</button>
+            <button class="aa-suggestion-pill" data-q="Parle-moi des figurines Star Wars de 1977">Figurines Star Wars 1977</button>
+            <button class="aa-suggestion-pill" data-q="Quelles étaient les marques françaises de jouets dans les années 80 ?">Marques françaises 80s</button>
+            <button class="aa-suggestion-pill" data-q="Comment reproduire une boîte vintage manquante ?">Reproduire ma boîte</button>
         </div>
     </div>
 
-    <!-- ============== LE CHAT (encadré) ============== -->
-    <div class="aa-expert-chat-frame aa-expert-chat-frame-glow">
-        <div id="ashna-widget-container">
-            <!-- Le widget Ashna s'affichera ici -->
+    <!-- CHAT -->
+    <div class="aa-chat-wrap">
+        <div class="aa-chat-header">
+            <div class="aa-chat-avatar">🤖</div>
+            <div>
+                <div class="aa-chat-name">My Expert</div>
+                <div class="aa-chat-status"><span class="aa-chat-online"></span> En ligne</div>
+            </div>
+            <button class="aa-chat-reset" id="aaChatReset" title="Recommencer la conversation">↻ RESET</button>
         </div>
+        <div class="aa-chat-messages" id="aaChatMessages">
+            <div class="aa-chat-empty">👋 Salut ! Pose-moi ta première question sur les jouets vintage 👇</div>
+        </div>
+        <form class="aa-chat-input-wrap" id="aaChatForm" autocomplete="off">
+            <input type="text" id="aaChatInput" class="aa-chat-input" placeholder="Écris ta question ici..." maxlength="500" required />
+            <button type="submit" class="aa-chat-send" id="aaChatSend">➤ ENVOYER</button>
+        </form>
     </div>
 
-    <!-- ============== DISCLAIMER ============== -->
+    <!-- DISCLAIMER -->
     <div class="mt-8 bg-surface-container-low border-4 border-on-background p-4 text-center shadow-[4px_4px_0px_0px_#755700]">
         <p class="font-body text-sm text-on-surface-variant">
             💡 <strong>Astuce :</strong> L'expert peut se tromper. Pour toute commande, devis ou question commerciale, utilise le <a href="info.html" class="text-primary underline font-bold hover:text-tertiary">formulaire de contact</a>.
@@ -327,27 +415,158 @@
 
 <div id="aa-toasts"></div>
 <script src="aa-core.js"></script>
-
-<!-- ✅ SCRIPT ASHNA WIDGET (encadré dans le container) -->
-<script>
-(function() {
-    var container = document.getElementById('ashna-widget-container');
-    if (!container) return;
-    
-    var script = document.createElement('script');
-    script.src = 'https://app.ashna.ai/embed/agent-widget.js';
-    script.setAttribute('data-agent-id', '6ac95dc48b9f440ca1992258');
-    script.setAttribute('data-token', 'eyJhbGciOiJIUzI1NiJ9.eyJhZ2VudElkIjoiNmFjOTVkYzQ4YjlmNDQwY2ExOTkyMjU4IiwidXNlcklkIjoiNmFjNmQ1MzMwNjRlZGFkMDBiNWJkMDU3IiwiYWxsb3dlZE9yaWdpbnMiOlsid3d3LmFjdGlvbmFyY2hpdmUuaW5rIl0sIm9yaWdpbkRvbWFpbiI6Ind3dy5hY3Rpb25hcmNoaXZlLmluayIsImFzc2lnbmVkT3JnSWQiOiIiLCJpYXQiOjE3OTE1ODI4MDgsImlzcyI6ImFzaG5hQUkiLCJhdWQiOiJhc2huYUFJIiwic3ViIjoiNmFjOTVkYzQ4YjlmNDQwY2ExOTkyMjU4In0.MhV2x6pKtxKlDx5Ukr0lGNvsb9XIatJ6L103ZovirwY');
-    script.setAttribute('data-icon-color', '#dc2626');
-    script.setAttribute('data-icon-shape', 'square');
-    script.setAttribute('data-icon-style', 'message-circle');
-    script.async = true;
-    container.appendChild(script);
-})();
-</script>
-
 <script>
 function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+
+/* ============================================================
+   🤖 MY EXPERT - CHAT ASHNA AI
+   ============================================================ */
+const AA_ASHNA_CONFIG = {
+    endpoint: 'https://api.ashna.ai/v1/api/chat/completions',
+    model: '6ac95dc48b9f440ca1992258',
+    token: 'eyJhbGciOiJIUzI1NiJ9.eyJhZ2VudElkIjoiNmFjOTVkYzQ4YjlmNDQwY2ExOTkyMjU4IiwidXNlcklkIjoiNmFjNmQ1MzMwNjRlZGFkMDBiNWJkMDU3IiwiYWxsb3dlZE9yaWdpbnMiOlsid3d3LmFjdGlvbmFyY2hpdmUuaW5rIl0sIm9yaWdpbkRvbWFpbiI6Ind3dy5hY3Rpb25hcmNoaXZlLmluayIsImFzc2lnbmVkT3JnSWQiOiIiLCJpYXQiOjE3OTE1ODI4MDgsImlzcyI6ImFzaG5hQUkiLCJhdWQiOiJhc2huYUFJIiwic3ViIjoiNmFjOTVkYzQ4YjlmNDQwY2ExOTkyMjU4In0.MhV2x6pKtxKlDx5Ukr0lGNvsb9XIatJ6L103ZovirwY'
+};
+
+let aaChatHistory = [];
+let aaChatBusy = false;
+const aaChatMessages = document.getElementById('aaChatMessages');
+const aaChatForm = document.getElementById('aaChatForm');
+const aaChatInput = document.getElementById('aaChatInput');
+const aaChatSend = document.getElementById('aaChatSend');
+const aaChatReset = document.getElementById('aaChatReset');
+
+function aaRenderMessage(role, text) {
+    const empty = aaChatMessages.querySelector('.aa-chat-empty');
+    if (empty) empty.remove();
+
+    const div = document.createElement('div');
+    div.className = 'aa-msg ' + (role === 'user' ? 'aa-msg-user' : 'aa-msg-bot');
+    
+    const label = document.createElement('div');
+    label.className = 'aa-msg-label';
+    label.textContent = role === 'user' ? '👤 Toi' : '🤖 My Expert';
+    div.appendChild(label);
+
+    const content = document.createElement('div');
+    content.textContent = text;
+    div.appendChild(content);
+
+    aaChatMessages.appendChild(div);
+    aaChatMessages.scrollTop = aaChatMessages.scrollHeight;
+}
+
+function aaRenderError(text) {
+    const empty = aaChatMessages.querySelector('.aa-chat-empty');
+    if (empty) empty.remove();
+    const div = document.createElement('div');
+    div.className = 'aa-msg aa-msg-error';
+    div.textContent = text;
+    aaChatMessages.appendChild(div);
+    aaChatMessages.scrollTop = aaChatMessages.scrollHeight;
+}
+
+function aaRenderTyping() {
+    const empty = aaChatMessages.querySelector('.aa-chat-empty');
+    if (empty) empty.remove();
+    const div = document.createElement('div');
+    div.className = 'aa-typing';
+    div.id = 'aaTypingIndicator';
+    div.innerHTML = '<span></span><span></span><span></span>';
+    aaChatMessages.appendChild(div);
+    aaChatMessages.scrollTop = aaChatMessages.scrollHeight;
+}
+
+function aaRemoveTyping() {
+    const t = document.getElementById('aaTypingIndicator');
+    if (t) t.remove();
+}
+
+function aaSetBusy(busy) {
+    aaChatBusy = busy;
+    aaChatInput.disabled = busy;
+    aaChatSend.disabled = busy;
+    document.querySelectorAll('.aa-suggestion-pill').forEach(p => p.disabled = busy);
+    if (!busy) aaChatInput.focus();
+}
+
+async function aaAskExpert(userMessage) {
+    if (aaChatBusy) return;
+    aaSetBusy(true);
+
+    aaRenderMessage('user', userMessage);
+    aaChatHistory.push({ role: 'user', content: userMessage });
+    aaRenderTyping();
+
+    try {
+        const response = await fetch(AA_ASHNA_CONFIG.endpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + AA_ASHNA_CONFIG.token
+            },
+            body: JSON.stringify({
+                model: AA_ASHNA_CONFIG.model,
+                stream: false,
+                messages: aaChatHistory
+            })
+        });
+
+        aaRemoveTyping();
+
+        if (!response.ok) {
+            let errText = 'Erreur API (' + response.status + ')';
+            try {
+                const errJson = await response.json();
+                if (errJson.error) errText = errJson.error.message || errJson.error;
+                else if (errJson.message) errText = errJson.message;
+            } catch (e) {}
+            aaRenderError('❌ ' + errText);
+            aaChatHistory.pop();
+            return;
+        }
+
+        const data = await response.json();
+        const reply = data?.choices?.[0]?.message?.content 
+                   || data?.choices?.[0]?.text 
+                   || data?.message 
+                   || data?.reply 
+                   || 'Pas de réponse de l\'expert.';
+
+        aaRenderMessage('bot', reply);
+        aaChatHistory.push({ role: 'assistant', content: reply });
+
+    } catch (err) {
+        aaRemoveTyping();
+        aaRenderError('❌ Erreur de connexion : ' + err.message);
+        aaChatHistory.pop();
+    } finally {
+        aaSetBusy(false);
+    }
+}
+
+aaChatForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = aaChatInput.value.trim();
+    if (!text || aaChatBusy) return;
+    aaChatInput.value = '';
+    aaAskExpert(text);
+});
+
+document.querySelectorAll('.aa-suggestion-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+        if (aaChatBusy) return;
+        const q = btn.getAttribute('data-q');
+        if (q) aaAskExpert(q);
+    });
+});
+
+aaChatReset.addEventListener('click', () => {
+    if (aaChatBusy) return;
+    aaChatHistory = [];
+    aaChatMessages.innerHTML = '<div class="aa-chat-empty">👋 Salut ! Pose-moi ta première question sur les jouets vintage 👇</div>';
+});
+
+/* ============================================================ */
 
 (function() {
     const social = JSON.parse(localStorage.getItem('aa_social_config') || '{}');
