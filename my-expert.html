@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html class="light" lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta name="robots" content="index, follow"/>
+    <meta name="description" content="My Expert - Posez vos questions à notre expert IA des jouets vintage 70-90 : figurines, boîtes, marques, valeurs et histoire du jouet."/>
+    <link rel="canonical" href="https://action-archive.com/my-expert.html"/>
+    <title>My Expert - Action Archive | L'Expert IA des Jouets Vintage 70-90</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,900;1,900&family=Work+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = { darkMode: "class", theme: { extend: { colors: {
+            "secondary": "#755700", "surface-container-low": "#fdefd5", "surface-container-high": "#efe1c3",
+            "surface": "#fff5e5", "primary": "#bb0003", "tertiary": "#0f56bf", "on-surface": "#342e1e",
+            "secondary-container": "#ffca4d", "on-background": "#342e1e", "background": "#fff5e5",
+            "surface-variant": "#eadcbc", "on-surface-variant": "#635b48",
+        }, fontFamily: { "headline": ["Epilogue"], "body": ["Work Sans"], "label": ["Work Sans"] } } } }
+    </script>
+    <style>
+        #side-drawer { box-shadow: -8px 0 0 0 rgba(52, 46, 30, 0.2); transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1); }
+        #side-drawer.open { transform: translateX(0); }
+        .drawer-overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .drawer-overlay.open { opacity: 1; pointer-events: auto; }
+        .btn-physical { transition: all 0.1s ease; }
+        .btn-physical:active { transform: translateY(4px); box-shadow: 0px 0px 0px 0px !important; }
+        #aa-cart-badge{position:absolute;top:-7px;right:-7px;min-width:18px;height:18px;background:#ffca4d;color:#342e1e;font-family:'Epilogue',sans-serif;font-weight:900;font-size:10px;border:2px solid #342e1e;border-radius:2px;display:none;align-items:center;justify-content:center;padding:0 3px;}
+        .aa-toast{background:#342e1e;color:#fff5e5;border:3px solid #ffca4d;padding:12px 18px;font-family:'Epilogue',sans-serif;font-weight:900;font-size:13px;text-transform:uppercase;display:flex;align-items:center;gap:10px;max-width:300px;transform:translateX(120%);opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);pointer-events:auto;}
+        .aa-toast.show{transform:translateX(0);opacity:1;}
+        #aa-toasts{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
+        .aa-logo { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease; filter: drop-shadow(2px 2px 0px rgba(52, 46, 30, 0.15)); }
+        .aa-logo-link:hover .aa-logo { transform: rotate(-5deg) scale(1.05); filter: drop-shadow(3px 3px 0px rgba(187, 0, 3, 0.4)); }
+        .aa-menu-btn { font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; background: #bb0003; color: #fff5e5; border: 3px solid #342e1e; padding: 10px 20px; font-size: 1.05rem; box-shadow: 4px 4px 0 0 #342e1e; cursor: pointer; transition: all 0.15s ease; }
+        .aa-menu-btn:hover { background: #342e1e; color: #ffca4d; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 #bb0003; }
+
+        /* ✅ STYLES SPÉCIFIQUES MY EXPERT */
+        .aa-expert-robot {
+            font-size: 5rem;
+            display: inline-block;
+            animation: aaRobotBounce 2s ease-in-out infinite;
+            filter: drop-shadow(4px 4px 0 #342e1e);
+        }
+        @keyframes aaRobotBounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-10px) rotate(-5deg); }
+            50% { transform: translateY(0) rotate(0deg); }
+            75% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        .aa-expert-card {
+            background: linear-gradient(135deg, #fff5e5 0%, #fdefd5 100%);
+            border: 4px solid #342e1e;
+            box-shadow: 8px 8px 0 0 #bb0003;
+            padding: 1.5rem;
+            transition: all 0.2s ease;
+        }
+        .aa-expert-card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 10px 10px 0 0 #bb0003;
+        }
+        .aa-expert-card-icon {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .aa-expert-chat-frame {
+            background: #342e1e;
+            border: 6px solid #342e1e;
+            box-shadow: 12px 12px 0 0 #ffca4d;
+            padding: 1.5rem;
+            position: relative;
+        }
+        .aa-expert-chat-frame::before {
+            content: "";
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-2deg);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-bottom: 20px solid #342e1e;
+        }
+        .aa-expert-chat-frame::after {
+            content: "💬";
+            position: absolute;
+            top: -32px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            background: #ffca4d;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #342e1e;
+            z-index: 2;
+        }
+
+        .aa-pulse-typing {
+            display: inline-flex;
+            gap: 4px;
+            align-items: center;
+        }
+        .aa-pulse-typing span {
+            width: 8px;
+            height: 8px;
+            background: #ffca4d;
+            border-radius: 50%;
+            animation: aaTyping 1.4s ease-in-out infinite;
+        }
+        .aa-pulse-typing span:nth-child(2) { animation-delay: 0.2s; }
+        .aa-pulse-typing span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes aaTyping {
+            0%, 60%, 100% { transform: scale(0.8); opacity: 0.5; }
+            30% { transform: scale(1.3); opacity: 1; }
+        }
+
+        @keyframes aaExpertGlow {
+            0%, 100% { box-shadow: 12px 12px 0 0 #ffca4d; }
+            50% { box-shadow: 12px 12px 0 0 #bb0003, 0 0 40px rgba(255, 202, 77, 0.6); }
+        }
+        .aa-expert-chat-frame-glow {
+            animation: aaExpertGlow 2.5s ease-in-out infinite;
+        }
+
+        /* ✅ SUGGESTIONS CLIQUABLES (à côté du chat) */
+        .aa-suggestion-pill {
+            display: inline-block;
+            padding: 0.6rem 1rem;
+            background: #fff5e5;
+            border: 2px solid #342e1e;
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 900;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #342e1e;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            letter-spacing: 0.02em;
+        }
+        .aa-suggestion-pill:hover {
+            background: #ffca4d;
+            transform: translate(-2px, -2px);
+            box-shadow: 3px 3px 0 0 #bb0003;
+        }
+
+        /* ✅ ASHNA WIDGET CONTAINER (encadré rouge personnalisé) */
+        #ashna-widget-container {
+            background: #fff5e5;
+            min-height: 500px;
+            border: 3px dashed #342e1e;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        #ashna-widget-container::before {
+            content: "🤖 L'expert écrit ici en direct ⤵";
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 900;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            color: #bb0003;
+            background: #ffca4d;
+            padding: 4px 12px;
+            border: 2px solid #342e1e;
+            letter-spacing: 0.02em;
+        }
+
+        @media (max-width: 768px) {
+            .aa-expert-robot { font-size: 3.5rem; }
+            .aa-expert-card { padding: 1rem; }
+            .aa-expert-card-icon { font-size: 1.8rem; }
+            #ashna-widget-container { min-height: 400px; padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface overflow-x-hidden">
+
+<div class="aa-objective-banner" style="background:#0f56bf;">
+    🤖 MY EXPERT — <strong>L'IA SPÉCIALISTE</strong> DES JOUETS VINTAGE 70-90 À TON SERVICE 🤖
+</div>
+
+<header class="w-full border-b-4 border-double border-[#bb0003] bg-[#fff5e5] shadow-[4px_4px_0px_0px_rgba(52,46,30,0.2)] z-50 sticky top-0">
+    <div class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
+        <a href="index.html" class="aa-logo-link flex items-center gap-3 group cursor-pointer" title="Retour à l'accueil">
+            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Logo Action Archive" loading="eager" class="aa-logo h-12 md:h-14 w-auto"/>
+            <span class="text-2xl md:text-3xl font-black italic text-[#bb0003] font-headline uppercase tracking-tighter group-hover:text-[#0f56bf] transition-colors">Action Archive</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-6 font-headline font-black uppercase tracking-tighter text-sm">
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="index.html">Accueil</a>
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="produits.html">Produits</a>
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="info.html">Info</a>
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="toys-history.html">Toys History</a>
+            <a class="text-[#0f56bf] underline decoration-4 underline-offset-8" href="my-expert.html">My Expert</a>
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="panier.html">Commande</a>
+            <a class="text-[#342e1e] hover:text-[#bb0003]" href="inscription.html">Inscription</a>
+        </nav>
+        <div class="flex items-center gap-2">
+            <a class="aa-nav-stars relative p-2 text-[#755700] border-2 border-[#755700] rounded-sm btn-physical" href="inscription.html" style="display:none;" title="Mon programme fidélité">
+                <span class="material-symbols-outlined">stars</span>
+                <span class="aa-nav-stars-count aa-stars-badge">0</span>
+                <span class="aa-nav-gift-badge">🎁</span>
+            </a>
+            <a class="relative p-2 text-[#bb0003] border-2 border-[#bb0003] rounded-sm btn-physical" href="panier.html" title="Mon panier">
+                <span class="material-symbols-outlined">shopping_cart</span>
+                <span id="aa-cart-badge"></span>
+            </a>
+            <button onclick="toggleDrawer()" class="aa-menu-btn">☰ MENU</button>
+        </div>
+    </div>
+</header>
+
+<div id="drawer-overlay" class="drawer-overlay fixed inset-0 bg-on-background/40 backdrop-blur-sm z-[90]" onclick="toggleDrawer()"></div>
+<aside id="side-drawer" class="fixed top-0 right-0 h-full w-full max-w-[320px] bg-surface-container-high border-l-8 border-primary z-[100] transform translate-x-full overflow-y-auto">
+    <div class="p-8 space-y-8 flex flex-col h-full text-on-surface">
+        <div class="flex justify-between items-center border-b-4 border-on-background/10 pb-6">
+            <h2 class="font-headline font-black text-2xl text-primary italic uppercase">MENU</h2>
+            <button class="text-on-background" onclick="toggleDrawer()"><span class="material-symbols-outlined text-3xl">close</span></button>
+        </div>
+        <nav class="flex flex-col gap-3">
+            <a href="index.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">ACCUEIL</a>
+            <a href="produits.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">PRODUITS</a>
+            <a href="info.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">INFO</a>
+            <a href="toys-history.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">TOYS HISTORY</a>
+            <a href="my-expert.html" class="p-4 bg-surface-container-low border-2 border-primary font-headline font-black uppercase text-primary">MY EXPERT</a>
+            <a href="panier.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">COMMANDE</a>
+            <a href="inscription.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">INSCRIPTION</a>
+        </nav>
+    </div>
+</aside>
+
+<main class="container mx-auto px-4 md:px-6 py-8 md:py-12 min-h-screen max-w-5xl">
+
+    <!-- ============== INTRO ============== -->
+    <div class="text-center mb-8">
+        <div class="aa-expert-robot mb-4">🤖</div>
+        <h1 class="font-headline font-black text-4xl md:text-6xl uppercase text-on-background italic tracking-tighter mb-4">
+            My Expert
+        </h1>
+        <p class="font-body text-lg md:text-2xl text-tertiary font-bold italic mb-3 max-w-2xl mx-auto">
+            Posez vos questions à notre expert IA des jouets vintage 70-90 🎮
+        </p>
+        <p class="font-body text-sm md:text-base text-on-surface-variant max-w-2xl mx-auto">
+            Cet expert connaît tout sur les <strong>figurines</strong>, les <strong>boîtes</strong>, les <strong>marques</strong> et les <strong>collections vintage</strong>. Idéal pour identifier une pièce, connaître sa valeur, ou en savoir plus sur une époque.
+        </p>
+        <div class="mt-4 inline-flex items-center gap-2 bg-[#ffca4d] border-2 border-[#342e1e] px-4 py-2 font-headline font-black text-xs uppercase">
+            <span class="aa-pulse-typing"><span></span><span></span><span></span></span>
+            En ligne et prêt à répondre
+        </div>
+    </div>
+
+    <!-- ============== 4 CARTES "CE QU'IL SAIT FAIRE" ============== -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-10">
+        <div class="aa-expert-card">
+            <span class="aa-expert-card-icon">🔍</span>
+            <p class="font-headline font-black uppercase text-sm md:text-base text-primary">Identifier</p>
+            <p class="font-body text-xs md:text-sm text-on-surface-variant mt-1">Une figurine, un jouet, une marque</p>
+        </div>
+        <div class="aa-expert-card">
+            <span class="aa-expert-card-icon">💰</span>
+            <p class="font-headline font-black uppercase text-sm md:text-base text-primary">Estimer</p>
+            <p class="font-body text-xs md:text-sm text-on-surface-variant mt-1">La valeur d'une pièce vintage</p>
+        </div>
+        <div class="aa-expert-card">
+            <span class="aa-expert-card-icon">📚</span>
+            <p class="font-headline font-black uppercase text-sm md:text-base text-primary">Histoire</p>
+            <p class="font-body text-xs md:text-sm text-on-surface-variant mt-1">L'histoire d'une marque ou d'une époque</p>
+        </div>
+        <div class="aa-expert-card">
+            <span class="aa-expert-card-icon">🎨</span>
+            <p class="font-headline font-black uppercase text-sm md:text-base text-primary">Reproduire</p>
+            <p class="font-body text-xs md:text-sm text-on-surface-variant mt-1">Demander une reproduction sur-mesure</p>
+        </div>
+    </div>
+
+    <!-- ============== SUGGESTIONS ============== -->
+    <div class="mb-6 text-center">
+        <p class="font-headline font-black uppercase text-sm text-on-background mb-3 italic">💡 Essaye par exemple :</p>
+        <div class="flex flex-wrap gap-2 justify-center">
+            <span class="aa-suggestion-pill">C'est quoi un Action Joe ?</span>
+            <span class="aa-suggestion-pill">Valeur d'un Big Jim ?</span>
+            <span class="aa-suggestion-pill">Figurines Star Wars 1977</span>
+            <span class="aa-suggestion-pill">Marques françaises 80s</span>
+            <span class="aa-suggestion-pill">Reproduire ma boîte</span>
+        </div>
+    </div>
+
+    <!-- ============== LE CHAT (encadré) ============== -->
+    <div class="aa-expert-chat-frame aa-expert-chat-frame-glow">
+        <div id="ashna-widget-container">
+            <!-- Le widget Ashna s'affichera ici -->
+        </div>
+    </div>
+
+    <!-- ============== DISCLAIMER ============== -->
+    <div class="mt-8 bg-surface-container-low border-4 border-on-background p-4 text-center shadow-[4px_4px_0px_0px_#755700]">
+        <p class="font-body text-sm text-on-surface-variant">
+            💡 <strong>Astuce :</strong> L'expert peut se tromper. Pour toute commande, devis ou question commerciale, utilise le <a href="info.html" class="text-primary underline font-bold hover:text-tertiary">formulaire de contact</a>.
+        </p>
+    </div>
+
+</main>
+
+<footer class="bg-[#342e1e] border-t-8 border-double border-[#755700] w-full py-12 px-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-20">
+    <div class="flex flex-col items-center md:items-start gap-3">
+        <a href="index.html" class="aa-logo-link flex items-center gap-3 cursor-pointer" title="Action Archive">
+            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="lazy" class="aa-logo h-10 w-auto"/>
+            <span class="text-xl md:text-2xl font-black italic text-[#ffca4d] font-headline uppercase tracking-tighter hover:text-white transition-colors">Action Archive</span>
+        </a>
+        <p class="font-body font-medium text-[10px] text-[#ffca4d] tracking-widest uppercase">© 2026 Action Archive INC.</p>
+    </div>
+    <nav id="aa-social-nav" class="flex flex-wrap justify-center gap-10"></nav>
+</footer>
+
+<div id="aa-toasts"></div>
+<script src="aa-core.js"></script>
+
+<!-- ✅ SCRIPT ASHNA WIDGET (encadré dans le container) -->
+<script>
+(function() {
+    var container = document.getElementById('ashna-widget-container');
+    if (!container) return;
+    
+    var script = document.createElement('script');
+    script.src = 'https://app.ashna.ai/embed/agent-widget.js';
+    script.setAttribute('data-agent-id', '6ac95dc48b9f440ca1992258');
+    script.setAttribute('data-token', 'eyJhbGciOiJIUzI1NiJ9.eyJhZ2VudElkIjoiNmFjOTVkYzQ4YjlmNDQwY2ExOTkyMjU4IiwidXNlcklkIjoiNmFjNmQ1MzMwNjRlZGFkMDBiNWJkMDU3IiwiYWxsb3dlZE9yaWdpbnMiOlsid3d3LmFjdGlvbmFyY2hpdmUuaW5rIl0sIm9yaWdpbkRvbWFpbiI6Ind3dy5hY3Rpb25hcmNoaXZlLmluayIsImFzc2lnbmVkT3JnSWQiOiIiLCJpYXQiOjE3OTE1ODI4MDgsImlzcyI6ImFzaG5hQUkiLCJhdWQiOiJhc2huYUFJIiwic3ViIjoiNmFjOTVkYzQ4YjlmNDQwY2ExOTkyMjU4In0.MhV2x6pKtxKlDx5Ukr0lGNvsb9XIatJ6L103ZovirwY');
+    script.setAttribute('data-icon-color', '#dc2626');
+    script.setAttribute('data-icon-shape', 'square');
+    script.setAttribute('data-icon-style', 'message-circle');
+    script.async = true;
+    container.appendChild(script);
+})();
+</script>
+
+<script>
+function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+
+(function() {
+    const social = JSON.parse(localStorage.getItem('aa_social_config') || '{}');
+    const nav = document.getElementById('aa-social-nav');
+    if (!nav) return;
+    const items = [{ key: 'facebook', icon: 'facebook', label: 'FACEBOOK' },{ key: 'twitter', icon: 'share', label: 'TWITTER' },{ key: 'instagram', icon: 'camera_alt', label: 'INSTAGRAM' },{ key: 'tiktok', icon: 'music_note', label: 'TIKTOK' },{ key: 'youtube', icon: 'play_circle', label: 'YOUTUBE' }];
+    items.forEach(item => {
+        const data = social[item.key];
+        if (data && data.enabled && data.url) nav.innerHTML += `<a href="${aaEscapeHtml(data.url)}" target="_blank" rel="noopener" class="text-[#ffca4d]"><span class="material-symbols-outlined">${item.icon}</span></a>`;
+    });
+})();
+</script>
+</body>
+</html>
