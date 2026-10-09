@@ -1,5 +1,6 @@
 export default async function handler(req, res) {
-    res.setHeader('Access-Control-Allow-Origin', 'https://action-archive.com');
+    // ✅ CORS
+    res.setHeader('Access-Control-Allow-Origin', 'https://actionarchive.ink');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
@@ -13,11 +14,17 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: 'Messages manquants ou invalides' });
         }
 
+        // ✅ Clé API lue depuis la variable d'environnement Vercel
+        const apiKey = process.env.ASHNA_API_KEY;
+        if (!apiKey) {
+            return res.status(500).json({ error: 'Clé API Ashna non configurée sur le serveur' });
+        }
+
         const ashnaResponse = await fetch('https://api.ashna.ai/v1/api/chat/completions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhZ2VudElkIjoiNmFjOTVkYzQ4YjlmNDQwY2ExOTkyMjU4IiwidXNlcklkIjoiNmFjNmQ1MzMwNjRlZGFkMDBiNWJkMDU3IiwiYWxsb3dlZE9yaWdpbnMiOlsid3d3LmFjdGlvbmFyY2hpdmUuaW5rIl0sIm9yaWdpbkRvbWFpbiI6Ind3dy5hY3Rpb25hcmNoaXZlLmluayIsImFzc2lnbmVkT3JnSWQiOiIiLCJpYXQiOjE3OTE1ODI4MDgsImlzcyI6ImFzaG5hQUkiLCJhdWQiOiJhc2huYUFJIiwic3ViIjoiNmFjOTVkYzQ4YjlmNDQwY2ExOTkyMjU4In0.MhV2x6pKtxKlDx5Ukr0lGNvsb9XIatJ6L103ZovirwY'
+                'Authorization': 'Bearer ' + apiKey
             },
             body: JSON.stringify({
                 model: '6ac95dc48b9f440ca1992258',
@@ -30,7 +37,7 @@ export default async function handler(req, res) {
 
         if (!ashnaResponse.ok) {
             return res.status(ashnaResponse.status).json({ 
-                error: data.error?.message || data.message || 'Erreur Ashna API' 
+                error: data.error?.message || data.message || data.error || 'Erreur Ashna API' 
             });
         }
 
