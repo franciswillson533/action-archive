@@ -35,230 +35,65 @@
         .aa-menu-btn { font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; background: #bb0003; color: #fff5e5; border: 3px solid #342e1e; padding: 10px 20px; font-size: 1.05rem; box-shadow: 4px 4px 0 0 #342e1e; cursor: pointer; transition: all 0.15s ease; }
         .aa-menu-btn:hover { background: #342e1e; color: #ffca4d; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 #bb0003; }
 
-        /* ====== MY EXPERT - CHAT UI ====== */
-        .aa-expert-robot {
-            font-size: 5rem;
-            display: inline-block;
-            animation: aaRobotBounce 2s ease-in-out infinite;
-            filter: drop-shadow(4px 4px 0 #342e1e);
-        }
-        @keyframes aaRobotBounce {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            25% { transform: translateY(-10px) rotate(-5deg); }
-            50% { transform: translateY(0) rotate(0deg); }
-            75% { transform: translateY(-10px) rotate(5deg); }
-        }
+        /* ====== MY EXPERT ====== */
+        .aa-expert-robot { font-size: 5rem; display: inline-block; animation: aaRobotBounce 2s ease-in-out infinite; filter: drop-shadow(4px 4px 0 #342e1e); }
+        @keyframes aaRobotBounce { 0%, 100% { transform: translateY(0) rotate(0deg); } 25% { transform: translateY(-10px) rotate(-5deg); } 50% { transform: translateY(0) rotate(0deg); } 75% { transform: translateY(-10px) rotate(5deg); } }
 
-        .aa-expert-card {
-            background: linear-gradient(135deg, #fff5e5 0%, #fdefd5 100%);
-            border: 4px solid #342e1e;
-            box-shadow: 8px 8px 0 0 #bb0003;
-            padding: 1.5rem;
-            transition: all 0.2s ease;
-        }
+        .aa-expert-card { background: linear-gradient(135deg, #fff5e5 0%, #fdefd5 100%); border: 4px solid #342e1e; box-shadow: 8px 8px 0 0 #bb0003; padding: 1.5rem; transition: all 0.2s ease; }
         .aa-expert-card:hover { transform: translate(-2px, -2px); box-shadow: 10px 10px 0 0 #bb0003; }
         .aa-expert-card-icon { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; }
 
-        .aa-suggestion-pill {
-            display: inline-block;
-            padding: 0.6rem 1rem;
-            background: #fff5e5;
-            border: 2px solid #342e1e;
-            font-family: 'Epilogue', sans-serif;
-            font-weight: 900;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            color: #342e1e;
-            transition: all 0.15s ease;
-            cursor: pointer;
-            letter-spacing: 0.02em;
-        }
-        .aa-suggestion-pill:hover {
-            background: #ffca4d;
-            transform: translate(-2px, -2px);
-            box-shadow: 3px 3px 0 0 #bb0003;
-        }
+        .aa-suggestion-pill { display: inline-block; padding: 0.6rem 1rem; background: #fff5e5; border: 2px solid #342e1e; font-family: 'Epilogue', sans-serif; font-weight: 900; font-size: 0.8rem; text-transform: uppercase; color: #342e1e; transition: all 0.15s ease; cursor: pointer; letter-spacing: 0.02em; }
+        .aa-suggestion-pill:hover { background: #ffca4d; transform: translate(-2px, -2px); box-shadow: 3px 3px 0 0 #bb0003; }
+        .aa-suggestion-pill:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
 
-        .aa-suggestion-pill:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            transform: none !important;
-            box-shadow: none !important;
-        }
-
-        /* ====== CHAT CONTAINER ====== */
-        .aa-chat-wrap {
-            background: #342e1e;
-            border: 6px solid #342e1e;
-            box-shadow: 12px 12px 0 0 #ffca4d;
-            position: relative;
-        }
-
-        .aa-chat-header {
-            background: #bb0003;
-            color: #fff5e5;
-            padding: 1rem 1.25rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            border-bottom: 4px solid #342e1e;
-        }
-        .aa-chat-avatar {
-            width: 48px;
-            height: 48px;
-            background: #ffca4d;
-            border: 3px solid #342e1e;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
+        /* ====== CHAT ====== */
+        .aa-chat-wrap { background: #342e1e; border: 6px solid #342e1e; box-shadow: 12px 12px 0 0 #ffca4d; position: relative; }
+        .aa-chat-header { background: #bb0003; color: #fff5e5; padding: 1rem 1.25rem; display: flex; align-items: center; gap: 0.75rem; border-bottom: 4px solid #342e1e; }
+        .aa-chat-avatar { width: 48px; height: 48px; background: #ffca4d; border: 3px solid #342e1e; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
         .aa-chat-name { font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; font-size: 1.1rem; line-height: 1; }
         .aa-chat-status { font-family: 'Work Sans', sans-serif; font-size: 0.75rem; font-weight: 700; opacity: 0.9; display: flex; align-items: center; gap: 0.4rem; }
         .aa-chat-online { width: 8px; height: 8px; background: #4ade80; border-radius: 50%; box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.3); animation: aaPulseDot 1.5s ease-in-out infinite; }
         @keyframes aaPulseDot { 0%, 100% { box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.3); } 50% { box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); } }
-
-        .aa-chat-reset {
-            margin-left: auto;
-            background: transparent;
-            border: 2px solid #fff5e5;
-            color: #fff5e5;
-            padding: 0.4rem 0.75rem;
-            font-family: 'Epilogue', sans-serif;
-            font-weight: 900;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.15s ease;
-        }
+        .aa-chat-reset { margin-left: auto; background: transparent; border: 2px solid #fff5e5; color: #fff5e5; padding: 0.4rem 0.75rem; font-family: 'Epilogue', sans-serif; font-weight: 900; font-size: 0.7rem; text-transform: uppercase; cursor: pointer; transition: all 0.15s ease; }
         .aa-chat-reset:hover { background: #fff5e5; color: #bb0003; }
 
-        .aa-chat-messages {
-            background: #fdefd5;
-            background-image: radial-gradient(rgba(52, 46, 30, 0.05) 1px, transparent 0);
-            background-size: 12px 12px;
-            height: 450px;
-            overflow-y: auto;
-            padding: 1.25rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
+        .aa-chat-messages { background: #fdefd5; background-image: radial-gradient(rgba(52, 46, 30, 0.05) 1px, transparent 0); background-size: 12px 12px; height: 450px; overflow-y: auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; }
 
-        .aa-msg {
-            max-width: 80%;
-            padding: 0.75rem 1rem;
-            font-family: 'Work Sans', sans-serif;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            word-wrap: break-word;
-            border: 2px solid #342e1e;
-            position: relative;
-        }
-        .aa-msg-user {
-            align-self: flex-end;
-            background: #0f56bf;
-            color: white;
-            border-color: #342e1e;
-            box-shadow: 3px 3px 0 0 #342e1e;
-            border-radius: 14px 14px 2px 14px;
-        }
-        .aa-msg-bot {
-            align-self: flex-start;
-            background: #fff5e5;
-            color: #342e1e;
-            border-color: #342e1e;
-            box-shadow: 3px 3px 0 0 #bb0003;
-            border-radius: 14px 14px 14px 2px;
-        }
-        .aa-msg-error {
-            align-self: center;
-            background: #fde2e2;
-            color: #bb0003;
-            border-color: #bb0003;
-            max-width: 90%;
-            text-align: center;
-        }
-        .aa-msg-label {
-            font-family: 'Epilogue', sans-serif;
-            font-weight: 900;
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.25rem;
-            opacity: 0.85;
-        }
+        .aa-msg { max-width: 80%; padding: 0.75rem 1rem; font-family: 'Work Sans', sans-serif; font-size: 0.95rem; line-height: 1.5; word-wrap: break-word; border: 2px solid #342e1e; position: relative; }
+        .aa-msg-user { align-self: flex-end; background: #0f56bf; color: white; border-color: #342e1e; box-shadow: 3px 3px 0 0 #342e1e; border-radius: 14px 14px 2px 14px; }
+        .aa-msg-bot { align-self: flex-start; background: #fff5e5; color: #342e1e; border-color: #342e1e; box-shadow: 3px 3px 0 0 #bb0003; border-radius: 14px 14px 14px 2px; }
+        .aa-msg-error { align-self: center; background: #fde2e2; color: #bb0003; border-color: #bb0003; max-width: 90%; text-align: center; }
+        .aa-msg-label { font-family: 'Epilogue', sans-serif; font-weight: 900; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; opacity: 0.85; }
+        .aa-msg-img { max-width: 100%; max-height: 240px; border: 2px solid #342e1e; display: block; margin: 0.4rem 0; object-fit: cover; }
 
-        .aa-typing {
-            align-self: flex-start;
-            background: #fff5e5;
-            border: 2px solid #342e1e;
-            box-shadow: 3px 3px 0 0 #bb0003;
-            padding: 0.85rem 1.1rem;
-            display: inline-flex;
-            gap: 4px;
-            align-items: center;
-            border-radius: 14px 14px 14px 2px;
-        }
-        .aa-typing span {
-            width: 8px;
-            height: 8px;
-            background: #bb0003;
-            border-radius: 50%;
-            animation: aaTyping 1.4s ease-in-out infinite;
-        }
+        .aa-typing { align-self: flex-start; background: #fff5e5; border: 2px solid #342e1e; box-shadow: 3px 3px 0 0 #bb0003; padding: 0.85rem 1.1rem; display: inline-flex; gap: 4px; align-items: center; border-radius: 14px 14px 14px 2px; }
+        .aa-typing span { width: 8px; height: 8px; background: #bb0003; border-radius: 50%; animation: aaTyping 1.4s ease-in-out infinite; }
         .aa-typing span:nth-child(2) { animation-delay: 0.2s; }
         .aa-typing span:nth-child(3) { animation-delay: 0.4s; }
         @keyframes aaTyping { 0%, 60%, 100% { transform: scale(0.8); opacity: 0.5; } 30% { transform: scale(1.3); opacity: 1; } }
 
-        .aa-chat-input-wrap {
-            background: #fff5e5;
-            border-top: 4px solid #342e1e;
-            padding: 0.75rem;
-            display: flex;
-            gap: 0.5rem;
-        }
-        .aa-chat-input {
-            flex: 1;
-            background: #fff5e5;
-            border: 3px solid #342e1e;
-            padding: 0.75rem 1rem;
-            font-family: 'Work Sans', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #342e1e;
-            outline: none;
-        }
-        .aa-chat-input:focus {
-            background: #fff;
-            box-shadow: 3px 3px 0 0 #bb0003;
-            transform: translate(-1px, -1px);
-        }
+        /* ✅ APERÇU PHOTOS AVANT ENVOI */
+        .aa-photos-preview { background: #eadcbc; border-bottom: 2px solid #342e1e; padding: 0.6rem 0.75rem; display: flex; flex-wrap: wrap; gap: 0.5rem; max-height: 140px; overflow-y: auto; }
+        .aa-photos-preview:empty { display: none; }
+        .aa-photo-thumb { position: relative; width: 80px; height: 80px; border: 2px solid #342e1e; background: #fff5e5; flex-shrink: 0; }
+        .aa-photo-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .aa-photo-thumb-remove { position: absolute; top: -8px; right: -8px; width: 22px; height: 22px; background: #bb0003; color: white; border: 2px solid #342e1e; border-radius: 50%; font-family: 'Epilogue', sans-serif; font-weight: 900; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; padding: 0; }
+        .aa-photo-thumb-remove:hover { background: #342e1e; }
+
+        /* ✅ INPUT BAR AVEC BOUTON 📎 */
+        .aa-chat-input-wrap { background: #fff5e5; border-top: 4px solid #342e1e; padding: 0.75rem; display: flex; gap: 0.5rem; align-items: center; }
+        .aa-chat-attach { width: 44px; height: 44px; background: #ffca4d; border: 3px solid #342e1e; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; box-shadow: 3px 3px 0 0 #342e1e; transition: all 0.15s ease; flex-shrink: 0; }
+        .aa-chat-attach:hover { background: #bb0003; color: white; transform: translate(-1px, -1px); }
+        .aa-chat-attach:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+        .aa-chat-input { flex: 1; background: #fff5e5; border: 3px solid #342e1e; padding: 0.75rem 1rem; font-family: 'Work Sans', sans-serif; font-size: 0.95rem; font-weight: 600; color: #342e1e; outline: none; }
+        .aa-chat-input:focus { background: #fff; box-shadow: 3px 3px 0 0 #bb0003; transform: translate(-1px, -1px); }
         .aa-chat-input:disabled { opacity: 0.5; cursor: not-allowed; }
-        .aa-chat-send {
-            background: #bb0003;
-            color: white;
-            border: 3px solid #342e1e;
-            padding: 0 1.25rem;
-            font-family: 'Epilogue', sans-serif;
-            font-weight: 900;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            cursor: pointer;
-            box-shadow: 3px 3px 0 0 #342e1e;
-            transition: all 0.15s ease;
-        }
+        .aa-chat-send { background: #bb0003; color: white; border: 3px solid #342e1e; padding: 0 1.25rem; height: 44px; font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; font-size: 0.9rem; cursor: pointer; box-shadow: 3px 3px 0 0 #342e1e; transition: all 0.15s ease; }
         .aa-chat-send:hover { background: #342e1e; color: #ffca4d; transform: translate(-1px, -1px); }
         .aa-chat-send:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; transform: none; }
 
-        .aa-chat-empty {
-            text-align: center;
-            color: #635b48;
-            font-style: italic;
-            font-size: 0.9rem;
-            padding: 1rem;
-        }
+        .aa-chat-empty { text-align: center; color: #635b48; font-style: italic; font-size: 0.9rem; padding: 1rem; }
 
         @media (max-width: 768px) {
             .aa-expert-robot { font-size: 3.5rem; }
@@ -326,7 +161,6 @@
 
 <main class="container mx-auto px-4 md:px-6 py-8 md:py-12 min-h-screen max-w-4xl">
 
-    <!-- INTRO -->
     <div class="text-center mb-8">
         <div class="aa-expert-robot mb-4">🤖</div>
         <h1 class="font-headline font-black text-4xl md:text-6xl uppercase text-on-background italic tracking-tighter mb-4">My Expert</h1>
@@ -334,16 +168,15 @@
             Posez vos questions à notre expert IA des jouets vintage 70-90 🎮
         </p>
         <p class="font-body text-sm md:text-base text-on-surface-variant max-w-2xl mx-auto">
-            Cet expert connaît tout sur les <strong>figurines</strong>, les <strong>boîtes</strong>, les <strong>marques</strong> et les <strong>collections vintage</strong>. Idéal pour identifier une pièce, connaître sa valeur, ou en savoir plus sur une époque.
+            Texte ou <strong>photo</strong> 📸 : identifie une figurine, estime une pièce, raconte l'histoire d'une marque. L'expert analyse images et questions !
         </p>
     </div>
 
-    <!-- 4 CARTES -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8">
         <div class="aa-expert-card">
             <span class="aa-expert-card-icon">🔍</span>
             <p class="font-headline font-black uppercase text-sm md:text-base text-primary">Identifier</p>
-            <p class="font-body text-xs md:text-sm text-on-surface-variant mt-1">Une figurine, un jouet, une marque</p>
+            <p class="font-body text-xs md:text-sm text-on-surface-variant mt-1">Envoie une photo, l'expert identifie</p>
         </div>
         <div class="aa-expert-card">
             <span class="aa-expert-card-icon">💰</span>
@@ -362,7 +195,6 @@
         </div>
     </div>
 
-    <!-- SUGGESTIONS -->
     <div class="mb-6 text-center">
         <p class="font-headline font-black uppercase text-sm text-on-background mb-3 italic">💡 Clique pour essayer :</p>
         <div class="flex flex-wrap gap-2 justify-center" id="aaSuggestions">
@@ -374,7 +206,7 @@
         </div>
     </div>
 
-    <!-- CHAT -->
+    <!-- ✅ CHAT AVEC SUPPORT PHOTO -->
     <div class="aa-chat-wrap">
         <div class="aa-chat-header">
             <div class="aa-chat-avatar">🤖</div>
@@ -385,15 +217,17 @@
             <button class="aa-chat-reset" id="aaChatReset" title="Recommencer la conversation">↻ RESET</button>
         </div>
         <div class="aa-chat-messages" id="aaChatMessages">
-            <div class="aa-chat-empty">👋 Salut ! Pose-moi ta première question sur les jouets vintage 👇</div>
+            <div class="aa-chat-empty">👋 Salut ! Pose-moi ta première question ou envoie une photo 📸</div>
         </div>
+        <div class="aa-photos-preview" id="aaPhotosPreview"></div>
         <form class="aa-chat-input-wrap" id="aaChatForm" autocomplete="off">
-            <input type="text" id="aaChatInput" class="aa-chat-input" placeholder="Écris ta question ici..." maxlength="500" required />
+            <input type="file" id="aaChatFile" accept="image/*" multiple style="display:none;" />
+            <button type="button" class="aa-chat-attach" id="aaChatAttach" title="Joindre une photo">📎</button>
+            <input type="text" id="aaChatInput" class="aa-chat-input" placeholder="Écris ta question ici..." maxlength="500" />
             <button type="submit" class="aa-chat-send" id="aaChatSend">➤ ENVOYER</button>
         </form>
     </div>
 
-    <!-- DISCLAIMER -->
     <div class="mt-8 bg-surface-container-low border-4 border-on-background p-4 text-center shadow-[4px_4px_0px_0px_#755700]">
         <p class="font-body text-sm text-on-surface-variant">
             💡 <strong>Astuce :</strong> L'expert peut se tromper. Pour toute commande, devis ou question commerciale, utilise le <a href="info.html" class="text-primary underline font-bold hover:text-tertiary">formulaire de contact</a>.
@@ -419,23 +253,25 @@
 function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
 
 /* ============================================================
-   🤖 MY EXPERT - CHAT ASHNA AI
+   🤖 MY EXPERT - CHAT ASHNA AI (avec support photo)
    ============================================================ */
-const AA_ASHNA_CONFIG = {
-    endpoint: 'https://api.ashna.ai/v1/api/chat/completions',
-    model: '6ac95dc48b9f440ca1992258',
-    token: 'eyJhbGciOiJIUzI1NiJ9.eyJhZ2VudElkIjoiNmFjOTVkYzQ4YjlmNDQwY2ExOTkyMjU4IiwidXNlcklkIjoiNmFjNmQ1MzMwNjRlZGFkMDBiNWJkMDU3IiwiYWxsb3dlZE9yaWdpbnMiOlsid3d3LmFjdGlvbmFyY2hpdmUuaW5rIl0sIm9yaWdpbkRvbWFpbiI6Ind3dy5hY3Rpb25hcmNoaXZlLmluayIsImFzc2lnbmVkT3JnSWQiOiIiLCJpYXQiOjE3OTE1ODI4MDgsImlzcyI6ImFzaG5hQUkiLCJhdWQiOiJhc2huYUFJIiwic3ViIjoiNmFjOTVkYzQ4YjlmNDQwY2ExOTkyMjU4In0.MhV2x6pKtxKlDx5Ukr0lGNvsb9XIatJ6L103ZovirwY'
-};
+const AA_ASHNA_ENDPOINT = '/api/ashna-proxy';
+const AA_MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 Mo
 
 let aaChatHistory = [];
 let aaChatBusy = false;
+let aaChatFiles = []; // { id, file, dataUrl, base64, mime }
+
 const aaChatMessages = document.getElementById('aaChatMessages');
 const aaChatForm = document.getElementById('aaChatForm');
 const aaChatInput = document.getElementById('aaChatInput');
 const aaChatSend = document.getElementById('aaChatSend');
 const aaChatReset = document.getElementById('aaChatReset');
+const aaChatFile = document.getElementById('aaChatFile');
+const aaChatAttach = document.getElementById('aaChatAttach');
+const aaPhotosPreview = document.getElementById('aaPhotosPreview');
 
-function aaRenderMessage(role, text) {
+function aaRenderMessage(role, text, images) {
     const empty = aaChatMessages.querySelector('.aa-chat-empty');
     if (empty) empty.remove();
 
@@ -447,9 +283,21 @@ function aaRenderMessage(role, text) {
     label.textContent = role === 'user' ? '👤 Toi' : '🤖 My Expert';
     div.appendChild(label);
 
-    const content = document.createElement('div');
-    content.textContent = text;
-    div.appendChild(content);
+    if (images && images.length > 0) {
+        images.forEach(img => {
+            const im = document.createElement('img');
+            im.src = img.dataUrl;
+            im.alt = 'Photo envoyée';
+            im.className = 'aa-msg-img';
+            div.appendChild(im);
+        });
+    }
+
+    if (text) {
+        const content = document.createElement('div');
+        content.textContent = text;
+        div.appendChild(content);
+    }
 
     aaChatMessages.appendChild(div);
     aaChatMessages.scrollTop = aaChatMessages.scrollHeight;
@@ -485,30 +333,114 @@ function aaSetBusy(busy) {
     aaChatBusy = busy;
     aaChatInput.disabled = busy;
     aaChatSend.disabled = busy;
+    aaChatAttach.disabled = busy;
     document.querySelectorAll('.aa-suggestion-pill').forEach(p => p.disabled = busy);
     if (!busy) aaChatInput.focus();
 }
 
-async function aaAskExpert(userMessage) {
+/* ✅ GESTION DES PHOTOS */
+function aaRenderPhotosPreview() {
+    aaPhotosPreview.innerHTML = '';
+    aaChatFiles.forEach(item => {
+        const wrap = document.createElement('div');
+        wrap.className = 'aa-photo-thumb';
+        const img = document.createElement('img');
+        img.src = item.dataUrl;
+        img.alt = item.file.name;
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'aa-photo-thumb-remove';
+        remove.textContent = '✕';
+        remove.title = 'Retirer';
+        remove.addEventListener('click', () => {
+            aaChatFiles = aaChatFiles.filter(f => f.id !== item.id);
+            aaRenderPhotosPreview();
+        });
+        wrap.appendChild(img);
+        wrap.appendChild(remove);
+        aaPhotosPreview.appendChild(wrap);
+    });
+}
+
+function aaFileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+aaChatAttach.addEventListener('click', () => {
+    if (aaChatBusy) return;
+    aaChatFile.click();
+});
+
+aaChatFile.addEventListener('change', async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+
+    for (const file of files) {
+        if (!file.type.startsWith('image/')) {
+            if (typeof aaToast === 'function') aaToast('⚠️ Seules les images sont acceptées', 'error');
+            continue;
+        }
+        if (file.size > AA_MAX_IMAGE_SIZE) {
+            if (typeof aaToast === 'function') aaToast('⚠️ Image trop lourde (max 5 Mo)', 'error');
+            continue;
+        }
+        try {
+            const dataUrl = await aaFileToBase64(file);
+            const base64 = dataUrl.split(',')[1];
+            aaChatFiles.push({
+                id: Date.now() + '-' + Math.random().toString(36).slice(2, 8),
+                file, dataUrl, base64,
+                mime: file.type
+            });
+        } catch (err) {
+            console.error('Erreur lecture image:', err);
+        }
+    }
+    aaRenderPhotosPreview();
+    aaChatFile.value = '';
+});
+
+/* ✅ ENVOI AU BACKEND */
+async function aaAskExpert(userMessage, files) {
     if (aaChatBusy) return;
     aaSetBusy(true);
 
-    aaRenderMessage('user', userMessage);
-    aaChatHistory.push({ role: 'user', content: userMessage });
+    // Affichage user
+    aaRenderMessage('user', userMessage, files);
+
+    // ✅ Construction du content multimodal (format OpenAI Vision)
+    let userContent;
+    if (files && files.length > 0) {
+        const parts = [];
+        files.forEach(f => {
+            parts.push({
+                type: 'image_url',
+                image_url: { url: 'data:' + f.mime + ';base64,' + f.base64 }
+            });
+        });
+        if (userMessage) {
+            parts.push({ type: 'text', text: userMessage });
+        } else {
+            parts.push({ type: 'text', text: "Analyse cette image et donne-moi des informations sur ce jouet/figurine vintage." });
+        }
+        userContent = parts;
+    } else {
+        userContent = userMessage;
+    }
+
+    aaChatHistory.push({ role: 'user', content: userContent });
     aaRenderTyping();
 
     try {
-        const response = await fetch(AA_ASHNA_CONFIG.endpoint, {
+        const response = await fetch(AA_ASHNA_ENDPOINT, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + AA_ASHNA_CONFIG.token
-            },
-            body: JSON.stringify({
-                model: AA_ASHNA_CONFIG.model,
-                stream: false,
-                messages: aaChatHistory
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ messages: aaChatHistory })
         });
 
         aaRemoveTyping();
@@ -517,8 +449,7 @@ async function aaAskExpert(userMessage) {
             let errText = 'Erreur API (' + response.status + ')';
             try {
                 const errJson = await response.json();
-                if (errJson.error) errText = errJson.error.message || errJson.error;
-                else if (errJson.message) errText = errJson.message;
+                if (errJson.error) errText = errJson.error;
             } catch (e) {}
             aaRenderError('❌ ' + errText);
             aaChatHistory.pop();
@@ -547,23 +478,29 @@ async function aaAskExpert(userMessage) {
 aaChatForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const text = aaChatInput.value.trim();
-    if (!text || aaChatBusy) return;
+    if ((!text && aaChatFiles.length === 0) || aaChatBusy) return;
+    
+    const filesToSend = [...aaChatFiles];
     aaChatInput.value = '';
-    aaAskExpert(text);
+    aaChatFiles = [];
+    aaRenderPhotosPreview();
+    aaAskExpert(text, filesToSend);
 });
 
 document.querySelectorAll('.aa-suggestion-pill').forEach(btn => {
     btn.addEventListener('click', () => {
         if (aaChatBusy) return;
         const q = btn.getAttribute('data-q');
-        if (q) aaAskExpert(q);
+        if (q) aaAskExpert(q, []);
     });
 });
 
 aaChatReset.addEventListener('click', () => {
     if (aaChatBusy) return;
     aaChatHistory = [];
-    aaChatMessages.innerHTML = '<div class="aa-chat-empty">👋 Salut ! Pose-moi ta première question sur les jouets vintage 👇</div>';
+    aaChatFiles = [];
+    aaRenderPhotosPreview();
+    aaChatMessages.innerHTML = '<div class="aa-chat-empty">👋 Salut ! Pose-moi ta première question ou envoie une photo 📸</div>';
 });
 
 /* ============================================================ */
