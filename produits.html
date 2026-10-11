@@ -77,12 +77,25 @@
             background: #eadcbc;
         }
         .product-img-container img {
-            transition: transform 0.25s ease;
+            transition: opacity 0.3s ease;
             background: #eadcbc;
             display: block;
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+        /* ⭐ Verso en absolute, caché par défaut */
+        .product-img-container .verso {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            z-index: 2;
+        }
+        .product-img-container:hover .recto {
+            opacity: 0;
+        }
+        .product-img-container:hover .verso {
+            opacity: 1;
         }
         .btn-add-cart {
             display: inline-flex;
@@ -422,28 +435,6 @@ function applyFilters() {
     renderProducts(filtered);
 }
 
-// 🚀 Helper lazy-load SIMPLE
-function setupLazyImage(img) {
-    img.classList.remove('loaded');
-    if ('IntersectionObserver' in window) {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    img.src = img.dataset.src;
-                    img.removeAttribute('data-src');
-                    observer.unobserve(img);
-                }
-            });
-        }, { rootMargin: '200px' });
-        observer.observe(img);
-    } else {
-        img.src = img.dataset.src || img.src;
-    }
-    img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
-    img.addEventListener('error', () => { handleImgError(img); img.classList.add('loaded'); }, { once: true });
-}
-
 function renderProducts(products) {
     const grid = document.getElementById('aa-product-grid');
     const skeleton = document.getElementById('aa-skeleton-grid');
@@ -466,23 +457,29 @@ function renderProducts(products) {
             ? { text: '🟣 CUSTOM', className: 'aa-type-custom' }
             : { text: '🔵 REPRODUCTION', className: 'aa-type-reproduction' };
         const badgeHtml = `<span class="aa-type-badge ${badge.className}">${badge.text}</span>`;
-        // ⭐ On prend UNIQUEMENT le recto, pas de verso
         const imgRecto = getImageUrl(f['Lien Recto']) || getImageUrl(f.Image) || FALLBACK_IMG;
+        const imgVersoUrl = getImageUrl(f['Lien Verso']);
+        const hasVerso = !!imgVersoUrl && imgVersoUrl !== imgRecto;
         const price = parseFloat(f.Prix) || 0;
         const nameHtml = aaEscapeHtml(f.Nom || 'Sans nom');
         const imgAttrRecto = aaEscapeAttr(imgRecto);
+        const imgAttrVerso = aaEscapeAttr(imgVersoUrl);
         const productId = record.id;
         let statusBadge = '';
         if (isVendu) statusBadge = `<div class="absolute top-2 right-2 bg-red-600 text-white px-2 py-1 font-headline font-black text-xs">VENDU</div>`;
         else if (f.Statut === 'Réservé') statusBadge = `<div class="absolute top-2 right-2 bg-yellow-500 text-black px-2 py-1 font-headline font-black text-xs">RÉSERVÉ</div>`;
         const addButton = isVendu ? '' : `<button class="btn-add-cart" data-id="${productId}" data-name="${aaEscapeAttr(f.Nom || '')}" data-price="${price}" data-url="produit.html?id=${productId}" data-image="${imgAttrRecto}"><span class="add-icon">+</span> AJOUTER</button>`;
-        // ⭐ Une seule image : le recto (plus de verso)
+        // ⭐ Deux images directes (pas de lazy-load) : recto + verso si existe
+        const versoImg = hasVerso 
+            ? `<img src="${imgAttrVerso}" onerror="this.style.display='none'" class="verso" alt="${nameHtml} verso" width="300" height="400">`
+            : '';
         grid.innerHTML += `<div class="group bg-surface-container-high border-4 border-on-background p-3 flex flex-col animate-pop-in" style="box-shadow: 6px 6px 0px 0px ${shadowColor};">
             <div class="product-img-container mb-3 relative">
                 ${badgeHtml}
                 ${statusBadge}
                 <a href="produit.html?id=${productId}">
-                    <img src="${imgAttrRecto}" onerror="handleImgError(this)" alt="${nameHtml}" width="300" height="400">
+                    <img src="${imgAttrRecto}" onerror="handleImgError(this)" class="recto" alt="${nameHtml}" width="300" height="400">
+                    ${versoImg}
                 </a>
             </div>
             <h3 class="font-headline font-black text-base uppercase mb-1"><a class="hover:text-primary" href="produit.html?id=${productId}">${nameHtml}</a></h3>
@@ -493,9 +490,6 @@ function renderProducts(products) {
             </div>
         </div>`;
     });
-    
-    // 🚀 Active lazy loading avec Intersection Observer
-    grid.querySelectorAll('img[data-src]').forEach(setupLazyImage);
     
     attachAddToCart();
 }
