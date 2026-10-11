@@ -81,7 +81,7 @@
             background: #eadcbc;
         }
         .product-img-container img {
-            transition: opacity 0.25s ease;
+            transition: opacity 0.3s ease;
             background: #eadcbc;
         }
         .product-img-container .verso {
@@ -89,11 +89,42 @@
             inset: 0;
             opacity: 0;
         }
-        .product-img-container:hover .recto {
+        /* ⭐ NOUVEAU : Verso en clic au lieu de hover */
+        .product-img-container.show-verso .recto {
             opacity: 0;
         }
-        .product-img-container:hover .verso {
+        .product-img-container.show-verso .verso {
             opacity: 1;
+        }
+        /* ⭐ Hint "Voir verso" */
+        .product-img-hint {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: #342e1e;
+            color: #ffca4d;
+            padding: 5px 9px;
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 900;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: 2px solid #ffca4d;
+            box-shadow: 2px 2px 0 0 #bb0003;
+            z-index: 6;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            line-height: 1;
+        }
+        .product-img-container:hover .product-img-hint {
+            opacity: 1;
+        }
+        .product-img-container.show-verso .product-img-hint {
+            opacity: 0;
         }
         .btn-add-cart {
             display: inline-flex;
@@ -140,7 +171,6 @@
         .aa-products-subtitle {
             font-size: 1rem;
         }
-        /* 🚀 Skeleton cards */
         .skeleton-card {
             background: #efe1c3;
             border: 4px solid #342e1e;
@@ -162,14 +192,6 @@
         }
         .skeleton-card .skel-line.short { width: 60%; }
         .skeleton-card .skel-line.medium { width: 80%; }
-        /* 🚀 Fade in pour images */
-        .product-img-container img {
-            opacity: 0;
-            transition: opacity 0.4s ease, transform 0.25s ease;
-        }
-        .product-img-container img.loaded {
-            opacity: 1;
-        }
 
         @media (max-width: 900px) {
             .aa-products-title {
@@ -270,12 +292,8 @@
         <button id="aa-reset-filters" onclick="resetAllFilters()" class="hidden text-xs font-bold uppercase text-secondary-container hover:underline">↻ Réinitialiser les filtres</button>
     </div>
     
-    <!-- 🚀 SKELETON LOADER (visible pendant le chargement initial) -->
-    <div id="aa-skeleton-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Généré dynamiquement -->
-    </div>
+    <div id="aa-skeleton-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
     
-    <!-- Grille des produits (cachée au départ, affichée après chargement) -->
     <div id="aa-product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" style="display:none;"></div>
 </main>
 
@@ -296,11 +314,10 @@
 function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
 function aaEscapeAttr(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
-// 🚀 Optimisation Cloudinary automatique
 function aaOptimizeUrl(url, w) {
     if (!url) return null;
     if (!url.includes('cloudinary')) return url;
-    if (url.includes('f_auto')) return url; // déjà optimisé
+    if (url.includes('f_auto')) return url;
     return url.replace('/image/upload/', `/image/upload/f_auto,q_auto,w_${w},c_fill/`);
 }
 
@@ -332,7 +349,7 @@ function getImageUrl(field) {
     } else if (typeof field === 'object') {
         url = field.url || field.secure_url || (field.filename ? 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + field.filename : null);
     }
-    return url ? aaOptimizeUrl(url, 600) : null; // 🚀 Optimise auto
+    return url ? aaOptimizeUrl(url, 600) : null;
 }
 
 function shuffleBy5DaySeed(products) {
@@ -403,7 +420,6 @@ function setFilter(name, value, btn) {
     applyFilters();
 }
 
-// 🚀 Génération du skeleton loader
 function renderSkeleton() {
     const grid = document.getElementById('aa-skeleton-grid');
     if (!grid) return;
@@ -446,27 +462,42 @@ function applyFilters() {
     renderProducts(filtered);
 }
 
-// 🚀 Helper pour images avec Intersection Observer
 function setupLazyImage(img) {
-    img.classList.remove('loaded');
+    img.onload = () => { img.style.opacity = '1'; };
+    img.onerror = () => { handleImgError(img); img.style.opacity = '1'; };
+    img.style.opacity = '0';
     if ('IntersectionObserver' in window) {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    const img = entry.target;
-                    img.src = img.dataset.src;
-                    img.removeAttribute('data-src');
-                    observer.unobserve(img);
+                    const el = entry.target;
+                    el.src = el.dataset.src;
+                    delete el.dataset.src;
+                    observer.unobserve(el);
                 }
             });
         }, { rootMargin: '200px' });
         observer.observe(img);
     } else {
-        // Fallback pour vieux navigateurs
         img.src = img.dataset.src || img.src;
     }
-    img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
-    img.addEventListener('error', () => { handleImgError(img); img.classList.add('loaded'); }, { once: true });
+}
+
+/* ⭐ Toggle Verso en clic */
+function toggleVerso(container) {
+    const wrapper = container.closest('.product-img-container');
+    const verso = wrapper.querySelector('.verso');
+    // Si pas de verso, ne fait rien
+    if (!verso || verso.style.display === 'none') return;
+    wrapper.classList.toggle('show-verso');
+    // Met à jour le hint
+    const hint = wrapper.querySelector('.product-img-hint');
+    if (hint) {
+        const showing = wrapper.classList.contains('show-verso');
+        hint.innerHTML = showing
+            ? '<span class="material-symbols-outlined" style="font-size:14px;">flip</span> Recto'
+            : '<span class="material-symbols-outlined" style="font-size:14px;">flip</span> Verso';
+    }
 }
 
 function renderProducts(products) {
@@ -492,24 +523,41 @@ function renderProducts(products) {
             : { text: '🔵 REPRODUCTION', className: 'aa-type-reproduction' };
         const badgeHtml = `<span class="aa-type-badge ${badge.className}">${badge.text}</span>`;
         const imgRecto = getImageUrl(f['Lien Recto']) || getImageUrl(f.Image) || FALLBACK_IMG;
-        const imgVerso = getImageUrl(f['Lien Verso']) || imgRecto;
+        const imgVerso = getImageUrl(f['Lien Verso']) || null;
+        const hasVerso = !!imgVerso && imgVerso !== imgRecto;
         const price = parseFloat(f.Prix) || 0;
         const nameHtml = aaEscapeHtml(f.Nom || 'Sans nom');
         const imgAttrRecto = aaEscapeAttr(imgRecto);
-        const imgAttrVerso = aaEscapeAttr(imgVerso);
+        const imgAttrVerso = aaEscapeAttr(imgVerso || imgRecto);
         const productId = record.id;
         let statusBadge = '';
         if (isVendu) statusBadge = `<div class="absolute top-2 right-2 bg-red-600 text-white px-2 py-1 font-headline font-black text-xs">VENDU</div>`;
         else if (f.Statut === 'Réservé') statusBadge = `<div class="absolute top-2 right-2 bg-yellow-500 text-black px-2 py-1 font-headline font-black text-xs">RÉSERVÉ</div>`;
         const addButton = isVendu ? '' : `<button class="btn-add-cart" data-id="${productId}" data-name="${aaEscapeAttr(f.Nom || '')}" data-price="${price}" data-url="produit.html?id=${productId}" data-image="${imgAttrRecto}"><span class="add-icon">+</span> AJOUTER</button>`;
+        
+        /* ⭐ Hint "Voir verso" — visible uniquement s'il y a un verso */
+        const versoHint = hasVerso ? `<span class="product-img-hint"><span class="material-symbols-outlined" style="font-size:14px;">flip</span> Verso</span>` : '';
+        
+        /* ⭐ Image clic = verso. Si pas de verso, lien classique */
+        const imageContent = hasVerso 
+            ? `<div onclick="toggleVerso(this)" style="cursor: pointer;">
+                ${versoHint}
+                <a href="produit.html?id=${productId}" onclick="event.stopPropagation();">
+                    <img data-src="${imgAttrRecto}" class="referint">`.replace('referint', 'recto') + ` w-full h-full object-cover" alt="${nameHtml}" width="300" height="400">
+                </a>
+                <a href="produit.html?id=${productId}" onclick="event.stopPropagation();">
+                    <img data-src="${imgAttrVerso}" onerror="this.style.display='none'" class="verso w-full h-full object-cover" alt="${nameHtml} verso" width="300" height="400">
+                </a>
+               </div>`
+            : `<a href="produit.html?id=${productId}">
+                <img data-src="${imgAttrRecto}" class="recto w-full h-full object-cover" alt="${nameHtml}" width="300" height="400">
+               </a>`;
+        
         grid.innerHTML += `<div class="group bg-surface-container-high border-4 border-on-background p-3 flex flex-col animate-pop-in" style="box-shadow: 6px 6px 0px 0px ${shadowColor};">
             <div class="product-img-container mb-3 relative">
                 ${badgeHtml}
                 ${statusBadge}
-                <a href="produit.html?id=${productId}">
-                    <img data-src="${imgAttrRecto}" onerror="handleImgError(this)" class="recto w-full h-full object-cover" alt="${nameHtml}" width="300" height="400">
-                    <img data-src="${imgAttrVerso}" onerror="this.style.display='none'" class="verso w-full h-full object-cover" alt="${nameHtml} verso" width="300" height="400">
-                </a>
+                ${imageContent}
             </div>
             <h3 class="font-headline font-black text-base uppercase mb-1"><a class="hover:text-primary" href="produit.html?id=${productId}">${nameHtml}</a></h3>
             <p class="font-body text-[10px] text-on-surface-variant font-bold mb-2 italic">${aaEscapeHtml(f.Collection || '')}${f.Année ? ' • ' + f.Année : ''}</p>
@@ -520,7 +568,6 @@ function renderProducts(products) {
         </div>`;
     });
     
-    // 🚀 Active lazy loading avec Intersection Observer
     grid.querySelectorAll('img[data-src]').forEach(setupLazyImage);
     
     attachAddToCart();
@@ -546,9 +593,8 @@ function attachAddToCart() {
     });
 }
 
-// 🚀 Cache localStorage pour affichage instantané
 const AA_CACHE_KEY = 'aa_products_cache';
-const AA_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const AA_CACHE_TTL = 5 * 60 * 1000;
 
 function getCachedProducts() {
     try {
@@ -568,9 +614,7 @@ function setCachedProducts(products) {
             timestamp: Date.now(),
             data: products
         }));
-    } catch (e) {
-        // localStorage plein, on ignore
-    }
+    } catch (e) {}
 }
 
 async function fetchProducts() {
@@ -579,7 +623,7 @@ async function fetchProducts() {
         if (!response.ok) throw new Error('HTTP ' + response.status);
         const data = await response.json();
         const products = Array.isArray(data) ? data : [];
-        setCachedProducts(products); // 🚀 Met en cache
+        setCachedProducts(products);
         return products;
     } catch (error) {
         console.error('Erreur chargement produits:', error);
@@ -588,9 +632,8 @@ async function fetchProducts() {
 }
 
 async function init() {
-    renderSkeleton(); // 🚀 Affiche les skeletons immédiatement
+    renderSkeleton();
     
-    // 🚀 Charge depuis le cache d'abord (instantané)
     const cached = getCachedProducts();
     if (cached) {
         allProducts = cached;
@@ -598,7 +641,6 @@ async function init() {
         applyFilters();
     }
     
-    // 🚀 Puis tente de fetch frais pour synchroniser
     const fresh = await fetchProducts();
     if (fresh && (!cached || JSON.stringify(fresh) !== JSON.stringify(cached))) {
         allProducts = fresh;
