@@ -116,7 +116,7 @@
         .aa-filter-btn.active { color:#fff5e5; box-shadow:3px 3px 0 0 #342e1e; transform: translate(-1px, -1px); }
         .aa-filter-btn[data-value="all"].active { background:#bb0003; }
         .aa-filter-btn.reproduction.active { background:#0f56bf; }
-        .aa-filter-btn.custom.active { background:#7b1fa2; }
+.aa-filter-btn.custom.active { background:#7b1fa2; }
         .aa-products-subtitle {
             font-size: 1rem;
         }
@@ -142,6 +142,14 @@
         .skeleton-card .skel-line.short { width: 60%; }
         .skeleton-card .skel-line.medium { width: 80%; }
 
+        /* ⭐ CSS COPIÉ DEPUIS INDEX.HTML */
+        .aa-objective-banner { background:#bb0003; color:#fff5e5; border-top:4px solid #342e1e; border-bottom:4px solid #342e1e; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:0.95rem; letter-spacing:0.02em; padding:0.7rem 1.5rem; text-align:center; }
+        .aa-objective-banner strong { color:#ffca4d; }
+        .aa-menu-btn { font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; background: #bb0003; color: #fff5e5; border: 3px solid #342e1e; padding: 10px 20px; font-size: 1.05rem; box-shadow: 4px 4px 0 0 #342e1e; cursor: pointer; transition: all 0.15s ease; }
+        .aa-menu-btn:hover { background: #342e1e; color: #ffca4d; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 #bb0003; }
+        .aa-logo { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease; filter: drop-shadow(2px 2px 0px rgba(52, 46, 30, 0.15)); }
+        .aa-logo-link:hover .aa-logo { transform: rotate(-5deg) scale(1.05); filter: drop-shadow(3px 3px 0px rgba(187, 0, 3, 0.4)); }
+
         @media (max-width: 900px) {
             .aa-products-title { font-size: 1.8rem !important; text-align: center !important; }
             .aa-products-subtitle { font-size: 0.95rem !important; text-align: center !important; }
@@ -160,7 +168,6 @@
     🛒 VENTE EN LIGNE — <strong>BOÎTES VINTAGE</strong> POUR FIGURINES 1970–1990 — REPRODUCTIONS & CUSTOM 🛒
 </div>
 
-<!-- ⭐⭐⭐ HEADER COPIÉ DEPUIS INDEX.HTML ⭐⭐⭐ -->
 <header class="w-full border-b-4 border-double border-[#bb0003] bg-[#fff5e5] shadow-[4px_4px_0px_0px_rgba(52,46,30,0.2)] z-50 sticky top-0">
     <div class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
         <a href="index.html" class="aa-logo-link flex items-center gap-3 group cursor-pointer" title="Retour à l'accueil">
@@ -190,7 +197,6 @@
     </div>
 </header>
 
-<!-- ⭐⭐⭐ DRAWER COPIÉ DEPUIS INDEX.HTML ⭐⭐⭐ -->
 <div id="drawer-overlay" class="drawer-overlay fixed inset-0 bg-on-background/40 backdrop-blur-sm z-[90]" onclick="toggleDrawer()"></div>
 <aside id="side-drawer" class="fixed top-0 right-0 h-full w-full max-w-[320px] bg-surface-container-high border-l-8 border-primary z-[100] transform translate-x-full overflow-y-auto">
     <div class="p-8 space-y-8 flex flex-col h-full text-on-surface">
@@ -209,7 +215,6 @@
     </div>
 </aside>
 
-<!-- ⭐ CONTENU PRODUITS ⭐ -->
 <main class="container mx-auto px-6 py-12 min-h-screen">
     <h1 class="aa-products-title font-headline font-black uppercase italic mb-2 border-b-4 border-on-background pb-4 leading-tight" style="color: #bb0003;">
         Toutes les<br/>
@@ -255,7 +260,6 @@
 
 <div id="aa-toasts"></div>
 
-<!-- ⭐ SANS defer (comme index.html) ⭐ -->
 <script src="aa-core.js"></script>
 <script>
 function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
@@ -314,7 +318,6 @@ function shuffleBy5DaySeed(products) {
     return shuffled;
 }
 
-// ⭐ Variables renommées pour éviter les conflits avec aa-core.js
 const aaShadowColors = ['#bb0003', '#0f56bf', '#7b1fa2', '#755700', '#bb0003', '#0f56bf'];
 
 let aaAllProducts = [];
