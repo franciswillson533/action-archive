@@ -84,7 +84,6 @@
             height: 100%;
             object-fit: cover;
         }
-        /* ⭐ Verso en absolute, caché par défaut */
         .product-img-container .verso {
             position: absolute;
             inset: 0;
@@ -287,6 +286,12 @@
 function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
 function aaEscapeAttr(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
+// ⭐ FONCTION DRAWER (manquait avant)
+function toggleDrawer() {
+    document.getElementById('side-drawer').classList.toggle('open');
+    document.getElementById('drawer-overlay').classList.toggle('open');
+}
+
 function aaOptimizeUrl(url, w) {
     if (!url) return null;
     if (!url.includes('cloudinary')) return url;
@@ -469,7 +474,6 @@ function renderProducts(products) {
         if (isVendu) statusBadge = `<div class="absolute top-2 right-2 bg-red-600 text-white px-2 py-1 font-headline font-black text-xs">VENDU</div>`;
         else if (f.Statut === 'Réservé') statusBadge = `<div class="absolute top-2 right-2 bg-yellow-500 text-black px-2 py-1 font-headline font-black text-xs">RÉSERVÉ</div>`;
         const addButton = isVendu ? '' : `<button class="btn-add-cart" data-id="${productId}" data-name="${aaEscapeAttr(f.Nom || '')}" data-price="${price}" data-url="produit.html?id=${productId}" data-image="${imgAttrRecto}"><span class="add-icon">+</span> AJOUTER</button>`;
-        // ⭐ Deux images directes (pas de lazy-load) : recto + verso si existe
         const versoImg = hasVerso 
             ? `<img src="${imgAttrVerso}" onerror="this.style.display='none'" class="verso" alt="${nameHtml} verso" width="300" height="400">`
             : '';
@@ -575,16 +579,6 @@ async function init() {
         grid.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-red-600 font-bold">❌ Impossible de charger les produits.</p><p class="text-sm mt-2">Vérifie la console (F12) pour plus de détails.</p></div>';
     }
 }
-function toggleDrawer() {
-    document.getElementById('side-drawer').classList.toggle('open');
-    document.getElementById('drawer-overlay').classList.toggle('open');
-}
-
-init();
-
-(function() {
-    const social = JSON.parse(localStorage.getItem('aa_social_config') || '{}');
-
 init();
 
 (function() {
