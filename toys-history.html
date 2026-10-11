@@ -167,9 +167,6 @@
             .aa-slider-thumb { cursor: zoom-in; }
         }
 
-        /* ============================================================
-           🖼️ LIGHTBOX + ZOOM PROGRESSIF
-           ============================================================ */
         .aa-lightbox {
             position: fixed;
             inset: 0;
@@ -318,6 +315,181 @@
         @media (max-width: 480px) {
             .aa-slider-arrow { display: none; }
         }
+
+        /* =========================================================
+           ⭐ SECTION NAVIGATION PERSONNAGES
+           ========================================================= */
+        .aa-char-nav {
+            background: #342e1e;
+            border-top: 8px double #bb0003;
+            border-bottom: 8px double #bb0003;
+            padding: 4rem 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .aa-char-nav::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(255, 202, 77, 0.15) 2px, transparent 0);
+            background-size: 14px 14px;
+            pointer-events: none;
+        }
+        .aa-char-nav-inner {
+            position: relative;
+            z-index: 2;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+        .aa-char-nav-title {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            color: #ffca4d;
+            font-size: 2.2rem;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+            text-shadow: 3px 3px 0 #bb0003;
+        }
+        .aa-char-nav-subtitle {
+            font-family: 'Work Sans', sans-serif;
+            font-weight: 700;
+            color: #fff5e5;
+            text-align: center;
+            font-size: 1rem;
+            margin-bottom: 3rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .aa-char-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+
+        .aa-char-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background: #fff5e5;
+            border: 4px solid #342e1e;
+            box-shadow: 8px 8px 0 0 #bb0003;
+            text-align: center;
+            text-decoration: none;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            overflow: hidden;
+        }
+        .aa-char-card:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 12px 12px 0 0 #ffca4d;
+        }
+        .aa-char-card:active {
+            transform: translate(2px, 2px);
+            box-shadow: 4px 4px 0 0 #bb0003;
+        }
+
+    .aa-char-card-img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #eadcbc;
+    border-bottom: 4px solid #342e1e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.aa-char-card-img img {
+    width: 115%; /* agrandit l'image */
+    height: 115%;
+    object-fit: cover;
+    object-position: center bottom; /* décale l'image vers le bas */
+    transition: transform 0.3s ease;
+}
+.aa-char-card:hover .aa-char-card-img img {
+    transform: scale(1.08);
+}
+        .aa-char-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top; /* ⭐ montre le haut de l'image */
+    transition: transform 0.3s ease;
+}
+.aa-char-card:hover .aa-char-card-img img {
+    transform: scale(1.08);
+        }
+
+        .aa-char-card-body {
+            padding: 1rem 1rem 0.5rem;
+            background: #fff5e5;
+        }
+        .aa-char-card-title {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            color: #342e1e;
+            font-size: 1.05rem;
+            line-height: 1.1;
+            margin: 0 0 0.3rem;
+            letter-spacing: -0.01em;
+        }
+        .aa-char-card-sub {
+            font-family: 'Work Sans', sans-serif;
+            font-weight: 600;
+            color: #635b48;
+            font-size: 0.85rem;
+            text-transform: none;
+            letter-spacing: 0;
+            font-style: italic;
+            line-height: 1.2;
+        }
+
+        .aa-char-card-cta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: #bb0003;
+            color: #ffca4d;
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            padding: 10px 12px;
+            letter-spacing: 0.05em;
+            border-top: 4px solid #342e1e;
+            transition: background 0.2s ease;
+            margin-top: auto;
+        }
+        .aa-char-card:hover .aa-char-card-cta {
+            background: #342e1e;
+            color: #ffca4d;
+        }
+        .aa-char-card-cta .material-symbols-outlined {
+            font-size: 22px;
+            transition: transform 0.25s ease;
+        }
+        .aa-char-card:hover .aa-char-card-cta .material-symbols-outlined {
+            transform: translateX(4px);
+        }
+
+        @media (max-width: 1024px) {
+            .aa-char-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.25rem;
+            }
+        }
+        @media (max-width: 560px) {
+            .aa-char-nav { padding: 3rem 1rem; }
+            .aa-char-nav-title { font-size: 1.5rem; }
+            .aa-char-nav-subtitle { font-size: 0.85rem; margin-bottom: 2rem; }
+            .aa-char-card-title { font-size: 0.95rem; }
+            .aa-char-card-cta { font-size: 0.75rem; padding: 8px 10px; }
+        }
     </style>
 </head>
 <body class="bg-surface font-body text-on-surface overflow-x-hidden">
@@ -398,6 +570,74 @@
     </p>
 </main>
 
+<!-- ⭐ SECTION NAVIGATION PERSONNAGES — SANS EMOJI ⭐ -->
+<section class="aa-char-nav">
+    <div class="aa-char-nav-inner">
+        <h2 class="aa-char-nav-title">Explore les personnages</h2>
+        <p class="aa-char-nav-subtitle">Découvre les pièces emblématiques de chaque héros</p>
+
+        <div class="aa-char-grid">
+
+            <!-- Carte 1 : Scaphandrier -->
+            <a href="scaphandrier.html" class="aa-char-card">
+                <div class="aa-char-card-img">
+                    <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791718376/scaphandrier_k9hvsw.png" alt="Le Scaphandrier" loading="lazy">
+                </div>
+                <div class="aa-char-card-body">
+                    <h3 class="aa-char-card-title">Le Scaphandrier</h3>
+                    <p class="aa-char-card-sub">Les pièces indispensables pour une tenue complète</p>
+                </div>
+                <div class="aa-char-card-cta">
+                    Découvrir <span class="material-symbols-outlined">arrow_forward</span>
+                </div>
+            </a>
+
+            <!-- Carte 2 : Résistant Français -->
+            <a href="resistant-francais.html" class="aa-char-card">
+                <div class="aa-char-card-img">
+                    <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791718365/r%C3%A9sistant_fran%C3%A7ais_ibuvao.png" alt="Le Résistant Français" loading="lazy">
+                </div>
+                <div class="aa-char-card-body">
+                    <h3 class="aa-char-card-title">Le Résistant Français</h3>
+                    <p class="aa-char-card-sub">Les pièces indispensables pour un maquisard complet</p>
+                </div>
+                <div class="aa-char-card-cta">
+                    Découvrir <span class="material-symbols-outlined">arrow_forward</span>
+                </div>
+            </a>
+
+            <!-- Carte 3 : Soldat Allemand -->
+            <a href="soldat-allemand.html" class="aa-char-card">
+                <div class="aa-char-card-img">
+                    <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791718655/soldat_allemand_um0obo.png" alt="Le Soldat Allemand" loading="lazy">
+                </div>
+                <div class="aa-char-card-body">
+                    <h3 class="aa-char-card-title">Le Soldat Allemand</h3>
+                    <p class="aa-char-card-sub">Les pièces indispensables pour un Wehrmacht complet</p>
+                </div>
+                <div class="aa-char-card-cta">
+                    Découvrir <span class="material-symbols-outlined">arrow_forward</span>
+                </div>
+            </a>
+
+            <!-- Carte 4 : Soldat Russe -->
+            <a href="soldat-russe.html" class="aa-char-card">
+                <div class="aa-char-card-img">
+                    <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791718341/soldat_russe_qqprih.png" alt="Le Soldat Russe" loading="lazy">
+                </div>
+                <div class="aa-char-card-body">
+                    <h3 class="aa-char-card-title">Le Soldat Russe</h3>
+                    <p class="aa-char-card-sub">Les pièces indispensables pour un Armée rouge complet</p>
+                </div>
+                <div class="aa-char-card-cta">
+                    Découvrir <span class="material-symbols-outlined">arrow_forward</span>
+                </div>
+            </a>
+
+        </div>
+    </div>
+</section>
+
 <footer class="bg-[#342e1e] border-t-8 border-double border-[#755700] w-full py-12 px-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-20">
     <div class="flex flex-col items-center md:items-start gap-3">
         <a href="index.html" class="aa-logo-link flex items-center gap-3 cursor-pointer" title="Action Archive">
@@ -409,7 +649,6 @@
     <nav id="aa-social-nav" class="flex flex-wrap justify-center gap-10"></nav>
 </footer>
 
-<!-- 🖼️ LIGHTBOX + ZOOM -->
 <div id="aaLightbox" class="aa-lightbox">
     <button class="aa-lightbox-close" id="aaLightboxClose" aria-label="Fermer">✕</button>
     <div class="aa-zoom-hint" id="aaZoomHint">🔍 CLIQUE POUR ZOOMER</div>
@@ -470,7 +709,6 @@ const aaBookImagesRaw = [
 
 const aaBookImages = aaBookImagesRaw.map(u => aaOptimizeUrl(u, 1200));
 const aaThumbImages = aaBookImagesRaw.map(u => aaOptimizeUrl(u, 100));
-// 🖼️ HD pour le lightbox (taille originale)
 const aaLightboxImages = aaBookImagesRaw.map(u => aaOptimizeUrl(u, 2400));
 
 let aaCurrentIndex = 0;
@@ -558,9 +796,6 @@ aaSliderViewport.addEventListener('touchend', (e) => {
     }
 }, { passive: true });
 
-/* ============================================================
-   🖼️ LIGHTBOX + ZOOM PROGRESSIF
-   ============================================================ */
 const aaLightbox = document.getElementById('aaLightbox');
 const aaLightboxImg = document.getElementById('aaLightboxImg');
 const aaLightboxWrap = document.getElementById('aaLightboxWrap');
@@ -588,13 +823,10 @@ function aaApplyZoom() {
         aaZoomHint.innerHTML = '🔍 CLIQUE POUR ZOOMER';
         aaPanX = 0;
         aaPanY = 0;
-        aaLightboxImg.style.transform = `scale(${aaZoomLevel}) translate(0, 0)`;
     } else {
         aaZoomHint.innerHTML = `🔍 ZOOM <span>${aaZoomLevel}x</span>`;
         aaLightboxImg.style.transformOrigin = 'center center';
     }
-
-    // Le scale est sur la classe CSS, le translate est inline
     aaLightboxImg.style.setProperty('--aa-pan-x', `${aaPanX}px`);
     aaLightboxImg.style.setProperty('--aa-pan-y', `${aaPanY}px`);
 }
@@ -651,7 +883,6 @@ function aaLightboxPrev() {
     }
 }
 
-// Clic sur slider → ouvre
 aaSliderViewport.addEventListener('click', (e) => {
     if (e.target.closest('.aa-slider-arrow')) return;
     if (!aaLightbox.classList.contains('open')) {
@@ -659,7 +890,6 @@ aaSliderViewport.addEventListener('click', (e) => {
     }
 });
 
-// Clic sur image dans le lightbox → cycle de zoom
 aaLightboxWrap.addEventListener('click', (e) => {
     if (aaIsDragging) return;
     e.stopPropagation();
@@ -667,7 +897,6 @@ aaLightboxWrap.addEventListener('click', (e) => {
     aaSetZoom(aaZoomLevel);
 });
 
-// Clic sur overlay (hors image) → ferme
 aaLightbox.addEventListener('click', (e) => {
     if (e.target === aaLightbox) aaCloseLightbox();
 });
@@ -676,7 +905,6 @@ aaLightboxCloseBtn.addEventListener('click', aaCloseLightbox);
 aaLightboxNextBtn.addEventListener('click', aaLightboxNext);
 aaLightboxPrevBtn.addEventListener('click', aaLightboxPrev);
 
-// Drag pour bouger l'image zoomée
 aaLightboxWrap.addEventListener('mousedown', (e) => {
     if (aaZoomLevel === 1) return;
     aaIsDragging = false;
@@ -705,7 +933,6 @@ document.addEventListener('mouseup', () => {
     setTimeout(() => { aaIsDragging = false; }, 50);
 });
 
-// Touch (mobile) : pinch to zoom + drag
 let aaLastTouchDist = 0;
 let aaLastTouchX = 0;
 let aaLastTouchY = 0;
@@ -753,7 +980,6 @@ aaLightboxWrap.addEventListener('touchmove', (e) => {
 
 aaLightboxWrap.addEventListener('touchend', (e) => {
     aaLastTouchDist = 0;
-    // Double tap pour reset
     if (e.changedTouches.length === 1 && aaZoomLevel > 1) {
         const dt = Date.now() - aaTouchStartTime;
         if (dt < 200) {
@@ -762,7 +988,6 @@ aaLightboxWrap.addEventListener('touchend', (e) => {
     }
 });
 
-// Clavier
 document.addEventListener('keydown', (e) => {
     if (!aaLightbox.classList.contains('open')) return;
     if (e.key === 'Escape') aaCloseLightbox();
@@ -777,7 +1002,6 @@ document.addEventListener('keydown', (e) => {
     if (e.key === '0') aaSetZoom(1);
 });
 
-// Miniatures
 aaBookImagesRaw.forEach((src, i) => {
     const thumb = document.createElement('div');
     thumb.className = 'aa-slider-thumb';
@@ -796,6 +1020,11 @@ aaBookImagesRaw.forEach((src, i) => {
 });
 
 aaUpdateSlider();
+
+function toggleDrawer() {
+    document.getElementById('side-drawer').classList.toggle('open');
+    document.getElementById('drawer-overlay').classList.toggle('open');
+}
 
 (function() {
     const social = JSON.parse(localStorage.getItem('aa_social_config') || '{}');
