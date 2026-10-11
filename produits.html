@@ -85,42 +85,14 @@
             inset: 0;
             opacity: 0;
         }
-        /* ⭐ CHANGEMENT 1 : hover → clic */
-        .product-img-container.show-verso .recto {
+        .product-img-container.aa-show-verso .recto {
             opacity: 0;
         }
-        .product-img-container.show-verso .verso {
+        .product-img-container.aa-show-verso .verso {
             opacity: 1;
         }
-        /* ⭐ CHANGEMENT 2 : Hint visible au survol */
-        .product-img-hint {
-            position: absolute;
-            bottom: 8px;
-            right: 8px;
-            background: #342e1e;
-            color: #ffca4d;
-            padding: 5px 9px;
-            font-family: 'Epilogue', sans-serif;
-            font-weight: 900;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border: 2px solid #ffca4d;
-            box-shadow: 2px 2px 0 0 #bb0003;
-            z-index: 6;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-            pointer-events: none;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            line-height: 1;
-        }
-        .product-img-container:hover .product-img-hint {
-            opacity: 1;
-        }
-        .product-img-container.show-verso .product-img-hint {
-            opacity: 0;
+        .product-img-container.aa-clickable {
+            cursor: pointer;
         }
         .btn-add-cart {
             display: inline-flex;
@@ -167,6 +139,7 @@
         .aa-products-subtitle {
             font-size: 1rem;
         }
+        /* 🚀 Skeleton cards */
         .skeleton-card {
             background: #efe1c3;
             border: 4px solid #342e1e;
@@ -296,8 +269,10 @@
         <button id="aa-reset-filters" onclick="resetAllFilters()" class="hidden text-xs font-bold uppercase text-secondary-container hover:underline">↻ Réinitialiser les filtres</button>
     </div>
     
+    <!-- 🚀 SKELETON LOADER -->
     <div id="aa-skeleton-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
     
+    <!-- Grille des produits -->
     <div id="aa-product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" style="display:none;"></div>
 </main>
 
@@ -488,23 +463,6 @@ function setupLazyImage(img) {
     img.addEventListener('error', () => { handleImgError(img); img.classList.add('loaded'); }, { once: true });
 }
 
-/* ⭐ Toggle Verso en clic — ajouté sans toucher au reste */
-function toggleVerso(productId) {
-    const wrapper = document.querySelector('.product-img-container[data-pid="' + productId + '"]');
-    if (!wrapper) return;
-    const verso = wrapper.querySelector('.verso');
-    // Si pas de verso, ne fait rien
-    if (!verso || verso.style.display === 'none') return;
-    wrapper.classList.toggle('show-verso');
-    const hint = wrapper.querySelector('.product-img-hint');
-    if (hint) {
-        const showing = wrapper.classList.contains('show-verso');
-        hint.innerHTML = showing
-            ? '<span class="material-symbols-outlined" style="font-size:14px;">flip</span> Recto'
-            : '<span class="material-symbols-outlined" style="font-size:14px;">flip</span> Verso';
-    }
-}
-
 function renderProducts(products) {
     const grid = document.getElementById('aa-product-grid');
     const skeleton = document.getElementById('aa-skeleton-grid');
@@ -528,33 +486,24 @@ function renderProducts(products) {
             : { text: '🔵 REPRODUCTION', className: 'aa-type-reproduction' };
         const badgeHtml = `<span class="aa-type-badge ${badge.className}">${badge.text}</span>`;
         const imgRecto = getImageUrl(f['Lien Recto']) || getImageUrl(f.Image) || FALLBACK_IMG;
-        const imgVerso = getImageUrl(f['Lien Verso']) || null;
-        const hasVerso = !!imgVerso && imgVerso !== imgRecto;
+        const imgVerso = getImageUrl(f['Lien Verso']) || imgRecto;
         const price = parseFloat(f.Prix) || 0;
         const nameHtml = aaEscapeHtml(f.Nom || 'Sans nom');
         const imgAttrRecto = aaEscapeAttr(imgRecto);
-        const imgAttrVerso = aaEscapeAttr(imgVerso || imgRecto);
+        const imgAttrVerso = aaEscapeAttr(imgVerso);
         const productId = record.id;
         let statusBadge = '';
         if (isVendu) statusBadge = `<div class="absolute top-2 right-2 bg-red-600 text-white px-2 py-1 font-headline font-black text-xs">VENDU</div>`;
         else if (f.Statut === 'Réservé') statusBadge = `<div class="absolute top-2 right-2 bg-yellow-500 text-black px-2 py-1 font-headline font-black text-xs">RÉSERVÉ</div>`;
         const addButton = isVendu ? '' : `<button class="btn-add-cart" data-id="${productId}" data-name="${aaEscapeAttr(f.Nom || '')}" data-price="${price}" data-url="produit.html?id=${productId}" data-image="${imgAttrRecto}"><span class="add-icon">+</span> AJOUTER</button>`;
-        
-        /* ⭐ Lien image avec onclick pour verso */
-        const imageLink = `<a href="produit.html?id=${productId}" onclick="event.preventDefault(); ${hasVerso ? `toggleVerso('${productId}');` : `window.location.href='produit.html?id=${productId}';`}">`;
-        const versoHint = hasVerso ? `<span class="product-img-hint"><span class="material-symbols-outlined" style="font-size:14px;">flip</span> Verso</span>` : '';
-        
         grid.innerHTML += `<div class="group bg-surface-container-high border-4 border-on-background p-3 flex flex-col animate-pop-in" style="box-shadow: 6px 6px 0px 0px ${shadowColor};">
-            <div class="product-img-container mb-3 relative" data-pid="${productId}">
+            <div class="product-img-container mb-3 relative">
                 ${badgeHtml}
                 ${statusBadge}
-                ${imageLink}
+                <a href="produit.html?id=${productId}">
                     <img data-src="${imgAttrRecto}" onerror="handleImgError(this)" class="recto w-full h-full object-cover" alt="${nameHtml}" width="300" height="400">
-                </a>
-                ${hasVerso ? `<a href="produit.html?id=${productId}" onclick="event.preventDefault(); toggleVerso('${productId}');">
                     <img data-src="${imgAttrVerso}" onerror="this.style.display='none'" class="verso w-full h-full object-cover" alt="${nameHtml} verso" width="300" height="400">
-                </a>` : ''}
-                ${versoHint}
+                </a>
             </div>
             <h3 class="font-headline font-black text-base uppercase mb-1"><a class="hover:text-primary" href="produit.html?id=${productId}">${nameHtml}</a></h3>
             <p class="font-body text-[10px] text-on-surface-variant font-bold mb-2 italic">${aaEscapeHtml(f.Collection || '')}${f.Année ? ' • ' + f.Année : ''}</p>
@@ -652,6 +601,18 @@ async function init() {
     }
 }
 init();
+
+// ⭐ AJOUT MINIMAL : toggle verso en clic (1 seul event listener global)
+document.addEventListener('click', function(e) {
+    const link = e.target.closest('.product-img-container a');
+    if (!link) return;
+    const container = link.closest('.product-img-container');
+    if (!container) return;
+    const verso = container.querySelector('.verso');
+    if (!verso || verso.style.display === 'none') return;
+    e.preventDefault();
+    container.classList.toggle('aa-show-verso');
+});
 
 (function() {
     const social = JSON.parse(localStorage.getItem('aa_social_config') || '{}');
