@@ -136,15 +136,12 @@
         }
         .aa-obj:hover .aa-obj-label { opacity: 1; }
 
-        /* ⭐ PYRAMIDE 2/4/5 — 11 objets (Scaphandrier avec Tuyaux d'air) */
         .row1-pos1 { top: 22%; left: 28%; z-index: 6; }
         .row1-pos2 { top: 22%; right: 28%; z-index: 6; }
-
         .row2-pos1 { top: 48%; left: 8%;  }
         .row2-pos2 { top: 48%; left: 26%; }
         .row2-pos3 { top: 48%; right: 26%; }
         .row2-pos4 { top: 48%; right: 8%; }
-
         .row3-pos1 { bottom: 4%; left: 4%;  }
         .row3-pos2 { bottom: 4%; left: 22%; }
         .row3-pos3 { bottom: 4%; left: 50%; transform: translateX(-50%); }
@@ -236,6 +233,181 @@
                 height: 260px;
             }
         }
+
+        /* ⭐ BREADCRUMB */
+        .aa-breadcrumb {
+            background: #eadcbc;
+            border-bottom: 2px solid #342e1e;
+            padding: 0.7rem 1.5rem;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 0.85rem;
+            color: #342e1e;
+        }
+        .aa-breadcrumb ol {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+        .aa-breadcrumb li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .aa-breadcrumb a {
+            color: #342e1e;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.15s ease;
+        }
+        .aa-breadcrumb a:hover {
+            color: #bb0003;
+        }
+        .aa-breadcrumb .separator {
+            color: #635b48;
+            font-weight: 700;
+        }
+        .aa-breadcrumb .current {
+            color: #bb0003;
+            font-weight: 800;
+            font-style: italic;
+            text-transform: uppercase;
+        }
+        .aa-breadcrumb-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: #342e1e;
+            color: #ffca4d;
+            padding: 0.3rem 0.7rem;
+            border: 2px solid #342e1e;
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 800;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-left: auto;
+            transition: all 0.15s ease;
+            text-decoration: none;
+        }
+        .aa-breadcrumb-back:hover {
+            background: #bb0003;
+            border-color: #bb0003;
+            color: #fff5e5;
+            transform: translate(-2px, -2px);
+            box-shadow: 3px 3px 0 0 #342e1e;
+        }
+        .aa-breadcrumb-back .material-symbols-outlined {
+            font-size: 18px;
+        }
+
+        /* ⭐ NAVIGATION PRÉCÉDENT/SUIVANT */
+        .aa-nav-pager {
+            background: #fff5e5;
+            padding: 3rem 1.5rem;
+            border-top: 4px double #bb0003;
+        }
+        .aa-nav-pager-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        .aa-pager-btn {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: #fff5e5;
+            border: 3px solid #342e1e;
+            box-shadow: 6px 6px 0 0 #bb0003;
+            padding: 1rem 1.25rem;
+            text-decoration: none;
+            color: #342e1e;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            min-height: 90px;
+        }
+        .aa-pager-btn:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 9px 9px 0 0 #bb0003;
+            background: #ffca4d;
+        }
+        .aa-pager-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 0 #bb0003;
+        }
+        .aa-pager-btn.next {
+            justify-content: flex-end;
+            text-align: right;
+        }
+        .aa-pager-btn .arrow-icon {
+            font-size: 36px;
+            color: #bb0003;
+            flex-shrink: 0;
+        }
+        .aa-pager-btn .pager-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+        .aa-pager-btn .pager-label {
+            font-family: 'Work Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.75rem;
+            color: #635b48;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.2rem;
+        }
+        .aa-pager-btn .pager-title {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 900;
+            font-style: italic;
+            font-size: 1.15rem;
+            text-transform: uppercase;
+            color: #342e1e;
+            letter-spacing: -0.01em;
+        }
+        .aa-pager-btn.back-btn {
+            background: #342e1e;
+            border-color: #342e1e;
+            color: #ffca4d;
+            grid-column: 1 / -1;
+            justify-content: center;
+            margin-top: 0.5rem;
+        }
+        .aa-pager-btn.back-btn .pager-title {
+            color: #ffca4d;
+        }
+        .aa-pager-btn.back-btn .arrow-icon {
+            color: #ffca4d;
+        }
+        .aa-pager-btn.back-btn .pager-label {
+            color: #ffca4d;
+            opacity: 0.8;
+        }
+        .aa-pager-btn.back-btn:hover {
+            background: #bb0003;
+            border-color: #bb0003;
+        }
+        .aa-pager-btn.back-btn:hover .pager-title,
+        .aa-pager-btn.back-btn:hover .arrow-icon,
+        .aa-pager-btn.back-btn:hover .pager-label {
+            color: #fff5e5;
+        }
+
+        @media (max-width: 600px) {
+            .aa-nav-pager { padding: 2rem 1rem; }
+            .aa-nav-pager-inner { grid-template-columns: 1fr; gap: 1rem; }
+            .aa-pager-btn { min-height: 70px; padding: 0.8rem 1rem; }
+            .aa-pager-btn .arrow-icon { font-size: 28px; }
+            .aa-pager-btn .pager-title { font-size: 1rem; }
+        }
     </style>
 </head>
 <body class="bg-surface font-body text-on-surface overflow-x-hidden">
@@ -267,6 +439,18 @@
         </div>
     </div>
 </header>
+
+<!-- ⭐ BREADCRUMB ⭐ -->
+<nav class="aa-breadcrumb" aria-label="Fil d'Ariane">
+    <ol>
+        <li><a href="index.html">Accueil</a></li>
+        <li class="separator">›</li>
+        <li><a href="toys-history.html">Toys History</a></li>
+        <li class="separator">›</li>
+        <li class="current">Le Scaphandrier</li>
+        
+    </ol>
+</nav>
 
 <div id="drawer-overlay" class="drawer-overlay fixed inset-0 bg-on-background/40 backdrop-blur-sm z-[90]" onclick="toggleDrawer()"></div>
 <aside id="side-drawer" class="fixed top-0 right-0 h-full w-full max-w-[320px] bg-surface-container-high border-l-8 border-primary z-[100] transform translate-x-full overflow-y-auto">
@@ -311,7 +495,7 @@
 
         <div class="aa-carousel" id="aaCarousel">
 
-            <!-- RANGÉE 1 — HAUT (2) — écartées comme la page Russe -->
+            <!-- RANGÉE 1 — HAUT (2) -->
             <div class="aa-obj row1-pos1">
                 <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791631397/1_combinaison_%C3%A9tanche_blanche_htszlx.jpg">
                 <div class="aa-obj-label">Combinaison étanche blanche</div>
@@ -322,7 +506,7 @@
                 <div class="aa-obj-label">Ceinture lestée</div>
             </div>
 
-            <!-- RANGÉE 2 — MILIEU (4) — autour du perso -->
+            <!-- RANGÉE 2 — MILIEU (4) -->
             <div class="aa-obj row2-pos1">
                 <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791631402/1_couteau_de_plong%C3%A9_tog729.png">
                 <div class="aa-obj-label">Couteau de plongée</div>
@@ -335,7 +519,7 @@
 
             <div class="aa-obj row2-pos3">
                 <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791655546/Bou%C3%A9es_de_signalisation_aqfqhs.png">
-                <div class="aa-obj-label">Bouées de signalisation</div>
+                <div class="aa-obj-label">Bouée de signalisation</div>
             </div>
 
             <div class="aa-obj row2-pos4">
@@ -343,7 +527,7 @@
                 <div class="aa-obj-label">Chaussures noires</div>
             </div>
 
-            <!-- RANGÉE 3 — BAS (5) — avec Tuyaux d'air au centre -->
+            <!-- RANGÉE 3 — BAS (5) -->
             <div class="aa-obj row3-pos1">
                 <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791631433/1_semelles_de_plonb_i4zeq8.png">
                 <div class="aa-obj-label">Semelles de plongée</div>
@@ -373,6 +557,40 @@
 
         <div class="aa-dots" id="aaDots"></div>
 
+    </section>
+
+    <!-- ⭐ NAVIGATION PRÉCÉDENT/SUIVANT ⭐ -->
+    <section class="aa-nav-pager">
+        <div class="aa-nav-pager-inner">
+
+            <!-- Précédent : Le Soldat Russe (loop) -->
+            <a href="soldat-russe.html" class="aa-pager-btn prev">
+                <span class="material-symbols-outlined arrow-icon">arrow_back</span>
+                <div class="pager-text">
+                    <span class="pager-label">← Précédent</span>
+                    <span class="pager-title">Le Soldat Russe</span>
+                </div>
+            </a>
+
+            <!-- Suivant : Le Résistant Français -->
+            <a href="resistant-francais.html" class="aa-pager-btn next">
+                <div class="pager-text">
+                    <span class="pager-label">Suivant →</span>
+                    <span class="pager-title">Le Résistant Français</span>
+                </div>
+                <span class="material-symbols-outlined arrow-icon">arrow_forward</span>
+            </a>
+
+            <!-- Bouton retour Toys History (pleine largeur) -->
+            <a href="https://www.actionarchive.ink/toys-history.html" class="aa-pager-btn back-btn">
+                <span class="material-symbols-outlined arrow-icon">list</span>
+                <div class="pager-text">
+                    <span class="pager-label">Retour à</span>
+                    <span class="pager-title">Tous les personnages</span>
+                </div>
+            </a>
+
+        </div>
     </section>
 
 </main>

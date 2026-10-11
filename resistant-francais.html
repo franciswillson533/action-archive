@@ -15,7 +15,6 @@
             "surface-variant": "#eadcbc", "on-surface-variant": "#635b48",
         }, fontFamily: { "headline": ["Epilogue"], "body": ["Work Sans"], "label": ["Work Sans"] } } } }
     </script>
-
     <style>
         .aa-logo { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease; filter: drop-shadow(2px 2px 0px rgba(52, 46, 30, 0.15)); }
         .aa-logo-link:hover .aa-logo { transform: rotate(-5deg) scale(1.05); filter: drop-shadow(3px 3px 0px rgba(187, 0, 3, 0.4)); }
@@ -30,220 +29,83 @@
         .btn-physical { transition: all 0.1s ease; }
         .btn-physical:active { transform: translateY(4px); box-shadow: 0px 0px 0px 0px !important; }
 
-        .aa-scene {
-            position: relative;
-            width: 100%;
-            min-height: 85vh;
-            background: #fff5e5;
-            overflow: hidden;
-        }
-
-        .aa-scene-title {
-            font-family: 'Epilogue', sans-serif;
-            font-weight: 900;
-            font-style: italic;
-            text-transform: uppercase;
-            color: #342e1e;
-            font-size: 3rem;
-            letter-spacing: -0.02em;
-            text-align: center;
-            padding: 2rem 1rem 1rem;
-            border-bottom: 4px solid #342e1e;
-            background: #ffca4d;
-            box-shadow: 0 6px 0 0 #bb0003;
-            position: relative;
-            z-index: 5;
-        }
-        .aa-scene-title small {
-            display: block;
-            font-size: 0.95rem;
-            color: #bb0003;
-            font-style: italic;
-            font-weight: 800;
-            letter-spacing: 0.05em;
-            margin-top: 0.4rem;
-            line-height: 1.3;
-        }
-
-        .aa-perso {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 420px;
-            max-width: 45vw;
-            z-index: 2;
-            pointer-events: none;
-        }
-        .aa-yeux {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 420px;
-            max-width: 45vw;
-            z-index: 1;
-            pointer-events: none;
-            will-change: transform;
-            transition: transform 0.15s ease-out;
-        }
-
-        .aa-obj {
-            position: absolute;
-            width: 150px;
-            height: 150px;
-            background: #fff5e5;
-            border: 3px solid #342e1e;
-            box-shadow: 5px 5px 0 0 #bb0003;
-            cursor: pointer;
-            transition: transform 0.25s ease, box-shadow 0.25s ease, z-index 0s;
-            z-index: 3;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        .aa-obj img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            padding: 6px;
-        }
-        .aa-obj-label {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #342e1e;
-            color: #ffca4d;
-            font-family: 'Epilogue', sans-serif;
-            font-weight: 900;
-            font-style: italic;
-            text-transform: uppercase;
-            font-size: 0.7rem;
-            text-align: center;
-            padding: 5px 4px;
-            opacity: 0;
-            transition: opacity 0.25s ease;
-            line-height: 1.15;
-            border-top: 2px solid #ffca4d;
-        }
-        .aa-obj:hover {
-            transform: scale(1.22);
-            box-shadow: 9px 9px 0 0 #bb0003;
-            z-index: 12;
-        }
+        .aa-scene { position: relative; width: 100%; min-height: 85vh; background: #fff5e5; overflow: hidden; }
+        .aa-scene-title { font-family: 'Epilogue', sans-serif; font-weight: 900; font-style: italic; text-transform: uppercase; color: #342e1e; font-size: 3rem; letter-spacing: -0.02em; text-align: center; padding: 2rem 1rem 1rem; border-bottom: 4px solid #342e1e; background: #ffca4d; box-shadow: 0 6px 0 0 #bb0003; position: relative; z-index: 5; }
+        .aa-scene-title small { display: block; font-size: 0.95rem; color: #bb0003; font-style: italic; font-weight: 800; letter-spacing: 0.05em; margin-top: 0.4rem; line-height: 1.3; }
+        .aa-perso { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 420px; max-width: 45vw; z-index: 2; pointer-events: none; }
+        .aa-yeux { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 420px; max-width: 45vw; z-index: 1; pointer-events: none; will-change: transform; transition: transform 0.15s ease-out; }
+        .aa-obj { position: absolute; width: 150px; height: 150px; background: #fff5e5; border: 3px solid #342e1e; box-shadow: 5px 5px 0 0 #bb0003; cursor: pointer; transition: transform 0.25s ease, box-shadow 0.25s ease, z-index 0s; z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
+        .aa-obj img { width: 100%; height: 100%; object-fit: contain; padding: 6px; }
+        .aa-obj-label { position: absolute; bottom: 0; left: 0; right: 0; background: #342e1e; color: #ffca4d; font-family: 'Epilogue', sans-serif; font-weight: 900; font-style: italic; text-transform: uppercase; font-size: 0.7rem; text-align: center; padding: 5px 4px; opacity: 0; transition: opacity 0.25s ease; line-height: 1.15; border-top: 2px solid #ffca4d; }
+        .aa-obj:hover { transform: scale(1.22); box-shadow: 9px 9px 0 0 #bb0003; z-index: 12; }
         .aa-obj:hover .aa-obj-label { opacity: 1; }
 
-       /* ⭐ PYRAMIDE 2/4/4 — corrigée rangée du haut */
         .row1-pos1 { top: 22%; left: 28%; z-index: 6; }
         .row1-pos2 { top: 22%; right: 28%; z-index: 6; }
-
         .row2-pos1 { top: 48%; left: 8%;  }
         .row2-pos2 { top: 48%; left: 26%; }
         .row2-pos3 { top: 48%; right: 26%; }
         .row2-pos4 { top: 48%; right: 8%; }
-
         .row3-pos1 { bottom: 4%; left: 6%;  }
         .row3-pos2 { bottom: 4%; left: 26%; }
         .row3-pos3 { bottom: 4%; right: 26%; }
         .row3-pos4 { bottom: 4%; right: 6%; }
 
         @media (max-width: 900px) {
-            .aa-scene {
-                min-height: auto;
-                overflow: visible;
-                padding-bottom: 1.5rem;
-            }
-
-            .aa-scene-title {
-                font-size: 1.6rem;
-                padding: 1rem;
-                position: sticky;
-                top: 0;
-                z-index: 20;
-            }
-            .aa-scene-title small {
-                font-size: 0.7rem;
-                margin-top: 0.2rem;
-            }
-
-            .aa-perso-wrap,
-            .aa-perso,
-            .aa-yeux {
-                display: none !important;
-            }
-
-            .aa-carousel {
-                display: flex;
-                gap: 12px;
-                overflow-x: auto;
-                scroll-snap-type: x mandatory;
-                -webkit-overflow-scrolling: touch;
-                padding: 1.5rem 1rem;
-                margin: 0 -1rem;
-                scrollbar-width: none;
-            }
+            .aa-scene { min-height: auto; overflow: visible; padding-bottom: 1.5rem; }
+            .aa-scene-title { font-size: 1.6rem; padding: 1rem; position: sticky; top: 0; z-index: 20; }
+            .aa-scene-title small { font-size: 0.7rem; margin-top: 0.2rem; }
+            .aa-perso-wrap, .aa-perso, .aa-yeux { display: none !important; }
+            .aa-carousel { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding: 1.5rem 1rem; margin: 0 -1rem; scrollbar-width: none; }
             .aa-carousel::-webkit-scrollbar { display: none; }
-
-            .aa-obj {
-                position: relative !important;
-                top: auto !important;
-                bottom: auto !important;
-                left: auto !important;
-                right: auto !important;
-                transform: none !important;
-                flex: 0 0 75%;
-                max-width: 280px;
-                min-width: 220px;
-                height: 280px;
-                scroll-snap-align: center;
-                z-index: 1 !important;
-                transition: transform 0.25s ease, box-shadow 0.25s ease;
-            }
+            .aa-obj { position: relative !important; top: auto !important; bottom: auto !important; left: auto !important; right: auto !important; transform: none !important; flex: 0 0 75%; max-width: 280px; min-width: 220px; height: 280px; scroll-snap-align: center; z-index: 1 !important; transition: transform 0.25s ease, box-shadow 0.25s ease; }
             .aa-obj:active { transform: scale(0.97); }
-            .aa-obj .aa-obj-label {
-                opacity: 1;
-                font-size: 0.8rem;
-                padding: 8px 4px;
-            }
-
-            .aa-dots {
-                display: flex;
-                justify-content: center;
-                gap: 6px;
-                padding: 0.5rem 1rem 1rem;
-            }
-            .aa-dot {
-                width: 8px;
-                height: 8px;
-                border-radius: 50%;
-                background: #eadcbc;
-                border: 2px solid #342e1e;
-                transition: background 0.25s ease, transform 0.25s ease;
-            }
-            .aa-dot.active {
-                background: #bb0003;
-                transform: scale(1.3);
-            }
+            .aa-obj .aa-obj-label { opacity: 1; font-size: 0.8rem; padding: 8px 4px; }
+            .aa-dots { display: flex; justify-content: center; gap: 6px; padding: 0.5rem 1rem 1rem; }
+            .aa-dot { width: 8px; height: 8px; border-radius: 50%; background: #eadcbc; border: 2px solid #342e1e; transition: background 0.25s ease, transform 0.25s ease; }
+            .aa-dot.active { background: #bb0003; transform: scale(1.3); }
         }
+        @media (max-width: 600px) { .aa-obj { flex: 0 0 85%; height: 260px; } }
 
+        .aa-breadcrumb { background: #eadcbc; border-bottom: 2px solid #342e1e; padding: 0.7rem 1.5rem; font-family: 'Work Sans', sans-serif; font-size: 0.85rem; color: #342e1e; }
+        .aa-breadcrumb ol { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; list-style: none; margin: 0 auto; padding: 0; max-width: 1280px; }
+        .aa-breadcrumb li { display: flex; align-items: center; gap: 0.5rem; }
+        .aa-breadcrumb a { color: #342e1e; text-decoration: none; font-weight: 600; transition: color 0.15s ease; }
+        .aa-breadcrumb a:hover { color: #bb0003; }
+        .aa-breadcrumb .separator { color: #635b48; font-weight: 700; }
+        .aa-breadcrumb .current { color: #bb0003; font-weight: 800; font-style: italic; text-transform: uppercase; }
+        .aa-breadcrumb-back { display: inline-flex; align-items: center; gap: 0.3rem; background: #342e1e; color: #ffca4d; padding: 0.3rem 0.7rem; border: 2px solid #342e1e; font-family: 'Epilogue', sans-serif; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-left: auto; transition: all 0.15s ease; text-decoration: none; }
+        .aa-breadcrumb-back:hover { background: #bb0003; border-color: #bb0003; color: #fff5e5; transform: translate(-2px, -2px); box-shadow: 3px 3px 0 0 #342e1e; }
+        .aa-breadcrumb-back .material-symbols-outlined { font-size: 18px; }
+
+        .aa-nav-pager { background: #fff5e5; padding: 3rem 1.5rem; border-top: 4px double #bb0003; }
+        .aa-nav-pager-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .aa-pager-btn { display: flex; align-items: center; gap: 1rem; background: #fff5e5; border: 3px solid #342e1e; box-shadow: 6px 6px 0 0 #bb0003; padding: 1rem 1.25rem; text-decoration: none; color: #342e1e; transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease; min-height: 90px; }
+        .aa-pager-btn:hover { transform: translate(-3px, -3px); box-shadow: 9px 9px 0 0 #bb0003; background: #ffca4d; }
+        .aa-pager-btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 0 #bb0003; }
+        .aa-pager-btn.next { justify-content: flex-end; text-align: right; }
+        .aa-pager-btn .arrow-icon { font-size: 36px; color: #bb0003; flex-shrink: 0; }
+        .aa-pager-btn .pager-text { display: flex; flex-direction: column; line-height: 1.1; }
+        .aa-pager-btn .pager-label { font-family: 'Work Sans', sans-serif; font-weight: 700; font-size: 0.75rem; color: #635b48; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.2rem; }
+        .aa-pager-btn .pager-title { font-family: 'Epilogue', sans-serif; font-weight: 900; font-style: italic; font-size: 1.15rem; text-transform: uppercase; color: #342e1e; letter-spacing: -0.01em; }
+        .aa-pager-btn.back-btn { background: #342e1e; border-color: #342e1e; color: #ffca4d; grid-column: 1 / -1; justify-content: center; margin-top: 0.5rem; }
+        .aa-pager-btn.back-btn .pager-title, .aa-pager-btn.back-btn .arrow-icon { color: #ffca4d; }
+        .aa-pager-btn.back-btn .pager-label { color: #ffca4d; opacity: 0.8; }
+        .aa-pager-btn.back-btn:hover { background: #bb0003; border-color: #bb0003; }
+        .aa-pager-btn.back-btn:hover .pager-title, .aa-pager-btn.back-btn:hover .arrow-icon, .aa-pager-btn.back-btn:hover .pager-label { color: #fff5e5; }
         @media (max-width: 600px) {
-            .aa-obj {
-                flex: 0 0 85%;
-                height: 260px;
-            }
+            .aa-nav-pager { padding: 2rem 1rem; }
+            .aa-nav-pager-inner { grid-template-columns: 1fr; gap: 1rem; }
+            .aa-pager-btn { min-height: 70px; padding: 0.8rem 1rem; }
+            .aa-pager-btn .arrow-icon { font-size: 28px; }
+            .aa-pager-btn .pager-title { font-size: 1rem; }
         }
     </style>
 </head>
 <body class="bg-surface font-body text-on-surface overflow-x-hidden">
 
-<div class="aa-objective-banner">
-    🛒 VENTE EN LIGNE — <strong>BOÎTES VINTAGE</strong> POUR FIGURINES 1970–1990 — REPRODUCTIONS & CUSTOM 🛒
-</div>
+<div class="aa-objective-banner">🛒 VENTE EN LIGNE — <strong>BOÎTES VINTAGE</strong> POUR FIGURINES 1970–1990 — REPRODUCTIONS & CUSTOM 🛒</div>
 
-<!-- HEADER -->
 <header class="w-full border-b-4 border-double border-[#bb0003] bg-[#fff5e5] shadow-[4px_4px_0px_0px_rgba(52,46,30,0.2)] z-50 sticky top-0">
     <div class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
         <a href="index.html" class="aa-logo-link flex items-center gap-3 group cursor-pointer" title="Retour à l'accueil">
@@ -259,13 +121,22 @@
             <a class="text-[#342e1e] hover:text-[#bb0003]" href="inscription.html">Inscription</a>
         </nav>
         <div class="flex items-center gap-2">
-            <a class="relative p-2 text-[#bb0003] border-2 border-[#bb0003] rounded-sm btn-physical" href="panier.html" title="Mon panier">
-                <span class="material-symbols-outlined">shopping_cart</span>
-            </a>
+            <a class="relative p-2 text-[#bb0003] border-2 border-[#bb0003] rounded-sm btn-physical" href="panier.html" title="Mon panier"><span class="material-symbols-outlined">shopping_cart</span></a>
             <button onclick="toggleDrawer()" class="aa-menu-btn">☰ MENU</button>
         </div>
     </div>
 </header>
+
+<nav class="aa-breadcrumb" aria-label="Fil d'Ariane">
+    <ol>
+        <li><a href="index.html">Accueil</a></li>
+        <li class="separator">›</li>
+        <li><a href="toys-history.html">Toys History</a></li>
+        <li class="separator">›</li>
+        <li class="current">Le Résistant Français</li>
+        
+    </ol>
+</nav>
 
 <div id="drawer-overlay" class="drawer-overlay fixed inset-0 bg-on-background/40 backdrop-blur-sm z-[90]" onclick="toggleDrawer()"></div>
 <aside id="side-drawer" class="fixed top-0 right-0 h-full w-full max-w-[320px] bg-surface-container-high border-l-8 border-primary z-[100] transform translate-x-full overflow-y-auto">
@@ -288,85 +159,43 @@
 <main class="flex-grow">
 
     <section class="aa-scene">
-
-        <h1 class="aa-scene-title">
-            Le Résistant Français !
-            <small>Les pièces indispensables pour un maquisard complet</small>
-        </h1>
+        <h1 class="aa-scene-title">Le Résistant Français !<small>Les pièces indispensables pour une tenue complète</small></h1>
 
         <div class="aa-perso-wrap">
-            <img
-                src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791628301/Yeux_qui_bougent_1_mnckmm.png"
-                alt="Le Résistant"
-                class="aa-perso"
-            >
-            <img
-                src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791628319/Yeux_qui_bougent_2_bcf0e6.png"
-                alt="Yeux"
-                class="aa-yeux"
-                id="imgYeux"
-            >
+            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791628301/Yeux_qui_bougent_1_mnckmm.png" alt="Le Résistant" class="aa-perso">
+            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791628319/Yeux_qui_bougent_2_bcf0e6.png" alt="Yeux" class="aa-yeux" id="imgYeux">
         </div>
 
         <div class="aa-carousel" id="aaCarousel">
-
-            <!-- RANGÉE 1 — HAUT (2) -->
-            <div class="aa-obj row1-pos1">
-                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791658885/2_b%C3%A9ret_fran%C3%A7ais_jbycak.png">
-                <div class="aa-obj-label">Béret français</div>
-            </div>
-
-            <div class="aa-obj row1-pos2">
-                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791658922/2_pull_en_laine_bleu_kytsc0.jpg">
-                <div class="aa-obj-label">Pull en laine bleu</div>
-            </div>
-
-            <!-- RANGÉE 2 — MILIEU (4) -->
-            <div class="aa-obj row2-pos1">
-                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791659077/2_mitraillette_du_r%C3%A9sistant_moirzr.png">
-                <div class="aa-obj-label">Mitraillette du résistant</div>
-            </div>
-
-            <div class="aa-obj row2-pos2">
-                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791659160/2_dague_de_commando_nmzsio.png">
-                <div class="aa-obj-label">Dague de commando</div>
-            </div>
-
-            <div class="aa-obj row2-pos3">
-                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791661245/2_m%C3%A9daille_de_la_r%C3%A9sistance_osig5a.jpg">
-                <div class="aa-obj-label">Médaille de la Résistance</div>
-            </div>
-
-            <div class="aa-obj row2-pos4">
-                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791659102/2_grenades_w9p1yq.png">
-                <div class="aa-obj-label">Grenades</div>
-            </div>
-
-            <!-- RANGÉE 3 — BAS (4) -->
-            <div class="aa-obj row3-pos1">
-                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791631377/1_chaussures_noires_jkuu9f.png">
-                <div class="aa-obj-label">Chaussures noires</div>
-            </div>
-
-            <div class="aa-obj row3-pos2">
-                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791659027/2_pantalon_en_tissu_bleu_tuyrvo.png">
-                <div class="aa-obj-label">Pantalon en tissu bleu</div>
-            </div>
-
-            <div class="aa-obj row3-pos3">
-                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791659148/2_pistolet_delobel_txuz4p.png">
-                <div class="aa-obj-label">Pistolet Delobel</div>
-            </div>
-
-            <div class="aa-obj row3-pos4">
-                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791659112/2_holster_marron_etopjc.png">
-                <div class="aa-obj-label">Holster marron</div>
-            </div>
-
+            <div class="aa-obj row1-pos1"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791658885/2_b%C3%A9ret_fran%C3%A7ais_jbycak.png"><div class="aa-obj-label">Béret français</div></div>
+            <div class="aa-obj row1-pos2"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791658922/2_pull_en_laine_bleu_kytsc0.jpg"><div class="aa-obj-label">Pull en laine bleu</div></div>
+            <div class="aa-obj row2-pos1"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791659077/2_mitraillette_du_r%C3%A9sistant_moirzr.png"><div class="aa-obj-label">Fusil mitrailleur MAS 38</div></div>
+            <div class="aa-obj row2-pos2"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791659160/2_dague_de_commando_nmzsio.png"><div class="aa-obj-label">Dague de commando</div></div>
+            <div class="aa-obj row2-pos3"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791661245/2_m%C3%A9daille_de_la_r%C3%A9sistance_osig5a.jpg"><div class="aa-obj-label">Médaille de la Résistance</div></div>
+            <div class="aa-obj row2-pos4"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791659102/2_grenades_w9p1yq.png"><div class="aa-obj-label">Grenades</div></div>
+            <div class="aa-obj row3-pos1"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791631377/1_chaussures_noires_jkuu9f.png"><div class="aa-obj-label">Chaussures noires</div></div>
+            <div class="aa-obj row3-pos2"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791659027/2_pantalon_en_tissu_bleu_tuyrvo.png"><div class="aa-obj-label">Pantalon en tissu bleu</div></div>
+            <div class="aa-obj row3-pos3"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791659148/2_pistolet_delobel_txuz4p.png"><div class="aa-obj-label">Pistolet Delobel</div></div>
+            <div class="aa-obj row3-pos4"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791659112/2_holster_marron_etopjc.png"><div class="aa-obj-label">Holster marron</div></div>
         </div>
-
         <div class="aa-dots" id="aaDots"></div>
+    </section>
 
+    <section class="aa-nav-pager">
+        <div class="aa-nav-pager-inner">
+            <a href="scaphandrier.html" class="aa-pager-btn prev">
+                <span class="material-symbols-outlined arrow-icon">arrow_back</span>
+                <div class="pager-text"><span class="pager-label">← Précédent</span><span class="pager-title">Le Scaphandrier</span></div>
+            </a>
+            <a href="soldat-allemand.html" class="aa-pager-btn next">
+                <div class="pager-text"><span class="pager-label">Suivant →</span><span class="pager-title">Le Soldat Allemand</span></div>
+                <span class="material-symbols-outlined arrow-icon">arrow_forward</span>
+            </a>
+            <a href="https://www.actionarchive.ink/toys-history.html" class="aa-pager-btn back-btn">
+                <span class="material-symbols-outlined arrow-icon">list</span>
+                <div class="pager-text"><span class="pager-label">Retour à</span><span class="pager-title">Tous les personnages</span></div>
+            </a>
+        </div>
     </section>
 
 </main>
@@ -382,51 +211,32 @@
 </footer>
 
 <script>
-    function toggleDrawer() {
-        document.getElementById('side-drawer').classList.toggle('open');
-        document.getElementById('drawer-overlay').classList.toggle('open');
-    }
-
+    function toggleDrawer() { document.getElementById('side-drawer').classList.toggle('open'); document.getElementById('drawer-overlay').classList.toggle('open'); }
     const imgYeux = document.getElementById('imgYeux');
     const AMPLITUDE = 3;
-
     window.addEventListener('mousemove', (e) => {
         if (window.innerWidth > 900 && imgYeux) {
-            const cx = window.innerWidth / 2;
-            const cy = window.innerHeight / 2;
-            const ox = (e.clientX - cx) / cx;
-            const oy = (e.clientY - cy) / cy;
-            imgYeux.style.transform =
-                `translate(calc(-50% + ${ox * AMPLITUDE}px), calc(-50% + ${oy * AMPLITUDE}px))`;
+            const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+            const ox = (e.clientX - cx) / cx, oy = (e.clientY - cy) / cy;
+            imgYeux.style.transform = `translate(calc(-50% + ${ox * AMPLITUDE}px), calc(-50% + ${oy * AMPLITUDE}px))`;
         }
     });
-
     (function() {
         const carousel = document.getElementById('aaCarousel');
         const dotsContainer = document.getElementById('aaDots');
         if (!carousel || !dotsContainer) return;
-
         const items = carousel.querySelectorAll('.aa-obj');
-
-        items.forEach(() => {
-            const dot = document.createElement('div');
-            dot.className = 'aa-dot';
-            dotsContainer.appendChild(dot);
-        });
-
+        items.forEach(() => { const dot = document.createElement('div'); dot.className = 'aa-dot'; dotsContainer.appendChild(dot); });
         const dots = dotsContainer.querySelectorAll('.aa-dot');
-
         function updateDots() {
             const scrollLeft = carousel.scrollLeft;
             const itemWidth = items[0].offsetWidth + 12;
             const activeIndex = Math.round(scrollLeft / itemWidth);
             dots.forEach((d, i) => d.classList.toggle('active', i === activeIndex));
         }
-
         carousel.addEventListener('scroll', updateDots);
         updateDots();
     })();
 </script>
-
 </body>
 </html>
