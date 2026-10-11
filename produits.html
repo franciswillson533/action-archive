@@ -8,11 +8,15 @@
     <link rel="canonical" href="https://action-archive.com/produits.html"/>
     <title>Catalogue - Action Archive | Toutes les Reproductions & Custom</title>
 
+    <!-- 🚀 Preconnexion & DNS prefetch -->
     <link rel="dns-prefetch" href="//res.cloudinary.com"/>
     <link rel="preconnect" href="https://res.cloudinary.com" crossorigin/>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+
+    <!-- 🚀 Preload fonts CSS -->
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,900;1,900&family=Work+Sans:wght@400;500;700;800&display=swap"/>
 
+    <!-- 🏎️ Critical CSS inliné -->
     <style>
         :root { --bg-surface: #fff5e5; --text-on-surface: #342e1e; --primary: #bb0003; }
         * { box-sizing: border-box; }
@@ -90,9 +94,6 @@
         }
         .product-img-container.aa-show-verso .verso {
             opacity: 1;
-        }
-        .product-img-container.aa-clickable {
-            cursor: pointer;
         }
         .btn-add-cart {
             display: inline-flex;
@@ -269,10 +270,12 @@
         <button id="aa-reset-filters" onclick="resetAllFilters()" class="hidden text-xs font-bold uppercase text-secondary-container hover:underline">↻ Réinitialiser les filtres</button>
     </div>
     
-    <!-- 🚀 SKELETON LOADER -->
-    <div id="aa-skeleton-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+    <!-- 🚀 SKELETON LOADER (visible pendant le chargement initial) -->
+    <div id="aa-skeleton-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Généré dynamiquement -->
+    </div>
     
-    <!-- Grille des produits -->
+    <!-- Grille des produits (cachée au départ, affichée après chargement) -->
     <div id="aa-product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" style="display:none;"></div>
 </main>
 
@@ -293,10 +296,11 @@
 function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
 function aaEscapeAttr(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
+// 🚀 Optimisation Cloudinary automatique
 function aaOptimizeUrl(url, w) {
     if (!url) return null;
     if (!url.includes('cloudinary')) return url;
-    if (url.includes('f_auto')) return url;
+    if (url.includes('f_auto')) return url; // déjà optimisé
     return url.replace('/image/upload/', `/image/upload/f_auto,q_auto,w_${w},c_fill/`);
 }
 
@@ -328,7 +332,7 @@ function getImageUrl(field) {
     } else if (typeof field === 'object') {
         url = field.url || field.secure_url || (field.filename ? 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + field.filename : null);
     }
-    return url ? aaOptimizeUrl(url, 600) : null;
+    return url ? aaOptimizeUrl(url, 600) : null; // 🚀 Optimise auto
 }
 
 function shuffleBy5DaySeed(products) {
@@ -399,6 +403,7 @@ function setFilter(name, value, btn) {
     applyFilters();
 }
 
+// 🚀 Génération du skeleton loader
 function renderSkeleton() {
     const grid = document.getElementById('aa-skeleton-grid');
     if (!grid) return;
@@ -450,13 +455,14 @@ function setupLazyImage(img) {
                 if (entry.isIntersecting) {
                     const img = entry.target;
                     img.src = img.dataset.src;
-                    img.removeAttribute('data-src');
+                    img.removeAttribute('👀');
                     observer.unobserve(img);
                 }
             });
         }, { rootMargin: '200px' });
         observer.observe(img);
     } else {
+        // Fallback pour vieux navigateurs
         img.src = img.dataset.src || img.src;
     }
     img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
@@ -514,6 +520,7 @@ function renderProducts(products) {
         </div>`;
     });
     
+    // 🚀 Active lazy loading avec Intersection Observer
     grid.querySelectorAll('img[data-src]').forEach(setupLazyImage);
     
     attachAddToCart();
@@ -539,8 +546,9 @@ function attachAddToCart() {
     });
 }
 
+// 🚀 Cache localStorage pour affichage instantané
 const AA_CACHE_KEY = 'aa_products_cache';
-const AA_CACHE_TTL = 5 * 60 * 1000;
+const AA_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
 function getCachedProducts() {
     try {
@@ -560,7 +568,9 @@ function setCachedProducts(products) {
             timestamp: Date.now(),
             data: products
         }));
-    } catch (e) {}
+    } catch (e) {
+        // localStorage plein, on ignore
+    }
 }
 
 async function fetchProducts() {
@@ -569,7 +579,7 @@ async function fetchProducts() {
         if (!response.ok) throw new Error('HTTP ' + response.status);
         const data = await response.json();
         const products = Array.isArray(data) ? data : [];
-        setCachedProducts(products);
+        setCachedProducts(products); // 🚀 Met en cache
         return products;
     } catch (error) {
         console.error('Erreur chargement produits:', error);
@@ -578,8 +588,9 @@ async function fetchProducts() {
 }
 
 async function init() {
-    renderSkeleton();
+    renderSkeleton(); // 🚀 Affiche les skeletons immédiatement
     
+    // 🚀 Charge depuis le cache d'abord (instantané)
     const cached = getCachedProducts();
     if (cached) {
         allProducts = cached;
@@ -587,6 +598,7 @@ async function init() {
         applyFilters();
     }
     
+    // 🚀 Puis tente de fetch frais pour synchroniser
     const fresh = await fetchProducts();
     if (fresh && (!cached || JSON.stringify(fresh) !== JSON.stringify(cached))) {
         allProducts = fresh;
@@ -602,11 +614,9 @@ async function init() {
 }
 init();
 
-// ⭐ AJOUT MINIMAL : toggle verso en clic (1 seul event listener global)
+// ⭐ Toggle verso en clic (1 seul ajout au code original)
 document.addEventListener('click', function(e) {
-    const link = e.target.closest('.product-img-container a');
-    if (!link) return;
-    const container = link.closest('.product-img-container');
+    const container = e.target.closest('.product-img-container');
     if (!container) return;
     const verso = container.querySelector('.verso');
     if (!verso || verso.style.display === 'none') return;
