@@ -575,6 +575,16 @@ async function init() {
         grid.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-red-600 font-bold">❌ Impossible de charger les produits.</p><p class="text-sm mt-2">Vérifie la console (F12) pour plus de détails.</p></div>';
     }
 }
+function toggleDrawer() {
+    document.getElementById('side-drawer').classList.toggle('open');
+    document.getElementById('drawer-overlay').classList.toggle('open');
+}
+
+init();
+
+(function() {
+    const social = JSON.parse(localStorage.getItem('aa_social_config') || '{}');
+
 init();
 
 (function() {
