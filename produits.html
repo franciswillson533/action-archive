@@ -2,38 +2,13 @@
 <html class="light" lang="fr">
 <head>
     <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="robots" content="index, follow"/>
     <meta name="description" content="Catalogue Action Archive - Toutes nos reproductions et créations custom de boîtes vintage pour figurines de collection. Filtrez par type, collection ou décennie."/>
     <link rel="canonical" href="https://action-archive.com/produits.html"/>
     <title>Catalogue - Action Archive | Toutes les Reproductions & Custom</title>
 
-    <!-- 🚀 Preconnexion & DNS prefetch -->
-    <link rel="dns-prefetch" href="//res.cloudinary.com"/>
-    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin/>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-
-    <!-- 🚀 Preload fonts CSS -->
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,900;1,900&family=Work+Sans:wght@400;500;700;800&display=swap"/>
-
-    <!-- 🏎️ Critical CSS inliné -->
-    <style>
-        :root { --bg-surface: #fff5e5; --text-on-surface: #342e1e; --primary: #bb0003; }
-        * { box-sizing: border-box; }
-        body { background: var(--bg-surface); font-family: 'Work Sans', sans-serif; color: var(--text-on-surface); margin: 0; overflow-x: hidden; }
-        header.aa-header { width: 100%; border-bottom: 4px double #bb0003; background: var(--bg-surface); box-shadow: 4px 4px 0 0 rgba(52,46,30,0.2); position: sticky; top: 0; z-index: 50; }
-        .aa-logo { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease; filter: drop-shadow(2px 2px 0px rgba(52, 46, 30, 0.15)); }
-        .aa-logo-link:hover .aa-logo { transform: rotate(-5deg) scale(1.05); filter: drop-shadow(3px 3px 0px rgba(187, 0, 3, 0.4)); }
-        .aa-menu-btn { font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; background: #bb0003; color: #fff5e5; border: 3px solid #342e1e; padding: 10px 20px; font-size: 1.05rem; box-shadow: 4px 4px 0 0 #342e1e; cursor: pointer; transition: all 0.15s ease; }
-        .aa-menu-btn:hover { background: #342e1e; color: #ffca4d; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 #bb0003; }
-        .container { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
-        .aa-products-title { font-family: 'Epilogue', sans-serif; font-weight: 900; font-size: 2.5rem; text-transform: uppercase; font-style: italic; color: #0f56bf; line-height: 1.1; }
-        .skeleton { background: linear-gradient(90deg, #eadcbc 0%, #fdefd5 50%, #eadcbc 100%); background-size: 200% 100%; animation: skeletonLoading 1.5s infinite; }
-        @keyframes skeletonLoading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-        .product-img-loading { min-height: 200px; }
-    </style>
-
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries" defer></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,900;1,900&family=Work+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script>
@@ -60,11 +35,16 @@
         .search-big { display:flex; align-items:center; background:#fff5e5; border:3px solid #342e1e; box-shadow:6px 6px 0 0 rgba(187,0,3,1); padding:0.75rem 1rem; gap:0.75rem; }
         .search-big:focus-within { box-shadow:6px 6px 0 0 rgba(15,86,191,1); border-color:#0f56bf; }
         .search-big input { background:transparent; border:none; outline:none; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:14px; width:100%; color:#342e1e; }
+        .aa-logo { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease; filter: drop-shadow(2px 2px 0px rgba(52, 46, 30, 0.15)); }
+        .aa-logo-link:hover .aa-logo { transform: rotate(-5deg) scale(1.05); filter: drop-shadow(3px 3px 0px rgba(187, 0, 3, 0.4)); }
         .aa-type-badge { position:absolute; top:8px; left:8px; padding:4px 10px; font-family:'Epilogue',sans-serif; font-weight:900; font-size:10px; text-transform:uppercase; border:2px solid #342e1e; letter-spacing:0.05em; z-index:5; box-shadow:2px 2px 0 0 #342e1e; }
         .aa-type-reproduction { background: #0f56bf; color: white; }
         .aa-type-custom { background: #7b1fa2; color: white; }
+        .aa-menu-btn { font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; background: #bb0003; color: #fff5e5; border: 3px solid #342e1e; padding: 10px 20px; font-size: 1.05rem; box-shadow: 4px 4px 0 0 #342e1e; cursor: pointer; transition: all 0.15s ease; }
+        .aa-menu-btn:hover { background: #342e1e; color: #ffca4d; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 #bb0003; }
         .aa-active-filter-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: #bb0003; color: #fff5e5; font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; font-size: 0.75rem; padding: 0.4rem 0.8rem; border: 2px solid #342e1e; box-shadow: 3px 3px 0 0 #342e1e; margin-right: 0.5rem; margin-bottom: 0.5rem; }
         .aa-active-filter-badge button { background: none; border: none; color: #ffca4d; cursor: pointer; font-weight: 900; font-size: 1rem; padding: 0; line-height: 1; }
+
         @keyframes searchPulse {
             0%, 100% { color: #342e1e; transform: scale(1); }
             50% { color: #bb0003; transform: scale(1.2); }
@@ -74,27 +54,27 @@
             display: inline-block;
             transition: color 0.3s;
         }
+
         .product-img-container {
             position: relative;
             overflow: hidden;
             aspect-ratio: 3/4;
-            background: #eadcbc;
         }
         .product-img-container img {
             transition: opacity 0.25s ease;
-            background: #eadcbc;
         }
         .product-img-container .verso {
             position: absolute;
             inset: 0;
             opacity: 0;
         }
-        .product-img-container.aa-show-verso .recto {
+        .product-img-container:hover .recto {
             opacity: 0;
         }
-        .product-img-container.aa-show-verso .verso {
+        .product-img-container:hover .verso {
             opacity: 1;
         }
+
         .btn-add-cart {
             display: inline-flex;
             align-items: center;
@@ -127,90 +107,27 @@
             font-size: 14px;
             font-weight: 900;
         }
-        .btn-add-cart.added {
-            background: #16a34a !important;
-            color: #ffffff !important;
-        }
+
         .aa-filter-btn { font-family:'Epilogue',sans-serif; font-weight:900; font-size:11px; text-transform:uppercase; padding:6px 14px; border:2px solid #342e1e; cursor:pointer; letter-spacing:0.05em; background:#fff5e5; color:#342e1e; transition: all 0.15s ease; }
         .aa-filter-btn:hover { background:#fdefd5; transform: translateY(-1px); }
         .aa-filter-btn.active { color:#fff5e5; box-shadow:3px 3px 0 0 #342e1e; transform: translate(-1px, -1px); }
         .aa-filter-btn[data-value="all"].active { background:#bb0003; }
         .aa-filter-btn.reproduction.active { background:#0f56bf; }
         .aa-filter-btn.custom.active { background:#7b1fa2; }
-        .aa-products-subtitle {
-            font-size: 1rem;
-        }
-        /* 🚀 Skeleton cards */
-        .skeleton-card {
-            background: #efe1c3;
-            border: 4px solid #342e1e;
-            padding: 0.75rem;
-        }
-        .skeleton-card .skel-img {
-            aspect-ratio: 3/4;
-            background: linear-gradient(90deg, #eadcbc 0%, #fdefd5 50%, #eadcbc 100%);
-            background-size: 200% 100%;
-            animation: skeletonLoading 1.5s infinite;
-            margin-bottom: 0.75rem;
-        }
-        .skeleton-card .skel-line {
-            height: 14px;
-            background: linear-gradient(90deg, #eadcbc 0%, #fdefd5 50%, #eadcbc 100%);
-            background-size: 200% 100%;
-            animation: skeletonLoading 1.5s infinite;
-            margin-bottom: 0.5rem;
-        }
-        .skeleton-card .skel-line.short { width: 60%; }
-        .skeleton-card .skel-line.medium { width: 80%; }
-        /* 🚀 Fade in pour images */
-        .product-img-container img {
-            opacity: 0;
-            transition: opacity 0.4s ease, transform 0.25s ease;
-        }
-        .product-img-container img.loaded {
-            opacity: 1;
-        }
-
-        @media (max-width: 900px) {
-            .aa-products-title {
-                font-size: 1.8rem !important;
-                text-align: center !important;
-            }
-            .aa-products-subtitle {
-                font-size: 0.95rem !important;
-                text-align: center !important;
-            }
-            .search-big {
-                padding: 0.6rem 0.8rem !important;
-            }
-            .search-big input {
-                font-size: 12px !important;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .aa-products-title {
-                font-size: 1.5rem !important;
-            }
-            .aa-products-subtitle {
-                font-size: 0.85rem !important;
-            }
-        }
     </style>
 </head>
 <body class="bg-surface font-body text-on-surface overflow-x-hidden">
 
-<header class="aa-header">
+<header class="w-full border-b-4 border-double border-[#bb0003] bg-[#fff5e5] shadow-[4px_4px_0px_0px_rgba(52,46,30,0.2)] z-50 sticky top-0">
     <div class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
         <a href="index.html" class="aa-logo-link flex items-center gap-3 group cursor-pointer" title="Retour à l'accueil">
-            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/f_auto,q_auto,w_140/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Logo Action Archive - Retour à l'accueil" loading="eager" fetchpriority="high" class="aa-logo h-12 md:h-14 w-auto" width="56" height="56"/>
+            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Logo Action Archive - Retour à l'accueil" loading="eager" class="aa-logo h-12 md:h-14 w-auto"/>
             <span class="text-2xl md:text-3xl font-black italic text-[#bb0003] font-headline uppercase tracking-tighter group-hover:text-[#0f56bf] transition-colors">Action Archive</span>
         </a>
         <nav class="hidden md:flex items-center gap-6 font-headline font-black uppercase tracking-tighter text-sm">
             <a class="text-[#342e1e] hover:text-[#bb0003]" href="index.html">Accueil</a>
             <a class="text-[#0f56bf] underline decoration-4 underline-offset-8" href="produits.html">Produits</a>
             <a class="text-[#342e1e] hover:text-[#bb0003]" href="info.html">Info</a>
-            <a class="text-[#342e1e] hover:text-[#bb0003]" href="toys-history.html">Toys History</a>
             <a class="text-[#342e1e] hover:text-[#bb0003]" href="panier.html">Commande</a>
             <a class="text-[#342e1e] hover:text-[#bb0003]" href="inscription.html">Inscription</a>
         </nav>
@@ -235,7 +152,6 @@
             <a href="index.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">ACCUEIL</a>
             <a href="produits.html" class="p-4 bg-surface-container-low border-2 border-primary font-headline font-black uppercase text-primary">PRODUITS</a>
             <a href="info.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">INFO</a>
-            <a href="toys-history.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">TOYS HISTORY</a>
             <a href="panier.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">COMMANDE</a>
             <a href="inscription.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">INSCRIPTION</a>
         </nav>
@@ -243,11 +159,11 @@
 </aside>
 
 <main class="container mx-auto px-6 py-12 min-h-screen">
-    <h1 class="aa-products-title font-headline font-black uppercase italic mb-2 border-b-4 border-on-background pb-4 leading-tight">
+    <h1 class="font-headline font-black uppercase italic mb-2 border-b-4 border-on-background pb-4 leading-tight" style="font-size: 2.5rem; color: #0f56bf;">
         Toutes les<br/>
         Reproductions <span style="color: #7b1fa2;">&amp; Custom</span>
     </h1>
-    <p class="aa-products-subtitle text-on-surface-variant font-bold italic mb-6">Filtrez par type, collection ou décennie pour trouver votre bonheur.</p>
+    <p class="text-on-surface-variant font-bold italic mb-6">Filtrez par type, collection ou décennie pour trouver votre bonheur.</p>
 
     <div id="aa-active-filters" class="mb-4"></div>
     
@@ -270,19 +186,15 @@
         <button id="aa-reset-filters" onclick="resetAllFilters()" class="hidden text-xs font-bold uppercase text-secondary-container hover:underline">↻ Réinitialiser les filtres</button>
     </div>
     
-    <!-- 🚀 SKELETON LOADER (visible pendant le chargement initial) -->
-    <div id="aa-skeleton-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Généré dynamiquement -->
+    <div id="aa-product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <p class="col-span-full text-center py-12 font-bold italic text-on-surface-variant">Chargement depuis Airtable...</p>
     </div>
-    
-    <!-- Grille des produits (cachée au départ, affichée après chargement) -->
-    <div id="aa-product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" style="display:none;"></div>
 </main>
 
 <footer class="bg-[#342e1e] border-t-8 border-double border-[#755700] w-full py-12 px-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-20">
     <div class="flex flex-col items-center md:items-start gap-3">
         <a href="index.html" class="aa-logo-link flex items-center gap-3 cursor-pointer" title="Action Archive">
-            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/f_auto,q_auto,w_140/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="lazy" class="aa-logo h-10 w-auto" width="40" height="40"/>
+            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Logo Action Archive - Retour à l'accueil" loading="lazy" class="aa-logo h-10 w-auto"/>
             <span class="text-xl md:text-2xl font-black italic text-[#ffca4d] font-headline uppercase tracking-tighter hover:text-white transition-colors">Action Archive</span>
         </a>
         <p class="font-body font-medium text-[10px] text-[#ffca4d] tracking-widest uppercase">© 2026 Action Archive INC.</p>
@@ -291,18 +203,10 @@
 </footer>
 
 <div id="aa-toasts"></div>
-<script src="aa-core.js" defer></script>
+<script src="aa-core.js"></script>
 <script>
 function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
 function aaEscapeAttr(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
-
-// 🚀 Optimisation Cloudinary automatique
-function aaOptimizeUrl(url, w) {
-    if (!url) return null;
-    if (!url.includes('cloudinary')) return url;
-    if (url.includes('f_auto')) return url; // déjà optimisé
-    return url.replace('/image/upload/', `/image/upload/f_auto,q_auto,w_${w},c_fill/`);
-}
 
 const FALLBACK_IMG = "data:image/svg+xml;charset=utf-8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="400" viewBox="0 0 300 400"><rect width="300" height="400" fill="#eadcbc"/><text x="150" y="200" text-anchor="middle" font-family="Arial Black" font-size="16" font-weight="900" fill="#635b48">PHOTO INDISPONIBLE</text></svg>');
 
@@ -320,19 +224,30 @@ function formatPrice(price) { const num = parseFloat(price); if (isNaN(num)) ret
 
 function getImageUrl(field) {
     if (!field) return null;
-    let url = null;
     if (typeof field === 'string') {
-        if (field.startsWith('http://') || field.startsWith('https://')) url = field;
-        else if (field.startsWith('v1/') || field.includes('cloudinary')) url = 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + field;
-        else url = field;
-    } else if (Array.isArray(field) && field.length > 0) {
-        const first = field[0];
-        if (typeof first === 'string') url = first.startsWith('http') ? first : 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + first;
-        else if (typeof first === 'object') url = first.url || first.secure_url || (first.filename ? 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + first.filename : null);
-    } else if (typeof field === 'object') {
-        url = field.url || field.secure_url || (field.filename ? 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + field.filename : null);
+        if (field.startsWith('http://') || field.startsWith('https://')) return field;
+        if (field.startsWith('v1/') || field.includes('cloudinary')) return 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + field;
+        return field;
     }
-    return url ? aaOptimizeUrl(url, 600) : null; // 🚀 Optimise auto
+    if (Array.isArray(field)) {
+        if (field.length === 0) return null;
+        const first = field[0];
+        if (typeof first === 'string') {
+            if (first.startsWith('http')) return first;
+            return 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + first;
+        }
+        if (typeof first === 'object') {
+            if (first.url) return first.url;
+            if (first.secure_url) return first.secure_url;
+            if (first.filename) return 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + first.filename;
+        }
+    }
+    if (typeof field === 'object') {
+        if (field.url) return field.url;
+        if (field.secure_url) return field.secure_url;
+        if (field.filename) return 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + field.filename;
+    }
+    return null;
 }
 
 function shuffleBy5DaySeed(products) {
@@ -350,12 +265,9 @@ function shuffleBy5DaySeed(products) {
     return shuffled;
 }
 
-const SHADOW_COLORS = ['#bb0003', '#0f56bf', '#7b1fa2', '#755700', '#bb0003', '#0f56bf'];
-
 let allProducts = [];
 let shuffledProducts = [];
 let currentFilter = { type: 'all', search: '', decade: null, brands: [] };
-let aaFirstLoad = true;
 
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get('type')) currentFilter.type = urlParams.get('type');
@@ -403,21 +315,6 @@ function setFilter(name, value, btn) {
     applyFilters();
 }
 
-// 🚀 Génération du skeleton loader
-function renderSkeleton() {
-    const grid = document.getElementById('aa-skeleton-grid');
-    if (!grid) return;
-    let html = '';
-    for (let i = 0; i < 8; i++) {
-        html += `<div class="skeleton-card">
-            <div class="skel-img"></div>
-            <div class="skel-line medium"></div>
-            <div class="skel-line short"></div>
-        </div>`;
-    }
-    grid.innerHTML = html;
-}
-
 function applyFilters() {
     currentFilter.search = (document.getElementById('aa-search-input')?.value || '').toLowerCase();
     renderActiveFilters();
@@ -446,37 +343,8 @@ function applyFilters() {
     renderProducts(filtered);
 }
 
-// 🚀 Helper pour images avec Intersection Observer
-function setupLazyImage(img) {
-    img.classList.remove('loaded');
-    if ('IntersectionObserver' in window) {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    img.src = img.dataset.src;
-                    img.removeAttribute('👀');
-                    observer.unobserve(img);
-                }
-            });
-        }, { rootMargin: '200px' });
-        observer.observe(img);
-    } else {
-        // Fallback pour vieux navigateurs
-        img.src = img.dataset.src || img.src;
-    }
-    img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
-    img.addEventListener('error', () => { handleImgError(img); img.classList.add('loaded'); }, { once: true });
-}
-
 function renderProducts(products) {
     const grid = document.getElementById('aa-product-grid');
-    const skeleton = document.getElementById('aa-skeleton-grid');
-    if (!grid) return;
-    
-    if (skeleton) skeleton.style.display = 'none';
-    grid.style.display = 'grid';
-    
     if (products.length === 0) { 
         grid.innerHTML = '<div class="col-span-full text-center py-12"><p class="font-bold italic text-xl mb-2">Aucune pièce trouvée.</p><p class="text-on-surface-variant">Essaie d\'autres filtres ou réinitialise la recherche.</p><button onclick="resetAllFilters()" class="mt-4 btn-physical bg-primary text-on-primary font-headline font-black px-6 py-2 uppercase shadow-[3px_3px_0px_0px_#342e1e]">↻ Tout afficher</button></div>'; 
         return; 
@@ -503,12 +371,12 @@ function renderProducts(products) {
         else if (f.Statut === 'Réservé') statusBadge = `<div class="absolute top-2 right-2 bg-yellow-500 text-black px-2 py-1 font-headline font-black text-xs">RÉSERVÉ</div>`;
         const addButton = isVendu ? '' : `<button class="btn-add-cart" data-id="${productId}" data-name="${aaEscapeAttr(f.Nom || '')}" data-price="${price}" data-url="produit.html?id=${productId}" data-image="${imgAttrRecto}"><span class="add-icon">+</span> AJOUTER</button>`;
         grid.innerHTML += `<div class="group bg-surface-container-high border-4 border-on-background p-3 flex flex-col animate-pop-in" style="box-shadow: 6px 6px 0px 0px ${shadowColor};">
-            <div class="product-img-container mb-3 relative">
+            <div class="product-img-container bg-surface-container-lowest border-2 border-outline-variant mb-3 relative">
                 ${badgeHtml}
                 ${statusBadge}
                 <a href="produit.html?id=${productId}">
-                    <img data-src="${imgAttrRecto}" onerror="handleImgError(this)" class="recto w-full h-full object-cover" alt="${nameHtml}" width="300" height="400">
-                    <img data-src="${imgAttrVerso}" onerror="this.style.display='none'" class="verso w-full h-full object-cover" alt="${nameHtml} verso" width="300" height="400">
+                    <img src="${imgAttrRecto}" onerror="handleImgError(this)" loading="lazy" class="recto w-full h-full object-cover" alt="${nameHtml}">
+                    <img src="${imgAttrVerso}" onerror="this.style.display='none'" loading="lazy" class="verso w-full h-full object-cover" alt="${nameHtml} verso">
                 </a>
             </div>
             <h3 class="font-headline font-black text-base uppercase mb-1"><a class="hover:text-primary" href="produit.html?id=${productId}">${nameHtml}</a></h3>
@@ -519,10 +387,6 @@ function renderProducts(products) {
             </div>
         </div>`;
     });
-    
-    // 🚀 Active lazy loading avec Intersection Observer
-    grid.querySelectorAll('img[data-src]').forEach(setupLazyImage);
-    
     attachAddToCart();
 }
 
@@ -546,83 +410,26 @@ function attachAddToCart() {
     });
 }
 
-// 🚀 Cache localStorage pour affichage instantané
-const AA_CACHE_KEY = 'aa_products_cache';
-const AA_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
-
-function getCachedProducts() {
-    try {
-        const raw = localStorage.getItem(AA_CACHE_KEY);
-        if (!raw) return null;
-        const cached = JSON.parse(raw);
-        if (Date.now() - cached.timestamp > AA_CACHE_TTL) return null;
-        return cached.data;
-    } catch (e) {
-        return null;
-    }
-}
-
-function setCachedProducts(products) {
-    try {
-        localStorage.setItem(AA_CACHE_KEY, JSON.stringify({
-            timestamp: Date.now(),
-            data: products
-        }));
-    } catch (e) {
-        // localStorage plein, on ignore
-    }
-}
-
 async function fetchProducts() {
     try {
+        // ✅ MODIF VERCEL : URL compatible
         const response = await fetch('/api/airtable-proxy');
         if (!response.ok) throw new Error('HTTP ' + response.status);
         const data = await response.json();
-        const products = Array.isArray(data) ? data : [];
-        setCachedProducts(products); // 🚀 Met en cache
-        return products;
+        return Array.isArray(data) ? data : [];
     } catch (error) {
         console.error('Erreur chargement produits:', error);
-        return null;
+        document.getElementById('aa-product-grid').innerHTML = '<div class="col-span-full text-center py-12"><p class="text-red-600 font-bold">❌ Impossible de charger les produits.</p><p class="text-sm mt-2">Vérifie la console (F12) pour plus de détails.</p></div>';
+        return [];
     }
 }
 
 async function init() {
-    renderSkeleton(); // 🚀 Affiche les skeletons immédiatement
-    
-    // 🚀 Charge depuis le cache d'abord (instantané)
-    const cached = getCachedProducts();
-    if (cached) {
-        allProducts = cached;
-        shuffledProducts = shuffleBy5DaySeed(allProducts);
-        applyFilters();
-    }
-    
-    // 🚀 Puis tente de fetch frais pour synchroniser
-    const fresh = await fetchProducts();
-    if (fresh && (!cached || JSON.stringify(fresh) !== JSON.stringify(cached))) {
-        allProducts = fresh;
-        shuffledProducts = shuffleBy5DaySeed(allProducts);
-        applyFilters();
-    } else if (!cached && !fresh) {
-        const grid = document.getElementById('aa-product-grid');
-        const skeleton = document.getElementById('aa-skeleton-grid');
-        if (skeleton) skeleton.style.display = 'none';
-        if (grid) grid.style.display = 'grid';
-        grid.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-red-600 font-bold">❌ Impossible de charger les produits.</p><p class="text-sm mt-2">Vérifie la console (F12) pour plus de détails.</p></div>';
-    }
+    allProducts = await fetchProducts();
+    shuffledProducts = shuffleBy5DaySeed(allProducts);
+    applyFilters();
 }
 init();
-
-// ⭐ Toggle verso en clic (1 seul ajout au code original)
-document.addEventListener('click', function(e) {
-    const container = e.target.closest('.product-img-container');
-    if (!container) return;
-    const verso = container.querySelector('.verso');
-    if (!verso || verso.style.display === 'none') return;
-    e.preventDefault();
-    container.classList.toggle('aa-show-verso');
-});
 
 (function() {
     const social = JSON.parse(localStorage.getItem('aa_social_config') || '{}');
@@ -635,5 +442,12 @@ document.addEventListener('click', function(e) {
     });
 })();
 </script>
+
+<style>
+.btn-add-cart.added {
+    background: #16a34a !important;
+    color: #ffffff !important;
+}
+</style>
 </body>
 </html>
