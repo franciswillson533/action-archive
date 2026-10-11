@@ -8,28 +8,7 @@
     <link rel="canonical" href="https://action-archive.com/produits.html"/>
     <title>Catalogue - Action Archive | Toutes les Reproductions & Custom</title>
 
-    <link rel="dns-prefetch" href="//res.cloudinary.com"/>
-    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin/>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,900;1,900&family=Work+Sans:wght@400;500;700;800&display=swap"/>
-
-    <style>
-        :root { --bg-surface: #fff5e5; --text-on-surface: #342e1e; --primary: #bb0003; }
-        * { box-sizing: border-box; }
-        body { background: var(--bg-surface); font-family: 'Work Sans', sans-serif; color: var(--text-on-surface); margin: 0; overflow-x: hidden; }
-        header.aa-header { width: 100%; border-bottom: 4px double #bb0003; background: var(--bg-surface); box-shadow: 4px 4px 0 0 rgba(52,46,30,0.2); position: sticky; top: 0; z-index: 50; }
-        .aa-logo { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease; filter: drop-shadow(2px 2px 0px rgba(52, 46, 30, 0.15)); }
-        .aa-logo-link:hover .aa-logo { transform: rotate(-5deg) scale(1.05); filter: drop-shadow(3px 3px 0px rgba(187, 0, 3, 0.4)); }
-        .aa-menu-btn { font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; background: #bb0003; color: #fff5e5; border: 3px solid #342e1e; padding: 10px 20px; font-size: 1.05rem; box-shadow: 4px 4px 0 0 #342e1e; cursor: pointer; transition: all 0.15s ease; }
-        .aa-menu-btn:hover { background: #342e1e; color: #ffca4d; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 #bb0003; }
-        .container { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
-        .aa-products-title { font-family: 'Epilogue', sans-serif; font-weight: 900; font-size: 2.5rem; text-transform: uppercase; font-style: italic; color: #0f56bf; line-height: 1.1; }
-        .skeleton { background: linear-gradient(90deg, #eadcbc 0%, #fdefd5 50%, #eadcbc 100%); background-size: 200% 100%; animation: skeletonLoading 1.5s infinite; }
-        @keyframes skeletonLoading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-        .product-img-loading { min-height: 200px; }
-    </style>
-
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries" defer></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,900;1,900&family=Work+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script>
@@ -164,38 +143,28 @@
         .skeleton-card .skel-line.medium { width: 80%; }
 
         @media (max-width: 900px) {
-            .aa-products-title {
-                font-size: 1.8rem !important;
-                text-align: center !important;
-            }
-            .aa-products-subtitle {
-                font-size: 0.95rem !important;
-                text-align: center !important;
-            }
-            .search-big {
-                padding: 0.6rem 0.8rem !important;
-            }
-            .search-big input {
-                font-size: 12px !important;
-            }
+            .aa-products-title { font-size: 1.8rem !important; text-align: center !important; }
+            .aa-products-subtitle { font-size: 0.95rem !important; text-align: center !important; }
+            .search-big { padding: 0.6rem 0.8rem !important; }
+            .search-big input { font-size: 12px !important; }
         }
-
         @media (max-width: 480px) {
-            .aa-products-title {
-                font-size: 1.5rem !important;
-            }
-            .aa-products-subtitle {
-                font-size: 0.85rem !important;
-            }
+            .aa-products-title { font-size: 1.5rem !important; }
+            .aa-products-subtitle { font-size: 0.85rem !important; }
         }
     </style>
 </head>
 <body class="bg-surface font-body text-on-surface overflow-x-hidden">
 
-<header class="aa-header">
+<div class="aa-objective-banner">
+    🛒 VENTE EN LIGNE — <strong>BOÎTES VINTAGE</strong> POUR FIGURINES 1970–1990 — REPRODUCTIONS & CUSTOM 🛒
+</div>
+
+<!-- ⭐ HEADER IDENTIQUE À INDEX.HTML ⭐ -->
+<header class="w-full border-b-4 border-double border-[#bb0003] bg-[#fff5e5] shadow-[4px_4px_0px_0px_rgba(52,46,30,0.2)] z-50 sticky top-0">
     <div class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
         <a href="index.html" class="aa-logo-link flex items-center gap-3 group cursor-pointer" title="Retour à l'accueil">
-            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/f_auto,q_auto,w_140/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Logo Action Archive - Retour à l'accueil" loading="eager" fetchpriority="high" class="aa-logo h-12 md:h-14 w-auto" width="56" height="56"/>
+            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="eager" class="aa-logo h-12 md:h-14 w-auto"/>
             <span class="text-2xl md:text-3xl font-black italic text-[#bb0003] font-headline uppercase tracking-tighter group-hover:text-[#0f56bf] transition-colors">Action Archive</span>
         </a>
         <nav class="hidden md:flex items-center gap-6 font-headline font-black uppercase tracking-tighter text-sm">
@@ -207,6 +176,11 @@
             <a class="text-[#342e1e] hover:text-[#bb0003]" href="inscription.html">Inscription</a>
         </nav>
         <div class="flex items-center gap-2">
+            <a class="aa-nav-stars relative p-2 text-[#755700] border-2 border-[#755700] rounded-sm btn-physical" href="inscription.html" style="display:none;" title="Mon programme fidélité">
+                <span class="material-symbols-outlined">stars</span>
+                <span class="aa-nav-stars-count aa-stars-badge">0</span>
+                <span class="aa-nav-gift-badge">🎁</span>
+            </a>
             <a class="relative p-2 text-[#bb0003] border-2 border-[#bb0003] rounded-sm btn-physical" href="panier.html" title="Mon panier">
                 <span class="material-symbols-outlined">shopping_cart</span>
                 <span id="aa-cart-badge"></span>
@@ -216,9 +190,9 @@
     </div>
 </header>
 
+<!-- ⭐ DRAWER IDENTIQUE À INDEX.HTML ⭐ -->
 <div id="drawer-overlay" class="drawer-overlay fixed inset-0 bg-on-background/40 backdrop-blur-sm z-[90]" onclick="toggleDrawer()"></div>
-<aside id="side-drawer" class="fixed top-0 right-0 h-full w-full max-w-[320px] border-l-8 border-primary z-[100] transform translate-x-full overflow-y-auto" style="background-color: #efe1c3;">
-
+<aside id="side-drawer" class="fixed top-0 right-0 h-full w-full max-w-[320px] bg-surface-container-high border-l-8 border-primary z-[100] transform translate-x-full overflow-y-auto">
     <div class="p-8 space-y-8 flex flex-col h-full text-on-surface">
         <div class="flex justify-between items-center border-b-4 border-on-background/10 pb-6">
             <h2 class="font-headline font-black text-2xl text-primary italic uppercase">MENU</h2>
@@ -235,8 +209,9 @@
     </div>
 </aside>
 
+<!-- ⭐ CONTENU PRODUITS ⭐ -->
 <main class="container mx-auto px-6 py-12 min-h-screen">
-    <h1 class="aa-products-title font-headline font-black uppercase italic mb-2 border-b-4 border-on-background pb-4 leading-tight">
+    <h1 class="aa-products-title font-headline font-black uppercase italic mb-2 border-b-4 border-on-background pb-4 leading-tight" style="color: #bb0003;">
         Toutes les<br/>
         Reproductions <span style="color: #7b1fa2;">&amp; Custom</span>
     </h1>
@@ -263,17 +238,14 @@
         <button id="aa-reset-filters" onclick="resetAllFilters()" class="hidden text-xs font-bold uppercase text-secondary-container hover:underline">↻ Réinitialiser les filtres</button>
     </div>
     
-    <div id="aa-skeleton-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Généré dynamiquement -->
-    </div>
-    
+    <div id="aa-skeleton-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
     <div id="aa-product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" style="display:none;"></div>
 </main>
 
 <footer class="bg-[#342e1e] border-t-8 border-double border-[#755700] w-full py-12 px-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-20">
     <div class="flex flex-col items-center md:items-start gap-3">
         <a href="index.html" class="aa-logo-link flex items-center gap-3 cursor-pointer" title="Action Archive">
-            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/f_auto,q_auto,w_140/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="lazy" class="aa-logo h-10 w-auto" width="40" height="40"/>
+            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="lazy" class="aa-logo h-10 w-auto"/>
             <span class="text-xl md:text-2xl font-black italic text-[#ffca4d] font-headline uppercase tracking-tighter hover:text-white transition-colors">Action Archive</span>
         </a>
         <p class="font-body font-medium text-[10px] text-[#ffca4d] tracking-widest uppercase">© 2026 Action Archive INC.</p>
@@ -282,16 +254,12 @@
 </footer>
 
 <div id="aa-toasts"></div>
-<script src="aa-core.js" defer></script>
+
+<!-- ⭐ SANS "defer" comme dans index.html ⭐ -->
+<script src="aa-core.js"></script>
 <script>
 function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
 function aaEscapeAttr(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
-
-// ⭐ FONCTION DRAWER (manquait avant)
-function toggleDrawer() {
-    document.getElementById('side-drawer').classList.toggle('open');
-    document.getElementById('drawer-overlay').classList.toggle('open');
-}
 
 function aaOptimizeUrl(url, w) {
     if (!url) return null;
@@ -346,22 +314,21 @@ function shuffleBy5DaySeed(products) {
     return shuffled;
 }
 
-const SHADOW_COLORS = ['#bb0003', '#0f56bf', '#7b1fa2', '#755700', '#bb0003', '#0f56bf'];
+const aaShadowColors = ['#bb0003', '#0f56bf', '#7b1fa2', '#755700', '#bb0003', '#0f56bf'];
 
-let allProducts = [];
-let shuffledProducts = [];
-let currentFilter = { type: 'all', search: '', decade: null, brands: [] };
-let aaFirstLoad = true;
+let aaAllProducts = [];
+let aaShuffledProducts = [];
+let aaCurrentFilter = { type: 'all', search: '', decade: null, brands: [] };
 
 const urlParams = new URLSearchParams(window.location.search);
-if (urlParams.get('type')) currentFilter.type = urlParams.get('type');
-if (urlParams.get('decade')) currentFilter.decade = urlParams.get('decade');
+if (urlParams.get('type')) aaCurrentFilter.type = urlParams.get('type');
+if (urlParams.get('decade')) aaCurrentFilter.decade = urlParams.get('decade');
 if (urlParams.get('search')) {
-    currentFilter.search = urlParams.get('search').toLowerCase();
+    aaCurrentFilter.search = urlParams.get('search').toLowerCase();
     setTimeout(() => { const input = document.getElementById('aa-search-input'); if (input) input.value = urlParams.get('search'); }, 200);
 }
 if (urlParams.get('brands')) {
-    currentFilter.brands = urlParams.get('brands').split(',').map(b => b.trim()).filter(b => b);
+    aaCurrentFilter.brands = urlParams.get('brands').split(',').map(b => b.trim()).filter(b => b);
 }
 
 function renderActiveFilters() {
@@ -370,19 +337,19 @@ function renderActiveFilters() {
     if (!container) return;
     let html = '';
     let hasFilter = false;
-    if (currentFilter.decade) { hasFilter = true; html += `<div class="aa-active-filter-badge">🎯 Années ${currentFilter.decade} <button onclick="clearDecade()" title="Retirer">✕</button></div>`; }
-    if (currentFilter.brands && currentFilter.brands.length > 0) { hasFilter = true; html += `<div class="aa-active-filter-badge">🏷️ ${aaEscapeHtml(currentFilter.brands.join(' / '))} <button onclick="clearBrands()" title="Retirer">✕</button></div>`; }
-    if (currentFilter.search) { hasFilter = true; html += `<div class="aa-active-filter-badge">🔍 "${aaEscapeHtml(currentFilter.search)}" <button onclick="clearSearch()" title="Retirer">✕</button></div>`; }
+    if (aaCurrentFilter.decade) { hasFilter = true; html += `<div class="aa-active-filter-badge">🎯 Années ${aaCurrentFilter.decade} <button onclick="clearDecade()" title="Retirer">✕</button></div>`; }
+    if (aaCurrentFilter.brands && aaCurrentFilter.brands.length > 0) { hasFilter = true; html += `<div class="aa-active-filter-badge">🏷️ ${aaEscapeHtml(aaCurrentFilter.brands.join(' / '))} <button onclick="clearBrands()" title="Retirer">✕</button></div>`; }
+    if (aaCurrentFilter.search) { hasFilter = true; html += `<div class="aa-active-filter-badge">🔍 "${aaEscapeHtml(aaCurrentFilter.search)}" <button onclick="clearSearch()" title="Retirer">✕</button></div>`; }
     container.innerHTML = html;
     if (resetBtn) resetBtn.classList.toggle('hidden', !hasFilter);
 }
 
-function clearDecade() { currentFilter.decade = null; const url = new URL(window.location); url.searchParams.delete('decade'); window.history.replaceState({}, '', url); applyFilters(); }
-function clearBrands() { currentFilter.brands = []; const url = new URL(window.location); url.searchParams.delete('brands'); window.history.replaceState({}, '', url); applyFilters(); }
-function clearSearch() { currentFilter.search = ''; const input = document.getElementById('aa-search-input'); if (input) input.value = ''; const url = new URL(window.location); url.searchParams.delete('search'); window.history.replaceState({}, '', url); applyFilters(); }
+function clearDecade() { aaCurrentFilter.decade = null; const url = new URL(window.location); url.searchParams.delete('decade'); window.history.replaceState({}, '', url); applyFilters(); }
+function clearBrands() { aaCurrentFilter.brands = []; const url = new URL(window.location); url.searchParams.delete('brands'); window.history.replaceState({}, '', url); applyFilters(); }
+function clearSearch() { aaCurrentFilter.search = ''; const input = document.getElementById('aa-search-input'); if (input) input.value = ''; const url = new URL(window.location); url.searchParams.delete('search'); window.history.replaceState({}, '', url); applyFilters(); }
 
 function resetAllFilters() {
-    currentFilter = { type: 'all', search: '', decade: null, brands: [] };
+    aaCurrentFilter = { type: 'all', search: '', decade: null, brands: [] };
     const input = document.getElementById('aa-search-input');
     if (input) input.value = '';
     document.querySelectorAll('[data-filter="type"]').forEach(b => b.classList.remove('active'));
@@ -393,7 +360,7 @@ function resetAllFilters() {
 }
 
 function setFilter(name, value, btn) {
-    currentFilter[name] = value;
+    aaCurrentFilter[name] = value;
     document.querySelectorAll(`[data-filter="${name}"]`).forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
     applyFilters();
@@ -414,24 +381,24 @@ function renderSkeleton() {
 }
 
 function applyFilters() {
-    currentFilter.search = (document.getElementById('aa-search-input')?.value || '').toLowerCase();
+    aaCurrentFilter.search = (document.getElementById('aa-search-input')?.value || '').toLowerCase();
     renderActiveFilters();
-    const filtered = shuffledProducts.filter(record => {
+    const filtered = aaShuffledProducts.filter(record => {
         const f = record.fields || record;
-        if (currentFilter.type !== 'all' && detectTypeStrict(f) !== currentFilter.type) return false;
-        if (currentFilter.decade) {
+        if (aaCurrentFilter.type !== 'all' && detectTypeStrict(f) !== aaCurrentFilter.type) return false;
+        if (aaCurrentFilter.decade) {
             const year = parseInt(f.Année);
             if (isNaN(year)) return false;
-            const decadeStart = parseInt(currentFilter.decade);
+            const decadeStart = parseInt(aaCurrentFilter.decade);
             if (year < decadeStart || year >= decadeStart + 10) return false;
         }
-        if (currentFilter.brands && currentFilter.brands.length > 0) {
+        if (aaCurrentFilter.brands && aaCurrentFilter.brands.length > 0) {
             const haystack = `${f.Nom || ''} ${f.Collection || ''} ${f.Description || ''}`.toLowerCase();
-            const match = currentFilter.brands.some(brand => haystack.includes(brand.toLowerCase()));
+            const match = aaCurrentFilter.brands.some(brand => haystack.includes(brand.toLowerCase()));
             if (!match) return false;
         }
-        if (currentFilter.search) {
-            const s = currentFilter.search;
+        if (aaCurrentFilter.search) {
+            const s = aaCurrentFilter.search;
             const searchable = `${f.Nom || ''} ${f.Collection || ''} ${f.Année || ''} ${f.Description || ''}`.toLowerCase();
             if (!searchable.includes(s)) return false;
         }
@@ -456,7 +423,7 @@ function renderProducts(products) {
     grid.innerHTML = '';
     products.forEach((record, index) => {
         const f = record.fields || record;
-        const shadowColor = SHADOW_COLORS[index % SHADOW_COLORS.length];
+        const shadowColor = aaShadowColors[index % aaShadowColors.length];
         const isVendu = f.Statut === 'Vendu' || f.Statut === 'Indisponible';
         const type = detectTypeStrict(f);
         const badge = type === 'custom' 
@@ -562,15 +529,15 @@ async function init() {
     
     const cached = getCachedProducts();
     if (cached) {
-        allProducts = cached;
-        shuffledProducts = shuffleBy5DaySeed(allProducts);
+        aaAllProducts = cached;
+        aaShuffledProducts = shuffleBy5DaySeed(aaAllProducts);
         applyFilters();
     }
     
     const fresh = await fetchProducts();
     if (fresh && (!cached || JSON.stringify(fresh) !== JSON.stringify(cached))) {
-        allProducts = fresh;
-        shuffledProducts = shuffleBy5DaySeed(allProducts);
+        aaAllProducts = fresh;
+        aaShuffledProducts = shuffleBy5DaySeed(aaAllProducts);
         applyFilters();
     } else if (!cached && !fresh) {
         const grid = document.getElementById('aa-product-grid');
