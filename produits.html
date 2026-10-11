@@ -89,10 +89,11 @@
             inset: 0;
             opacity: 0;
         }
-        .product-img-container.aa-show-verso .recto {
+        /* ⭐ Verso au survol (comme avant) */
+        .product-img-container:hover .recto {
             opacity: 0;
         }
-        .product-img-container.aa-show-verso .verso {
+        .product-img-container:hover .verso {
             opacity: 1;
         }
         .btn-add-cart {
@@ -235,7 +236,7 @@
             <a href="index.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">ACCUEIL</a>
             <a href="produits.html" class="p-4 bg-surface-container-low border-2 border-primary font-headline font-black uppercase text-primary">PRODUITS</a>
             <a href="info.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">INFO</a>
-            <a href="toys-history.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">TOYS HISTORY</a>
+            <a href="toys-history.html" class="p-4 bg-surface-container-low border-2 border-on-background font-heading font-black uppercase">TOYS HISTORY</a>
             <a href="panier.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">COMMANDE</a>
             <a href="inscription.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">INSCRIPTION</a>
         </nav>
@@ -455,7 +456,7 @@ function setupLazyImage(img) {
                 if (entry.isIntersecting) {
                     const img = entry.target;
                     img.src = img.dataset.src;
-                    img.removeAttribute('👀');
+                    img.removeAttribute('data-src');
                     observer.unobserve(img);
                 }
             });
@@ -613,16 +614,6 @@ async function init() {
     }
 }
 init();
-
-// ⭐ Toggle verso en clic (1 seul ajout au code original)
-document.addEventListener('click', function(e) {
-    const container = e.target.closest('.product-img-container');
-    if (!container) return;
-    const verso = container.querySelector('.verso');
-    if (!verso || verso.style.display === 'none') return;
-    e.preventDefault();
-    container.classList.toggle('aa-show-verso');
-});
 
 (function() {
     const social = JSON.parse(localStorage.getItem('aa_social_config') || '{}');
