@@ -16,6 +16,14 @@
         }, fontFamily: { "headline": ["Epilogue"], "body": ["Work Sans"], "label": ["Work Sans"] } } } }
     </script>
     <style>
+        /* ═══ CURSEUR PERSONNALISÉ ═══ */
+        .aa-cursor, .aa-cursor-ring{ position:fixed; top:0; left:0; border-radius:50%; pointer-events:none; z-index:10002; display:none; }
+        .aa-cursor{ width:10px; height:10px; background:#bb0003; border:2px solid #342e1e; }
+        .aa-cursor-ring{ width:36px; height:36px; border:2.5px solid rgba(52,46,30,.55); transition:width .2s, height .2s, background-color .2s, border-color .2s; }
+        .aa-cursor-ring.aa-target{ width:54px; height:54px; background:rgba(255,202,77,.85); border-color:#342e1e; }
+        .aa-cursor-ring.aa-press{ transform:translate(-50%,-50%) scale(.75) !important; }
+        html.aa-cursor-on, html.aa-cursor-on *{ cursor:none !important; }
+
         .aa-logo { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease; filter: drop-shadow(2px 2px 0px rgba(52, 46, 30, 0.15)); }
         .aa-logo-link:hover .aa-logo { transform: rotate(-5deg) scale(1.05); filter: drop-shadow(3px 3px 0px rgba(187, 0, 3, 0.4)); }
         .aa-menu-btn { font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; background: #bb0003; color: #fff5e5; border: 3px solid #342e1e; padding: 10px 20px; font-size: 1.05rem; box-shadow: 4px 4px 0 0 #342e1e; cursor: pointer; transition: all 0.15s ease; }
@@ -104,6 +112,9 @@
 </head>
 <body class="bg-surface font-body text-on-surface overflow-x-hidden">
 
+<div class="aa-cursor" id="aaCursorDot" aria-hidden="true"></div>
+<div class="aa-cursor-ring" id="aaCursorRing" aria-hidden="true"></div>
+
 <div class="aa-objective-banner">🛒 VENTE EN LIGNE — <strong>BOÎTES VINTAGE</strong> POUR FIGURINES 1970–1990 — REPRODUCTIONS & CUSTOM 🛒</div>
 
 <header class="w-full border-b-4 border-double border-[#bb0003] bg-[#fff5e5] shadow-[4px_4px_0px_0px_rgba(52,46,30,0.2)] z-50 sticky top-0">
@@ -191,7 +202,7 @@
                 <div class="pager-text"><span class="pager-label">Suivant →</span><span class="pager-title">Le Soldat Russe</span></div>
                 <span class="material-symbols-outlined arrow-icon">arrow_forward</span>
             </a>
-            <a href="https://www.actionarchive.ink/toys-history.html" class="aa-pager-btn back-btn">
+            <a href="toys-history.html" class="aa-pager-btn back-btn">
                 <span class="material-symbols-outlined arrow-icon">list</span>
                 <div class="pager-text"><span class="pager-label">Retour à</span><span class="pager-title">Tous les personnages</span></div>
             </a>
@@ -221,6 +232,20 @@
             imgYeux.style.transform = `translate(calc(-50% + ${ox * AMPLITUDE}px), calc(-50% + ${oy * AMPLITUDE}px))`;
         }
     });
+    /* ═══ CURSEUR PERSONNALISÉ (desktop uniquement) ═══ */
+    (function() {
+        if (!matchMedia('(pointer:fine)').matches) return;
+        const dot = document.getElementById('aaCursorDot'), ring = document.getElementById('aaCursorRing');
+        dot.style.display = 'block'; ring.style.display = 'block';
+        document.documentElement.classList.add('aa-cursor-on');
+        let mx = innerWidth/2, my = innerHeight/2, rx = mx, ry = my;
+        addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; dot.style.transform = `translate(${mx-5}px,${my-5}px)`; }, {passive:true});
+        addEventListener('mousedown', () => ring.classList.add('aa-press'));
+        addEventListener('mouseup', () => ring.classList.remove('aa-press'));
+        document.addEventListener('mouseover', e => { if (e.target.closest('a,button,.aa-obj')) ring.classList.add('aa-target'); });
+        document.addEventListener('mouseout', e => { if (e.target.closest('a,button,.aa-obj')) ring.classList.remove('aa-target'); });
+        (function loop(){ rx+=(mx-rx)*.18; ry+=(my-ry)*.18; ring.style.transform = `translate(${rx-ring.offsetWidth/2}px,${ry-ring.offsetHeight/2}px)`; requestAnimationFrame(loop); })();
+    })();
     (function() {
         const carousel = document.getElementById('aaCarousel');
         const dotsContainer = document.getElementById('aaDots');
