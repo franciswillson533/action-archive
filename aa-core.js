@@ -1,4 +1,4 @@
-const API_ENDPOINT = '/.netlify/functions/products';
+const API_ENDPOINT = '/api/airtable-proxy';
 const CACHE_DURATION = 60 * 60 * 1000;
 const CACHE_KEY = 'aa_products_cache';
 const CACHE_TIME_KEY = 'aa_products_cache_time';
@@ -196,7 +196,7 @@ function handleImgError(img) {
     img.style.background = '#eadcbc';
 }
 
-function formatPrice(price) { const num = parseFloat(price); if (isNaN(num)) return price + ' €'; return num.toFixed(2) + ' €'; }
+function formatPrice(price) { const num = parseFloat(price); if (isNaN(num)) return price + ' €'; return num.toFixed(2).replace('.', ',') + ' €'; }
 
 function getWeeklyRandomProducts(products, count = 12) {
     const now = new Date();
