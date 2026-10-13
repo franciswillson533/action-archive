@@ -34,11 +34,16 @@
         .aa-scene-title small { display: block; font-size: 0.95rem; color: #bb0003; font-style: italic; font-weight: 800; letter-spacing: 0.05em; margin-top: 0.4rem; line-height: 1.3; }
         .aa-perso { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 420px; max-width: 45vw; z-index: 2; pointer-events: none; }
         .aa-yeux { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 420px; max-width: 45vw; z-index: 1; pointer-events: none; will-change: transform; transition: transform 0.15s ease-out; }
+        .aa-objective-banner { background:#bb0003; color:#fff5e5; }
         .aa-obj { position: absolute; width: 150px; height: 150px; background: #fff5e5; border: 3px solid #342e1e; box-shadow: 5px 5px 0 0 #bb0003; cursor: pointer; transition: transform 0.25s ease, box-shadow 0.25s ease, z-index 0s; z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
         .aa-obj img { width: 100%; height: 100%; object-fit: contain; padding: 6px; }
         .aa-obj-label { position: absolute; bottom: 0; left: 0; right: 0; background: #342e1e; color: #ffca4d; font-family: 'Epilogue', sans-serif; font-weight: 900; font-style: italic; text-transform: uppercase; font-size: 0.7rem; text-align: center; padding: 5px 4px; opacity: 0; transition: opacity 0.25s ease; line-height: 1.15; border-top: 2px solid #ffca4d; }
         .aa-obj:hover { transform: scale(1.22); box-shadow: 9px 9px 0 0 #bb0003; z-index: 12; }
         .aa-obj:hover .aa-obj-label { opacity: 1; }
+        /* Survol des objets décalés : on conserve le décalage horizontal en zoomant (corrige aussi pos3/pos4 qui "sautaient") */
+        .row3-pos3:hover, .row3-pos4:hover, .row3-pos7:hover { transform: translateX(-50%) scale(1.22) !important; box-shadow: 9px 9px 0 0 #bb0003; z-index: 12; }
+        .row3-pos4, .row3-pos4:hover { transform: translateX(50%); }
+        .row3-pos4:hover { transform: translateX(50%) scale(1.22) !important; }
 
         .row1-pos1 { top: 22%; left: 28%; z-index: 6; }
         .row1-pos2 { top: 22%; right: 28%; z-index: 6; }
@@ -52,6 +57,8 @@
         .row3-pos4 { bottom: 4%; right: 34%; transform: translateX(50%); }
         .row3-pos5 { bottom: 4%; right: 18%; }
         .row3-pos6 { bottom: 4%; right: 2%; }
+        /* Nouvel emplacement : rangée 3, au centre (entre pos3 et pos4) */
+        .row3-pos7 { bottom: 4%; left: 50%; transform: translateX(-50%); }
 
         @media (max-width: 900px) {
             .aa-scene { min-height: auto; overflow: visible; padding-bottom: 1.5rem; }
@@ -61,7 +68,7 @@
             .aa-carousel { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding: 1.5rem 1rem; margin: 0 -1rem; scrollbar-width: none; }
             .aa-carousel::-webkit-scrollbar { display: none; }
             .aa-obj { position: relative !important; top: auto !important; bottom: auto !important; left: auto !important; right: auto !important; transform: none !important; flex: 0 0 75%; max-width: 280px; min-width: 220px; height: 280px; scroll-snap-align: center; z-index: 1 !important; transition: transform 0.25s ease, box-shadow 0.25s ease; }
-            .aa-obj:active { transform: scale(0.97); }
+            .aa-obj:active { transform: scale(0.97) !important; }
             .aa-obj .aa-obj-label { opacity: 1; font-size: 0.8rem; padding: 8px 4px; }
             .aa-dots { display: flex; justify-content: center; gap: 6px; padding: 0.5rem 1rem 1rem; }
             .aa-dot { width: 8px; height: 8px; border-radius: 50%; background: #eadcbc; border: 2px solid #342e1e; transition: background 0.25s ease, transform 0.25s ease; }
@@ -172,6 +179,7 @@
             <div class="aa-obj row1-pos1"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791710761/4_chapka_smquuu.jpg"><div class="aa-obj-label">Chapka</div></div>
             <div class="aa-obj row1-pos2"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791711022/4_veste_soldat_juqgzr.jpg"><div class="aa-obj-label">Veste soldat</div></div>
             <div class="aa-obj row2-pos1"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791710941/4_mitrailleuse_DP28_a4y2bl.png"><div class="aa-obj-label">Mitrailleuse DP28</div></div>
+            <div class="aa-obj row3-pos7"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791905126/4_caisse_de_munitions_b7kvbk.png"><div class="aa-obj-label">Caisse de munitions</div></div>
             <div class="aa-obj row2-pos2"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791710929/4_jumelles_ulo18d.png"><div class="aa-obj-label">Jumelles</div></div>
             <div class="aa-obj row2-pos3"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791710799/4_Holster_jrgmob.jpg"><div class="aa-obj-label">Holster</div></div>
             <div class="aa-obj row2-pos4"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791710779/4_grenades_y1shx0.png"><div class="aa-obj-label">Grenades</div></div>
@@ -195,7 +203,7 @@
                 <div class="pager-text"><span class="pager-label">Suivant →</span><span class="pager-title">Le Scaphandrier</span></div>
                 <span class="material-symbols-outlined arrow-icon">arrow_forward</span>
             </a>
-            <a href="https://www.actionarchive.ink/toys-history.html" class="aa-pager-btn back-btn">
+            <a href="toys-history.html" class="aa-pager-btn back-btn">
                 <span class="material-symbols-outlined arrow-icon">list</span>
                 <div class="pager-text"><span class="pager-label">Retour à</span><span class="pager-title">Tous les personnages</span></div>
             </a>
