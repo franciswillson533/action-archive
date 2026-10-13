@@ -8,7 +8,7 @@
     <meta name="language" content="French"/>
     <meta name="geo.region" content="FR"/>
 
-    <title>Informations, Contact & Mentions Légales - Action Archive | Boîtes Vintage Repro & Custom</title>
+    <title>Informations, Contact &amp; Mentions Légales - Action Archive | Boîtes Vintage Repro &amp; Custom</title>
     <meta name="description" content="Action Archive : spécialiste des reproductions de boîtes vintage et créations custom pour figurines de collection (années 70-90). Livraison France & Europe, paiement PayPal sécurisé, programme fidélité. Réponse sous 24-48h."/>
     <meta name="keywords" content="boîte vintage, reproduction boîte jouet, boîte figurine collection, custom boîte vintage, Action Archive, boîte Star Wars vintage, boîte MIB, MOC figurine, packaging collector, boîte G.I. Joe, boîte Transformers, restauration collection, boîte vintage reproduction, achat boîte figurine, boîte jouet années 80, packaging vintage custom"/>
 
@@ -17,7 +17,7 @@
     <meta property="og:type" content="website"/>
     <meta property="og:site_name" content="Action Archive"/>
     <meta property="og:locale" content="fr_FR"/>
-    <meta property="og:title" content="Action Archive - Reproductions & Customs de Boîtes Vintage pour Figurines"/>
+    <meta property="og:title" content="Action Archive - Reproductions &amp; Customs de Boîtes Vintage pour Figurines"/>
     <meta property="og:description" content="Spécialiste de la reproduction de boîtes vintage et créations custom pour figurines de collection. Retrouve l'éclat d'origine de tes collections. Livraison France & Europe."/>
     <meta property="og:url" content="https://www.actionarchive.ink/info.html"/>
     <meta property="og:image" content="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png"/>
@@ -26,7 +26,7 @@
     <meta property="og:image:alt" content="Logo Action Archive - Reproductions de boîtes vintage pour figurines"/>
 
     <meta name="twitter:card" content="summary_large_image"/>
-    <meta name="twitter:title" content="Action Archive - Boîtes Vintage Repro & Custom pour Figurines"/>
+    <meta name="twitter:title" content="Action Archive - Boîtes Vintage Repro &amp; Custom pour Figurines"/>
     <meta name="twitter:description" content="Reproductions soignées et créations custom originales pour redonner vie à tes collections de figurines vintage."/>
     <meta name="twitter:image" content="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png"/>
     <meta name="twitter:image:alt" content="Action Archive - Spécialiste boîtes vintage figurines"/>
@@ -70,560 +70,758 @@
     </script>
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,900;1,900&family=Work+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,900;1,700;1,900&family=Work+Sans:wght@400;500;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL@20..48,100..700,0..1&display=swap" rel="stylesheet"/>
     <script>
         tailwind.config = { darkMode: "class", theme: { extend: { colors: {
             "secondary": "#755700", "surface-container-low": "#fdefd5", "surface-container-high": "#efe1c3",
             "surface": "#fff5e5", "primary": "#bb0003", "tertiary": "#0f56bf", "on-surface": "#342e1e",
             "secondary-container": "#ffca4d", "on-background": "#342e1e", "background": "#fff5e5",
             "surface-variant": "#eadcbc", "on-surface-variant": "#635b48",
-        }, fontFamily: { "headline": ["Epilogue"], "body": ["Work Sans"], "label": ["Work Sans"] } } } }
+        }, fontFamily: { "headline": ["Epilogue"], "body": ["Work Sans"], "label": ["Work Sans"], "mono": ["Space Mono"] } } } }
     </script>
     <style>
-        #side-drawer { box-shadow: -8px 0 0 0 rgba(52, 46, 30, 0.2); transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1); }
-        #side-drawer.open { transform: translateX(0); }
-        .drawer-overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
-        .drawer-overlay.open { opacity: 1; pointer-events: auto; }
-        .btn-physical { transition: all 0.1s ease; }
-        .btn-physical:active { transform: translateY(4px); box-shadow: 0px 0px 0px 0px !important; }
-        #aa-cart-badge{position:absolute;top:-7px;right:-7px;min-width:18px;height:18px;background:#ffca4d;color:#342e1e;font-family:'Epilogue',sans-serif;font-weight:900;font-size:10px;border:2px solid #342e1e;border-radius:2px;display:none;align-items:center;justify-content:center;padding:0 3px;}
-        .aa-toast{background:#342e1e;color:#fff5e5;border:3px solid #ffca4d;padding:12px 18px;font-family:'Epilogue',sans-serif;font-weight:900;font-size:13px;text-transform:uppercase;display:flex;align-items:center;gap:10px;max-width:300px;transform:translateX(120%);opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);pointer-events:auto;}
-        .aa-toast.show{transform:translateX(0);opacity:1;}
-        #aa-toasts{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
-        .aa-logo { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease; filter: drop-shadow(2px 2px 0px rgba(52, 46, 30, 0.15)); }
-        .aa-logo-link:hover .aa-logo { transform: rotate(-5deg) scale(1.05); filter: drop-shadow(3px 3px 0px rgba(187, 0, 3, 0.4)); }
-        
-        .aa-menu-btn {
-            font-family: 'Epilogue', sans-serif;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            background: #bb0003;
-            color: #fff5e5;
-            border: 3px solid #342e1e;
-            padding: 10px 20px;
-            font-size: 1.05rem;
-            box-shadow: 4px 4px 0 0 #342e1e;
-            cursor: pointer;
-            transition: all 0.15s ease;
+        /* ============ 0. VARIABLES & BASE ============ */
+        :root{
+            --cream:#fff5e5; --cream2:#fdefd5; --cream3:#efe1c3; --cream4:#eadcbc; --ink:#342e1e;
+            --red:#bb0003; --blue:#0f56bf; --yellow:#ffca4d; --olive:#755700; --purple:#7b1fa2;
         }
-        .aa-menu-btn:hover {
-            background: #342e1e;
-            color: #ffca4d;
-            transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0 0 #bb0003;
-        }
-        
-        .aa-archive-video, .aa-archive-img { 
-            width: 100%; 
-            height: auto; 
-            display: block; 
-            background: #342e1e;
-        }
-        
-        .aa-lightbox { position: fixed; inset: 0; background: rgba(52, 46, 30, 0.95); z-index: 200; display: none; align-items: center; justify-content: center; padding: 2rem; cursor: zoom-out; }
-        .aa-lightbox.open { display: flex; animation: fadeIn 0.3s ease; }
-        .aa-lightbox video, .aa-lightbox img { max-width: 90vw; max-height: 90vh; border: 6px solid #342e1e; box-shadow: 12px 12px 0px 0px #ffca4d; }
-        .aa-lightbox-close { position: absolute; top: 20px; right: 20px; background: #ffca4d; color: #342e1e; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border: 3px solid #342e1e; cursor: pointer; font-family: 'Epilogue', sans-serif; font-weight: 900; font-size: 24px; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        html{ scroll-behavior:smooth; }
+        body{ -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+        ::selection{ background:var(--yellow); color:var(--ink); }
+        ::-webkit-scrollbar{ width:12px; }
+        ::-webkit-scrollbar-track{ background:var(--cream2); }
+        ::-webkit-scrollbar-thumb{ background:var(--ink); border:3px solid var(--cream2); }
+        :focus-visible{ outline:3px dashed var(--red); outline-offset:3px; }
 
-        .aa-input {
-            width: 100%;
-            background: #fff5e5;
-            border: 3px solid #342e1e;
-            padding: 12px 14px;
-            font-family: 'Work Sans', sans-serif;
-            font-size: 15px;
-            font-weight: 600;
-            color: #342e1e;
-            transition: all 0.15s ease;
+        /* ============ 1. GRAIN / CURSEUR / PROGRESSION ============ */
+        .aa-grain{
+            position:fixed; inset:0; z-index:500; pointer-events:none; mix-blend-mode:multiply; opacity:.05;
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
         }
-        .aa-input:focus {
-            outline: none;
-            background: #fff;
-            box-shadow: 4px 4px 0 0 #bb0003;
-            transform: translate(-2px, -2px);
-        }
-        .aa-input::placeholder { color: #635b48; opacity: 0.7; }
-        .aa-submit {
-            font-family: 'Epilogue', sans-serif;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            background: #bb0003;
-            color: #fff5e5;
-            border: 4px solid #342e1e;
-            padding: 16px 32px;
-            font-size: 1.1rem;
-            box-shadow: 6px 6px 0 0 #342e1e;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            width: 100%;
-        }
-        .aa-submit:hover {
-            background: #342e1e;
-            color: #ffca4d;
-            transform: translate(-3px, -3px);
-            box-shadow: 9px 9px 0 0 #bb0003;
-        }
-        .aa-submit:active {
-            transform: translate(3px, 3px);
-            box-shadow: 0 0 0 0 #bb0003;
-        }
-        .aa-response-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #ffca4d;
-            color: #342e1e;
-            border: 3px solid #342e1e;
-            padding: 8px 16px;
-            font-family: 'Epilogue', sans-serif;
-            font-weight: 900;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 0.05em;
-            box-shadow: 4px 4px 0 0 #bb0003;
-        }
-        .aa-pulse { animation: pulse 2s ease-in-out infinite; }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
+        .aa-cursor, .aa-cursor-ring{ position:fixed; top:0; left:0; border-radius:50%; pointer-events:none; z-index:10002; display:none; }
+        .aa-cursor{ width:10px; height:10px; background:var(--red); border:2px solid var(--ink); }
+        .aa-cursor-ring{ width:36px; height:36px; border:2.5px solid rgba(52,46,30,.55); transition:width .2s, height .2s, background-color .2s, border-color .2s; }
+        .aa-cursor-ring.aa-target{ width:54px; height:54px; background:rgba(255,202,77,.85); border-color:var(--ink); }
+        .aa-cursor-ring.aa-press{ transform:translate(-50%,-50%) scale(.75) !important; }
+        html.aa-cursor-on, html.aa-cursor-on *{ cursor:none !important; }
+        #aaProgress{ position:fixed; top:0; left:0; height:4px; width:0; background:var(--red); z-index:300; box-shadow:1px 1px 0 var(--ink); }
 
-        /* ✅ Petit bonus : bandeau de confirmation */
-        .aa-sent-banner {
-            background: #ffca4d;
-            border: 4px solid #342e1e;
-            box-shadow: 8px 8px 0 0 #bb0003;
-            padding: 1.5rem 2rem;
-            margin-bottom: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-        .aa-sent-banner-icon {
-            font-size: 2.5rem;
-            line-height: 1;
-        }
-        .aa-sent-banner-text {
-            font-family: 'Epilogue', sans-serif;
-            font-weight: 900;
-            text-transform: uppercase;
-            color: #342e1e;
-            font-size: 1rem;
-            letter-spacing: 0.02em;
-        }
-        .aa-sent-banner-text strong {
-            color: #bb0003;
-            display: block;
-            font-size: 1.2rem;
-            margin-bottom: 2px;
-        }
-        @keyframes popIn { 
-            0% { transform: scale(0.8); opacity: 0; } 
-            80% { transform: scale(1.05); opacity: 1; } 
-            100% { transform: scale(1); opacity: 1; } 
-        }
+        /* ============ 2. TICKER HAUT ============ */
+        .aa-ticker{ background:var(--red); border-bottom:4px solid var(--ink); overflow:hidden; }
+        .aa-ticker-track{ display:flex; width:max-content; animation:aaTicker 26s linear infinite; }
+        .aa-ticker:hover .aa-ticker-track{ animation-play-state:paused; }
+        .aa-ticker-chunk{ display:flex; align-items:center; gap:1.4rem; padding-right:1.4rem; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:.85rem; letter-spacing:.04em; color:var(--cream); padding-top:.65rem; padding-bottom:.65rem; white-space:nowrap; }
+        .aa-ticker-chunk b{ color:var(--yellow); }
+        .aa-tsep{ color:var(--yellow); font-size:1rem; }
+        @keyframes aaTicker{ to{ transform:translateX(-50%); } }
 
-        @media (max-width: 768px) {
-            .aa-info-title {
-                font-size: 2rem !important;
-                line-height: 1.1 !important;
-            }
-            .aa-info-intro {
-                font-size: 1rem !important;
-                text-align: center !important;
-            }
-            .aa-sent-banner {
-                flex-direction: column;
-                text-align: center;
-                padding: 1.2rem;
-            }
+        /* ============ 3. HEADER ============ */
+        header.aa-header{ background:var(--cream); border-bottom:4px double var(--red); box-shadow:4px 4px 0 rgba(52,46,30,.12); transition:box-shadow .3s; }
+        header.aa-header.aa-scrolled{ box-shadow:0 10px 30px -12px rgba(52,46,30,.35), 4px 4px 0 rgba(52,46,30,.12); }
+        .aa-nav{ position:relative; }
+        .aa-nav a{ position:relative; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; letter-spacing:-.01em; font-size:.85rem; transition:color .2s; }
+        .aa-nav a::after{ content:''; position:absolute; left:0; bottom:-7px; height:4px; width:0; background:var(--blue); transition:width .25s cubic-bezier(.22,1,.36,1); }
+        .aa-nav a:hover::after{ width:100%; }
+        .aa-nav a.aa-active{ color:var(--blue); }
+        .aa-nav a.aa-active::after{ width:100%; }
+        .aa-logo{ transition:transform .3s cubic-bezier(.34,1.56,.64,1), filter .3s ease; filter:drop-shadow(2px 2px 0 rgba(52,46,30,.15)); }
+        .aa-logo-link:hover .aa-logo{ transform:rotate(-6deg) scale(1.06); filter:drop-shadow(3px 3px 0 rgba(187,0,3,.4)); }
+        .aa-cart-btn:hover .material-symbols-outlined{ animation:aaWiggle .5s ease; }
+        @keyframes aaWiggle{ 25%{ transform:rotate(-12deg);} 70%{ transform:rotate(9deg);} }
+        .aa-icon-btn{ display:inline-flex; padding:.5rem; border-radius:2px; transition:all .12s ease; background:var(--cream); }
+        .aa-icon-btn:hover{ transform:translate(-2px,-2px); }
+        .aa-menu-btn{ font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; letter-spacing:.05em; background:var(--red); color:var(--cream); border:3px solid var(--ink); padding:10px 20px; font-size:1rem; box-shadow:4px 4px 0 var(--ink); cursor:pointer; transition:all .15s ease; }
+        .aa-menu-btn:hover{ background:var(--ink); color:var(--yellow); transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--red); }
+        .btn-physical{ transition:all .1s ease; }
+        .btn-physical:active{ transform:translateY(4px); box-shadow:0 0 0 0 !important; }
+
+        /* ============ 3b. BARRE DE RECHERCHE ============ */
+        .aa-search{ display:none; position:relative; align-items:center; }
+        .aa-search-drawer{ display:flex; width:100%; margin-bottom:.5rem; }
+        @media (min-width:1024px){ .aa-search{ display:flex; } }
+        .aa-search input{ font-family:'Work Sans',sans-serif; font-weight:600; font-size:.9rem; color:var(--ink); background:var(--cream2); border:3px solid var(--ink); padding:.55rem 3rem .55rem .9rem; width:230px; box-shadow:3px 3px 0 var(--blue); transition:box-shadow .15s ease, width .25s ease; }
+        .aa-search input::placeholder{ color:var(--on-surface-variant); }
+        .aa-search input:focus{ outline:none; box-shadow:3px 3px 0 var(--red); width:280px; }
+        .aa-search input::-webkit-search-cancel-button{ -webkit-appearance:none; }
+        .aa-search button{ position:absolute; right:2px; top:2px; bottom:2px; width:40px; background:var(--yellow); border:2.5px solid var(--ink); display:flex; align-items:center; justify-content:center; color:var(--ink); cursor:pointer; transition:all .15s ease; }
+        .aa-search button:hover{ background:var(--red); color:var(--yellow); }
+        .aa-search button .material-symbols-outlined{ font-size:20px; font-weight:700; }
+        .aa-search-drawer input{ width:100%; }
+        .aa-search-drawer input:focus{ width:100%; }
+
+        /* ============ 4. DRAWER ============ */
+        #side-drawer{ box-shadow:-8px 0 0 rgba(52,46,30,.2); transition:transform .45s cubic-bezier(.77,0,.175,1); }
+        #side-drawer.open{ transform:translateX(0); }
+        .drawer-overlay{ opacity:0; pointer-events:none; transition:opacity .3s ease; }
+        .drawer-overlay.open{ opacity:1; pointer-events:auto; }
+        .aa-drawer-link{ display:flex; align-items:center; justify-content:space-between; background:var(--cream2); border:2px solid var(--ink); padding:14px 16px; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:.95rem; color:var(--ink); transition:all .18s ease; }
+        .aa-drawer-link::after{ content:'→'; opacity:0; transform:translateX(-6px); transition:all .18s ease; }
+        .aa-drawer-link:hover{ transform:translateX(-4px); background:var(--yellow); box-shadow:4px 4px 0 var(--red); }
+        .aa-drawer-link:hover::after{ opacity:1; transform:none; }
+        .aa-drawer-link.aa-current{ background:var(--blue); color:var(--cream); border-color:var(--ink); }
+        .aa-drawer-link.aa-admin{ border-style:dashed; background:transparent; color:var(--on-surface-variant); font-size:.8rem; letter-spacing:.1em; }
+        .aa-drawer-link.aa-admin::before{ content:'lock'; font-family:'Material Symbols Outlined'; font-size:15px; color:var(--on-surface-variant); }
+        .aa-drawer-link.aa-admin::after{ display:none; }
+        .aa-drawer-link.aa-admin:hover{ background:var(--cream2); color:var(--red); box-shadow:none; }
+        .aa-drawer-meta{ border-top:4px solid rgba(52,46,30,.12); padding-top:1.25rem; font-family:'Space Mono',monospace; font-size:.72rem; color:var(--on-surface-variant); letter-spacing:.05em; display:flex; flex-direction:column; gap:.6rem; }
+        .aa-drawer-meta b{ color:var(--red); }
+        .aa-barcode{ display:flex; align-items:flex-end; gap:1px; height:34px; color:var(--ink); }
+        .aa-barcode i{ display:inline-block; background:currentColor; }
+
+        /* ============ 5. TÊTE DE PAGE ============ */
+        .aa-eyebrow{ display:flex; align-items:center; gap:.7rem; font-family:'Space Mono',monospace; font-weight:700; font-size:.78rem; text-transform:uppercase; letter-spacing:.14em; color:var(--ink); margin-bottom:1.2rem; }
+        .aa-live{ width:9px; height:9px; border-radius:50%; background:var(--red); border:2px solid var(--ink); animation:aaLive 1.6s infinite; flex:none; }
+        @keyframes aaLive{ 0%,100%{ box-shadow:0 0 0 0 rgba(187,0,3,.5);} 50%{ box-shadow:0 0 0 6px rgba(187,0,3,0);} }
+        .aa-info-title{ font-family:'Epilogue',sans-serif; font-weight:900; font-style:italic; text-transform:uppercase; color:var(--red); letter-spacing:-.02em; line-height:.98; font-size:clamp(2.2rem,5vw,3.8rem); border-bottom:4px solid var(--ink); padding-bottom:1.25rem; margin-bottom:1.1rem; }
+        .aa-info-title .line{ display:block; overflow:hidden; padding-bottom:.06em; }
+        .aa-info-title .line-in{ display:inline-block; transform:translateY(115%); animation:aaLineUp .8s cubic-bezier(.22,1,.36,1) forwards; }
+        .aa-info-title .line:nth-child(2) .line-in{ animation-delay:.12s; }
+        @keyframes aaLineUp{ to{ transform:translateY(0); } }
+        .aa-marker{ position:relative; color:var(--ink); white-space:nowrap; display:inline-block; padding:0 .06em; }
+        .aa-marker::before{ content:''; position:absolute; inset:6% -6% 0 -6%; background:var(--yellow); transform:skew(-12deg) rotate(-1.5deg) scaleX(0); transform-origin:left center; z-index:-1; animation:aaMarkerIn .45s cubic-bezier(.22,1,.36,1) .5s forwards; }
+        @keyframes aaMarkerIn{ to{ transform:skew(-12deg) rotate(-1.5deg) scaleX(1); } }
+        .aa-info-intro{ font-family:'Work Sans',sans-serif; font-size:1.05rem; font-weight:600; color:var(--blue); line-height:1.55; margin-bottom:2.2rem; max-width:44rem; }
+        .aa-info-intro strong{ color:var(--ink); }
+
+        /* ============ 6. TÊTES DE SECTION ============ */
+        .aa-sec{ margin-bottom:3rem; }
+        .aa-sec-head{ display:flex; align-items:center; gap:.9rem; margin-bottom:1.2rem; }
+        .aa-sec-head h2, .aa-sec-head h3{ font-family:'Epilogue',sans-serif; font-weight:900; font-style:italic; text-transform:uppercase; color:var(--red); font-size:clamp(1.5rem,3vw,2rem); letter-spacing:-.02em; }
+        .aa-sec-ico{ width:44px; height:44px; flex:none; background:var(--yellow); color:var(--ink); border:3px solid var(--ink); box-shadow:3px 3px 0 var(--ink); display:flex; align-items:center; justify-content:center; transform:rotate(-5deg); }
+        .aa-sec-ico .material-symbols-outlined{ font-size:24px; font-variation-settings:'FILL' 1; }
+        .aa-sec-line{ flex:1; height:4px; background:var(--ink); min-width:30px; }
+
+        /* ============ 7. MÉDIAS D'ARCHIVE ============ */
+        .aa-media-figure{ background:var(--cream); border:4px solid var(--ink); padding:.75rem; cursor:zoom-in; transition:transform .2s ease, box-shadow .2s ease; box-shadow:6px 6px 0 var(--shc,#bb0003); }
+        .aa-media-figure:hover{ transform:translateY(-4px); box-shadow:9px 10px 0 var(--shc,#bb0003); }
+        .aa-media-figure .media{ width:100%; aspect-ratio:9/16; object-fit:cover; display:block; background:var(--ink); }
+        .aa-media-caption{ font-family:'Space Mono',monospace; font-weight:700; font-size:.6rem; text-transform:uppercase; letter-spacing:.16em; color:var(--on-surface-variant); margin-top:.7rem; display:flex; align-items:center; justify-content:center; gap:.4rem; text-align:center; }
+        .aa-media-caption .material-symbols-outlined{ font-size:13px; color:var(--red); }
+        .aa-media-note{ text-align:center; font-family:'Space Mono',monospace; font-size:.68rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--on-surface-variant); margin-top:.9rem; }
+        .aa-media-note .material-symbols-outlined{ font-size:13px; vertical-align:-3px; color:var(--blue); }
+
+        /* ============ 8. OBJECTIF / OFFRES ============ */
+        .aa-objectif{ background:var(--yellow); border:4px solid var(--ink); box-shadow:6px 6px 0 var(--red); padding:1.5rem; }
+        .aa-objectif .aa-sec-head{ margin-bottom:1rem; }
+        .aa-objectif .aa-sec-ico{ background:var(--cream); box-shadow:3px 3px 0 var(--red); }
+        .aa-objectif p{ font-family:'Work Sans',sans-serif; line-height:1.6; margin-bottom:.8rem; }
+        .aa-objectif .aa-obj-note{ font-size:.9rem; font-style:italic; color:rgba(52,46,30,.75); margin-bottom:0; }
+        .aa-offer-card{ background:var(--cream); border:4px solid var(--ink); box-shadow:6px 6px 0 var(--shc); padding:1.3rem 1.5rem; display:flex; gap:1rem; align-items:flex-start; transition:transform .2s ease, box-shadow .2s ease; }
+        .aa-offer-card:hover{ transform:translateY(-3px); box-shadow:9px 9px 0 var(--shc); }
+        .aa-offer-dot{ width:14px; height:14px; border-radius:50%; flex:none; border:2.5px solid var(--ink); margin-top:.3rem; }
+        .aa-offer-title{ font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; color:var(--ink); font-size:1.1rem; letter-spacing:-.01em; }
+        .aa-offer-card p{ font-family:'Work Sans',sans-serif; margin-top:.4rem; line-height:1.55; }
+        .aa-offer-card .aa-offer-note{ font-size:.85rem; font-style:italic; color:var(--on-surface-variant); margin-top:.5rem; }
+
+        /* ============ 9. FAQ ACCORDÉONS ============ */
+        .aa-faq{ background:var(--cream); border:2.5px solid var(--ink); margin-bottom:.7rem; transition:all .2s ease; }
+        .aa-faq:hover{ background:var(--cream2); }
+        .aa-faq[open]{ border-width:3px; background:var(--cream2); box-shadow:4px 4px 0 var(--red); }
+        .aa-faq summary{ list-style:none; display:flex; align-items:center; justify-content:space-between; gap:.8rem; padding:.95rem 1.15rem; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:.88rem; cursor:pointer; }
+        .aa-faq summary::-webkit-details-marker{ display:none; }
+        .aa-faq summary .material-symbols-outlined{ color:var(--red); flex:none; transition:transform .25s ease; font-size:20px; }
+        .aa-faq[open] summary .material-symbols-outlined{ transform:rotate(180deg); }
+        .aa-faq .aa-faq-body{ padding:0 1.15rem 1.1rem; font-family:'Work Sans',sans-serif; line-height:1.6; animation:popIn .3s cubic-bezier(.34,1.56,.64,1); }
+
+        /* ============ 10. LIVRAISON / PAIEMENT / CONTACT ============ */
+        .aa-info-card{ background:var(--cream); border:4px solid var(--ink); box-shadow:6px 6px 0 rgba(52,46,30,.15); padding:1.5rem; transition:transform .2s ease, box-shadow .2s ease; }
+        .aa-info-card:hover{ transform:translateY(-3px); box-shadow:8px 9px 0 rgba(52,46,30,.15); }
+        .aa-info-card-h{ display:flex; align-items:center; gap:.8rem; margin-bottom:.8rem; }
+        .aa-info-card-h .aa-sec-ico{ transform:none; }
+        .aa-info-card h3{ font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; color:var(--ink); font-size:1.15rem; }
+        .aa-info-card ul{ font-family:'Work Sans',sans-serif; font-weight:700; font-size:.88rem; margin-top:.7rem; display:flex; flex-direction:column; gap:.35rem; list-style:none; padding:0; }
+        .aa-info-card ul .material-symbols-outlined{ font-size:16px; color:var(--red); vertical-align:-3px; }
+        .aa-input{ width:100%; background:var(--cream); border:3px solid var(--ink); padding:12px 14px; font-family:'Work Sans',sans-serif; font-size:15px; font-weight:600; color:var(--ink); transition:all .15s ease; }
+        .aa-input:focus{ outline:none; background:#fff; box-shadow:4px 4px 0 var(--red); transform:translate(-2px,-2px); }
+        .aa-input::placeholder{ color:var(--on-surface-variant); opacity:.7; }
+        .aa-label{ font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:.8rem; letter-spacing:.03em; display:flex; align-items:center; gap:.45rem; color:var(--ink); margin-bottom:.5rem; }
+        .aa-label .material-symbols-outlined{ font-size:17px; color:var(--red); }
+        .aa-label .req{ color:var(--red); }
+        .aa-submit{ font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; letter-spacing:.05em; background:var(--red); color:var(--cream); border:4px solid var(--ink); padding:16px 32px; font-size:1.05rem; box-shadow:6px 6px 0 var(--ink); cursor:pointer; transition:all .15s ease; width:100%; display:inline-flex; align-items:center; justify-content:center; gap:.6rem; }
+        .aa-submit:hover{ background:var(--ink); color:var(--yellow); transform:translate(-3px,-3px); box-shadow:9px 9px 0 var(--red); }
+        .aa-submit:active{ transform:translate(3px,3px); box-shadow:0 0 0 0 var(--red); }
+        .aa-submit .material-symbols-outlined{ transition:transform .25s ease; }
+        .aa-submit:hover .material-symbols-outlined{ transform:translateX(5px); }
+        .aa-response-badge{ display:inline-flex; align-items:center; gap:8px; background:var(--yellow); color:var(--ink); border:3px solid var(--ink); padding:8px 16px; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:.85rem; letter-spacing:.05em; box-shadow:4px 4px 0 var(--red); }
+        .aa-response-badge .aa-pulse{ animation:aaPulse 2s ease-in-out infinite; }
+        @keyframes aaPulse{ 0%,100%{ transform:scale(1);} 50%{ transform:scale(1.12);} }
+
+        /* ============ 11. BANDEAU ENVOYÉ / LIGHTBOX ============ */
+        .aa-sent-banner{ background:var(--yellow); border:4px solid var(--ink); box-shadow:8px 8px 0 var(--red); padding:1.5rem 2rem; margin-bottom:2rem; display:flex; align-items:center; gap:1rem; animation:popIn .5s cubic-bezier(.34,1.56,.64,1) forwards; }
+        .aa-sent-banner-icon{ font-size:2.5rem; line-height:1; }
+        .aa-sent-banner-text{ font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; color:var(--ink); font-size:1rem; }
+        .aa-sent-banner-text strong{ color:var(--red); display:block; font-size:1.2rem; margin-bottom:2px; }
+        @keyframes popIn{ 0%{ transform:scale(.8); opacity:0;} 80%{ transform:scale(1.05); opacity:1;} 100%{ transform:scale(1); opacity:1;} }
+        .aa-lightbox{ position:fixed; inset:0; background:rgba(52,46,30,.96); z-index:2000; display:none; align-items:center; justify-content:center; padding:2rem; }
+        .aa-lightbox.open{ display:flex; animation:fadeIn .3s ease; }
+        .aa-lightbox video, .aa-lightbox img{ max-width:90vw; max-height:88vh; border:6px solid var(--ink); box-shadow:12px 12px 0 var(--yellow); background:var(--ink); }
+        .aa-lightbox-close{ position:absolute; top:20px; right:20px; background:var(--yellow); color:var(--ink); width:50px; height:50px; display:flex; align-items:center; justify-content:center; border:3px solid var(--ink); box-shadow:4px 4px 0 var(--red); cursor:pointer; font-family:'Epilogue',sans-serif; font-weight:900; font-size:24px; transition:all .15s ease; z-index:10; }
+        .aa-lightbox-close:hover{ background:var(--ink); color:var(--yellow); transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--red); }
+        @keyframes fadeIn{ from{ opacity:0;} to{ opacity:1;} }
+
+        /* ============ 12. FOOTER / TOASTS / DIVERS ============ */
+        footer.aa-footer{ background:var(--ink); border-top:8px double var(--olive); color:var(--cream); }
+        .aa-social-link{ width:44px; height:44px; border:2.5px solid var(--yellow); color:var(--yellow); display:flex; align-items:center; justify-content:center; transition:all .2s ease; }
+        .aa-social-link:hover{ background:var(--yellow); color:var(--ink); transform:translate(-2px,-2px); box-shadow:3px 3px 0 var(--red); }
+        .aa-footer-ref{ font-family:'Space Mono',monospace; font-size:.62rem; letter-spacing:.15em; color:rgba(255,202,77,.6); text-transform:uppercase; }
+        #aa-toasts{ position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:8px; pointer-events:none; }
+        .aa-toast{ background:var(--ink); color:var(--cream); border:3px solid var(--yellow); padding:12px 18px; font-family:'Epilogue',sans-serif; font-weight:900; font-size:13px; text-transform:uppercase; display:flex; align-items:center; gap:10px; max-width:320px; transform:translateX(120%); opacity:0; transition:all .4s cubic-bezier(.34,1.56,.64,1); pointer-events:auto; }
+        .aa-toast.show{ transform:translateX(0); opacity:1; }
+        #aa-cart-badge{ position:absolute; top:-7px; right:-7px; min-width:18px; height:18px; background:var(--yellow); color:var(--ink); font-family:'Epilogue',sans-serif; font-weight:900; font-size:10px; border:2px solid var(--ink); border-radius:2px; display:none; align-items:center; justify-content:center; padding:0 3px; }
+        #aa-cart-badge.pop{ animation:aaBadgePop .4s cubic-bezier(.34,1.56,.64,1); }
+        @keyframes aaBadgePop{ 40%{ transform:scale(1.5) rotate(9deg);} }
+        .aa-stars-badge{ position:absolute; top:-7px; right:-8px; min-width:18px; height:18px; background:var(--yellow); color:var(--ink); font-family:'Epilogue',sans-serif; font-weight:900; font-size:10px; border:2px solid var(--ink); border-radius:2px; display:flex; align-items:center; justify-content:center; padding:0 3px; }
+        .aa-nav-gift-badge{ position:absolute; bottom:-8px; right:-8px; font-size:14px; display:none; align-items:center; justify-content:center; }
+        @keyframes giftPulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(255,202,77,.7);} 50%{ box-shadow:0 0 0 6px rgba(255,202,77,0);} }
+        .aa-nav-stars.aa-has-gift{ border-color:var(--yellow) !important; color:var(--yellow) !important; animation:giftPulse 1.5s infinite; }
+        #aaTop{ position:fixed; left:20px; bottom:20px; z-index:600; width:47px; height:47px; background:var(--yellow); color:var(--ink); border:3px solid var(--ink); box-shadow:4px 4px 0 var(--ink); display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transform:translateY(12px) rotate(-8deg); transition:opacity .3s, transform .3s; }
+        #aaTop.show{ opacity:1; pointer-events:auto; transform:none; }
+        #aaTop:hover{ background:var(--red); color:var(--yellow); }
+        .reveal{ opacity:0; transform:translateY(26px); transition:opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1); }
+        .reveal.in{ opacity:1; transform:none; }
+        .aa-gdpr{ background:var(--cream2); border:2px solid var(--ink); padding:.8rem; font-family:'Work Sans',sans-serif; font-size:.78rem; line-height:1.5; }
+        .aa-law-box{ background:var(--cream); border:4px solid var(--ink); box-shadow:6px 6px 0 rgba(52,46,30,.15); padding:1.5rem; font-family:'Work Sans',sans-serif; font-size:.88rem; line-height:1.6; }
+        .aa-law-box h3{ font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; color:var(--red); font-size:1.1rem; margin-bottom:.8rem; }
+        .aa-law-box p{ margin-bottom:.5rem; }
+        .aa-action-note{ font-family:'Space Mono',monospace; font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--red); text-align:center; }
+
+        /* ============ 13. RESPONSIVE ============ */
+        @media (max-width: 768px){
+            .aa-info-title{ font-size:2rem; }
+            .aa-info-intro{ font-size:.98rem; }
+            .aa-sent-banner{ flex-direction:column; text-align:center; padding:1.2rem; }
+            .aa-objectif{ padding:1.2rem; }
+            .aa-media-figure{ max-width:340px; margin-inline:auto; }
+        }
+        @media (max-width: 480px){
+            .aa-info-title{ font-size:clamp(1.45rem,6.8vw,1.7rem); }
+            .aa-marker::before{ inset:6% -4% 0 -4%; }
+            .aa-sec-line{ display:none; }
+            .aa-offer-card{ flex-direction:column; gap:.5rem; }
+        }
+        @media (prefers-reduced-motion: reduce){
+            *, *::before, *::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+            html{ scroll-behavior:auto; }
+            .reveal{ opacity:1; transform:none; }
         }
     </style>
 </head>
 <body class="bg-surface font-body text-on-surface overflow-x-hidden">
 
-<header class="w-full border-b-4 border-double border-[#bb0003] bg-[#fff5e5] shadow-[4px_4px_0px_0px_rgba(52,46,30,0.2)] z-50 sticky top-0">
-    <div class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
-        <a href="index.html" class="aa-logo-link flex items-center gap-3 group cursor-pointer" title="Retour à l'accueil">
-            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Logo Action Archive - Spécialiste boîtes vintage figurines" loading="eager" class="aa-logo h-12 md:h-14 w-auto"/>
-            <span class="text-2xl md:text-3xl font-black italic text-[#bb0003] font-headline uppercase tracking-tighter group-hover:text-[#0f56bf] transition-colors">Action Archive</span>
-        </a>
-        <nav class="hidden md:flex items-center gap-6 font-headline font-black uppercase tracking-tighter text-sm">
-            <a class="text-[#342e1e] hover:text-[#bb0003]" href="index.html">Accueil</a>
-            <a class="text-[#342e1e] hover:text-[#bb0003]" href="produits.html">Produits</a>
-            <a class="text-[#0f56bf] underline decoration-4 underline-offset-8" href="info.html">Info</a>
-            <a class="text-[#342e1e] hover:text-[#bb0003]" href="toys-history.html">Toys History</a>
-            <a class="text-[#342e1e] hover:text-[#bb0003]" href="panier.html">Commande</a>
-            <a class="text-[#342e1e] hover:text-[#bb0003]" href="inscription.html">Inscription</a>
-        </nav>
-        <div class="flex items-center gap-2">
-            <a class="aa-nav-stars relative p-2 text-[#755700] border-2 border-[#755700] rounded-sm btn-physical" href="inscription.html" style="display:none;" title="Mon programme fidélité">
-                <span class="material-symbols-outlined">stars</span>
-                <span class="aa-nav-stars-count aa-stars-badge">0</span>
-                <span class="aa-nav-gift-badge">🎁</span>
+    <div class="aa-grain" aria-hidden="true"></div>
+    <div class="aa-cursor" id="aaCursorDot" aria-hidden="true"></div>
+    <div class="aa-cursor-ring" id="aaCursorRing" aria-hidden="true"></div>
+    <div id="aaProgress" aria-hidden="true"></div>
+
+    <!-- ═══ TICKER HAUT ═══ -->
+    <div class="aa-ticker" aria-hidden="true">
+        <div class="aa-ticker-track" data-dupe>
+            <div class="aa-ticker-chunk">
+                <span>BOÎTES <b>VINTAGE</b> POUR FIGURINES <b>1970–1990</b></span><span class="aa-tsep">✦</span>
+                <span>REPRODUCTIONS &amp; CUSTOM</span><span class="aa-tsep">✦</span>
+                <span>PAYPAL SÉCURISÉ</span><span class="aa-tsep">✦</span>
+                <span>EXPÉDIÉ DE FRANCE</span><span class="aa-tsep">✦</span>
+                <span>EMBALLAGE SOIGNÉ</span><span class="aa-tsep">✦</span>
+                <span>BOÎTES <b>VINTAGE</b> POUR FIGURINES <b>1970–1990</b></span><span class="aa-tsep">✦</span>
+                <span>REPRODUCTIONS &amp; CUSTOM</span><span class="aa-tsep">✦</span>
+                <span>PAYPAL SÉCURISÉ</span><span class="aa-tsep">✦</span>
+                <span>EXPÉDIÉ DE FRANCE</span><span class="aa-tsep">✦</span>
+                <span>EMBALLAGE SOIGNÉ</span><span class="aa-tsep">✦</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ HEADER ═══ -->
+    <header class="aa-header w-full z-50 sticky top-0">
+        <div class="flex justify-between items-center w-full px-6 py-3.5 max-w-screen-2xl mx-auto">
+            <a href="index.html" class="aa-logo-link flex items-center gap-3 group" title="Retour à l'accueil">
+                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Logo Action Archive - Spécialiste boîtes vintage figurines" loading="eager" class="aa-logo h-12 md:h-14 w-auto"/>
+                <span class="text-2xl md:text-3xl font-black italic text-[#bb0003] font-headline uppercase tracking-tighter group-hover:text-[#0f56bf] transition-colors">Action Archive</span>
             </a>
-            <a class="relative p-2 text-[#bb0003] border-2 border-[#bb0003] rounded-sm btn-physical" href="panier.html" title="Mon panier">
-                <span class="material-symbols-outlined">shopping_cart</span>
-                <span id="aa-cart-badge"></span>
-            </a>
-            <button onclick="toggleDrawer()" class="aa-menu-btn">☰ MENU</button>
-        </div>
-    </div>
-</header>
-
-<div id="drawer-overlay" class="drawer-overlay fixed inset-0 bg-on-background/40 backdrop-blur-sm z-[90]" onclick="toggleDrawer()"></div>
-<aside id="side-drawer" class="fixed top-0 right-0 h-full w-full max-w-[320px] bg-surface-container-high border-l-8 border-primary z-[100] transform translate-x-full overflow-y-auto">
-    <div class="p-8 space-y-8 flex flex-col h-full text-on-surface">
-        <div class="flex justify-between items-center border-b-4 border-on-background/10 pb-6">
-            <h2 class="font-headline font-black text-2xl text-primary italic uppercase">MENU</h2>
-            <button class="text-on-background" onclick="toggleDrawer()"><span class="material-symbols-outlined text-3xl">close</span></button>
-        </div>
-        <nav class="flex flex-col gap-3">
-            <a href="index.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">ACCUEIL</a>
-            <a href="produits.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">PRODUITS</a>
-            <a href="info.html" class="p-4 bg-surface-container-low border-2 border-primary font-headline font-black uppercase text-primary">INFO</a>
-            <a href="toys-history.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">TOYS HISTORY</a>
-            <a href="panier.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">COMMANDE</a>
-            <a href="inscription.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">INSCRIPTION</a>
-            <a href="admin.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">ADMIN</a>
-        </nav>
-    </div>
-</aside>
-
-<main class="container mx-auto px-6 py-12 min-h-screen max-w-4xl">
-
-    <h1 class="aa-info-title font-headline font-black text-5xl uppercase text-on-background italic mb-4 border-b-4 border-on-background pb-4">Informations & Contact</h1>
-    
-    <p class="aa-info-intro font-body text-lg text-tertiary mb-8 leading-relaxed">
-        Tout savoir sur <strong class="text-on-background">Action Archive</strong>, spécialiste de la <strong class="text-on-background">reproduction de boîtes vintage</strong> et des <strong class="text-on-background">créations custom originales</strong> pour figurines de collection. Livraison France & Europe, paiement sécurisé, programme fidélité.
-    </p>
-
-    <!-- ✅ Petit bonus : bandeau de confirmation (caché par défaut) -->
-    <div id="aa-sent-banner" class="aa-sent-banner" style="display:none;">
-        <div class="aa-sent-banner-icon">✅</div>
-        <div class="aa-sent-banner-text">
-            <strong>Message envoyé avec succès !</strong>
-            Tu recevras une réponse sous 24-48h ouvrées.
-        </div>
-    </div>
-
-    <section class="mb-12">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <figure class="bg-surface-container-high border-4 border-on-background p-3 shadow-[6px_6px_0px_0px_rgba(187,0,3,1)]">
-                <video 
-                    src="https://res.cloudinary.com/uvnbvhiw/video/upload/v1790637493/pomelli_creative_video_9_16_0929_geyjb7.mp4" 
-                    class="aa-archive-video" 
-                    autoplay 
-                    muted 
-                    loop 
-                    playsinline
-                    preload="auto"
-                    style="aspect-ratio: 9/16; object-fit: cover;">
-                </video>
-                <figcaption class="font-label font-bold text-[10px] uppercase tracking-widest text-on-surface-variant mt-3 text-center">🎬 Reproduction boîte vintage — Pièce d'archive pour collectionneurs</figcaption>
-            </figure>
-            <figure class="bg-surface-container-high border-4 border-on-background p-3 shadow-[6px_6px_0px_0px_rgba(15,86,191,1)]">
-                <video 
-                    src="https://res.cloudinary.com/uvnbvhiw/video/upload/v1790637511/pomelli_creative_video_9_16_0929_1_xnutv4.mp4" 
-                    class="aa-archive-video" 
-                    autoplay 
-                    muted 
-                    loop 
-                    playsinline
-                    preload="auto"
-                    style="aspect-ratio: 9/16; object-fit: cover;">
-                </video>
-                <figcaption class="font-label font-bold text-[10px] uppercase tracking-widest text-on-surface-variant mt-3 text-center">🎬 Reproduction boîte vintage — Pièce d'archive pour collectionneurs</figcaption>
-            </figure>
-        </div>
-        <p class="text-center font-body text-xs italic text-on-surface-variant mt-3">ℹ️ Ces vidéos représentent des <strong>reproductions</strong> (et non des customs).</p>
-    </section>
-
-    <section class="mb-12 bg-secondary-container border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_rgba(187,0,3,1)]">
-        <h2 class="font-headline font-black text-3xl uppercase text-primary mb-4 italic">🎯 Notre objectif</h2>
-        <p class="font-body text-lg leading-relaxed mb-3"><strong>Action Archive</strong> est spécialisée dans la <strong>préservation et la vente de boîtes vintage</strong> pour figurines et jouets de collection des années 70 à 90.</p>
-        <p class="font-body text-lg leading-relaxed mb-3"><strong>Notre mission :</strong> permettre aux collectionneurs de <strong>redonner vie à leurs collections</strong> lorsque la boîte d'origine a été perdue, abîmée ou jetée.</p>
-        <p class="font-body text-base italic text-on-surface-variant"><strong>⚠️ À noter :</strong> nous ne vendons <strong>aucune boîte vintage d'époque</strong>. Nous proposons exclusivement des <strong>reproductions soignées</strong> et des <strong>créations custom originales</strong>.</p>
-    </section>
-
-    <section class="mb-12">
-        <h2 class="font-headline font-black text-3xl uppercase text-primary mb-4 italic">📦 Ce que je propose</h2>
-        <div class="space-y-3">
-            <div class="bg-surface-container-high border-4 border-on-background p-5 border-l-8" style="border-left-color: #0f56bf;">
-                <p class="font-headline font-black text-xl uppercase" style="color: #0f56bf;">🔵 REPRODUCTIONS</p>
-                <p class="font-body mt-2">Reproduction imprimée haute qualité d'une boîte vintage d'origine. Conçue pour les collectionneurs qui souhaitent <strong>remplacer une boîte manquante ou abîmée</strong>.</p>
-                <p class="font-body text-sm mt-2 italic text-on-surface-variant">Ces pièces ne sont pas d'époque, mais permettent de restaurer l'apparence d'une collection.</p>
-            </div>
-            <div class="bg-surface-container-high border-4 border-on-background p-5 border-l-8" style="border-left-color: #7b1fa2;">
-                <p class="font-headline font-black text-xl uppercase" style="color: #7b1fa2;">🟣 CRÉATIONS CUSTOM</p>
-                <p class="font-body mt-2">Création originale <strong>imaginée et réalisée par Action Archive</strong>, en série très limitée. Pièce d'auteur exclusive, inspirée ou non d'un modèle vintage.</p>
-                <p class="font-body text-sm mt-2 italic text-on-surface-variant">Stock très limité. Une seule chance par sortie.</p>
+            <nav class="aa-nav hidden md:flex items-center gap-7 text-sm">
+                <a class="text-[#342e1e] hover:text-[#bb0003]" href="index.html">ACCUEIL</a>
+                <a class="text-[#342e1e] hover:text-[#bb0003]" href="produits.html">PRODUITS</a>
+                <a class="aa-active text-[#0f56bf]" href="info.html">INFO</a>
+                <a class="text-[#342e1e] hover:text-[#bb0003]" href="toys-history.html">TOYS HISTORY</a>
+                <a class="text-[#342e1e] hover:text-[#bb0003]" href="panier.html">COMMANDE</a>
+                <a class="text-[#342e1e] hover:text-[#bb0003]" href="inscription.html">INSCRIPTION</a>
+            </nav>
+            <div class="flex items-center gap-2.5">
+                <form class="aa-search" action="produits.html" method="get" role="search">
+                    <input type="search" name="search" placeholder="Rechercher…" aria-label="Rechercher une boîte, une marque"/>
+                    <button type="submit" aria-label="Lancer la recherche"><span class="material-symbols-outlined">search</span></button>
+                </form>
+                <a class="aa-nav-stars aa-icon-btn text-[#755700] border-2 border-[#755700] relative btn-physical" href="inscription.html" style="display:none;" title="Mon programme fidélité">
+                    <span class="material-symbols-outlined">stars</span>
+                    <span class="aa-nav-stars-count aa-stars-badge">0</span>
+                    <span class="aa-nav-gift-badge">🎁</span>
+                </a>
+                <a class="aa-cart-btn aa-icon-btn text-[#bb0003] border-2 border-[#bb0003] relative btn-physical" href="panier.html" title="Mon panier">
+                    <span class="material-symbols-outlined">shopping_cart</span>
+                    <span id="aa-cart-badge"></span>
+                </a>
+                <button onclick="toggleDrawer()" class="aa-menu-btn" aria-label="Ouvrir le menu">☰ MENU</button>
             </div>
         </div>
-    </section>
+    </header>
 
-    <section class="mb-12">
-        <h2 class="font-headline font-black text-3xl uppercase text-primary mb-4 italic">❓ Questions fréquentes</h2>
-        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer">Vendez-vous des boîtes originales d'époque ?</summary><p class="mt-3 font-body"><strong>Non.</strong> Toutes les pièces vendues sur Action Archive sont des <strong>reproductions</strong> (impression haute qualité) ou des <strong>créations custom</strong> originales. Aucune boîte vintage d'époque n'est proposée à la vente. Cela garantit une traçabilité et une transparence totale.</p></details>
-        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer">Quelle est la différence entre une reproduction et une boîte originale ?</summary><p class="mt-3 font-body">Une <strong>boîte originale</strong> a été imprimée dans les années 70-90 et a traversé le temps. Une <strong>reproduction</strong> est imprimée aujourd'hui, en haute qualité, à partir des visuels d'origine.</p></details>
-        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer">À quoi servent vos reproductions ?</summary><p class="mt-3 font-body">Elles permettent aux collectionneurs de <strong>remplacer une boîte manquante ou trop abîmée</strong> et de présenter leurs figurines dans leur écrin d'origine. Elles peuvent aussi servir pour des expositions, des dioramas, ou simplement pour le plaisir d'avoir une collection complète.</p></details>
-        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer">Vos reproductions sont-elles fidèles à l'original ?</summary><p class="mt-3 font-body">Oui, nous apportons un soin particulier aux couleurs, polices et dimensions. Cependant, les techniques d'impression modernes peuvent donner un rendu légèrement différent de l'impression offset d'époque.</p></details>
-        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer">Quels sont les délais de livraison ?</summary><p class="mt-3 font-body"><strong>France :</strong> 3-7 jours • <strong>Europe :</strong> 7-14 jours • <strong>International :</strong> 14-21 jours. Chaque colis dispose d'un numéro de suivi.</p></details>
-        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer">Puis-je retourner un article ?</summary><p class="mt-3 font-body">Oui, vous disposez de <strong>14 jours après réception</strong> pour retourner un article dans son état d'origine. Les frais de retour sont à votre charge sauf en cas de défaut.</p></details>
-        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer">Comment sont emballées les pièces ?</summary><p class="mt-3 font-body">Chaque pièce est protégée avec du papier bulle et du calage dans des enveloppes ou boîtes renforcées. Nous traitons vos commandes comme si c'étaient les nôtres.</p></details>
-        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer">Comment fonctionne le programme fidélité ?</summary><p class="mt-3 font-body"><strong>1 achat = 1 ⭐</strong>. Atteignez <strong>10 étoiles</strong> et recevez une pièce cadeau 🎁 offerte + 1 étoile de bienvenue à l'inscription.</p></details>
-        <details class="mb-3 bg-surface-container-high p-4 border-2 border-on-background"><summary class="font-headline font-black uppercase cursor-pointer">Vous ne trouvez pas la boîte que je cherche ?</summary><p class="mt-3 font-body">Contactez-nous via le formulaire ci-dessous ou par email à <strong>contact@action-archive.com</strong>. Nous pouvons étudier les demandes spécifiques.</p></details>
-    </section>
-
-    <section class="mb-12">
-        <h2 class="font-headline font-black text-3xl uppercase text-primary mb-4 italic">🚚 Livraison & Paiement</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-surface-container-high border-4 border-on-background p-6">
-                <span class="material-symbols-outlined text-4xl text-tertiary">local_shipping</span>
-                <h3 class="font-headline font-black text-xl uppercase mt-2">Livraison</h3>
-                <p class="font-body mt-2"><strong>Expédition depuis la France 🇫🇷</strong></p>
-                <ul class="text-sm space-y-1 mt-2 font-bold">
-                    <li>✓ Mondial Relay, Colissimo, DHL</li>
-                    <li>✓ Frais calculés au moment du paiement</li>
-                    <li>✓ Livraison offerte dès 150 € d'achat</li>
-                    <li>✓ Emballage renforcé anti-pli</li>
-                    <li>✓ Suivi de livraison inclus</li>
-                </ul>
+    <!-- ═══ DRAWER ═══ -->
+    <div id="drawer-overlay" class="drawer-overlay fixed inset-0 bg-on-background/40 backdrop-blur-sm z-[90]" onclick="toggleDrawer()"></div>
+    <aside id="side-drawer" class="fixed top-0 right-0 h-full w-full max-w-[320px] bg-surface-container-high border-l-8 border-[#bb0003] z-[100] transform translate-x-full overflow-y-auto" aria-label="Menu latéral">
+        <div class="p-8 flex flex-col h-full text-on-surface">
+            <div class="flex justify-between items-center border-b-4 border-on-background/10 pb-6 mb-6">
+                <h2 class="font-headline font-black text-2xl text-[#bb0003] italic uppercase">MENU</h2>
+                <button class="text-on-background hover:text-[#bb0003] transition-colors" onclick="toggleDrawer()" aria-label="Fermer le menu"><span class="material-symbols-outlined text-3xl">close</span></button>
             </div>
-            <div class="bg-surface-container-high border-4 border-on-background p-6">
-                <span class="material-symbols-outlined text-4xl text-tertiary">payments</span>
-                <h3 class="font-headline font-black text-xl uppercase mt-2">Paiement sécurisé</h3>
-                <p class="font-body mt-2"><strong>Via PayPal 🅿️</strong></p>
-                <ul class="text-sm space-y-1 mt-2 font-bold">
-                    <li>✓ Paiement sécurisé SSL</li>
-                    <li>✓ Protection acheteur PayPal</li>
-                    <li>✓ Paiement en 4x sans frais possible</li>
-                    <li>✓ Toutes cartes acceptées</li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <section class="mb-12" id="contact">
-        <h2 class="font-headline font-black text-3xl uppercase text-primary mb-4 italic">📧 Contacte-nous</h2>
-
-        <div class="mb-6 flex items-center gap-3 flex-wrap">
-            <span class="aa-response-badge">
-                <span class="material-symbols-outlined aa-pulse" style="font-size:18px;">schedule</span>
-                Réponse sous 24-48h ouvrées
-            </span>
-            <span class="font-body text-sm italic text-on-surface-variant">⏰ Du lundi au vendredi</span>
-        </div>
-
-        <div class="bg-surface-container-high border-4 border-on-background p-6 md:p-8 shadow-[8px_8px_0px_0px_rgba(187,0,3,1)]">
-            
-            <div class="flex items-center gap-4 mb-6 pb-6 border-b-4 border-double border-on-background/20">
-                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1786006674/copy_of_3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Logo Action Archive - Contact" loading="lazy" class="h-16 md:h-20 w-auto aa-logo"/>
-                <div>
-                    <p class="font-headline font-black text-xl uppercase text-on-background italic leading-tight">Une question ? Un projet ?</p>
-                    <p class="font-body text-sm text-on-surface-variant mt-1">Écris-nous, on te répond vite ! 🚀</p>
-                </div>
-            </div>
-
-            <!-- ✅ Formulaire : redirige vers l'accueil (vrai domaine) après envoi -->
-            <form action="https://formsubmit.co/franciswillson533@gmail.com" method="POST" class="space-y-4">
-                
-                <input type="hidden" name="_subject" value="📧 Nouveau message depuis Action Archive"/>
-                <input type="hidden" name="_template" value="table"/>
-                <input type="hidden" name="_captcha" value="false"/>
-                <!-- ✅ Redirection vers la page d'accueil du VRAI domaine -->
-                <input type="hidden" name="_next" value="https://www.actionarchive.ink/index.html"/>
-                <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off"/>
-
-                <div>
-                    <label for="aa-name" class="font-headline font-black uppercase text-sm block mb-2 text-on-background">👤 Nom complet <span class="text-primary">*</span></label>
-                    <input type="text" id="aa-name" name="Nom" required placeholder="Ton nom et prénom" class="aa-input"/>
-                </div>
-
-                <div>
-                    <label for="aa-email" class="font-headline font-black uppercase text-sm block mb-2 text-on-background">📧 Adresse e-mail <span class="text-primary">*</span></label>
-                    <input type="email" id="aa-email" name="Email" required placeholder="ton.email@exemple.com" class="aa-input"/>
-                    <p class="text-xs italic text-on-surface-variant mt-1">Utilisée uniquement pour te répondre 🔒</p>
-                </div>
-
-                <div>
-                    <label for="aa-subject" class="font-headline font-black uppercase text-sm block mb-2 text-on-background">🎯 Sujet <span class="text-primary">*</span></label>
-                    <select id="aa-subject" name="Sujet" required class="aa-input">
-                        <option value="">— Choisis un sujet —</option>
-                        <option value="Question sur un produit">❓ Question sur un produit</option>
-                        <option value="Demande de reproduction spécifique">🎨 Demande de reproduction spécifique</option>
-                        <option value="Suivi de commande">📦 Suivi de commande</option>
-                        <option value="Retour / Remboursement">↩️ Retour / Remboursement</option>
-                        <option value="Programme fidélité">⭐ Programme fidélité</option>
-                        <option value="Partenariat / Collaboration">🤝 Partenariat / Collaboration</option>
-                        <option value="Autre">💬 Autre</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label for="aa-message" class="font-headline font-black uppercase text-sm block mb-2 text-on-background">💬 Ton message <span class="text-primary">*</span></label>
-                    <textarea id="aa-message" name="Message" required rows="6" placeholder="Décris ta demande ici... Sois précis, ça nous aide à te répondre plus vite !" class="aa-input" style="resize:vertical; min-height:140px;"></textarea>
-                </div>
-
-                <div class="bg-surface-container-low border-2 border-on-background p-3 text-xs font-body">
-                    <label class="flex items-start gap-2 cursor-pointer">
-                        <input type="checkbox" required class="mt-1 accent-[#bb0003]"/>
-                        <span>J'accepte que mes données soient utilisées pour me recontacter dans le cadre de ma demande, conformément au <strong>RGPD</strong>. Aucune donnée ne sera cédée à des tiers.</span>
-                    </label>
-                </div>
-
-                <button type="submit" class="aa-submit">
-                    ✉️ Envoyer mon message
-                </button>
-
-                <p class="text-center text-xs italic text-on-surface-variant mt-3">
-                    🔒 Tes données sont sécurisées et ne servent qu'à te répondre
-                </p>
+            <form class="aa-search aa-search-drawer" action="produits.html" method="get" role="search">
+                <input type="search" name="search" placeholder="Rechercher…" aria-label="Rechercher une boîte, une marque"/>
+                <button type="submit" aria-label="Lancer la recherche"><span class="material-symbols-outlined">search</span></button>
             </form>
-        </div>
-    </section>
-
-    <section class="mb-12">
-        <h3 class="font-headline font-black text-2xl uppercase text-primary mb-4 italic">📱 Autres moyens de nous joindre</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-surface-container-high border-4 border-on-background p-5 text-center">
-                <span class="material-symbols-outlined text-4xl text-tertiary">mail</span>
-                <p class="font-headline font-black uppercase mt-2">Email direct</p>
-                <a href="mailto:contact@action-archive.com" class="font-body text-sm underline break-all">contact@action-archive.com</a>
-            </div>
-            <div class="bg-surface-container-high border-4 border-on-background p-5 text-center">
-                <span class="material-symbols-outlined text-4xl text-tertiary">groups</span>
-                <p class="font-headline font-black uppercase mt-2">Réseaux sociaux</p>
-                <p class="font-body text-sm">Facebook, Instagram & TikTok</p>
-            </div>
-            <div class="bg-surface-container-high border-4 border-on-background p-5 text-center">
-                <span class="material-symbols-outlined text-4xl text-tertiary">schedule</span>
-                <p class="font-headline font-black uppercase mt-2">Délai de réponse</p>
-                <p class="font-body text-sm"><strong>24-48h ouvrées</strong></p>
+            <nav class="flex flex-col gap-3">
+                <a href="index.html" class="aa-drawer-link">ACCUEIL</a>
+                <a href="produits.html" class="aa-drawer-link">PRODUITS</a>
+                <a href="info.html" class="aa-drawer-link aa-current">INFO</a>
+                <a href="toys-history.html" class="aa-drawer-link">TOYS HISTORY</a>
+                <a href="panier.html" class="aa-drawer-link">COMMANDE</a>
+                <a href="inscription.html" class="aa-drawer-link">INSCRIPTION</a>
+                <a href="admin.html" class="aa-drawer-link aa-admin">ADMIN</a>
+            </nav>
+            <div class="aa-drawer-meta mt-auto pt-6">
+                <div>HEURE LOCALE — <b id="aaClock">--:--:--</b></div>
+                <div class="aa-barcode" aria-hidden="true"></div>
+                <p>CATALOGUE ACTION ARCHIVE<br/>OUVERT 24H/24 — 7J/7</p>
             </div>
         </div>
-    </section>
+    </aside>
 
-    <section class="mb-12">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <figure class="bg-surface-container-high border-4 border-on-background p-3 shadow-[6px_6px_0px_0px_rgba(15,86,191,1)]">
-                <video 
-                    src="https://res.cloudinary.com/uvnbvhiw/video/upload/v1790640412/pomelli_creative_video_9_16_0929_2_nwue5h.mp4" 
-                    class="aa-archive-video" 
-                    autoplay 
-                    muted 
-                    loop 
-                    playsinline
-                    preload="auto"
-                    style="aspect-ratio: 9/16; object-fit: cover;">
-                </video>
-                <figcaption class="font-label font-bold text-[10px] uppercase tracking-widest text-on-surface-variant mt-3 text-center">🎬 Reproduction en vidéo</figcaption>
-            </figure>
-            <figure class="bg-surface-container-high border-4 border-on-background p-3 shadow-[6px_6px_0px_0px_rgba(187,0,3,1)]">
-                <img 
-                    src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1790640443/pomelli_creative_image_9_16_0929_zzywd8.png" 
-                    alt="Reproduction boîte vintage Action Archive" 
-                    class="aa-archive-img"
-                    loading="lazy"
-                    style="aspect-ratio: 9/16; object-fit: cover;">
-                <figcaption class="font-label font-bold text-[10px] uppercase tracking-widest text-on-surface-variant mt-3 text-center">📦 Reproduction en image</figcaption>
-            </figure>
+    <main class="container mx-auto px-6 py-12 min-h-screen max-w-4xl">
+        <div class="aa-eyebrow reveal">
+            <span class="aa-live" aria-hidden="true"></span>
+            <span>SUPPORT &amp; TRANSPARENCE</span>
         </div>
-    </section>
+        <h1 class="aa-info-title">
+            <span class="line"><span class="line-in">INFORMATIONS</span></span>
+            <span class="line"><span class="line-in"><span class="aa-marker">&amp; CONTACT</span></span></span>
+        </h1>
+        <p class="aa-info-intro reveal" style="transition-delay:.2s">
+            Tout savoir sur <strong>Action Archive</strong>, spécialiste de la <strong>reproduction de boîtes vintage</strong> et des <strong>créations custom originales</strong> pour figurines de collection. Livraison France &amp; Europe, paiement sécurisé, programme fidélité.
+        </p>
 
-    <section class="mb-12">
-        <h2 class="font-headline font-black text-3xl uppercase text-primary mb-4 italic">⚖️ Mentions Légales & CGV</h2>
-        <div class="bg-surface-container-high border-4 border-on-background p-6 text-sm font-body space-y-2 mb-6">
-            <p><strong>Éditeur du site :</strong> Action Archive</p>
-            <p><strong>Statut juridique :</strong> [À compléter - Auto-entrepreneur / Micro-entreprise / EURL]</p>
-            <p><strong>SIRET :</strong> [À compléter]</p>
-            <p><strong>TVA :</strong> Non applicable, art. 293 B du CGI (si micro-entreprise sous les seuils)</p>
-            <p><strong>Siège social :</strong> [Votre adresse complète]</p>
-            <p><strong>Email :</strong> contact@action-archive.com</p>
-            <p><strong>Téléphone :</strong> [À compléter]</p>
-            <p><strong>Directeur de la publication :</strong> [Votre nom]</p>
-            <p><strong>Hébergeur :</strong> Vercel Inc. — 340 S Lemon Ave #4133, Walnut, CA 91789, USA</p>
-        </div>
-        <div class="bg-surface-container-high border-4 border-on-background p-6 text-sm font-body space-y-2 mb-6">
-            <h3 class="font-headline font-black text-xl uppercase text-primary mb-2">📜 Conditions Générales de Vente (CGV)</h3>
-            <p><strong>1. Prix :</strong> Les prix sont indiqués en euros TTC (TVA non applicable, art. 293 B du CGI). Les frais de port sont calculés au moment de la commande selon la destination.</p>
-            <p><strong>2. Nature des produits :</strong> Les pièces vendues sont exclusivement des <strong>reproductions imprimées</strong> ou des <strong>créations originales custom</strong>. Aucune boîte vintage d'époque n'est proposée à la vente.</p>
-            <p><strong>3. Commande :</strong> Toute commande vaut acceptation des présentes CGV. La confirmation par email vaut conclusion du contrat.</p>
-            <p><strong>4. Paiement :</strong> Le paiement s'effectue via PayPal, sécurisé par leur système de protection des acheteurs.</p>
-            <p><strong>5. Livraison :</strong> Les colis sont expédiés sous 2-3 jours ouvrés. Les délais de livraison indiqués sont communiqués par les transporteurs.</p>
-            <p><strong>6. Droit de rétractation :</strong> Conformément aux articles L.221-18 et suivants du Code de la consommation, vous disposez d'un délai de 14 jours pour retourner un article. Les frais de retour sont à votre charge.</p>
-            <p><strong>7. Données personnelles :</strong> Les données collectées sont utilisées uniquement pour le traitement de votre commande et ne sont jamais cédées à des tiers. Conformément au RGPD, vous disposez d'un droit d'accès, de rectification et de suppression de vos données.</p>
-            <p><strong>8. Propriété intellectuelle :</strong> L'ensemble du contenu du site est protégé par le droit d'auteur. Les noms de marques et produits cités restent la propriété de leurs détenteurs respectifs.</p>
-        </div>
-        <p class="text-xs italic text-on-surface-variant text-center">⚠️ <strong>Action requise :</strong> complétez les champs entre crochets avec vos informations réelles avant toute activité commerciale.</p>
-    </section>
-</main>
+        <!-- ═══ VIDÉOS D'ARCHIVE ═══ -->
+        <section class="aa-sec reveal">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <figure class="aa-media-figure" data-lightbox="https://res.cloudinary.com/uvnbvhiw/video/upload/v1790637493/pomelli_creative_video_9_16_0929_geyjb7.mp4" data-lightbox-type="video" title="Agrandir" style="--shc:#bb0003;">
+                    <video src="https://res.cloudinary.com/uvnbvhiw/video/upload/v1790637493/pomelli_creative_video_9_16_0929_geyjb7.mp4" class="media" autoplay muted loop playsinline preload="auto"></video>
+                    <figcaption class="aa-media-caption"><span class="material-symbols-outlined">movie</span>REPRODUCTION BOÎTE VINTAGE — PIÈCE D'ARCHIVE</figcaption>
+                </figure>
+                <figure class="aa-media-figure" data-lightbox="https://res.cloudinary.com/uvnbvhiw/video/upload/v1790637511/pomelli_creative_video_9_16_0929_1_xnutv4.mp4" data-lightbox-type="video" title="Agrandir" style="--shc:#0f56bf;">
+                    <video src="https://res.cloudinary.com/uvnbvhiw/video/upload/v1790637511/pomelli_creative_video_9_16_0929_1_xnutv4.mp4" class="media" autoplay muted loop playsinline preload="auto"></video>
+                    <figcaption class="aa-media-caption"><span class="material-symbols-outlined">movie</span>REPRODUCTION BOÎTE VINTAGE — PIÈCE D'ARCHIVE</figcaption>
+                </figure>
+            </div>
+            <p class="aa-media-note"><span class="material-symbols-outlined">info</span> Ces vidéos représentent des reproductions (et non des customs)</p>
+        </section>
 
-<!-- LIGHTBOX -->
-<div id="aa-lightbox" class="aa-lightbox" onclick="closeLightbox()">
-    <button class="aa-lightbox-close" onclick="closeLightbox()" aria-label="Fermer">✕</button>
-    <video id="aa-lightbox-video" controls style="display:none; max-width: 90vw; max-height: 90vh; border: 6px solid #342e1e; box-shadow: 12px 12px 0px 0px #ffca4d;"></video>
-    <img id="aa-lightbox-img" src="" alt="Image agrandie" style="display:none;"/>
-</div>
+        <!-- ═══ NOTRE OBJECTIF ═══ -->
+        <section class="aa-sec reveal">
+            <div class="aa-objectif">
+                <div class="aa-sec-head">
+                    <span class="aa-sec-ico"><span class="material-symbols-outlined">flag</span></span>
+                    <h2>Notre objectif</h2>
+                </div>
+                <p><strong>Action Archive</strong> est spécialisée dans la <strong>préservation et la vente de boîtes vintage</strong> pour figurines et jouets de collection des années 70 à 90.</p>
+                <p><strong>Notre mission :</strong> permettre aux collectionneurs de <strong>redonner vie à leurs collections</strong> lorsque la boîte d'origine a été perdue, abîmée ou jetée.</p>
+                <p class="aa-obj-note"><strong>⚠️ À noter :</strong> nous ne vendons <strong>aucune boîte vintage d'époque</strong>. Nous proposons exclusivement des <strong>reproductions soignées</strong> et des <strong>créations custom originales</strong>.</p>
+            </div>
+        </section>
 
-<footer class="bg-[#342e1e] border-t-8 border-double border-[#755700] w-full py-12 px-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-20">
-    <div class="flex flex-col items-center md:items-start gap-3">
-        <a href="index.html" class="aa-logo-link flex items-center gap-3 cursor-pointer" title="Action Archive">
-            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Logo Action Archive - Retour à l'accueil" loading="lazy" class="aa-logo h-10 w-auto"/>
-            <span class="text-xl md:text-2xl font-black italic text-[#ffca4d] font-headline uppercase tracking-tighter hover:text-white transition-colors">Action Archive</span>
-        </a>
-        <p class="font-body font-medium text-[10px] text-[#ffca4d] tracking-widest uppercase">© 2026 Action Archive INC.</p>
+        <!-- ═══ CE QUE JE PROPOSE ═══ -->
+        <section class="aa-sec">
+            <div class="aa-sec-head reveal">
+                <span class="aa-sec-ico"><span class="material-symbols-outlined">inventory_2</span></span>
+                <h2>Ce que je propose</h2>
+                <span class="aa-sec-line"></span>
+            </div>
+            <div class="flex flex-col gap-3">
+                <div class="aa-offer-card reveal" style="--shc:#0f56bf;">
+                    <span class="aa-offer-dot" style="background:#0f56bf;"></span>
+                    <div>
+                        <p class="aa-offer-title">Reproductions</p>
+                        <p>Reproduction imprimée haute qualité d'une boîte vintage d'origine. Conçue pour les collectionneurs qui souhaitent <strong>remplacer une boîte manquante ou abîmée</strong>.</p>
+                        <p class="aa-offer-note">Ces pièces ne sont pas d'époque, mais permettent de restaurer l'apparence d'une collection.</p>
+                    </div>
+                </div>
+                <div class="aa-offer-card reveal" style="--shc:#7b1fa2;transition-delay:.1s;">
+                    <span class="aa-offer-dot" style="background:#7b1fa2;"></span>
+                    <div>
+                        <p class="aa-offer-title">Créations custom</p>
+                        <p>Création originale <strong>imaginée et réalisée par Action Archive</strong>, en série très limitée. Pièce d'auteur exclusive, inspirée ou non d'un modèle vintage.</p>
+                        <p class="aa-offer-note">Stock très limité. Une seule chance par sortie.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ FAQ ═══ -->
+        <section class="aa-sec">
+            <div class="aa-sec-head reveal">
+                <span class="aa-sec-ico"><span class="material-symbols-outlined">help</span></span>
+                <h2>Questions fréquentes</h2>
+                <span class="aa-sec-line"></span>
+            </div>
+            <details class="aa-faq reveal"><summary>Vendez-vous des boîtes originales d'époque ? <span class="material-symbols-outlined">expand_more</span></summary><div class="aa-faq-body"><strong>Non.</strong> Toutes les pièces vendues sur Action Archive sont des <strong>reproductions</strong> (impression haute qualité) ou des <strong>créations custom</strong> originales. Aucune boîte vintage d'époque n'est proposée à la vente. Cela garantit une traçabilité et une transparence totale.</div></details>
+            <details class="aa-faq reveal"><summary>Quelle est la différence entre une reproduction et une boîte originale ? <span class="material-symbols-outlined">expand_more</span></summary><div class="aa-faq-body">Une <strong>boîte originale</strong> a été imprimée dans les années 70-90 et a traversé le temps. Une <strong>reproduction</strong> est imprimée aujourd'hui, en haute qualité, à partir des visuels d'origine.</div></details>
+            <details class="aa-faq reveal"><summary>À quoi servent vos reproductions ? <span class="material-symbols-outlined">expand_more</span></summary><div class="aa-faq-body">Elles permettent aux collectionneurs de <strong>remplacer une boîte manquante ou trop abîmée</strong> et de présenter leurs figurines dans leur écrin d'origine. Elles peuvent aussi servir pour des expositions, des dioramas, ou simplement pour le plaisir d'avoir une collection complète.</div></details>
+            <details class="aa-faq reveal"><summary>Vos reproductions sont-elles fidèles à l'original ? <span class="material-symbols-outlined">expand_more</span></summary><div class="aa-faq-body">Oui, nous apportons un soin particulier aux couleurs, polices et dimensions. Cependant, les techniques d'impression modernes peuvent donner un rendu légèrement différent de l'impression offset d'époque.</div></details>
+            <details class="aa-faq reveal"><summary>Quels sont les délais de livraison ? <span class="material-symbols-outlined">expand_more</span></summary><div class="aa-faq-body"><strong>France :</strong> 3-7 jours • <strong>Europe :</strong> 7-14 jours • <strong>International :</strong> 14-21 jours. Chaque colis dispose d'un numéro de suivi.</div></details>
+            <details class="aa-faq reveal"><summary>Puis-je retourner un article ? <span class="material-symbols-outlined">expand_more</span></summary><div class="aa-faq-body">Oui, vous disposez de <strong>14 jours après réception</strong> pour retourner un article dans son état d'origine. Les frais de retour sont à votre charge sauf en cas de défaut.</div></details>
+            <details class="aa-faq reveal"><summary>Comment sont emballées les pièces ? <span class="material-symbols-outlined">expand_more</span></summary><div class="aa-faq-body">Chaque pièce est protégée avec du papier bulle et du calage dans des enveloppes ou boîtes renforcées. Nous traitons vos commandes comme si c'étaient les nôtres.</div></details>
+            <details class="aa-faq reveal"><summary>Comment fonctionne le programme fidélité ? <span class="material-symbols-outlined">expand_more</span></summary><div class="aa-faq-body"><strong>1 achat = 1 ⭐</strong>. Atteignez <strong>10 étoiles</strong> et recevez une pièce cadeau 🎁 offerte + 1 étoile de bienvenue à l'inscription.</div></details>
+            <details class="aa-faq reveal"><summary>Vous ne trouvez pas la boîte que je cherche ? <span class="material-symbols-outlined">expand_more</span></summary><div class="aa-faq-body">Contactez-nous via le formulaire ci-dessous ou par email à <strong>contact@action-archive.com</strong>. Nous pouvons étudier les demandes spécifiques.</div></details>
+        </section>
+
+        <!-- ═══ LIVRAISON & PAIEMENT ═══ -->
+        <section class="aa-sec">
+            <div class="aa-sec-head reveal">
+                <span class="aa-sec-ico"><span class="material-symbols-outlined">local_shipping</span></span>
+                <h2>Livraison &amp; Paiement</h2>
+                <span class="aa-sec-line"></span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="aa-info-card reveal">
+                    <div class="aa-info-card-h">
+                        <span class="aa-sec-ico"><span class="material-symbols-outlined">local_shipping</span></span>
+                        <h3>Livraison</h3>
+                    </div>
+                    <p class="font-body font-bold"><strong>Expédition depuis la France 🇫🇷</strong></p>
+                    <ul>
+                        <li><span class="material-symbols-outlined">check_circle</span> Mondial Relay, Colissimo, DHL</li>
+                        <li><span class="material-symbols-outlined">check_circle</span> Frais calculés au moment du paiement</li>
+                        <li><span class="material-symbols-outlined">check_circle</span> Livraison offerte dès 150 € d'achat</li>
+                        <li><span class="material-symbols-outlined">check_circle</span> Emballage renforcé anti-pli</li>
+                        <li><span class="material-symbols-outlined">check_circle</span> Suivi de livraison inclus</li>
+                    </ul>
+                </div>
+                <div class="aa-info-card reveal" style="transition-delay:.1s;">
+                    <div class="aa-info-card-h">
+                        <span class="aa-sec-ico"><span class="material-symbols-outlined">payments</span></span>
+                        <h3>Paiement sécurisé</h3>
+                    </div>
+                    <p class="font-body font-bold"><strong>Via PayPal 🅿️</strong></p>
+                    <ul>
+                        <li><span class="material-symbols-outlined">check_circle</span> Paiement sécurisé SSL</li>
+                        <li><span class="material-symbols-outlined">check_circle</span> Protection acheteur PayPal</li>
+                        <li><span class="material-symbols-outlined">check_circle</span> Paiement en 4x sans frais possible</li>
+                        <li><span class="material-symbols-outlined">check_circle</span> Toutes cartes acceptées</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ CONTACT ═══ -->
+        <section class="aa-sec" id="contact">
+            <div class="aa-sec-head reveal">
+                <span class="aa-sec-ico"><span class="material-symbols-outlined">mail</span></span>
+                <h2>Contacte-nous</h2>
+                <span class="aa-sec-line"></span>
+            </div>
+
+            <div class="mb-6 flex items-center gap-3 flex-wrap reveal">
+                <span class="aa-response-badge">
+                    <span class="material-symbols-outlined aa-pulse" style="font-size:18px;">schedule</span>
+                    Réponse sous 24-48h ouvrées
+                </span>
+                <span class="font-body text-sm italic text-on-surface-variant">Du lundi au vendredi, 9h-18h</span>
+            </div>
+
+            <div class="bg-surface-container-high border-4 border-on-background p-6 md:p-8 reveal" style="box-shadow:8px 8px 0 #bb0003;">
+                <div class="flex items-center gap-4 mb-6 pb-6 border-b-4 border-double border-on-background/20">
+                    <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1786006674/copy_of_3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Logo Action Archive - Contact" loading="lazy" class="h-16 md:h-20 w-auto aa-logo"/>
+                    <div>
+                        <p class="font-headline font-black text-xl uppercase text-on-background italic leading-tight">Une question ? Un projet ?</p>
+                        <p class="font-body text-sm text-on-surface-variant mt-1">Écris-nous, on te répond vite !</p>
+                    </div>
+                </div>
+
+                <!-- Formulaire : inchangé (formsubmit, redirection vers l'accueil après envoi) -->
+                <form action="https://formsubmit.co/franciswillson533@gmail.com" method="POST" class="space-y-4">
+                    <input type="hidden" name="_subject" value="📧 Nouveau message depuis Action Archive"/>
+                    <input type="hidden" name="_template" value="table"/>
+                    <input type="hidden" name="_captcha" value="false"/>
+                    <input type="hidden" name="_next" value="https://www.actionarchive.ink/index.html"/>
+                    <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off"/>
+
+                    <div>
+                        <label for="aa-name" class="aa-label"><span class="material-symbols-outlined">person</span>Nom complet <span class="req">*</span></label>
+                        <input type="text" id="aa-name" name="Nom" required placeholder="Ton nom et prénom" class="aa-input"/>
+                    </div>
+
+                    <div>
+                        <label for="aa-email" class="aa-label"><span class="material-symbols-outlined">mail</span>Adresse e-mail <span class="req">*</span></label>
+                        <input type="email" id="aa-email" name="Email" required placeholder="ton.email@exemple.com" class="aa-input"/>
+                        <p class="text-xs italic text-on-surface-variant mt-1">Utilisée uniquement pour te répondre</p>
+                    </div>
+
+                    <div>
+                        <label for="aa-subject" class="aa-label"><span class="material-symbols-outlined">sell</span>Sujet <span class="req">*</span></label>
+                        <select id="aa-subject" name="Sujet" required class="aa-input">
+                            <option value="">— Choisis un sujet —</option>
+                            <option value="Question sur un produit">❓ Question sur un produit</option>
+                            <option value="Demande de reproduction spécifique">🎨 Demande de reproduction spécifique</option>
+                            <option value="Suivi de commande">📦 Suivi de commande</option>
+                            <option value="Retour / Remboursement">↩️ Retour / Remboursement</option>
+                            <option value="Programme fidélité">⭐ Programme fidélité</option>
+                            <option value="Partenariat / Collaboration">🤝 Partenariat / Collaboration</option>
+                            <option value="Autre">💬 Autre</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="aa-message" class="aa-label"><span class="material-symbols-outlined">chat</span>Ton message <span class="req">*</span></label>
+                        <textarea id="aa-message" name="Message" required rows="6" placeholder="Décris ta demande ici... Sois précis, ça nous aide à te répondre plus vite !" class="aa-input" style="resize:vertical; min-height:140px;"></textarea>
+                    </div>
+
+                    <div class="aa-gdpr">
+                        <label class="flex items-start gap-2 cursor-pointer">
+                            <input type="checkbox" required class="mt-1" style="accent-color:#bb0003;"/>
+                            <span>J'accepte que mes données soient utilisées pour me recontacter dans le cadre de ma demande, conformément au <strong>RGPD</strong>. Aucune donnée ne sera cédée à des tiers.</span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="aa-submit"><span class="material-symbols-outlined">send</span>Envoyer mon message</button>
+
+                    <p class="text-center text-xs italic text-on-surface-variant mt-3">Tes données sont sécurisées et ne servent qu'à te répondre</p>
+                </form>
+            </div>
+        </section>
+
+        <!-- ═══ AUTRES MOYENS ═══ -->
+        <section class="aa-sec">
+            <h3 class="aa-sec-head reveal"><span class="aa-sec-ico"><span class="material-symbols-outlined">share</span></span><h2 style="font-size:clamp(1.3rem,2.6vw,1.7rem);">Autres moyens de nous joindre</h2></h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="aa-info-card reveal text-center">
+                    <span class="aa-sec-ico" style="margin-inline:auto;"><span class="material-symbols-outlined">mail</span></span>
+                    <p class="font-headline font-black uppercase mt-3">Email direct</p>
+                    <a href="mailto:contact@action-archive.com" class="font-body text-sm underline break-all hover:text-[#bb0003] transition-colors">contact@action-archive.com</a>
+                </div>
+                <div class="aa-info-card reveal text-center" style="transition-delay:.1s;">
+                    <span class="aa-sec-ico" style="margin-inline:auto;"><span class="material-symbols-outlined">groups</span></span>
+                    <p class="font-headline font-black uppercase mt-3">Réseaux sociaux</p>
+                    <p class="font-body text-sm">Facebook, Instagram &amp; TikTok</p>
+                </div>
+                <div class="aa-info-card reveal text-center" style="transition-delay:.2s;">
+                    <span class="aa-sec-ico" style="margin-inline:auto;"><span class="material-symbols-outlined">schedule</span></span>
+                    <p class="font-headline font-black uppercase mt-3">Délai de réponse</p>
+                    <p class="font-body text-sm"><strong>24-48h ouvrées</strong></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ MÉDIAS BAS DE PAGE ═══ -->
+        <section class="aa-sec reveal">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <figure class="aa-media-figure" data-lightbox="https://res.cloudinary.com/uvnbvhiw/video/upload/v1790640412/pomelli_creative_video_9_16_0929_2_nwue5h.mp4" data-lightbox-type="video" title="Agrandir" style="--shc:#0f56bf;">
+                    <video src="https://res.cloudinary.com/uvnbvhiw/video/upload/v1790640412/pomelli_creative_video_9_16_0929_2_nwue5h.mp4" class="media" autoplay muted loop playsinline preload="auto"></video>
+                    <figcaption class="aa-media-caption"><span class="material-symbols-outlined">movie</span>REPRODUCTION EN VIDÉO</figcaption>
+                </figure>
+                <figure class="aa-media-figure" data-lightbox="https://res.cloudinary.com/uvnbvhiw/image/upload/v1790640443/pomelli_creative_image_9_16_0929_zzywd8.png" data-lightbox-type="image" title="Agrandir" style="--shc:#bb0003;">
+                    <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1790640443/pomelli_creative_image_9_16_0929_zzywd8.png" alt="Reproduction boîte vintage Action Archive" class="media" loading="lazy"/>
+                    <figcaption class="aa-media-caption"><span class="material-symbols-outlined">inventory_2</span>REPRODUCTION EN IMAGE</figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <!-- ═══ MENTIONS LÉGALES & CGV ═══ -->
+        <section class="aa-sec">
+            <div class="aa-sec-head reveal">
+                <span class="aa-sec-ico"><span class="material-symbols-outlined">gavel</span></span>
+                <h2>Mentions Légales &amp; CGV</h2>
+                <span class="aa-sec-line"></span>
+            </div>
+            <div class="aa-law-box reveal mb-6">
+                <p><strong>Éditeur du site :</strong> Action Archive</p>
+                <p><strong>Statut juridique :</strong> [À compléter - Auto-entrepreneur / Micro-entreprise / EURL]</p>
+                <p><strong>SIRET :</strong> [À compléter]</p>
+                <p><strong>TVA :</strong> Non applicable, art. 293 B du CGI (si micro-entreprise sous les seuils)</p>
+                <p><strong>Siège social :</strong> [Votre adresse complète]</p>
+                <p><strong>Email :</strong> contact@action-archive.com</p>
+                <p><strong>Téléphone :</strong> [À compléter]</p>
+                <p><strong>Directeur de la publication :</strong> [Votre nom]</p>
+                <p><strong>Hébergeur :</strong> Vercel Inc. — 340 S Lemon Ave #4133, Walnut, CA 91789, USA</p>
+            </div>
+            <div class="aa-law-box reveal mb-6">
+                <h3>Conditions Générales de Vente (CGV)</h3>
+                <p><strong>1. Prix :</strong> Les prix sont indiqués en euros TTC (TVA non applicable, art. 293 B du CGI). Les frais de port sont calculés au moment de la commande selon la destination.</p>
+                <p><strong>2. Nature des produits :</strong> Les pièces vendues sont exclusivement des <strong>reproductions imprimées</strong> ou des <strong>créations originales custom</strong>. Aucune boîte vintage d'époque n'est proposée à la vente.</p>
+                <p><strong>3. Commande :</strong> Toute commande vaut acceptation des présentes CGV. La confirmation par email vaut conclusion du contrat.</p>
+                <p><strong>4. Paiement :</strong> Le paiement s'effectue via PayPal, sécurisé par leur système de protection des acheteurs.</p>
+                <p><strong>5. Livraison :</strong> Les colis sont expédiés sous 2-3 jours ouvrés. Les délais de livraison indiqués sont communiqués par les transporteurs.</p>
+                <p><strong>6. Droit de rétractation :</strong> Conformément aux articles L.221-18 et suivants du Code de la consommation, vous disposez d'un délai de 14 jours pour retourner un article. Les frais de retour sont à votre charge.</p>
+                <p><strong>7. Données personnelles :</strong> Les données collectées sont utilisées uniquement pour le traitement de votre commande et ne sont jamais cédées à des tiers. Conformément au RGPD, vous disposez d'un droit d'accès, de rectification et de suppression de vos données.</p>
+                <p><strong>8. Propriété intellectuelle :</strong> L'ensemble du contenu du site est protégé par le droit d'auteur. Les noms de marques et produits cités restent la propriété de leurs détenteurs respectifs.</p>
+            </div>
+            <p class="aa-action-note">⚠️ Action requise : complétez les champs entre crochets avec vos informations réelles avant toute activité commerciale.</p>
+        </section>
+    </main>
+
+    <!-- ═══ LIGHTBOX ═══ -->
+    <div id="aa-lightbox" class="aa-lightbox">
+        <button class="aa-lightbox-close" aria-label="Fermer">✕</button>
+        <video id="aa-lightbox-video" controls style="display:none;"></video>
+        <img id="aa-lightbox-img" src="" alt="Média agrandi" style="display:none;"/>
     </div>
-    <nav id="aa-social-nav" class="flex flex-wrap justify-center gap-10"></nav>
-</footer>
 
-<div id="aa-toasts"></div>
-<script src="aa-core.js"></script>
-<script>
-function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="aa-footer w-full py-12 px-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-20">
+        <div class="flex flex-col items-center md:items-start gap-3">
+            <a href="index.html" class="aa-logo-link flex items-center gap-3" title="Action Archive">
+                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Logo Action Archive - Retour à l'accueil" loading="lazy" class="aa-logo h-10 w-auto"/>
+                <span class="text-xl md:text-2xl font-black italic text-[#ffca4d] font-headline uppercase tracking-tighter hover:text-white transition-colors">Action Archive</span>
+            </a>
+            <p class="font-body font-medium text-[10px] text-[#ffca4d] tracking-widest uppercase">© 2026 Action Archive INC.</p>
+            <p class="aa-footer-ref">SUPPORT &amp; TRANSPARENCE — ÉDITION 2026</p>
+        </div>
+        <nav id="aa-social-nav" class="flex flex-wrap justify-center gap-4" aria-label="Réseaux sociaux"></nav>
+    </footer>
 
-function closeLightbox() {
-    document.getElementById('aa-lightbox').classList.remove('open');
-    const v = document.getElementById('aa-lightbox-video');
-    const i = document.getElementById('aa-lightbox-img');
-    if (v) { v.pause(); v.src = ''; v.style.display = 'none'; }
-    if (i) { i.src = ''; i.style.display = 'none'; }
-    document.body.style.overflow = '';
-}
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+    <button id="aaTop" aria-label="Retour en haut"><span class="material-symbols-outlined">arrow_upward</span></button>
+    <div id="aa-toasts"></div>
 
-// ✅ Petit bonus : si on arrive avec ?sent=1 (cas d'un retour manuel), afficher le bandeau
-(function(){
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('sent') === '1') {
-        const banner = document.getElementById('aa-sent-banner');
-        if (banner) {
-            banner.style.display = 'flex';
-            setTimeout(() => {
-                banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 100);
-            // Nettoyer l'URL
-            window.history.replaceState({}, '', window.location.pathname);
-        }
+    <script src="aa-core.js"></script>
+    <script>
+    function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+    function aaEscapeAttr(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    function toggleDrawer(){
+        const d=document.getElementById('side-drawer'), o=document.getElementById('drawer-overlay');
+        d.classList.toggle('open'); o.classList.toggle('open');
+        document.body.style.overflow = d.classList.contains('open') ? 'hidden' : '';
     }
-})();
 
-(function() {
-    const social = JSON.parse(localStorage.getItem('aa_social_config') || '{}');
-    const nav = document.getElementById('aa-social-nav');
-    if (!nav) return;
-    const items = [{ key: 'facebook', icon: 'facebook', label: 'FACEBOOK' },{ key: 'twitter', icon: 'share', label: 'TWITTER' },{ key: 'instagram', icon: 'camera_alt', label: 'INSTAGRAM' },{ key: 'tiktok', icon: 'music_note', label: 'TIKTOK' },{ key: 'youtube', icon: 'play_circle', label: 'YOUTUBE' }];
-    items.forEach(item => {
-        const data = social[item.key];
-        if (data && data.enabled && data.url) nav.innerHTML += `<a href="${aaEscapeHtml(data.url)}" target="_blank" rel="noopener" class="group flex flex-col items-center gap-1"><div class="bg-[#ffca4d] text-[#342e1e] p-2 rounded-sm group-hover:bg-white transition-colors btn-physical"><span class="material-symbols-outlined">${item.icon}</span></div><span class="font-label font-bold text-[9px] text-[#eadcbc] tracking-widest uppercase">${item.label}</span></a>`;
+    /* ═══ LIGHTBOX MÉDIAS : ouvrir vidéo / image en grand ═══ */
+    function closeLightbox() {
+        const lb = document.getElementById('aa-lightbox');
+        const v = document.getElementById('aa-lightbox-video');
+        const i = document.getElementById('aa-lightbox-img');
+        if (v) { try { v.pause(); } catch(e){} v.removeAttribute('src'); v.load(); v.style.display = 'none'; }
+        if (i) { i.src = ''; i.style.display = 'none'; }
+        lb.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+    function openLightbox(src, isVideo) {
+        const lb = document.getElementById('aa-lightbox');
+        const v = document.getElementById('aa-lightbox-video');
+        const i = document.getElementById('aa-lightbox-img');
+        if (isVideo) { i.style.display = 'none'; v.style.display = 'block'; v.src = src; const p = v.play(); if (p && p.catch) p.catch(()=>{}); }
+        else { v.style.display = 'none'; i.style.display = 'block'; i.src = src; }
+        lb.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+    document.querySelector('.aa-lightbox-close').addEventListener('click', closeLightbox);
+    document.getElementById('aa-lightbox').addEventListener('click', function(e) { if (e.target === this) closeLightbox(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+    document.querySelectorAll('[data-lightbox]').forEach(el => {
+        el.setAttribute('tabindex', '0');
+        el.setAttribute('role', 'button');
+        el.setAttribute('aria-label', 'Agrandir le média');
+        const open = () => openLightbox(el.dataset.lightbox, el.dataset.lightboxType === 'video');
+        el.addEventListener('click', open);
+        el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
     });
-    if (nav.innerHTML === '') nav.innerHTML = '<p class="text-[#eadcbc] text-xs italic">Aucun réseau social</p>';
-})();
-</script>
+
+    /* ═══ Bandeau de confirmation (?sent=1) ═══ */
+    (function(){
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('sent') === '1') {
+            const banner = document.getElementById('aa-sent-banner');
+            if (banner) {
+                banner.style.display = 'flex';
+                setTimeout(() => { banner.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 100);
+                window.history.replaceState({}, '', window.location.pathname);
+            }
+        }
+    })();
+
+    /* ═══ Améliorations UI (identiques index) ═══ */
+    document.querySelectorAll('[data-dupe]').forEach(el=>{ el.innerHTML += el.innerHTML; });
+
+    (function(){
+        if(!matchMedia('(pointer:fine)').matches) return;
+        const dot=document.getElementById('aaCursorDot'), ring=document.getElementById('aaCursorRing');
+        dot.style.display='block'; ring.style.display='block'; document.documentElement.classList.add('aa-cursor-on');
+        let mx=innerWidth/2, my=innerHeight/2, rx=mx, ry=my;
+        addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; dot.style.transform=`translate(${mx-5}px,${my-5}px)`; },{passive:true});
+        addEventListener('mousedown',()=>ring.classList.add('aa-press'));
+        addEventListener('mouseup',()=>ring.classList.remove('aa-press'));
+        document.addEventListener('mouseover',e=>{ if(e.target.closest('a,button,input,select,textarea,.aa-media-figure')) ring.classList.add('aa-target'); });
+        document.addEventListener('mouseout',e=>{ if(e.target.closest('a,button,input,select,textarea,.aa-media-figure')) ring.classList.remove('aa-target'); });
+        (function loop(){ rx+=(mx-rx)*.18; ry+=(my-ry)*.18; ring.style.transform=`translate(${rx-ring.offsetWidth/2}px,${ry-ring.offsetHeight/2}px)`; requestAnimationFrame(loop); })();
+    })();
+
+    (function(){
+        const bar=document.getElementById('aaProgress'), top=document.getElementById('aaTop'), header=document.querySelector('.aa-header');
+        let ticking=false;
+        function upd(){
+            const sc=scrollY, h=document.documentElement.scrollHeight-innerHeight;
+            bar.style.width=(h>0?(sc/h)*100:0)+'%';
+            top.classList.toggle('show',sc>600);
+            header.classList.toggle('aa-scrolled',sc>12);
+            ticking=false;
+        }
+        addEventListener('scroll',()=>{ if(!ticking){ requestAnimationFrame(upd); ticking=true; } },{passive:true});
+        upd();
+        top.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
+    })();
+
+    (function(){
+        const els=document.querySelectorAll('.reveal');
+        if(!('IntersectionObserver' in window)){ els.forEach(e=>e.classList.add('in')); return; }
+        const io=new IntersectionObserver(es=>{ es.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } }); },{threshold:.12,rootMargin:'0px 0px -8% 0px'});
+        els.forEach((e,i)=>{ e.style.transitionDelay=Math.min((i%10)*40,'400')+'ms'; io.observe(e); });
+    })();
+
+    (function(){
+        const badge=document.getElementById('aa-cart-badge'); if(!badge) return;
+        new MutationObserver(()=>{
+            badge.classList.remove('pop'); void badge.offsetWidth; badge.classList.add('pop');
+        }).observe(badge,{childList:true,characterData:true,subtree:true});
+    })();
+
+    (function(){
+        const c=document.getElementById('aaClock'); if(!c) return;
+        const t=()=>c.textContent=new Date().toLocaleTimeString('fr-FR');
+        t(); setInterval(t,1000);
+    })();
+
+    (function(){
+        const el=document.querySelector('.aa-barcode'); if(!el) return;
+        for(let i=0;i<30;i++){
+            const b=document.createElement('i'), s=(i*7)%9;
+            b.style.width=(s===0?5:s<3?2:s<6?1:3)+'px'; b.style.height='34px';
+            el.appendChild(b);
+        }
+    })();
+
+    /* Réseaux sociaux (config aa-core) */
+    (function(){
+        const social = JSON.parse(localStorage.getItem('aa_social_config') || '{}');
+        const nav = document.getElementById('aa-social-nav');
+        if (!nav) return;
+        const items = [{ key: 'facebook', icon: 'facebook', label: 'FACEBOOK' },{ key: 'twitter', icon: 'share', label: 'TWITTER' },{ key: 'instagram', icon: 'photo_camera', label: 'INSTAGRAM' },{ key: 'tiktok', icon: 'music_note', label: 'TIKTOK' },{ key: 'youtube', icon: 'play_circle', label: 'YOUTUBE' }];
+        let found = false;
+        items.forEach(item => {
+            const data = social[item.key];
+            if (data && data.enabled && data.url) {
+                found = true;
+                const a=document.createElement('a');
+                a.href=aaEscapeAttr(data.url); a.target='_blank'; a.rel='noopener';
+                a.className='aa-social-link'; a.setAttribute('aria-label',item.label); a.title=item.label;
+                a.innerHTML=`<span class="material-symbols-outlined">${item.icon}</span>`;
+                nav.appendChild(a);
+            }
+        });
+        if (!found) nav.innerHTML = '<p class="font-mono text-xs italic" style="color:#eadcbc;">Aucun réseau social configuré</p>';
+    })();
+    </script>
 </body>
 </html>
