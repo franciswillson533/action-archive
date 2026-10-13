@@ -6,644 +6,784 @@
     <title>Action Archive - Boîtes Vintage de Remplacement pour Figurines 70-90</title>
     <meta name="description" content="Reproductions soignées et pièces custom pour redonner vie aux boîtes vintage de vos figurines et jouets des années 70-90."/>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,900;1,900&family=Work+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,900;1,700;1,900&family=Work+Sans:wght@400;500;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL@20..48,100..700,0..1&display=swap" rel="stylesheet"/>
     <script>
         tailwind.config = { darkMode: "class", theme: { extend: { colors: {
             "secondary": "#755700", "surface-container-low": "#fdefd5", "surface-container-high": "#efe1c3",
             "surface": "#fff5e5", "primary": "#bb0003", "tertiary": "#0f56bf", "on-surface": "#342e1e",
             "secondary-container": "#ffca4d", "on-background": "#342e1e", "background": "#fff5e5",
             "surface-variant": "#eadcbc", "on-surface-variant": "#635b48",
-        }, fontFamily: { "headline": ["Epilogue"], "body": ["Work Sans"], "label": ["Work Sans"] } } } }
+        }, fontFamily: { "headline": ["Epilogue"], "body": ["Work Sans"], "label": ["Work Sans"], "mono": ["Space Mono"] } } } }
     </script>
     <style>
-        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 80% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
-        .animate-pop-in { animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-        #side-drawer { box-shadow: -8px 0 0 0 rgba(52, 46, 30, 0.2); transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1); }
-        #side-drawer.open { transform: translateX(0); }
-        .drawer-overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
-        .drawer-overlay.open { opacity: 1; pointer-events: auto; }
-        .btn-physical { transition: all 0.1s ease; }
-        .btn-physical:active { transform: translateY(4px); box-shadow: 0px 0px 0px 0px !important; }
-        .halftone { background-image: radial-gradient(#b7ac96 1px, transparent 0); background-size: 8px 8px; opacity: 0.1; }
-        #aa-cart-badge{position:absolute;top:-7px;right:-7px;min-width:18px;height:18px;background:#ffca4d;color:#342e1e;font-family:'Epilogue',sans-serif;font-weight:900;font-size:10px;border:2px solid #342e1e;border-radius:2px;display:none;align-items:center;justify-content:center;padding:0 3px;}
-        .aa-toast{background:#342e1e;color:#fff5e5;border:3px solid #ffca4d;padding:12px 18px;font-family:'Epilogue',sans-serif;font-weight:900;font-size:13px;text-transform:uppercase;display:flex;align-items:center;gap:10px;max-width:300px;transform:translateX(120%);opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);pointer-events:auto;}
-        .aa-toast.show{transform:translateX(0);opacity:1;}
-        #aa-toasts{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
-        .aa-logo { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease; filter: drop-shadow(2px 2px 0px rgba(52, 46, 30, 0.15)); }
-        .aa-logo-link:hover .aa-logo { transform: rotate(-5deg) scale(1.05); filter: drop-shadow(3px 3px 0px rgba(187, 0, 3, 0.4)); }
-        .aa-stars-badge{position:absolute;top:-7px;right:-8px;min-width:18px;height:18px;background:#ffca4d;color:#342e1e;font-family:'Epilogue',sans-serif;font-weight:900;font-size:10px;border:2px solid #342e1e;border-radius:2px;display:flex;align-items:center;justify-content:center;padding:0 3px;}
-        .aa-nav-gift-badge{position:absolute;bottom:-8px;right:-8px;font-size:14px;display:none;align-items:center;justify-content:center;}
-        @keyframes giftPulse { 0%,100%{box-shadow:0 0 0 0 rgba(255,202,77,0.7);} 50%{box-shadow:0 0 0 6px rgba(255,202,77,0);} }
-        .aa-nav-stars.aa-has-gift { border-color:#ffca4d !important; color:#ffca4d !important; animation: giftPulse 1.5s infinite; }
-        .aa-section-title { display:flex; align-items:center; gap:1rem; margin-bottom:2rem; padding-bottom:1rem; border-bottom:4px solid #342e1e; }
-        .aa-section-title h2 { font-family:'Epilogue',sans-serif; font-weight:900; font-size:2rem; text-transform:uppercase; color:#342e1e; letter-spacing:-0.02em; font-style:italic; }
-        .aa-objective-banner { background:#bb0003; color:#fff5e5; border-top:4px solid #342e1e; border-bottom:4px solid #342e1e; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:0.95rem; letter-spacing:0.02em; padding:0.7rem 1.5rem; text-align:center; }
-        .aa-objective-banner strong { color:#ffca4d; }
-        .aa-trust-bar { background:#342e1e; color:#ffca4d; padding:1.25rem 1.5rem; transform: rotate(-1.5deg); margin: 1rem -1rem; box-shadow: 0 6px 0 0 #bb0003; }
-        .aa-trust-row { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:0.6rem 1.2rem; }
-        .aa-trust-item { display:flex; align-items:center; gap:0.6rem; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:0.85rem; letter-spacing:0.05em; position:relative; padding-right:0; }
-        .aa-trust-item .material-symbols-outlined { font-size: 1.6rem; }
-        .aa-trust-item::after { content: none; }
-        .aa-trust-item:last-child::after { display:none; }
-        .aa-menu-btn { font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; background: #bb0003; color: #fff5e5; border: 3px solid #342e1e; padding: 10px 20px; font-size: 1.05rem; box-shadow: 4px 4px 0 0 #342e1e; cursor: pointer; transition: all 0.15s ease; }
-        .aa-menu-btn:hover { background: #342e1e; color: #ffca4d; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 #bb0003; }
+        /* ============ 0. VARIABLES & BASE ============ */
+        :root{
+            --cream:#fff5e5; --cream2:#fdefd5; --cream3:#efe1c3; --ink:#342e1e;
+            --red:#bb0003; --blue:#0f56bf; --yellow:#ffca4d; --olive:#755700;
+        }
+        html{ scroll-behavior:smooth; }
+        body{ -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+        ::selection{ background:var(--yellow); color:var(--ink); }
+        ::-webkit-scrollbar{ width:12px; }
+        ::-webkit-scrollbar-track{ background:var(--cream2); }
+        ::-webkit-scrollbar-thumb{ background:var(--ink); border:3px solid var(--cream2); }
+        :focus-visible{ outline:3px dashed var(--red); outline-offset:3px; }
 
-        .aa-shortcut-btn { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            gap: 0.5rem; 
-            padding: 0.7rem; 
-            background: #fff5e5; 
-            border: 3px solid #342e1e; 
-            box-shadow: 4px 4px 0 0 #342e1e; 
-            text-align: center; 
-            transition: all 0.2s ease; 
-            cursor: pointer; 
+        /* ============ 1. GRAIN PAPIER / CURSEUR / PROGRESSION ============ */
+        .aa-grain{
+            position:fixed; inset:0; z-index:500; pointer-events:none; mix-blend-mode:multiply; opacity:.05;
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
         }
-        .aa-shortcut-btn:hover { 
-            transform: translate(-2px, -2px); 
-            box-shadow: 6px 6px 0 0 #bb0003; 
-            background: #fdefd5; 
-        }
-        .aa-shortcut-img { 
-            width: 100%; 
-            aspect-ratio: 1/1; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            border: 2px solid #342e1e; 
-            box-shadow: 2px 2px 0 0 #342e1e; 
-            overflow: hidden; 
-            background: #eadcbc; 
-        }
-        .aa-shortcut-img img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; 
-            display: block; 
-        }
-        .aa-shortcut-label { 
-            font-family: 'Epilogue', sans-serif; 
-            font-weight: 900; 
-            text-transform: uppercase; 
-            color: #342e1e; 
-            font-size: 0.7rem; 
-            letter-spacing: 0.02em; 
-            line-height: 1.1; 
-        }
-        .aa-shortcut-btn:hover .aa-shortcut-label { 
-            color: #bb0003; 
-        }
-        .aa-shortcut-toutvoir .aa-shortcut-img { background: #ffca4d; }
+        .aa-cursor, .aa-cursor-ring{ position:fixed; top:0; left:0; border-radius:50%; pointer-events:none; z-index:10002; display:none; }
+        .aa-cursor{ width:10px; height:10px; background:var(--red); border:2px solid var(--ink); }
+        .aa-cursor-ring{ width:36px; height:36px; border:2.5px solid rgba(52,46,30,.55); transition:width .2s, height .2s, background-color .2s, border-color .2s; }
+        .aa-cursor-ring.aa-target{ width:54px; height:54px; background:rgba(255,202,77,.85); border-color:var(--ink); }
+        .aa-cursor-ring.aa-press{ transform:translate(-50%,-50%) scale(.75) !important; }
+        html.aa-cursor-on, html.aa-cursor-on *{ cursor:none !important; }
+        #aaProgress{ position:fixed; top:0; left:0; height:4px; width:0; background:var(--red); z-index:300; box-shadow:1px 1px 0 var(--ink); }
 
-        .aa-carousel-wrap {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.75rem;
-            margin-top: 0;
-            position: relative;
-        }
-        .aa-carousel {
-            width: 380px;
-            height: 380px;
-            max-width: 100%;
-            border-radius: 50%;
-            background: #f5f5f7;
-            border: 5px solid #342e1e;
-            box-shadow: 10px 10px 0 0 #bb0003, 0 0 0 6px #ffca4d;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-            transform: rotate(-3deg);
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .aa-carousel:hover {
-            transform: rotate(-3deg) scale(1.03);
-        }
-        .aa-carousel-slide {
-            position: absolute;
-            inset: 0;
-            background: #f5f5f7;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 1.2s ease-in-out;
-            padding: 18px;
-        }
-        .aa-carousel-slide.active {
-            opacity: 1;
-            z-index: 2;
-        }
-        .aa-carousel-slide img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            display: block;
-            border-radius: 50%;
-        }
-        .aa-carousel-dots {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-            transform: rotate(3deg);
-        }
-        .aa-carousel-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #eadcbc;
-            border: 2px solid #342e1e;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            padding: 0;
-        }
-        .aa-carousel-dot.active {
-            background: #bb0003;
-            transform: scale(1.3);
-        }
-        .aa-carousel-dot:hover:not(.active) {
-            background: #ffca4d;
-        }
+        /* ============ 2. TICKER HAUT ============ */
+        .aa-ticker{ background:var(--red); border-bottom:4px solid var(--ink); overflow:hidden; }
+        .aa-ticker-track{ display:flex; width:max-content; animation:aaTicker 26s linear infinite; }
+        .aa-ticker:hover .aa-ticker-track{ animation-play-state:paused; }
+        .aa-ticker-chunk{ display:flex; align-items:center; gap:1.4rem; padding-right:1.4rem; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:.85rem; letter-spacing:.04em; color:var(--cream); padding-top:.65rem; padding-bottom:.65rem; white-space:nowrap; }
+        .aa-ticker-chunk b{ color:var(--yellow); }
+        .aa-tsep{ color:var(--yellow); font-size:1rem; }
+        @keyframes aaTicker{ to{ transform:translateX(-50%); } }
 
-        @keyframes yellowBlink {
-            0%, 100% { color: #ffca4d; }
-            50% { color: #ffffff; }
-        }
-        .aa-blink-yellow {
-            font-family: 'Epilogue', sans-serif;
-            font-weight: 900;
-            font-size: 1.1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.02em;
-            text-align: center;
-            margin-top: 0;
-            margin-bottom: 1rem;
-            line-height: 1.3;
-            text-shadow: 2px 2px 0 #342e1e, -1px -1px 0 #342e1e, 1px -1px 0 #342e1e, -1px 1px 0 #342e1e;
-            animation: yellowBlink 0.8s ease-in-out infinite;
-        }
+        /* ============ 3. HEADER ============ */
+        header.aa-header{ background:var(--cream); border-bottom:4px double var(--red); box-shadow:4px 4px 0 rgba(52,46,30,.12); transition:box-shadow .3s; }
+        header.aa-header.aa-scrolled{ box-shadow:0 10px 30px -12px rgba(52,46,30,.35), 4px 4px 0 rgba(52,46,30,.12); }
+        .aa-nav{ position:relative; }
+        .aa-nav a{ position:relative; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; letter-spacing:-.01em; font-size:.85rem; transition:color .2s; }
+        .aa-nav a::after{ content:''; position:absolute; left:0; bottom:-7px; height:4px; width:0; background:var(--red); transition:width .25s cubic-bezier(.22,1,.36,1); }
+        .aa-nav a:hover::after{ width:100%; }
+        .aa-nav a.aa-active{ color:var(--red); }
+        .aa-nav a.aa-active::after{ width:100%; }
+        .aa-logo{ transition:transform .3s cubic-bezier(.34,1.56,.64,1), filter .3s ease; filter:drop-shadow(2px 2px 0 rgba(52,46,30,.15)); }
+        .aa-logo-link:hover .aa-logo{ transform:rotate(-6deg) scale(1.06); filter:drop-shadow(3px 3px 0 rgba(187,0,3,.4)); }
+        .aa-cart-btn:hover .material-symbols-outlined{ animation:aaWiggle .5s ease; }
+        @keyframes aaWiggle{ 25%{transform:rotate(-12deg);} 70%{transform:rotate(9deg);} }
+        .aa-icon-btn{ display:inline-flex; padding:.5rem; border-radius:2px; transition:all .12s ease; background:var(--cream); }
+        .aa-icon-btn:hover{ transform:translate(-2px,-2px); }
+        .aa-menu-btn{ font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; letter-spacing:.05em; background:var(--red); color:var(--cream); border:3px solid var(--ink); padding:10px 20px; font-size:1rem; box-shadow:4px 4px 0 var(--ink); cursor:pointer; transition:all .15s ease; }
+        .aa-menu-btn:hover{ background:var(--ink); color:var(--yellow); transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--red); }
+        .btn-physical{ transition:all .1s ease; }
+        .btn-physical:active{ transform:translateY(4px); box-shadow:0 0 0 0 !important; }
 
-        .aa-hero-tapisse {
-            position: relative;
-            background-color: #fdefd5;
-            background-image: url('https://res.cloudinary.com/uvnbvhiw/image/upload/v1786007563/copy_of_3efe7fd2.png');
-            background-repeat: repeat;
-            background-size: 200px 200px;
-            background-attachment: fixed;
-            background-position: center top;
-            padding: 4rem 1.5rem;
-            overflow: hidden;
-        }
-        .aa-hero-tapisse::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-color: rgba(255, 245, 229, 0.82);
-            pointer-events: none;
-            z-index: 1;
-        }
-        .aa-hero-tapisse > * {
-            position: relative;
-            z-index: 2;
-        }
+        /* ============ 3b. BARRE DE RECHERCHE ============ */
+        .aa-search{ display:none; position:relative; align-items:center; }
+        .aa-search-drawer{ display:flex; width:100%; margin-bottom:.5rem; }
+        @media (min-width:1024px){ .aa-search{ display:flex; } }
+        .aa-search input{ font-family:'Work Sans',sans-serif; font-weight:600; font-size:.9rem; color:var(--ink); background:var(--cream2); border:3px solid var(--ink); padding:.55rem 3rem .55rem .9rem; width:230px; box-shadow:3px 3px 0 var(--ink); transition:box-shadow .15s ease, width .25s ease; }
+        .aa-search input::placeholder{ color:var(--on-surface-variant); }
+        .aa-search input:focus{ outline:none; box-shadow:3px 3px 0 var(--red); width:280px; }
+        .aa-search input::-webkit-search-cancel-button{ -webkit-appearance:none; }
+        .aa-search button{ position:absolute; right:2px; top:2px; bottom:2px; width:40px; background:var(--yellow); border:2.5px solid var(--ink); display:flex; align-items:center; justify-content:center; color:var(--ink); cursor:pointer; transition:all .15s ease; }
+        .aa-search button:hover{ background:var(--red); color:var(--yellow); }
+        .aa-search button .material-symbols-outlined{ font-size:20px; font-weight:700; }
+        .aa-search-drawer input{ width:100%; }
+        .aa-search-drawer input:focus{ width:100%; }
 
-        .aa-hero-grid {
-            display: grid;
-            grid-template-columns: 1.4fr 1fr;
-            gap: 2.5rem;
-            align-items: center;
-            max-width: 1280px;
-            margin: 0 auto;
-        }
-        .aa-hero-left {
-            text-align: left;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        .aa-hero-right {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .aa-hero-stamp {
-            background: #bb0003;
-            color: #ffca4d;
-            font-family: 'Epilogue', sans-serif;
-            font-weight: 900;
-            font-style: italic;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 0.05em;
-            padding: 0.5rem 1.1rem;
-            border: 3px solid #342e1e;
-            box-shadow: 4px 4px 0 0 #342e1e;
-            transform: rotate(-4deg);
-            z-index: 10;
-            margin-bottom: -0.5rem;
-            align-self: center;
-            position: relative;
-        }
+        /* ============ 4. DRAWER ============ */
+        #side-drawer{ box-shadow:-8px 0 0 rgba(52,46,30,.2); transition:transform .45s cubic-bezier(.77,0,.175,1); }
+        #side-drawer.open{ transform:translateX(0); }
+        .drawer-overlay{ opacity:0; pointer-events:none; transition:opacity .3s ease; }
+        .drawer-overlay.open{ opacity:1; pointer-events:auto; }
+        .aa-drawer-link{ display:flex; align-items:center; justify-content:space-between; background:var(--cream2); border:2px solid var(--ink); padding:14px 16px; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:.95rem; color:var(--ink); transition:all .18s ease; }
+        .aa-drawer-link::after{ content:'→'; opacity:0; transform:translateX(-6px); transition:all .18s ease; }
+        .aa-drawer-link:hover{ transform:translateX(-4px); background:var(--yellow); box-shadow:4px 4px 0 var(--red); }
+        .aa-drawer-link:hover::after{ opacity:1; transform:none; }
+        .aa-drawer-link.aa-current{ background:var(--red); color:var(--cream); border-color:var(--ink); }
+        .aa-drawer-meta{ border-top:4px solid rgba(52,46,30,.12); padding-top:1.25rem; font-family:'Space Mono',monospace; font-size:.72rem; color:var(--on-surface-variant); letter-spacing:.05em; display:flex; flex-direction:column; gap:.6rem; }
+        .aa-drawer-meta b{ color:var(--red); }
+        .aa-barcode{ display:flex; align-items:flex-end; gap:1px; height:34px; color:var(--ink); }
+        .aa-barcode i{ display:inline-block; background:currentColor; }
 
-        @media (max-width: 900px) {
-            .aa-hero-grid { 
-                grid-template-columns: 1fr; 
-                gap: 1.5rem;
-            }
-            .aa-hero-left { order: 1; }
-            .aa-hero-right { order: 2; }
-            .aa-hero-left { 
-                text-align: center !important; 
-                align-items: center !important; 
-            }
-            .aa-hero-left h1 {
-                font-size: 2rem !important;
-                line-height: 1.05;
-                margin-bottom: 1rem !important;
-            }
-            .aa-hero-left p {
-                font-size: 1rem !important;
-                margin-bottom: 1rem !important;
-                text-align: center !important;
-            }
-            .aa-carousel { width: 260px; height: 260px; }
-            .aa-hero-stamp { font-size: 0.7rem; padding: 0.3rem 0.8rem; }
+        /* ============ 5. HERO ============ */
+        .aa-hero-tapisse{
+            position:relative; background-color:var(--cream2);
+            background-image:url('https://res.cloudinary.com/uvnbvhiw/image/upload/v1786007563/copy_of_3efe7fd2.png');
+            background-repeat:repeat; background-size:200px 200px; background-attachment:fixed; background-position:center top;
+            padding:4.5rem 1.5rem 5rem; overflow:hidden;
         }
-        @media (max-width: 480px) {
-            .aa-carousel { width: 220px; height: 220px; }
-            .aa-hero-left h1 {
-                font-size: 1.7rem !important;
-            }
-        }
+        .aa-hero-tapisse::before{ content:""; position:absolute; inset:0; background:rgba(255,245,229,.82); pointer-events:none; z-index:1; }
+        .aa-hero-tapisse::after{ content:""; position:absolute; inset:0; background:radial-gradient(ellipse at 50% 20%, transparent 40%, rgba(52,46,30,.08) 100%); pointer-events:none; z-index:1; }
+        .aa-hero-tapisse > *{ position:relative; z-index:2; }
+        .aa-hero-grid{ display:grid; grid-template-columns:1.35fr 1fr; gap:2.5rem; align-items:center; max-width:1280px; margin:0 auto; }
+        .aa-hero-left{ display:flex; flex-direction:column; align-items:flex-start; }
+        .aa-eyebrow{ display:flex; align-items:center; gap:.7rem; font-family:'Space Mono',monospace; font-weight:700; font-size:.78rem; text-transform:uppercase; letter-spacing:.14em; color:var(--ink); margin-bottom:1.4rem; }
+        .aa-live{ width:9px; height:9px; border-radius:50%; background:var(--red); border:2px solid var(--ink); animation:aaLive 1.6s infinite; flex:none; }
+        @keyframes aaLive{ 0%,100%{ box-shadow:0 0 0 0 rgba(187,0,3,.5);} 50%{ box-shadow:0 0 0 6px rgba(187,0,3,0);} }
+        .aa-hero-title{ font-family:'Epilogue',sans-serif; font-weight:900; font-style:italic; text-transform:uppercase; color:var(--red); letter-spacing:-.03em; line-height:.95; font-size:clamp(2.5rem,5.4vw,4.8rem); margin-bottom:1.5rem; }
+        .aa-hero-title .line{ display:block; overflow:hidden; padding-bottom:.06em; }
+        .aa-hero-title .line-in{ display:inline-block; transform:translateY(115%); animation:aaLineUp .8s cubic-bezier(.22,1,.36,1) forwards; }
+        .aa-hero-title .line:nth-child(2) .line-in{ animation-delay:.14s; }
+        @keyframes aaLineUp{ to{ transform:translateY(0); } }
+        .aa-marker{ position:relative; color:var(--ink); white-space:nowrap; }
+        .aa-marker::before{ content:''; position:absolute; inset:8% -5% 2% -5%; background:var(--yellow); transform:skew(-12deg) rotate(-1.5deg) scaleX(0); transform-origin:left center; z-index:-1; animation:aaMarkerIn .45s cubic-bezier(.22,1,.36,1) .75s forwards; }
+        @keyframes aaMarkerIn{ to{ transform:skew(-12deg) rotate(-1.5deg) scaleX(1); } }
+        .aa-hero-lead{ font-family:'Work Sans',sans-serif; font-size:1.15rem; font-weight:700; line-height:1.35; margin-bottom:.9rem; max-width:34rem; }
+        .aa-hero-sub{ font-family:'Work Sans',sans-serif; font-size:1rem; color:var(--on-surface-variant); font-style:italic; line-height:1.4; margin-bottom:1.8rem; max-width:34rem; }
+        .aa-hero-sub strong{ color:var(--red); font-style:normal; }
+        .aa-cta-main{ display:inline-flex; align-items:center; gap:.6rem; background:var(--yellow); color:var(--ink); font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:1.05rem; padding:1rem 1.75rem; border:3px solid var(--ink); box-shadow:5px 5px 0 var(--ink); }
+        .aa-cta-main:hover{ transform:translate(-2px,-2px); box-shadow:7px 7px 0 var(--red); background:var(--yellow); }
+        .aa-cta-ghost{ display:inline-flex; align-items:center; gap:.5rem; background:var(--cream); color:var(--ink); font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:.95rem; padding:1rem 1.5rem; border:3px solid var(--ink); box-shadow:5px 5px 0 var(--ink); }
+        .aa-cta-ghost:hover{ transform:translate(-2px,-2px); box-shadow:7px 7px 0 var(--blue); background:var(--cream2); }
+        .aa-cta-main .material-symbols-outlined, .aa-cta-ghost .material-symbols-outlined{ font-weight:700; }
+        .aa-cta-main:hover .material-symbols-outlined{ animation:aaWiggle .5s ease; }
 
-        .aa-programme {
-            background: #0f56bf;
-            color: #fff5e5;
-            position: relative;
-            overflow: hidden;
-            padding: 3.5rem 0;
-            border-top: 4px solid #342e1e;
-            border-bottom: 4px solid #342e1e;
-        }
-        .aa-programme::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-image: radial-gradient(rgba(255, 202, 77, 0.15) 2px, transparent 0);
-            background-size: 14px 14px;
-            pointer-events: none;
-        }
-        .aa-programme-grid {
-            display: grid;
-            grid-template-columns: 1.1fr 1fr;
-            gap: 2.5rem;
-            align-items: center;
-            max-width: 1100px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 2;
-        }
-        .aa-programme-left {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 1rem;
-        }
-        .aa-programme-right {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1.25rem;
-        }
-        .aa-programme-card {
-            background: #342e1e;
-            border: 4px solid #ffca4d;
-            box-shadow: 6px 6px 0 0 #ffca4d;
-            padding: 1.25rem 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .aa-programme-pill {
-            font-family: 'Epilogue', sans-serif;
-            font-weight: 900;
-            text-transform: uppercase;
-            padding: 0.7rem 1.1rem;
-            border: 3px solid #fff5e5;
-            font-size: 1rem;
-            letter-spacing: 0.02em;
-            background: #bb0003;
-            color: #fff5e5;
-        }
-        .aa-programme-pill.alt {
-            background: #755700;
-            color: #ffca4d;
-        }
-        .aa-programme-arrow { display: none; }
+        /* ============ 6. CARROUSEL HÉROS ============ */
+        .aa-hero-right{ display:flex; justify-content:center; align-items:center; }
+        .aa-carousel-stage{ position:relative; display:flex; flex-direction:column; align-items:center; gap:1rem; padding:0 1.5rem; }
+        .aa-carousel{ width:380px; height:380px; max-width:88vw; border-radius:50%; background:#f5f5f7; border:5px solid var(--ink); box-shadow:10px 10px 0 var(--red), 0 0 0 6px var(--yellow); position:relative; overflow:hidden; cursor:pointer; transform:perspective(900px) rotateX(0) rotateY(0) rotate(-3deg) scale(1); will-change:transform; }
+        .aa-carousel-slide{ position:absolute; inset:0; background:#f5f5f7; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 1s ease-in-out; padding:20px; }
+        .aa-carousel-slide.active{ opacity:1; z-index:2; }
+        .aa-carousel-slide img{ max-width:100%; max-height:100%; object-fit:contain; border-radius:50%; }
+        .aa-carousel-row{ display:flex; align-items:center; gap:.9rem; }
+        .aa-car-nav{ width:44px; height:44px; border-radius:50%; background:var(--cream); border:3px solid var(--ink); box-shadow:3px 3px 0 var(--ink); display:flex; align-items:center; justify-content:center; color:var(--ink); transition:all .15s ease; }
+        .aa-car-nav:hover{ background:var(--yellow); transform:translate(-2px,-2px); box-shadow:5px 5px 0 var(--red); }
+        .aa-carousel-counter{ font-family:'Space Mono',monospace; font-weight:700; font-size:.85rem; background:var(--ink); color:var(--cream); padding:5px 12px; border:2px solid var(--ink); box-shadow:2px 2px 0 var(--red); }
+        .aa-carousel-counter b{ color:var(--yellow); display:inline-block; }
+        .aa-carousel-counter b.bump{ animation:aaBump .35s cubic-bezier(.34,1.56,.64,1); }
+        @keyframes aaBump{ 40%{ transform:scale(1.5) rotate(-6deg);} }
+        .aa-carousel-dots{ display:flex; gap:7px; }
+        .aa-carousel-dot{ width:11px; height:11px; border-radius:50%; background:var(--cream3); border:2px solid var(--ink); cursor:pointer; transition:all .2s ease; padding:0; }
+        .aa-carousel-dot.active{ background:var(--red); transform:scale(1.35); }
+        .aa-carousel-dot:hover:not(.active){ background:var(--yellow); }
+        .aa-hero-stamp{ position:absolute; top:-8px; left:0; background:var(--red); color:var(--yellow); font-family:'Epilogue',sans-serif; font-weight:900; font-style:italic; text-transform:uppercase; font-size:.85rem; letter-spacing:.05em; padding:.5rem 1.1rem; border:3px solid var(--ink); box-shadow:4px 4px 0 var(--ink); transform:rotate(-5deg); z-index:10; transition:transform .2s; }
+        .aa-carousel-stage:hover .aa-hero-stamp{ transform:rotate(-8deg) scale(1.07); }
+        .aa-badge-7090{ position:absolute; bottom:34px; left:-6px; display:flex; flex-direction:column; gap:8px; z-index:8; }
+        .aa-badge-circ{ width:56px; height:56px; border-radius:50%; border:3px solid var(--ink); display:flex; align-items:center; justify-content:center; font-family:'Epilogue',sans-serif; font-weight:900; font-style:italic; font-size:1rem; box-shadow:3px 3px 0 var(--ink); }
+        .aa-badge-circ.b70{ background:var(--blue); color:var(--cream); animation:aaFloaty 4.5s ease-in-out infinite; }
+        .aa-badge-circ.b90{ background:var(--red); color:var(--yellow); animation:aaFloaty 4.5s ease-in-out .6s infinite; }
+        @keyframes aaFloaty{ 0%,100%{ transform:translateY(0) rotate(-8deg);} 50%{ transform:translateY(-7px) rotate(-8deg);} }
 
-        @media (max-width: 800px) {
-            .aa-programme-grid { grid-template-columns: 1fr; gap: 1.5rem; text-align: center; }
-            .aa-programme-left { align-items: center; text-align: center; }
+        /* ============ 7. TRUST BAR ============ */
+        .aa-trust-wrap{ padding:3rem 0 3.5rem; }
+        .aa-trust-bar{ background:var(--ink); color:var(--yellow); padding:1.1rem 2rem; transform:rotate(-1.3deg); box-shadow:0 7px 0 var(--red); max-width:1200px; margin:0 auto; }
+        .aa-trust-row{ display:flex; justify-content:center; align-items:center; gap:1.4rem; }
+        .aa-trust-item{ display:flex; align-items:center; gap:.6rem; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:.8rem; letter-spacing:.05em; white-space:nowrap; transition:transform .2s; }
+        .aa-trust-item:hover{ transform:translateY(-3px); }
+        .aa-trust-item .aa-trust-ico{ width:32px; height:32px; flex:none; background:var(--yellow); color:var(--ink); border:2.5px solid var(--cream); display:flex; align-items:center; justify-content:center; }
+        .aa-trust-item .material-symbols-outlined{ font-size:19px; }
+        .aa-trust-item:not(:last-child)::after{ content:'✦'; margin-left:1.4rem; color:var(--red); font-size:1rem; }
+
+        /* ============ 8. TITRES DE SECTION ============ */
+        .aa-section-title{ display:flex; align-items:center; gap:1rem; margin-bottom:.8rem; }
+        .aa-section-title h2{ font-family:'Epilogue',sans-serif; font-weight:900; font-style:italic; font-size:clamp(1.6rem,3.4vw,2.2rem); text-transform:uppercase; color:var(--ink); letter-spacing:-.02em; }
+        .aa-sec-line{ flex:1; height:5px; background:var(--ink); min-width:40px; }
+        .aa-sec-star{ color:var(--red); font-size:1.3rem; flex:none; }
+        .aa-sec-sub{ font-family:'Work Sans',sans-serif; color:var(--on-surface-variant); font-style:italic; font-weight:600; margin-bottom:2.2rem; }
+
+        /* ============ 9. RACCOURCIS ============ */
+        .aa-shortcut-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; position:relative; }
+        @media (min-width:640px){ .aa-shortcut-grid{ grid-template-columns:repeat(4,1fr); } }
+        @media (min-width:768px){ .aa-shortcut-grid{ grid-template-columns:repeat(6,1fr); } }
+        .aa-shortcut-btn{ position:relative; display:flex; flex-direction:column; align-items:center; gap:.55rem; padding:.9rem .6rem 1rem; background:var(--cream); border:3px solid var(--ink); box-shadow:4px 4px 0 var(--ink); text-align:center; text-decoration:none; transition:transform .2s ease-out, box-shadow .2s ease; will-change:transform; }
+        .aa-shortcut-btn:hover{ transform:translateY(-4px); box-shadow:6px 9px 0 var(--red); background:var(--cream2); }
+        .aa-shortcut-img{ width:100%; aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; border:2px solid var(--ink); box-shadow:2px 2px 0 var(--ink); overflow:hidden; background:var(--cream3); }
+        .aa-shortcut-img img{ width:100%; height:100%; object-fit:contain; display:block; }
+        .aa-shortcut-label{ font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; color:var(--ink); font-size:.72rem; letter-spacing:.02em; line-height:1.1; }
+        .aa-shortcut-btn:hover .aa-shortcut-label{ color:var(--red); }
+        .aa-shortcut-toutvoir .aa-shortcut-img{ background:var(--yellow); }
+
+        /* ============ 10. RUBAN SÉPARATEUR ============ */
+        .aa-ribbon{ background:var(--yellow); border-top:4px solid var(--ink); border-bottom:4px solid var(--ink); overflow:hidden; padding:.7rem 0; margin:3.5rem -1rem; transform:rotate(-1deg); box-shadow:0 6px 0 rgba(52,46,30,.15); }
+        .aa-ribbon-track{ display:flex; width:max-content; animation:aaRibbon 32s linear infinite; }
+        .aa-ribbon:hover .aa-ribbon-track{ animation-play-state:paused; }
+        .aa-ribbon-chunk{ display:flex; align-items:center; gap:1.6rem; padding-right:1.6rem; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:1rem; letter-spacing:.05em; color:var(--ink); white-space:nowrap; }
+        .aa-ribbon-chunk b{ color:var(--red); }
+        @keyframes aaRibbon{ from{ transform:translateX(-50%);} to{ transform:translateX(0);} }
+
+        /* ============ 11. PROGRAMME + CARTE FIDÉLITÉ ============ */
+        .aa-programme{ background:var(--blue); color:var(--cream); position:relative; overflow:hidden; padding:4rem 0 4.5rem; border-top:4px solid var(--ink); border-bottom:4px solid var(--ink); }
+        .aa-programme::before{ content:""; position:absolute; inset:0; background-image:radial-gradient(rgba(255,202,77,.16) 2px, transparent 0); background-size:14px 14px; pointer-events:none; }
+        .aa-programme-grid{ display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:3rem; align-items:center; max-width:1100px; margin:0 auto; position:relative; z-index:2; }
+        .aa-programme-grid > *{ min-width:0; }
+        .aa-prog-title{ display:flex; align-items:flex-start; gap:1rem; margin-bottom:1.2rem; }
+        .aa-prog-ico{ width:64px; height:64px; flex:none; background:var(--yellow); color:var(--ink); border:3px solid var(--ink); box-shadow:4px 4px 0 var(--ink); display:flex; align-items:center; justify-content:center; transform:rotate(-6deg); margin-top:.4rem; }
+        .aa-prog-ico .material-symbols-outlined{ font-size:36px; font-variation-settings:'FILL' 1; }
+        .aa-prog-title h2{ font-family:'Epilogue',sans-serif; font-weight:900; font-style:italic; text-transform:uppercase; font-size:clamp(2rem,4.5vw,3rem); line-height:1; color:var(--yellow); letter-spacing:-.02em; }
+        .aa-programme p{ font-family:'Work Sans',sans-serif; font-size:1.05rem; font-weight:600; line-height:1.5; max-width:32rem; }
+        .aa-programme p strong{ color:var(--yellow); }
+        .aa-prog-note{ font-size:.85rem !important; color:rgba(255,245,229,.75); margin-top:.6rem !important; font-style:italic; }
+        .aa-programme-card{ background:var(--ink); border:4px solid var(--yellow); box-shadow:6px 6px 0 var(--yellow); padding:1.1rem 1.4rem; display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; margin-top:1.6rem; width:max-content; max-width:100%; }
+        .aa-programme-pill{ font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; padding:.65rem 1rem; border:3px solid var(--cream); font-size:.95rem; background:var(--red); color:var(--cream); }
+        .aa-programme-pill.alt{ background:var(--olive); color:var(--yellow); }
+
+        .aa-loyal-wrap{ display:flex; flex-direction:column; align-items:center; gap:1rem; }
+        .aa-loyal-hint{ font-family:'Space Mono',monospace; font-weight:700; font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--yellow); animation:aaSoftBlink 2s ease-in-out infinite; text-align:center; }
+        @keyframes aaSoftBlink{ 0%,100%{opacity:1;} 50%{opacity:.55;} }
+        .aa-loyal-card{ width:100%; max-width:400px; background:var(--cream); color:var(--ink); border:4px solid var(--ink); box-shadow:9px 9px 0 var(--ink); padding:1.25rem 1.4rem 1.5rem; cursor:pointer; position:relative; transition:transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s; user-select:none; }
+        .aa-loyal-card:hover{ transform:translateY(-4px) rotate(-1deg); box-shadow:12px 13px 0 var(--ink); }
+        .aa-loyal-card:active{ transform:translateY(2px); }
+        .aa-loyal-head{ display:flex; justify-content:space-between; align-items:baseline; gap:.5rem; flex-wrap:wrap; margin-bottom:1rem; }
+        .aa-loyal-brand{ font-family:'Epilogue',sans-serif; font-weight:900; font-style:italic; text-transform:uppercase; font-size:.95rem; color:var(--red); }
+        .aa-loyal-ref{ font-family:'Space Mono',monospace; font-size:.62rem; font-weight:700; letter-spacing:.08em; color:var(--on-surface-variant); }
+        .aa-loyal-stars{ display:grid; grid-template-columns:repeat(5,1fr); gap:9px; }
+        .aa-lcell{ height:44px; border:2.5px dashed rgba(52,46,30,.45); background:rgba(255,245,229,.4); display:flex; align-items:center; justify-content:center; font-size:1.35rem; color:var(--ink); transform:rotate(var(--r,0deg)); transition:transform .15s; }
+        .aa-lcell.filled{ background:var(--yellow); border:2.5px solid var(--ink); box-shadow:2px 2px 0 var(--ink); animation:aaStampIn .35s cubic-bezier(.34,1.56,.64,1); }
+        @keyframes aaStampIn{ from{ transform:scale(1.8) rotate(var(--r,0deg)); opacity:0; } to{ transform:scale(1) rotate(var(--r,0deg)); opacity:1; } }
+        .aa-loyal-sep{ border-top:3px dashed rgba(52,46,30,.35); margin:1.1rem -1.4rem; position:relative; }
+        .aa-loyal-sep::before, .aa-loyal-sep::after{ content:''; position:absolute; top:-9px; width:16px; height:16px; border-radius:50%; background:var(--blue); }
+        .aa-loyal-sep::before{ left:-10px; } .aa-loyal-sep::after{ right:-10px; }
+        .aa-loyal-foot{ display:flex; align-items:center; gap:.8rem; }
+        .aa-loyal-progress{ flex:1; height:12px; border:2.5px solid var(--ink); background:var(--cream); overflow:hidden; }
+        .aa-loyal-progress > div{ height:100%; width:0; background:repeating-linear-gradient(-45deg, var(--red) 0 8px, var(--yellow) 8px 16px); transition:width .3s cubic-bezier(.22,1,.36,1); }
+        .aa-loyal-count{ font-family:'Space Mono',monospace; font-weight:700; font-size:.8rem; white-space:nowrap; }
+        .aa-loyal-won{ position:absolute; right:-18px; top:-20px; background:var(--red); color:var(--yellow); border:3px solid var(--ink); box-shadow:4px 4px 0 var(--ink); font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:.78rem; padding:.55rem .9rem; transform:rotate(6deg) scale(0); transition:transform .35s cubic-bezier(.34,1.56,.64,1); z-index:5; }
+        .aa-loyal-card.won .aa-loyal-won{ transform:rotate(6deg) scale(1); animation:aaGiftPulse 1.5s infinite; }
+        @keyframes aaGiftPulse{ 0%,100%{ box-shadow:4px 4px 0 var(--ink), 0 0 0 0 rgba(255,202,77,.7);} 50%{ box-shadow:4px 4px 0 var(--ink), 0 0 0 9px rgba(255,202,77,0);} }
+
+        .aa-offer-band{ display:inline-block; background:var(--ink); color:var(--yellow); font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:.78rem; letter-spacing:.08em; padding:.65rem 1.1rem; border:3px solid var(--yellow); margin-bottom:1.4rem; animation:aaSoftBlink 2.4s ease-in-out infinite; }
+        .aa-cta-big{ display:inline-flex; align-items:center; gap:.7rem; background:var(--yellow); color:var(--ink); font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:1.15rem; padding:1.15rem 2.1rem; border:3px solid var(--ink); box-shadow:6px 6px 0 var(--ink); transition:all .18s ease; }
+        .aa-cta-big:hover{ transform:translate(-3px,-3px) scale(1.02); box-shadow:9px 9px 0 var(--red); }
+        .aa-cta-big:active{ transform:translateY(4px); box-shadow:0 0 0 0; }
+        .aa-cta-big .material-symbols-outlined{ transition:transform .25s; }
+        .aa-cta-big:hover .material-symbols-outlined{ transform:translateX(6px); }
+        .aa-cta-note{ font-family:'Space Mono',monospace; font-size:.68rem; font-weight:700; letter-spacing:.1em; color:rgba(255,245,229,.7); text-transform:uppercase; margin-top:1.1rem; }
+
+        /* ============ 12. FOOTER ============ */
+        footer.aa-footer{ background:var(--ink); border-top:8px double var(--olive); color:var(--cream); }
+        .aa-social-link{ width:44px; height:44px; border:2.5px solid var(--yellow); color:var(--yellow); display:flex; align-items:center; justify-content:center; transition:all .2s ease; }
+        .aa-social-link:hover{ background:var(--yellow); color:var(--ink); transform:translate(-2px,-2px); box-shadow:3px 3px 0 var(--red); }
+        .aa-footer-ref{ font-family:'Space Mono',monospace; font-size:.62rem; letter-spacing:.15em; color:rgba(255,202,77,.6); text-transform:uppercase; }
+
+        /* ============ 13. TOASTS / CONFETTIS / DIVERS ============ */
+        #aa-toasts{ position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:8px; pointer-events:none; }
+        .aa-toast{ background:var(--ink); color:var(--cream); border:3px solid var(--yellow); padding:12px 18px; font-family:'Epilogue',sans-serif; font-weight:900; font-size:13px; text-transform:uppercase; display:flex; align-items:center; gap:10px; max-width:320px; transform:translateX(120%); opacity:0; transition:all .4s cubic-bezier(.34,1.56,.64,1); pointer-events:none; }
+        .aa-toast > *{ pointer-events:auto; }
+        .aa-toast.show{ transform:translateX(0); opacity:1; }
+        .aa-confetti{ position:fixed; top:0; left:0; width:9px; height:13px; z-index:10001; pointer-events:none; border:1.5px solid var(--ink); }
+        #aaTop{ position:fixed; left:20px; bottom:20px; z-index:600; width:47px; height:47px; background:var(--yellow); color:var(--ink); border:3px solid var(--ink); box-shadow:4px 4px 0 var(--ink); display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transform:translateY(12px) rotate(-8deg); transition:opacity .3s, transform .3s; }
+        #aaTop.show{ opacity:1; pointer-events:auto; transform:none; }
+        #aaTop:hover{ background:var(--red); color:var(--yellow); }
+        #aa-cart-badge{ position:absolute; top:-7px; right:-7px; min-width:18px; height:18px; background:var(--yellow); color:var(--ink); font-family:'Epilogue',sans-serif; font-weight:900; font-size:10px; border:2px solid var(--ink); border-radius:2px; display:none; align-items:center; justify-content:center; padding:0 3px; }
+        #aa-cart-badge.pop{ animation:aaBadgePop .4s cubic-bezier(.34,1.56,.64,1); }
+        @keyframes aaBadgePop{ 40%{ transform:scale(1.5) rotate(9deg);} }
+        .aa-stars-badge{ position:absolute; top:-7px; right:-8px; min-width:18px; height:18px; background:var(--yellow); color:var(--ink); font-family:'Epilogue',sans-serif; font-weight:900; font-size:10px; border:2px solid var(--ink); border-radius:2px; display:flex; align-items:center; justify-content:center; padding:0 3px; }
+        .aa-nav-gift-badge{ position:absolute; bottom:-8px; right:-8px; font-size:14px; display:none; align-items:center; justify-content:center; }
+        @keyframes giftPulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(255,202,77,.7);} 50%{ box-shadow:0 0 0 6px rgba(255,202,77,0);} }
+        .aa-nav-stars.aa-has-gift{ border-color:var(--yellow) !important; color:var(--yellow) !important; animation:giftPulse 1.5s infinite; }
+        @keyframes popIn{ 0%{ transform:scale(.8); opacity:0;} 80%{ transform:scale(1.05); opacity:1;} 100%{ transform:scale(1); opacity:1;} }
+        .animate-pop-in{ animation:popIn .5s cubic-bezier(.34,1.56,.64,1) forwards; }
+        .reveal{ opacity:0; transform:translateY(26px); transition:opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1); }
+        .reveal.in{ opacity:1; transform:none; }
+
+        /* ============ 14. RESPONSIVE ============ */
+        @media (max-width: 900px){
+            .aa-hero-tapisse{ padding:3.25rem 1.25rem 3.75rem; }
+            .aa-hero-grid{ grid-template-columns:1fr; gap:2rem; }
+            .aa-hero-left{ align-items:center; text-align:center; }
+            .aa-hero-lead, .aa-hero-sub{ max-width:100%; }
+            .aa-hero-title{ font-size:2rem; margin-bottom:1.1rem; }
+            .aa-carousel{ width:280px; height:280px; }
+            .aa-badge-circ{ width:48px; height:48px; font-size:.85rem; }
+
+            /* --- Programme Collectionneur : centré sur mobile / tablette --- */
+            .aa-programme{ padding:3.25rem 0 3.5rem; }
+            .aa-programme-grid{ grid-template-columns:minmax(0,1fr); gap:2.2rem; text-align:center; }
+            .aa-programme-grid > div{ display:flex; flex-direction:column; align-items:center; }
+            .aa-prog-title{ flex-direction:column; align-items:center; gap:.8rem; margin-bottom:1rem; }
+            .aa-prog-ico{ margin-top:0; }
+            .aa-prog-title h2{ font-size:clamp(1.7rem,7.5vw,2.4rem); }
+            .aa-programme p{ max-width:100%; }
+            .aa-programme-card{ margin:1.4rem auto 0; justify-content:center; }
+
+            .aa-hero-stamp{ font-size:.7rem; padding:.35rem .8rem; }
+        }
+        @media (max-width: 700px){
+            .aa-trust-row{ justify-content:flex-start; overflow-x:auto; padding-bottom:8px; scrollbar-width:none; }
+            .aa-trust-row::-webkit-scrollbar{ display:none; }
+            .aa-trust-item{ flex:none; }
+        }
+        @media (max-width: 480px){
+            .aa-hero-title{ font-size:clamp(1.15rem,6.4vw,1.5rem); }
+            .aa-carousel{ width:230px; height:230px; }
+            .aa-badge-7090{ bottom:14px; left:-14px; }
+            .aa-loyal-stars{ gap:6px; }
+            .aa-lcell{ height:36px; font-size:1.1rem; }
+            .aa-programme-pill{ font-size:.8rem; padding:.55rem .8rem; }
+            .aa-ribbon{ margin:2.5rem -1rem; }
+        }
+        @media (prefers-reduced-motion: reduce){
+            *, *::before, *::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+            html{ scroll-behavior:auto; }
+            .reveal{ opacity:1; transform:none; }
         }
     </style>
 </head>
 <body class="bg-surface font-body text-on-surface overflow-x-hidden">
 
-<div class="aa-objective-banner">
-    🛒 VENTE EN LIGNE — <strong>BOÎTES VINTAGE</strong> POUR FIGURINES 1970–1990 — REPRODUCTIONS & CUSTOM 🛒
-</div>
+    <div class="aa-grain" aria-hidden="true"></div>
+    <div class="aa-cursor" id="aaCursorDot" aria-hidden="true"></div>
+    <div class="aa-cursor-ring" id="aaCursorRing" aria-hidden="true"></div>
+    <div id="aaProgress" aria-hidden="true"></div>
 
-<header class="w-full border-b-4 border-double border-[#bb0003] bg-[#fff5e5] shadow-[4px_4px_0px_0px_rgba(52,46,30,0.2)] z-50 sticky top-0">
-    <div class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
-        <a href="index.html" class="aa-logo-link flex items-center gap-3 group cursor-pointer" title="Retour à l'accueil">
-            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="eager" class="aa-logo h-12 md:h-14 w-auto"/>
-            <span class="text-2xl md:text-3xl font-black italic text-[#bb0003] font-headline uppercase tracking-tighter group-hover:text-[#0f56bf] transition-colors">Action Archive</span>
-        </a>
-        <!-- ✅ LIEN TOYS HISTORY AJOUTÉ -->
-        <nav class="hidden md:flex items-center gap-6 font-headline font-black uppercase tracking-tighter text-sm">
-            <a class="text-[#0f56bf] underline decoration-4 underline-offset-8" href="index.html">Accueil</a>
-            <a class="text-[#342e1e] hover:text-[#bb0003]" href="produits.html">Produits</a>
-            <a class="text-[#342e1e] hover:text-[#bb0003]" href="info.html">Info</a>
-            <a class="text-[#342e1e] hover:text-[#bb0003]" href="toys-history.html">Toys History</a>
-            <a class="text-[#342e1e] hover:text-[#bb0003]" href="panier.html">Commande</a>
-            <a class="text-[#342e1e] hover:text-[#bb0003]" href="inscription.html">Inscription</a>
-        </nav>
-        <div class="flex items-center gap-2">
-            <a class="aa-nav-stars relative p-2 text-[#755700] border-2 border-[#755700] rounded-sm btn-physical" href="inscription.html" style="display:none;" title="Mon programme fidélité">
-                <span class="material-symbols-outlined">stars</span>
-                <span class="aa-nav-stars-count aa-stars-badge">0</span>
-                <span class="aa-nav-gift-badge">🎁</span>
-            </a>
-            <a class="relative p-2 text-[#bb0003] border-2 border-[#bb0003] rounded-sm btn-physical" href="panier.html" title="Mon panier">
-                <span class="material-symbols-outlined">shopping_cart</span>
-                <span id="aa-cart-badge"></span>
-            </a>
-            <button onclick="toggleDrawer()" class="aa-menu-btn">☰ MENU</button>
-        </div>
-    </div>
-</header>
-
-<div id="drawer-overlay" class="drawer-overlay fixed inset-0 bg-on-background/40 backdrop-blur-sm z-[90]" onclick="toggleDrawer()"></div>
-<aside id="side-drawer" class="fixed top-0 right-0 h-full w-full max-w-[320px] bg-surface-container-high border-l-8 border-primary z-[100] transform translate-x-full overflow-y-auto">
-    <div class="p-8 space-y-8 flex flex-col h-full text-on-surface">
-        <div class="flex justify-between items-center border-b-4 border-on-background/10 pb-6">
-            <h2 class="font-headline font-black text-2xl text-primary italic uppercase">MENU</h2>
-            <button class="text-on-background" onclick="toggleDrawer()"><span class="material-symbols-outlined text-3xl">close</span></button>
-        </div>
-        <!-- ✅ LIEN TOYS HISTORY AJOUTÉ -->
-        <nav class="flex flex-col gap-3">
-            <a href="index.html" class="p-4 bg-surface-container-low border-2 border-primary font-headline font-black uppercase text-primary">ACCUEIL</a>
-            <a href="produits.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">PRODUITS</a>
-            <a href="info.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">INFO</a>
-            <a href="toys-history.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">TOYS HISTORY</a>
-            <a href="panier.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">COMMANDE</a>
-            <a href="inscription.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">INSCRIPTION</a>
-        </nav>
-    </div>
-</aside>
-
-<main class="flex-grow">
-    <section class="aa-hero-tapisse overflow-hidden">
-        <div class="aa-hero-grid">
-            <div class="aa-hero-left">
-                <h1 class="font-headline font-black text-5xl md:text-6xl lg:text-7xl text-primary uppercase tracking-tighter leading-none mb-6">
-                    BOÎTES VINTAGE<br/>POUR COLLECTIONNEURS
-                </h1>
-                <p class="font-body text-lg md:text-2xl text-on-surface font-bold leading-tight mb-6">
-                    Reproductions soignées et pièces custom pour figurines et jouets des années 70–90.
-                </p>
-                <p class="font-body text-base md:text-lg text-on-surface-variant italic leading-tight mb-8">
-                    Boîte d'origine perdue ou abîmée ?<br>
-                    <strong class="text-primary">Redonnez vie à votre collection.</strong>
-                </p>
-                <div class="flex flex-wrap gap-3">
-                    <a href="produits.html" class="btn-physical bg-[#ffca4d] text-[#342e1e] font-headline font-black px-8 py-4 text-lg uppercase shadow-[4px_4px_0px_0px_#342e1e] hover:translate-y-[-2px] transition-all text-center">🛒 VOIR LA BOUTIQUE</a>
-                </div>
+    <!-- ═══ TICKER HAUT ═══ -->
+    <div class="aa-ticker" aria-hidden="true">
+        <div class="aa-ticker-track" data-dupe>
+            <div class="aa-ticker-chunk">
+                <span>BOÎTES <b>VINTAGE</b> POUR FIGURINES <b>1970–1990</b></span><span class="aa-tsep">✦</span>
+                <span>REPRODUCTIONS &amp; CUSTOM</span><span class="aa-tsep">✦</span>
+                <span>PAYPAL SÉCURISÉ</span><span class="aa-tsep">✦</span>
+                <span>EXPÉDIÉ DE FRANCE</span><span class="aa-tsep">✦</span>
+                <span>EMBALLAGE SOIGNÉ</span><span class="aa-tsep">✦</span>
+                <span>BOÎTES <b>VINTAGE</b> POUR FIGURINES <b>1970–1990</b></span><span class="aa-tsep">✦</span>
+                <span>REPRODUCTIONS &amp; CUSTOM</span><span class="aa-tsep">✦</span>
+                <span>PAYPAL SÉCURISÉ</span><span class="aa-tsep">✦</span>
+                <span>EXPÉDIÉ DE FRANCE</span><span class="aa-tsep">✦</span>
+                <span>EMBALLAGE SOIGNÉ</span><span class="aa-tsep">✦</span>
             </div>
+        </div>
+    </div>
 
-            <div class="aa-hero-right">
-                <div class="aa-carousel-wrap">
-                    <span class="aa-hero-stamp">★ NOUVEAU ★</span>
-                    <div class="aa-carousel" id="aaCarousel">
-                        <div class="aa-carousel-slide active">
-                            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788011003/pomelli_photoshoot_image_4_5_0708_4_vtsewo.png" alt="Archive vintage 1" loading="lazy">
+    <!-- ═══ HEADER ═══ -->
+    <header class="aa-header w-full z-50 sticky top-0">
+        <div class="flex justify-between items-center w-full px-6 py-3.5 max-w-screen-2xl mx-auto">
+            <a href="index.html" class="aa-logo-link flex items-center gap-3 group" title="Retour à l'accueil">
+                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="eager" class="aa-logo h-12 md:h-14 w-auto"/>
+                <span class="text-2xl md:text-3xl font-black italic text-[#bb0003] font-headline uppercase tracking-tighter group-hover:text-[#0f56bf] transition-colors">Action Archive</span>
+            </a>
+            <nav class="aa-nav hidden md:flex items-center gap-7 text-sm">
+                <a class="aa-active text-[#bb0003]" href="index.html">ACCUEIL</a>
+                <a class="text-[#342e1e] hover:text-[#bb0003]" href="produits.html">PRODUITS</a>
+                <a class="text-[#342e1e] hover:text-[#bb0003]" href="info.html">INFO</a>
+                <a class="text-[#342e1e] hover:text-[#bb0003]" href="toys-history.html">TOYS HISTORY</a>
+                <a class="text-[#342e1e] hover:text-[#bb0003]" href="panier.html">COMMANDE</a>
+                <a class="text-[#342e1e] hover:text-[#bb0003]" href="inscription.html">INSCRIPTION</a>
+            </nav>
+            <div class="flex items-center gap-2.5">
+                <!-- Barre de recherche (desktop) -->
+                <!-- Si ta page produits utilise un autre paramètre (ex: ?q=), change name="search" ci-dessous -->
+                <form class="aa-search" action="produits.html" method="get" role="search">
+                    <input type="search" name="search" placeholder="Rechercher…" aria-label="Rechercher une boîte, une marque"/>
+                    <button type="submit" aria-label="Lancer la recherche"><span class="material-symbols-outlined">search</span></button>
+                </form>
+                <a class="aa-nav-stars aa-icon-btn text-[#755700] border-2 border-[#755700] relative btn-physical" href="inscription.html" style="display:none;" title="Mon programme fidélité">
+                    <span class="material-symbols-outlined">stars</span>
+                    <span class="aa-nav-stars-count aa-stars-badge">0</span>
+                    <span class="aa-nav-gift-badge">🎁</span>
+                </a>
+                <a class="aa-cart-btn aa-icon-btn text-[#bb0003] border-2 border-[#bb0003] relative btn-physical" href="panier.html" title="Mon panier">
+                    <span class="material-symbols-outlined">shopping_cart</span>
+                    <span id="aa-cart-badge"></span>
+                </a>
+                <button onclick="toggleDrawer()" class="aa-menu-btn" aria-label="Ouvrir le menu">☰ MENU</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ═══ DRAWER ═══ -->
+    <div id="drawer-overlay" class="drawer-overlay fixed inset-0 bg-on-background/40 backdrop-blur-sm z-[90]" onclick="toggleDrawer()"></div>
+    <aside id="side-drawer" class="fixed top-0 right-0 h-full w-full max-w-[320px] bg-surface-container-high border-l-8 border-[#bb0003] z-[100] transform translate-x-full overflow-y-auto" aria-label="Menu latéral">
+        <div class="p-8 flex flex-col h-full text-on-surface">
+            <div class="flex justify-between items-center border-b-4 border-on-background/10 pb-6 mb-6">
+                <h2 class="font-headline font-black text-2xl text-[#bb0003] italic uppercase">MENU</h2>
+                <button class="text-on-background hover:text-[#bb0003] transition-colors" onclick="toggleDrawer()" aria-label="Fermer le menu"><span class="material-symbols-outlined text-3xl">close</span></button>
+            </div>
+            <!-- Barre de recherche (mobile / drawer) -->
+            <form class="aa-search aa-search-drawer" action="produits.html" method="get" role="search">
+                <input type="search" name="search" placeholder="Rechercher…" aria-label="Rechercher une boîte, une marque"/>
+                <button type="submit" aria-label="Lancer la recherche"><span class="material-symbols-outlined">search</span></button>
+            </form>
+            <nav class="flex flex-col gap-3">
+                <a href="index.html" class="aa-drawer-link aa-current">ACCUEIL</a>
+                <a href="produits.html" class="aa-drawer-link">PRODUITS</a>
+                <a href="info.html" class="aa-drawer-link">INFO</a>
+                <a href="toys-history.html" class="aa-drawer-link">TOYS HISTORY</a>
+                <a href="panier.html" class="aa-drawer-link">COMMANDE</a>
+                <a href="inscription.html" class="aa-drawer-link">INSCRIPTION</a>
+            </nav>
+            <div class="aa-drawer-meta mt-auto pt-6">
+                <div>HEURE LOCALE — <b id="aaClock">--:--:--</b></div>
+                <div class="aa-barcode" aria-hidden="true"></div>
+                <p>CATALOGUE ACTION ARCHIVE<br/>OUVERT 24H/24 — 7J/7</p>
+            </div>
+        </div>
+    </aside>
+
+    <main>
+        <!-- ═══ HÉROS ═══ -->
+        <section class="aa-hero-tapisse">
+            <div class="aa-hero-grid">
+                <div class="aa-hero-left">
+                    <div class="aa-eyebrow">
+                        <span class="aa-live" aria-hidden="true"></span>
+                        <span>CATALOGUE OUVERT</span>
+                    </div>
+                    <h1 class="aa-hero-title">
+                        <span class="line"><span class="line-in">BOÎTES VINTAGE</span></span>
+                        <span class="line"><span class="line-in">POUR <em class="aa-marker">COLLECTIONNEURS</em></span></span>
+                    </h1>
+                    <p class="aa-hero-lead">Reproductions soignées et pièces custom pour figurines et jouets des années 70–90.</p>
+                    <p class="aa-hero-sub">Boîte d'origine perdue ou abîmée ?<br/><strong>Redonnez vie à votre collection.</strong></p>
+                    <div class="flex flex-wrap gap-3">
+                        <a href="produits.html" class="aa-cta-main btn-physical"><span class="material-symbols-outlined">storefront</span>VOIR LA BOUTIQUE</a>
+                        <a href="toys-history.html" class="aa-cta-ghost btn-physical"><span class="material-symbols-outlined">history_edu</span>TOYS HISTORY</a>
+                    </div>
+                </div>
+
+                <div class="aa-hero-right">
+                    <div class="aa-carousel-stage reveal in">
+                        <span class="aa-hero-stamp">★ NOUVEAU ★</span>
+                        <div class="aa-badge-7090" aria-hidden="true">
+                            <span class="aa-badge-circ b70">70's</span>
+                            <span class="aa-badge-circ b90">90's</span>
                         </div>
-                        <div class="aa-carousel-slide">
-                            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788011020/pomelli_photoshoot_image_9_16_0704_1_oyllqx.png" alt="Archive vintage 2" loading="lazy">
+                        <div class="aa-carousel" id="aaCarousel" tabindex="0" role="region" aria-label="Galerie d'images des boîtes vintage — cliquez ou utilisez les flèches" title="Suivant">
+                            <div class="aa-carousel-slide active"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788011003/pomelli_photoshoot_image_4_5_0708_4_vtsewo.png" alt="Archive vintage 1" loading="eager"></div>
+                            <div class="aa-carousel-slide"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788011020/pomelli_photoshoot_image_9_16_0704_1_oyllqx.png" alt="Archive vintage 2" loading="lazy"></div>
+                            <div class="aa-carousel-slide"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788011032/pomelli_photoshoot_image_9_16_0704_5_u8op65.png" alt="Archive vintage 3" loading="lazy"></div>
+                            <div class="aa-carousel-slide"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788011047/pomelli_photoshoot_image_4_5_0708_zduz6j.png" alt="Archive vintage 4" loading="lazy"></div>
+                            <div class="aa-carousel-slide"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788011058/pomelli_photoshoot_image_9_16_0710_10_yrz5u2.png" alt="Archive vintage 5" loading="lazy"></div>
+                            <div class="aa-carousel-slide"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788011071/pomelli_photoshoot_image_9_16_0710_8_bino9g.png" alt="Archive vintage 6" loading="lazy"></div>
+                            <div class="aa-carousel-slide"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788036557/pomelli_photoshoot_image_2k_0829_2_rlkydr.png" alt="Archive vintage 7" loading="lazy"></div>
                         </div>
-                        <div class="aa-carousel-slide">
-                            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788011032/pomelli_photoshoot_image_9_16_0704_5_u8op65.png" alt="Archive vintage 3" loading="lazy">
-                        </div>
-                        <div class="aa-carousel-slide">
-                            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788011047/pomelli_photoshoot_image_4_5_0708_zduz6j.png" alt="Archive vintage 4" loading="lazy">
-                        </div>
-                        <div class="aa-carousel-slide">
-                            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788011058/pomelli_photoshoot_image_9_16_0710_10_yrz5u2.png" alt="Archive vintage 5" loading="lazy">
-                        </div>
-                        <div class="aa-carousel-slide">
-                            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788011071/pomelli_photoshoot_image_9_16_0710_8_bino9g.png" alt="Archive vintage 6" loading="lazy">
-                        </div>
-                        <div class="aa-carousel-slide">
-                            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788036557/pomelli_photoshoot_image_2k_0829_2_rlkydr.png" alt="Archive vintage 7" loading="lazy">
+                        <div class="aa-carousel-row">
+                            <button class="aa-car-nav" id="aaCarPrev" aria-label="Image précédente"><span class="material-symbols-outlined">chevron_left</span></button>
+                            <div class="aa-carousel-dots" id="aaCarouselDots"></div>
+                            <span class="aa-carousel-counter"><b id="aaSlideIdx">01</b>/<em id="aaSlideTot">07</em></span>
+                            <button class="aa-car-nav" id="aaCarNext" aria-label="Image suivante"><span class="material-symbols-outlined">chevron_right</span></button>
                         </div>
                     </div>
-                    <div class="aa-carousel-dots" id="aaCarouselDots"></div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section class="py-6 bg-surface">
-        <div class="container mx-auto px-6">
-            <div class="aa-trust-bar">
+        <!-- ═══ BARRE DE CONFIANCE ═══ -->
+        <section class="aa-trust-wrap" aria-label="Garanties">
+            <div class="aa-trust-bar reveal">
                 <div class="aa-trust-row">
-                    <div class="aa-trust-item"><span class="material-symbols-outlined">verified_user</span> PayPal sécurisé</div>
-                    <div class="aa-trust-item"><span class="material-symbols-outlined">public</span> Depuis la France</div>
-                    <div class="aa-trust-item"><span class="material-symbols-outlined">inventory_2</span> Emballage soigné</div>
-                    <div class="aa-trust-item"><span class="material-symbols-outlined">local_shipping</span> Suivi de livraison</div>
-                    <div class="aa-trust-item"><span class="material-symbols-outlined">assignment_return</span> Retour 14 jours</div>
+                    <div class="aa-trust-item"><span class="aa-trust-ico"><span class="material-symbols-outlined">verified_user</span></span>PAYPAL SÉCURISÉ</div>
+                    <div class="aa-trust-item"><span class="aa-trust-ico"><span class="material-symbols-outlined">public</span></span>DEPUIS LA FRANCE</div>
+                    <div class="aa-trust-item"><span class="aa-trust-ico"><span class="material-symbols-outlined">inventory_2</span></span>EMBALLAGE SOIGNÉ</div>
+                    <div class="aa-trust-item"><span class="aa-trust-ico"><span class="material-symbols-outlined">local_shipping</span></span>SUIVI DE LIVRAISON</div>
+                    <div class="aa-trust-item"><span class="aa-trust-ico"><span class="material-symbols-outlined">assignment_return</span></span>RETOUR 14 JOURS</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ RACCOURCIS ═══ -->
+        <section class="pb-20 bg-surface border-b-4 border-on-background">
+            <div class="container mx-auto px-6 max-w-screen-xl">
+                <div class="aa-section-title reveal">
+                    <h2>RACCOURCIS DE RECHERCHE</h2>
+                    <span class="aa-sec-line"></span>
+                    <span class="aa-sec-star">✦</span>
+                </div>
+                <p class="aa-sec-sub reveal">Trouve ta pièce en un clic, par marque ou par décennie.</p>
+
+                <div class="aa-shortcut-grid">
+                    <a href="produits.html" class="aa-shortcut-btn aa-shortcut-toutvoir reveal"><div class="aa-shortcut-img"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788007219/TOUT_VOIR_huprey.ico" alt="Tout voir" loading="lazy"></div><span class="aa-shortcut-label">TOUT VOIR</span></a>
+                    <a href="produits.html?decade=1990" class="aa-shortcut-btn reveal"><div class="aa-shortcut-img"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788007210/1990-1999_aaeg6g.ico" alt="1990-1999" loading="lazy"></div><span class="aa-shortcut-label">1990-1999</span></a>
+                    <a href="produits.html?decade=1980" class="aa-shortcut-btn reveal"><div class="aa-shortcut-img"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788007020/1980-1989_o8gird.ico" alt="1980-1989" loading="lazy"></div><span class="aa-shortcut-label">1980-1989</span></a>
+                    <a href="produits.html?decade=1970" class="aa-shortcut-btn reveal"><div class="aa-shortcut-img"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788007032/1970-1979_1_vspoci.ico" alt="1970-1979" loading="lazy"></div><span class="aa-shortcut-label">1970-1979</span></a>
+                    <a href="produits.html?brands=Popy" class="aa-shortcut-btn reveal"><div class="aa-shortcut-img"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1790074873/Black_robot_logo_design_2K_wcpl36.jpg" alt="Popy" loading="lazy"></div><span class="aa-shortcut-label">POPY</span></a>
+                    <a href="produits.html?brands=Palitoy" class="aa-shortcut-btn reveal"><div class="aa-shortcut-img"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788007060/PALITOY_1_iygyzg.ico" alt="Palitoy" loading="lazy"></div><span class="aa-shortcut-label">PALITOY</span></a>
+                    <a href="produits.html?brands=Mego" class="aa-shortcut-btn reveal"><div class="aa-shortcut-img"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788007125/MEGO_1_w8xit3.ico" alt="Mego" loading="lazy"></div><span class="aa-shortcut-label">MEGO</span></a>
+                    <a href="produits.html?brands=Meccano" class="aa-shortcut-btn reveal"><div class="aa-shortcut-img"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788007137/MECCANO_1_a9f7iz.ico" alt="Meccano" loading="lazy"></div><span class="aa-shortcut-label">MECCANO</span></a>
+                    <a href="produits.html?brands=Palitoy,Meccano" class="aa-shortcut-btn reveal"><div class="aa-shortcut-img"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788007150/ACTIONMAN_1_tfsjcl.ico" alt="Action Man" loading="lazy"></div><span class="aa-shortcut-label">ACTION MAN</span></a>
+                    <a href="produits.html?brands=Mattel,Big+Jim" class="aa-shortcut-btn reveal"><div class="aa-shortcut-img"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788007162/BIG_JIM_tloual.ico" alt="Big Jim" loading="lazy"></div><span class="aa-shortcut-label">BIG JIM</span></a>
+                    <a href="produits.html?brands=Ceji,Arbois" class="aa-shortcut-btn reveal"><div class="aa-shortcut-img"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1790074866/Action_Man_logo_translation_2K_20260922123114_dry3rp.jpg" alt="Action Joe" loading="lazy"></div><span class="aa-shortcut-label">ACTION JOE</span></a>
+                    <a href="produits.html?brands=Hasbro,GI+Joe" class="aa-shortcut-btn reveal"><div class="aa-shortcut-img"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788007195/GIJOE_1_itzju9.ico" alt="GI Joe" loading="lazy"></div><span class="aa-shortcut-label">GI JOE</span></a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ RUBAN DÉFILANT ═══ -->
+        <div class="aa-ribbon" aria-hidden="true">
+            <div class="aa-ribbon-track" data-dupe>
+                <div class="aa-ribbon-chunk">
+                    <span>REPRODUCTIONS <b>SOIGNÉES</b></span><span>✦</span>
+                    <span>PIÈCES <b>CUSTOM</b></span><span>✦</span>
+                    <span>FIGURINES <b>1970 → 1990</b></span><span>✦</span>
+                    <span>LA BOUTIQUE EST <b>OUVERTE</b></span><span>✦</span>
+                    <span>REPRODUCTIONS <b>SOIGNÉES</b></span><span>✦</span>
+                    <span>PIÈCES <b>CUSTOM</b></span><span>✦</span>
+                    <span>FIGURINES <b>1970 → 1990</b></span><span>✦</span>
+                    <span>LA BOUTIQUE EST <b>OUVERTE</b></span><span>✦</span>
                 </div>
             </div>
         </div>
-    </section>
 
-    <section class="py-16 bg-surface border-b-4 border-on-background">
-        <div class="container mx-auto px-6">
-            <div class="aa-section-title">
-                <h2>RACCOURCIS DE RECHERCHE</h2>
-            </div>
-            <p class="text-on-surface-variant italic font-bold mb-8 text-center">Trouve ta pièce en un clic, par marque ou par décennie.</p>
-
-            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-6 gap-3">
-
-                <a href="produits.html" class="aa-shortcut-btn aa-shortcut-toutvoir">
-                    <div class="aa-shortcut-img">
-                        <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788007219/TOUT_VOIR_huprey.ico" alt="Tout voir" loading="lazy"/>
+        <!-- ═══ PROGRAMME FIDÉLITÉ ═══ -->
+        <section class="aa-programme mt-6">
+            <div class="container mx-auto px-6">
+                <div class="aa-programme-grid">
+                    <div class="reveal">
+                        <div class="aa-prog-title">
+                            <span class="aa-prog-ico"><span class="material-symbols-outlined">card_giftcard</span></span>
+                            <h2>PROGRAMME<br/>COLLECTIONNEUR</h2>
+                        </div>
+                        <p>Cumulez des étoiles à chaque achat et recevez des <strong>pièces gratuites</strong> ! Valable sur tout le catalogue, sans condition.</p>
+                        <p class="aa-prog-note">Les étoiles s'accumulent directement sur votre compte.</p>
+                        <div class="aa-programme-card">
+                            <span class="aa-programme-pill">1 ACHAT = 1 ★</span>
+                            <span class="aa-programme-pill alt">10 ★ = 1 🎁</span>
+                        </div>
                     </div>
-                    <span class="aa-shortcut-label">TOUT VOIR</span>
-                </a>
-                <a href="produits.html?decade=1990" class="aa-shortcut-btn">
-                    <div class="aa-shortcut-img">
-                        <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788007210/1990-1999_aaeg6g.ico" alt="1990-1999" loading="lazy"/>
-                    </div>
-                    <span class="aa-shortcut-label">1990-1999</span>
-                </a>
-                <a href="produits.html?decade=1980" class="aa-shortcut-btn">
-                    <div class="aa-shortcut-img">
-                        <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788007020/1980-1989_o8gird.ico" alt="1980-1989" loading="lazy"/>
-                    </div>
-                    <span class="aa-shortcut-label">1980-1989</span>
-                </a>
-                <a href="produits.html?decade=1970" class="aa-shortcut-btn">
-                    <div class="aa-shortcut-img">
-                        <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788007032/1970-1979_1_vspoci.ico" alt="1970-1979" loading="lazy"/>
-                    </div>
-                    <span class="aa-shortcut-label">1970-1979</span>
-                </a>
-                <a href="produits.html?brands=Popy" class="aa-shortcut-btn">
-                    <div class="aa-shortcut-img">
-                        <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1790074873/Black_robot_logo_design_2K_wcpl36.jpg" alt="Popy" loading="lazy"/>
-                    </div>
-                    <span class="aa-shortcut-label">POPY</span>
-                </a>
-                <a href="produits.html?brands=Palitoy" class="aa-shortcut-btn">
-                    <div class="aa-shortcut-img">
-                        <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788007060/PALITOY_1_iygyzg.ico" alt="Palitoy" loading="lazy"/>
-                    </div>
-                    <span class="aa-shortcut-label">PALITOY</span>
-                </a>
-                <a href="produits.html?brands=Mego" class="aa-shortcut-btn">
-                    <div class="aa-shortcut-img">
-                        <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788007125/MEGO_1_w8xit3.ico" alt="Mego" loading="lazy"/>
-                    </div>
-                    <span class="aa-shortcut-label">MEGO</span>
-                </a>
-                <a href="produits.html?brands=Meccano" class="aa-shortcut-btn">
-                    <div class="aa-shortcut-img">
-                        <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788007137/MECCANO_1_a9f7iz.ico" alt="Meccano" loading="lazy"/>
-                    </div>
-                    <span class="aa-shortcut-label">MECCANO</span>
-                </a>
-                <a href="produits.html?brands=Palitoy,Meccano" class="aa-shortcut-btn">
-                    <div class="aa-shortcut-img">
-                        <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788007150/ACTIONMAN_1_tfsjcl.ico" alt="Action Man" loading="lazy"/>
-                    </div>
-                    <span class="aa-shortcut-label">ACTION MAN</span>
-                </a>
-                <a href="produits.html?brands=Mattel,Big+Jim" class="aa-shortcut-btn">
-                    <div class="aa-shortcut-img">
-                        <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788007162/BIG_JIM_tloual.ico" alt="Big Jim" loading="lazy"/>
-                    </div>
-                    <span class="aa-shortcut-label">BIG JIM</span>
-                </a>
-                <a href="produits.html?brands=Ceji,Arbois" class="aa-shortcut-btn">
-                    <div class="aa-shortcut-img">
-                        <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1790074866/Action_Man_logo_translation_2K_20260922123114_dry3rp.jpg" alt="Action Joe" loading="lazy"/>
-                    </div>
-                    <span class="aa-shortcut-label">ACTION JOE</span>
-                </a>
-                <a href="produits.html?brands=Hasbro,GI+Joe" class="aa-shortcut-btn">
-                    <div class="aa-shortcut-img">
-                        <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788007195/GIJOE_1_itzju9.ico" alt="GI Joe" loading="lazy"/>
-                    </div>
-                    <span class="aa-shortcut-label">GI JOE</span>
-                </a>
-
-            </div>
-        </div>
-    </section>
-
-    <section class="aa-programme">
-        <div class="container mx-auto px-6">
-            <div class="aa-programme-grid">
-                <div class="aa-programme-left">
-                    <h2 class="font-headline font-black text-4xl md:text-5xl uppercase tracking-tighter text-[#ffca4d]" style="font-style:italic;">🎁 PROGRAMME<br/>COLLECTIONNEUR</h2>
-                    <p class="font-body text-lg md:text-xl font-bold max-w-xl">Cumulez des étoiles à chaque achat et recevez des <strong class="text-[#ffca4d]">pièces gratuites</strong> !</p>
-                    <div class="aa-programme-card">
-                        <span class="aa-programme-pill">1 ACHAT = 1 ⭐</span>
-                        <span class="aa-programme-pill alt">10 ⭐ = 1 🎁</span>
+                    <div class="aa-loyal-wrap reveal">
+                        <span class="aa-loyal-hint" id="aaLoyalHint">✦ DÉMO — CLIQUEZ POUR TAMBONNER ✦</span>
+                        <div class="aa-loyal-card" id="aaLoyalCard" role="button" tabindex="0" aria-label="Carte de fidélité — cliquez pour tamponner une étoile">
+                            <div class="aa-loyal-head">
+                                <span class="aa-loyal-brand">Action Archive</span>
+                                <span class="aa-loyal-ref">MEMBRE N° AA-000001</span>
+                            </div>
+                            <div class="aa-loyal-stars" id="aaLoyalStars"></div>
+                            <div class="aa-loyal-sep" aria-hidden="true"></div>
+                            <div class="aa-loyal-foot">
+                                <div class="aa-loyal-progress"><div id="aaLoyalBar"></div></div>
+                                <span class="aa-loyal-count" id="aaLoyalCount">00/10</span>
+                            </div>
+                            <span class="aa-loyal-won" id="aaLoyalWon">🎁 CADEAU DÉBLOQUÉ</span>
+                        </div>
+                        <a href="inscription.html" class="aa-cta-big btn-physical"><span class="material-symbols-outlined">stars</span>S'INSCRIRE GRATUITEMENT</a>
+                        <span class="aa-cta-note">BIENVENUE : VOTRE PREMIÈRE ÉTOILE EST OFFERTE — AUCUNE CB, JUSTE UN E-MAIL</span>
                     </div>
                 </div>
-                <div class="aa-programme-right">
-                    <p class="aa-blink-yellow">
-                        ⭐ Inscrivez-vous gratuitement<br>et recevez votre<br>première étoile offerte ! ⭐
-                    </p>
-                    <a href="inscription.html" class="btn-physical inline-flex items-center gap-3 bg-[#ffca4d] text-[#342e1e] font-headline font-black px-10 py-5 text-2xl uppercase rounded-md shadow-[6px_6px_0px_0px_#342e1e] hover:translate-y-[-3px] hover:scale-105 transition-all duration-200">S'INSCRIRE GRATUITEMENT</a>
-                </div>
             </div>
+        </section>
+    </main>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="aa-footer w-full py-12 px-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-10">
+        <div class="flex flex-col items-center md:items-start gap-3">
+            <a href="index.html" class="aa-logo-link flex items-center gap-3" title="Action Archive">
+                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="lazy" class="aa-logo h-10 w-auto"/>
+                <span class="text-xl md:text-2xl font-black italic text-[#ffca4d] font-headline uppercase tracking-tighter hover:text-white transition-colors">Action Archive</span>
+            </a>
+            <p class="font-body font-medium text-[10px] text-[#ffca4d] tracking-widest uppercase">© 2026 Action Archive INC.</p>
+            <p class="aa-footer-ref">ÉDITION 2026 — CATALOGUE OUVERT 24/7</p>
         </div>
-    </section>
-</main>
+        <nav id="aa-social-nav" class="flex flex-wrap justify-center gap-4" aria-label="Réseaux sociaux"></nav>
+    </footer>
 
-<footer class="bg-[#342e1e] border-t-8 border-double border-[#755700] w-full py-12 px-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-20">
-    <div class="flex flex-col items-center md:items-start gap-3">
-        <a href="index.html" class="aa-logo-link flex items-center gap-3 cursor-pointer" title="Action Archive">
-            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="lazy" class="aa-logo h-10 w-auto"/>
-            <span class="text-xl md:text-2xl font-black italic text-[#ffca4d] font-headline uppercase tracking-tighter hover:text-white transition-colors">Action Archive</span>
-        </a>
-        <p class="font-body font-medium text-[10px] text-[#ffca4d] tracking-widest uppercase">© 2026 Action Archive INC.</p>
-    </div>
-    <nav id="aa-social-nav" class="flex flex-wrap justify-center gap-10"></nav>
-</footer>
+    <button id="aaTop" aria-label="Retour en haut"><span class="material-symbols-outlined">arrow_upward</span></button>
+    <div id="aa-toasts"></div>
 
-<div id="aa-toasts"></div>
-<script src="aa-core.js"></script>
-<script>
-function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
-function aaEscapeAttr(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
-
-(function() {
-    const carousel = document.getElementById('aaCarousel');
-    if (!carousel) return;
-    const slides = carousel.querySelectorAll('.aa-carousel-slide');
-    const dotsContainer = document.getElementById('aaCarouselDots');
-    const total = slides.length;
-    let current = 0;
-    let interval = null;
-    let paused = false;
-    
-    for (let i = 0; i < total; i++) {
-        const dot = document.createElement('button');
-        dot.className = 'aa-carousel-dot' + (i === 0 ? ' active' : '');
-        dot.setAttribute('aria-label', 'Image ' + (i + 1));
-        dot.addEventListener('click', (e) => { e.stopPropagation(); goTo(i); resetInterval(); });
-        dotsContainer.appendChild(dot);
+    <script src="aa-core.js"></script>
+    <script>
+    function aaEscapeHtml(s){ if(s==null) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+    function aaEscapeAttr(s){ if(s==null) return ''; return String(s).replace(/&/g,'&amp;').replace(/'/g,'&#39;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function toggleDrawer(){
+        const d=document.getElementById('side-drawer'), o=document.getElementById('drawer-overlay');
+        d.classList.toggle('open'); o.classList.toggle('open');
+        document.body.style.overflow = d.classList.contains('open') ? 'hidden' : '';
     }
-    
-    function goTo(idx) {
-        slides[current].classList.remove('active');
-        dotsContainer.children[current].classList.remove('active');
-        current = (idx + total) % total;
-        slides[current].classList.add('active');
-        dotsContainer.children[current].classList.add('active');
-    }
-    function next() { goTo(current + 1); }
-    function startInterval() {
-        if (interval) clearInterval(interval);
-        interval = setInterval(() => { if (!paused) next(); }, 4000);
-    }
-    function resetInterval() { startInterval(); }
-    carousel.addEventListener('mouseenter', () => { paused = true; });
-    carousel.addEventListener('mouseleave', () => { paused = false; });
-    startInterval();
-})();
 
-(function() {
-    const social = JSON.parse(localStorage.getItem('aa_social_config') || '{}');
-    const nav = document.getElementById('aa-social-nav');
-    if (!nav) return;
-    const items = [{ key: 'facebook', icon: 'facebook', label: 'FACEBOOK' },{ key: 'twitter', icon: 'share', label: 'TWITTER' },{ key: 'instagram', icon: 'camera_alt', label: 'INSTAGRAM' },{ key: 'tiktok', icon: 'music_note', label: 'TIKTOK' },{ key: 'youtube', icon: 'play_circle', label: 'YOUTUBE' }];
-    items.forEach(item => {
-        const data = social[item.key];
-        if (data && data.enabled && data.url) nav.innerHTML += `<a href="${aaEscapeAttr(data.url)}" target="_blank" class="text-[#ffca4d]"><span class="material-symbols-outlined">${item.icon}</span></a>`;
+    /* ---------- Toast local (même style que aa-core) ---------- */
+    function aaDemoToast(msg){
+        const wrap=document.getElementById('aa-toasts'); if(!wrap) return;
+        const t=document.createElement('div'); t.className='aa-toast';
+        t.innerHTML='<span class="material-symbols-outlined" style="font-size:20px;color:#ffca4d">verified</span><span>'+aaEscapeHtml(msg)+'</span>';
+        wrap.appendChild(t);
+        requestAnimationFrame(()=>t.classList.add('show'));
+        setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),450); },3200);
+    }
+
+    /* ---------- Confettis ---------- */
+    function aaConfetti(x,y){
+        const colors=['#bb0003','#ffca4d','#0f56bf','#342e1e','#fff5e5'];
+        for(let i=0;i<40;i++){
+            const p=document.createElement('i'); p.className='aa-confetti';
+            p.style.background=colors[i%colors.length]; document.body.appendChild(p);
+            const a=Math.random()*Math.PI*2, v=70+Math.random()*170;
+            const dx=Math.cos(a)*v, dy=Math.sin(a)*v-90, rot=(Math.random()*720-360);
+            p.animate([
+                {transform:`translate(${x}px,${y}px) rotate(0deg)`,opacity:1},
+                {transform:`translate(${x+dx}px,${y+dy+140+Math.random()*90}px) rotate(${rot}deg)`,opacity:0}
+            ],{duration:1000+Math.random()*700,easing:'cubic-bezier(.22,.61,.36,1)'}).onfinish=()=>p.remove();
+        }
+    }
+
+    /* ---------- Ticker & ruban : duplication pour boucle infinie ---------- */
+    document.querySelectorAll('[data-dupe]').forEach(el=>{ el.innerHTML += el.innerHTML; });
+
+    /* ---------- Curseur custom (desktop uniquement) ---------- */
+    (function(){
+        if(!matchMedia('(pointer:fine)').matches) return;
+        const dot=document.getElementById('aaCursorDot'), ring=document.getElementById('aaCursorRing');
+        dot.style.display='block'; ring.style.display='block'; document.documentElement.classList.add('aa-cursor-on');
+        let mx=innerWidth/2, my=innerHeight/2, rx=mx, ry=my;
+        addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; dot.style.transform=`translate(${mx-5}px,${my-5}px)`; },{passive:true});
+        addEventListener('mousedown',()=>ring.classList.add('aa-press'));
+        addEventListener('mouseup',()=>ring.classList.remove('aa-press'));
+        document.addEventListener('mouseover',e=>{ if(e.target.closest('a,button,#aaLoyalCard,.aa-carousel')) ring.classList.add('aa-target'); });
+        document.addEventListener('mouseout',e=>{ if(e.target.closest('a,button,#aaLoyalCard,.aa-carousel')) ring.classList.remove('aa-target'); });
+        (function loop(){ rx+=(mx-rx)*.18; ry+=(my-ry)*.18; ring.style.transform=`translate(${rx-ring.offsetWidth/2}px,${ry-ring.offsetHeight/2}px)`; requestAnimationFrame(loop); })();
+    })();
+
+    /* ---------- Progression de scroll + header + retour haut ---------- */
+    (function(){
+        const bar=document.getElementById('aaProgress'), top=document.getElementById('aaTop'), header=document.querySelector('.aa-header');
+        let ticking=false;
+        function upd(){
+            const sc=scrollY, h=document.documentElement.scrollHeight-innerHeight;
+            bar.style.width=(h>0?(sc/h)*100:0)+'%';
+            top.classList.toggle('show',sc>600);
+            header.classList.toggle('aa-scrolled',sc>12);
+            ticking=false;
+        }
+        addEventListener('scroll',()=>{ if(!ticking){ requestAnimationFrame(upd); ticking=true; } },{passive:true});
+        upd();
+        top.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
+    })();
+
+    /* ---------- Apparitions au scroll ---------- */
+    (function(){
+        const els=document.querySelectorAll('.reveal');
+        if(!('IntersectionObserver' in window)){ els.forEach(e=>e.classList.add('in')); return; }
+        const io=new IntersectionObserver(es=>{ es.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } }); },{threshold:.12,rootMargin:'0px 0px -8% 0px'});
+        els.forEach((e,i)=>{ e.style.transitionDelay=Math.min((i%12)*45,'500')+'ms'; io.observe(e); });
+    })();
+
+    /* ---------- Carrousel héros : autoplay, flèches, clavier, swipe, tilt 3D ---------- */
+    (function(){
+        const car=document.getElementById('aaCarousel'); if(!car) return;
+        const slides=[...car.querySelectorAll('.aa-carousel-slide')];
+        const dotsBox=document.getElementById('aaCarouselDots'), idxEl=document.getElementById('aaSlideIdx'), totEl=document.getElementById('aaSlideTot');
+        let cur=0, timer=null, hover=false, inView=true;
+        const pad=n=>String(n+1).padStart(2,'0');
+        totEl.textContent=String(slides.length).padStart(2,'0');
+        slides.forEach((_,i)=>{
+            const d=document.createElement('button');
+            d.className='aa-carousel-dot'+(i===0?' active':'');
+            d.setAttribute('aria-label',"Aller à l'image "+(i+1));
+            d.addEventListener('click',e=>{ e.stopPropagation(); go(i); restart(); });
+            dotsBox.appendChild(d);
+        });
+        function go(i){
+            slides[cur].classList.remove('active'); dotsBox.children[cur].classList.remove('active');
+            cur=(i+slides.length)%slides.length;
+            slides[cur].classList.add('active'); dotsBox.children[cur].classList.add('active');
+            idxEl.textContent=pad(cur);
+            idxEl.classList.remove('bump'); void idxEl.offsetWidth; idxEl.classList.add('bump');
+        }
+        const next=()=>go(cur+1), prev=()=>go(cur-1);
+        function start(){ clearInterval(timer); timer=setInterval(()=>{ if(!hover&&inView&&!document.hidden) next(); },4000); }
+        function restart(){ start(); }
+        car.addEventListener('mouseenter',()=>hover=true); car.addEventListener('mouseleave',()=>hover=false);
+        car.addEventListener('focusin',()=>hover=true); car.addEventListener('focusout',()=>hover=false);
+        car.addEventListener('click',next);
+        car.addEventListener('keydown',e=>{ if(e.key==='ArrowRight'){ next(); restart(); } if(e.key==='ArrowLeft'){ prev(); restart(); } });
+        let tx=0;
+        car.addEventListener('touchstart',e=>{ tx=e.touches[0].clientX; },{passive:true});
+        car.addEventListener('touchend',e=>{ const dx=e.changedTouches[0].clientX-tx; if(Math.abs(dx)>40){ dx<0?next():prev(); restart(); } },{passive:true});
+        document.getElementById('aaCarPrev').addEventListener('click',e=>{ e.stopPropagation(); prev(); restart(); });
+        document.getElementById('aaCarNext').addEventListener('click',e=>{ e.stopPropagation(); next(); restart(); });
+        // Tilt 3D léger suite à la souris
+        const stage=car.closest('.aa-carousel-stage');
+        let rx=0,ry=0,s=1, tRx=0,tRy=0,tS=1;
+        stage.addEventListener('mousemove',e=>{
+            const r=stage.getBoundingClientRect();
+            const x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5;
+            tRy=x*10; tRx=-y*8; tS=1.03;
+        });
+        stage.addEventListener('mouseleave',()=>{ tRx=0; tRy=0; tS=1; });
+        (function loop(){
+            rx+=(tRx-rx)*.1; ry+=(tRy-ry)*.1; s+=(tS-s)*.1;
+            car.style.transform=`perspective(900px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) rotate(-3deg) scale(${s.toFixed(3)})`;
+            requestAnimationFrame(loop);
+        })();
+        new IntersectionObserver(en=>{ inView=en[0].isIntersecting; },{threshold:.2}).observe(car);
+        start();
+    })();
+
+    /* ---------- Tuiles raccourcis : effet tilt au survol ---------- */
+    (function(){
+        document.querySelectorAll('.aa-shortcut-btn').forEach(t=>{
+            t.addEventListener('mousemove',e=>{
+                const r=t.getBoundingClientRect();
+                const x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5;
+                t.style.transform=`translateY(-4px) perspective(520px) rotateX(${(-y*7).toFixed(1)}deg) rotateY(${(x*7).toFixed(1)}deg)`;
+            });
+            t.addEventListener('mouseleave',()=>{ t.style.transform=''; });
+        });
+    })();
+
+    /* ---------- Carte de fidélité interactive ---------- */
+    (function(){
+        const card=document.getElementById('aaLoyalCard'); if(!card) return;
+        const box=document.getElementById('aaLoyalStars'), bar=document.getElementById('aaLoyalBar'),
+              cnt=document.getElementById('aaLoyalCount'), hint=document.getElementById('aaLoyalHint');
+        let n=0;
+        for(let i=0;i<10;i++){
+            const c=document.createElement('span');
+            c.className='aa-lcell'; c.style.setProperty('--r',(i%2? 7:-7)+'deg');
+            box.appendChild(c);
+        }
+        const cells=[...box.children];
+        function paint(){ bar.style.width=(n*10)+'%'; cnt.textContent=String(n).padStart(2,'0')+'/10'; }
+        function stamp(){
+            if(n>=10){
+                n=0; card.classList.remove('won');
+                cells.forEach(c=>{ c.classList.remove('filled'); c.textContent=''; });
+                hint.textContent='✦ DÉMO — CLIQUEZ POUR TAMBONNER ✦'; paint(); return;
+            }
+            const c=cells[n]; n++;
+            c.classList.add('filled'); c.textContent='★'; paint();
+            if(n<10) hint.textContent='✦ ENCORE '+(10-n)+' ÉTOILE'+(10-n>1?'S':'')+' AVANT LE CADEAU ✦';
+            if(n===10){
+                card.classList.add('won');
+                hint.textContent='✦ CARTE PLEINE — CLIQUEZ POUR RECOMMENCER ✦';
+                const r=card.getBoundingClientRect();
+                aaConfetti(r.left+r.width/2, r.top+r.height/2);
+                aaDemoToast('10 ÉTOILES — CADEAU DÉBLOQUÉ !');
+            }
+        }
+        card.addEventListener('click',stamp);
+        card.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); stamp(); } });
+    })();
+
+    /* ---------- Badge panier : animation à chaque mise à jour (via aa-core) ---------- */
+    (function(){
+        const badge=document.getElementById('aa-cart-badge'); if(!badge) return;
+        new MutationObserver(()=>{
+            badge.classList.remove('pop'); void badge.offsetWidth; badge.classList.add('pop');
+        }).observe(badge,{childList:true,characterData:true,subtree:true});
+    })();
+
+    /* ---------- Horloge du drawer ---------- */
+    (function(){
+        const c=document.getElementById('aaClock'); if(!c) return;
+        const t=()=>c.textContent=new Date().toLocaleTimeString('fr-FR');
+        t(); setInterval(t,1000);
+    })();
+
+    /* ---------- Code-barres décoratifs (drawer uniquement) ---------- */
+    document.querySelectorAll('.aa-barcode').forEach(el=>{
+        for(let i=0;i<30;i++){
+            const b=document.createElement('i'), s=(i*7)%9;
+            b.style.width=(s===0?5:s<3?2:s<6?1:3)+'px'; b.style.height='34px';
+            el.appendChild(b);
+        }
     });
-})();
-</script>
+
+    /* ---------- Réseaux sociaux (config aa-core) ---------- */
+    (function(){
+        const social=JSON.parse(localStorage.getItem('aa_social_config')||'{}');
+        const nav=document.getElementById('aa-social-nav'); if(!nav) return;
+        const items=[
+            { key:'facebook', icon:'facebook',    label:'FACEBOOK' },
+            { key:'twitter',  icon:'share',       label:'TWITTER' },
+            { key:'instagram',icon:'photo_camera',label:'INSTAGRAM' },
+            { key:'tiktok',   icon:'music_note',  label:'TIKTOK' },
+            { key:'youtube',  icon:'play_circle', label:'YOUTUBE' }
+        ];
+        items.forEach(item=>{
+            const data=social[item.key];
+            if(data&&data.enabled&&data.url){
+                const a=document.createElement('a');
+                a.href=aaEscapeAttr(data.url); a.target='_blank'; a.rel='noopener';
+                a.className='aa-social-link'; a.setAttribute('aria-label',item.label); a.title=item.label;
+                a.innerHTML=`<span class="material-symbols-outlined">${item.icon}</span>`;
+                nav.appendChild(a);
+            }
+        });
+    })();
+    </script>
 </body>
 </html>

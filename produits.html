@@ -6,563 +6,743 @@
     <meta name="robots" content="index, follow"/>
     <meta name="description" content="Catalogue Action Archive - Toutes nos reproductions et créations custom de boîtes vintage pour figurines de collection. Filtrez par type, collection ou décennie."/>
     <link rel="canonical" href="https://action-archive.com/produits.html"/>
-    <title>Catalogue - Action Archive | Toutes les Reproductions & Custom</title>
+    <title>Catalogue - Action Archive | Toutes les Reproductions &amp; Custom</title>
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,900;1,900&family=Work+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,900;1,700;1,900&family=Work+Sans:wght@400;500;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL@20..48,100..700,0..1&display=swap" rel="stylesheet"/>
     <script>
         tailwind.config = { darkMode: "class", theme: { extend: { colors: {
             "secondary": "#755700", "surface-container-low": "#fdefd5", "surface-container-high": "#efe1c3",
             "surface": "#fff5e5", "primary": "#bb0003", "tertiary": "#0f56bf", "on-surface": "#342e1e",
             "secondary-container": "#ffca4d", "on-background": "#342e1e", "background": "#fff5e5",
             "surface-variant": "#eadcbc", "on-surface-variant": "#635b48",
-        }, fontFamily: { "headline": ["Epilogue"], "body": ["Work Sans"], "label": ["Work Sans"] } } } }
+        }, fontFamily: { "headline": ["Epilogue"], "body": ["Work Sans"], "label": ["Work Sans"], "mono": ["Space Mono"] } } } }
     </script>
     <style>
-        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        .animate-pop-in { animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-        #side-drawer { box-shadow: -8px 0 0 0 rgba(52, 46, 30, 0.2); transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1); }
-        #side-drawer.open { transform: translateX(0); }
-        .drawer-overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
-        .drawer-overlay.open { opacity: 1; pointer-events: auto; }
-        .btn-physical { transition: all 0.1s ease; }
-        .btn-physical:active { transform: translateY(4px); box-shadow: 0px 0px 0px 0px !important; }
-        #aa-cart-badge{position:absolute;top:-7px;right:-7px;min-width:18px;height:18px;background:#ffca4d;color:#342e1e;font-family:'Epilogue',sans-serif;font-weight:900;font-size:10px;border:2px solid #342e1e;border-radius:2px;display:none;align-items:center;justify-content:center;padding:0 3px;}
-        .aa-toast{background:#342e1e;color:#fff5e5;border:3px solid #ffca4d;padding:12px 18px;font-family:'Epilogue',sans-serif;font-weight:900;font-size:13px;text-transform:uppercase;display:flex;align-items:center;gap:10px;max-width:300px;transform:translateX(120%);opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);pointer-events:auto;}
-        .aa-toast.show{transform:translateX(0);opacity:1;}
-        #aa-toasts{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
-        .search-big { display:flex; align-items:center; background:#fff5e5; border:3px solid #342e1e; box-shadow:6px 6px 0 0 rgba(187,0,3,1); padding:0.75rem 1rem; gap:0.75rem; }
-        .search-big:focus-within { box-shadow:6px 6px 0 0 rgba(15,86,191,1); border-color:#0f56bf; }
-        .search-big input { background:transparent; border:none; outline:none; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:14px; width:100%; color:#342e1e; }
-        .aa-type-badge { position:absolute; top:8px; left:8px; padding:4px 10px; font-family:'Epilogue',sans-serif; font-weight:900; font-size:10px; text-transform:uppercase; border:2px solid #342e1e; letter-spacing:0.05em; z-index:5; box-shadow:2px 2px 0 0 #342e1e; }
-        .aa-type-reproduction { background: #0f56bf; color: white; }
-        .aa-type-custom { background: #7b1fa2; color: white; }
-        .aa-active-filter-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: #bb0003; color: #fff5e5; font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; font-size: 0.75rem; padding: 0.4rem 0.8rem; border: 2px solid #342e1e; box-shadow: 3px 3px 0 0 #342e1e; margin-right: 0.5rem; margin-bottom: 0.5rem; }
-        .aa-active-filter-badge button { background: none; border: none; color: #ffca4d; cursor: pointer; font-weight: 900; font-size: 1rem; padding: 0; line-height: 1; }
-        @keyframes searchPulse {
-            0%, 100% { color: #342e1e; transform: scale(1); }
-            50% { color: #bb0003; transform: scale(1.2); }
+        /* ============ 0. VARIABLES & BASE ============ */
+        :root{
+            --cream:#fff5e5; --cream2:#fdefd5; --cream3:#efe1c3; --cream4:#eadcbc; --ink:#342e1e;
+            --red:#bb0003; --blue:#0f56bf; --yellow:#ffca4d; --olive:#755700; --purple:#7b1fa2;
         }
-        .search-big .material-symbols-outlined {
-            animation: searchPulse 1.4s ease-in-out infinite;
-            display: inline-block;
-            transition: color 0.3s;
-        }
-        .product-img-container {
-            position: relative;
-            overflow: hidden;
-            aspect-ratio: 3/4;
-            background: #eadcbc;
-        }
-        .product-img-container img {
-            transition: opacity 0.3s ease;
-            background: #eadcbc;
-            display: block;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .product-img-container .verso {
-            position: absolute;
-            inset: 0;
-            opacity: 0;
-            z-index: 2;
-        }
-        .product-img-container:hover .recto {
-            opacity: 0;
-        }
-        .product-img-container:hover .verso {
-            opacity: 1;
-        }
-        .btn-add-cart {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: #bb0003;
-            color: #ffffff !important;
-            padding: 8px 12px;
-            font-family: 'Epilogue', sans-serif;
-            font-weight: 900;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border: 2px solid #342e1e;
-            box-shadow: 3px 3px 0 0 #342e1e;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            line-height: 1;
-        }
-        .btn-add-cart:hover {
-            background: #342e1e;
-            color: #ffca4d !important;
-            transform: translate(-2px, -2px);
-            box-shadow: 5px 5px 0 0 #bb0003;
-        }
-        .btn-add-cart:active {
-            transform: translate(2px, 2px);
-            box-shadow: 0 0 0 0 #bb0003;
-        }
-        .btn-add-cart .add-icon {
-            font-size: 14px;
-            font-weight: 900;
-        }
-        .btn-add-cart.added {
-            background: #16a34a !important;
-            color: #ffffff !important;
-        }
-        .aa-filter-btn { font-family:'Epilogue',sans-serif; font-weight:900; font-size:11px; text-transform:uppercase; padding:6px 14px; border:2px solid #342e1e; cursor:pointer; letter-spacing:0.05em; background:#fff5e5; color:#342e1e; transition: all 0.15s ease; }
-        .aa-filter-btn:hover { background:#fdefd5; transform: translateY(-1px); }
-        .aa-filter-btn.active { color:#fff5e5; box-shadow:3px 3px 0 0 #342e1e; transform: translate(-1px, -1px); }
-        .aa-filter-btn[data-value="all"].active { background:#bb0003; }
-        .aa-filter-btn.reproduction.active { background:#0f56bf; }
-.aa-filter-btn.custom.active { background:#7b1fa2; }
-        .aa-products-subtitle {
-            font-size: 1rem;
-        }
-        .skeleton-card {
-            background: #efe1c3;
-            border: 4px solid #342e1e;
-            padding: 0.75rem;
-        }
-        .skeleton-card .skel-img {
-            aspect-ratio: 3/4;
-            background: linear-gradient(90deg, #eadcbc 0%, #fdefd5 50%, #eadcbc 100%);
-            background-size: 200% 100%;
-            animation: skeletonLoading 1.5s infinite;
-            margin-bottom: 0.75rem;
-        }
-        .skeleton-card .skel-line {
-            height: 14px;
-            background: linear-gradient(90deg, #eadcbc 0%, #fdefd5 50%, #eadcbc 100%);
-            background-size: 200% 100%;
-            animation: skeletonLoading 1.5s infinite;
-            margin-bottom: 0.5rem;
-        }
-        .skeleton-card .skel-line.short { width: 60%; }
-        .skeleton-card .skel-line.medium { width: 80%; }
+        html{ scroll-behavior:smooth; }
+        body{ -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+        ::selection{ background:var(--yellow); color:var(--ink); }
+        ::-webkit-scrollbar{ width:12px; }
+        ::-webkit-scrollbar-track{ background:var(--cream2); }
+        ::-webkit-scrollbar-thumb{ background:var(--ink); border:3px solid var(--cream2); }
+        :focus-visible{ outline:3px dashed var(--red); outline-offset:3px; }
 
-        /* ⭐ CSS COPIÉ DEPUIS INDEX.HTML */
-        .aa-objective-banner { background:#bb0003; color:#fff5e5; border-top:4px solid #342e1e; border-bottom:4px solid #342e1e; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:0.95rem; letter-spacing:0.02em; padding:0.7rem 1.5rem; text-align:center; }
-        .aa-objective-banner strong { color:#ffca4d; }
-        .aa-menu-btn { font-family: 'Epilogue', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; background: #bb0003; color: #fff5e5; border: 3px solid #342e1e; padding: 10px 20px; font-size: 1.05rem; box-shadow: 4px 4px 0 0 #342e1e; cursor: pointer; transition: all 0.15s ease; }
-        .aa-menu-btn:hover { background: #342e1e; color: #ffca4d; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 #bb0003; }
-        .aa-logo { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease; filter: drop-shadow(2px 2px 0px rgba(52, 46, 30, 0.15)); }
-        .aa-logo-link:hover .aa-logo { transform: rotate(-5deg) scale(1.05); filter: drop-shadow(3px 3px 0px rgba(187, 0, 3, 0.4)); }
-
-        @media (max-width: 900px) {
-            .aa-products-title { font-size: 1.8rem !important; text-align: center !important; }
-            .aa-products-subtitle { font-size: 0.95rem !important; text-align: center !important; }
-            .search-big { padding: 0.6rem 0.8rem !important; }
-            .search-big input { font-size: 12px !important; }
+        /* ============ 1. GRAIN / CURSEUR / PROGRESSION ============ */
+        .aa-grain{
+            position:fixed; inset:0; z-index:500; pointer-events:none; mix-blend-mode:multiply; opacity:.05;
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
         }
-        @media (max-width: 480px) {
-            .aa-products-title { font-size: 1.5rem !important; }
-            .aa-products-subtitle { font-size: 0.85rem !important; }
+        .aa-cursor, .aa-cursor-ring{ position:fixed; top:0; left:0; border-radius:50%; pointer-events:none; z-index:10002; display:none; }
+        .aa-cursor{ width:10px; height:10px; background:var(--red); border:2px solid var(--ink); }
+        .aa-cursor-ring{ width:36px; height:36px; border:2.5px solid rgba(52,46,30,.55); transition:width .2s, height .2s, background-color .2s, border-color .2s; }
+        .aa-cursor-ring.aa-target{ width:54px; height:54px; background:rgba(255,202,77,.85); border-color:var(--ink); }
+        .aa-cursor-ring.aa-press{ transform:translate(-50%,-50%) scale(.75) !important; }
+        html.aa-cursor-on, html.aa-cursor-on *{ cursor:none !important; }
+        #aaProgress{ position:fixed; top:0; left:0; height:4px; width:0; background:var(--red); z-index:300; box-shadow:1px 1px 0 var(--ink); }
+
+        /* ============ 2. TICKER HAUT ============ */
+        .aa-ticker{ background:var(--red); border-bottom:4px solid var(--ink); overflow:hidden; }
+        .aa-ticker-track{ display:flex; width:max-content; animation:aaTicker 26s linear infinite; }
+        .aa-ticker:hover .aa-ticker-track{ animation-play-state:paused; }
+        .aa-ticker-chunk{ display:flex; align-items:center; gap:1.4rem; padding-right:1.4rem; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:.85rem; letter-spacing:.04em; color:var(--cream); padding-top:.65rem; padding-bottom:.65rem; white-space:nowrap; }
+        .aa-ticker-chunk b{ color:var(--yellow); }
+        .aa-tsep{ color:var(--yellow); font-size:1rem; }
+        @keyframes aaTicker{ to{ transform:translateX(-50%); } }
+
+        /* ============ 3. HEADER ============ */
+        header.aa-header{ background:var(--cream); border-bottom:4px double var(--red); box-shadow:4px 4px 0 rgba(52,46,30,.12); transition:box-shadow .3s; }
+        header.aa-header.aa-scrolled{ box-shadow:0 10px 30px -12px rgba(52,46,30,.35), 4px 4px 0 rgba(52,46,30,.12); }
+        .aa-nav{ position:relative; }
+        .aa-nav a{ position:relative; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; letter-spacing:-.01em; font-size:.85rem; transition:color .2s; }
+        .aa-nav a::after{ content:''; position:absolute; left:0; bottom:-7px; height:4px; width:0; background:var(--red); transition:width .25s cubic-bezier(.22,1,.36,1); }
+        .aa-nav a:hover::after{ width:100%; }
+        .aa-nav a.aa-active{ color:var(--blue); }
+        .aa-nav a.aa-active::after{ width:100%; background:var(--blue); }
+        .aa-logo{ transition:transform .3s cubic-bezier(.34,1.56,.64,1), filter .3s ease; filter:drop-shadow(2px 2px 0 rgba(52,46,30,.15)); }
+        .aa-logo-link:hover .aa-logo{ transform:rotate(-6deg) scale(1.06); filter:drop-shadow(3px 3px 0 rgba(187,0,3,.4)); }
+        .aa-cart-btn:hover .material-symbols-outlined{ animation:aaWiggle .5s ease; }
+        @keyframes aaWiggle{ 25%{ transform:rotate(-12deg);} 70%{ transform:rotate(9deg);} }
+        .aa-icon-btn{ display:inline-flex; padding:.5rem; border-radius:2px; transition:all .12s ease; background:var(--cream); }
+        .aa-icon-btn:hover{ transform:translate(-2px,-2px); }
+        .aa-menu-btn{ font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; letter-spacing:.05em; background:var(--red); color:var(--cream); border:3px solid var(--ink); padding:10px 20px; font-size:1rem; box-shadow:4px 4px 0 var(--ink); cursor:pointer; transition:all .15s ease; }
+        .aa-menu-btn:hover{ background:var(--ink); color:var(--yellow); transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--red); }
+        .btn-physical{ transition:all .1s ease; }
+        .btn-physical:active{ transform:translateY(4px); box-shadow:0 0 0 0 !important; }
+
+        /* ============ 3b. BARRE DE RECHERCHE (header + drawer) ============ */
+        .aa-search{ display:none; position:relative; align-items:center; }
+        .aa-search-drawer{ display:flex; width:100%; margin-bottom:.5rem; }
+        @media (min-width:1024px){ .aa-search{ display:flex; } }
+        .aa-search input{ font-family:'Work Sans',sans-serif; font-weight:600; font-size:.9rem; color:var(--ink); background:var(--cream2); border:3px solid var(--ink); padding:.55rem 3rem .55rem .9rem; width:230px; box-shadow:3px 3px 0 var(--blue); transition:box-shadow .15s ease, width .25s ease; }
+        .aa-search input::placeholder{ color:var(--on-surface-variant); }
+        .aa-search input:focus{ outline:none; box-shadow:3px 3px 0 var(--red); width:280px; }
+        .aa-search input::-webkit-search-cancel-button{ -webkit-appearance:none; }
+        .aa-search button{ position:absolute; right:2px; top:2px; bottom:2px; width:40px; background:var(--yellow); border:2.5px solid var(--ink); display:flex; align-items:center; justify-content:center; color:var(--ink); cursor:pointer; transition:all .15s ease; }
+        .aa-search button:hover{ background:var(--red); color:var(--yellow); }
+        .aa-search button .material-symbols-outlined{ font-size:20px; font-weight:700; }
+        .aa-search-drawer input{ width:100%; }
+        .aa-search-drawer input:focus{ width:100%; }
+
+        /* ============ 4. DRAWER ============ */
+        #side-drawer{ box-shadow:-8px 0 0 rgba(52,46,30,.2); transition:transform .45s cubic-bezier(.77,0,.175,1); }
+        #side-drawer.open{ transform:translateX(0); }
+        .drawer-overlay{ opacity:0; pointer-events:none; transition:opacity .3s ease; }
+        .drawer-overlay.open{ opacity:1; pointer-events:auto; }
+        .aa-drawer-link{ display:flex; align-items:center; justify-content:space-between; background:var(--cream2); border:2px solid var(--ink); padding:14px 16px; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:.95rem; color:var(--ink); transition:all .18s ease; }
+        .aa-drawer-link::after{ content:'→'; opacity:0; transform:translateX(-6px); transition:all .18s ease; }
+        .aa-drawer-link:hover{ transform:translateX(-4px); background:var(--yellow); box-shadow:4px 4px 0 var(--red); }
+        .aa-drawer-link:hover::after{ opacity:1; transform:none; }
+        .aa-drawer-link.aa-current{ background:var(--blue); color:var(--cream); border-color:var(--ink); }
+        .aa-drawer-meta{ border-top:4px solid rgba(52,46,30,.12); padding-top:1.25rem; font-family:'Space Mono',monospace; font-size:.72rem; color:var(--on-surface-variant); letter-spacing:.05em; display:flex; flex-direction:column; gap:.6rem; }
+        .aa-drawer-meta b{ color:var(--red); }
+        .aa-barcode{ display:flex; align-items:flex-end; gap:1px; height:34px; color:var(--ink); }
+        .aa-barcode i{ display:inline-block; background:currentColor; }
+
+        /* ============ 5. TÊTE DE PAGE CATALOGUE ============ */
+        .aa-catalog-title{ font-family:'Epilogue',sans-serif; font-weight:900; font-style:italic; text-transform:uppercase; color:var(--red); letter-spacing:-.02em; line-height:.98; font-size:clamp(2.1rem,4.8vw,3.6rem); border-bottom:4px solid var(--ink); padding-bottom:1.25rem; margin-bottom:1.1rem; }
+        .aa-catalog-title .line{ display:block; overflow:hidden; padding-bottom:.06em; }
+        .aa-catalog-title .line-in{ display:inline-block; transform:translateY(115%); animation:aaLineUp .8s cubic-bezier(.22,1,.36,1) forwards; }
+        .aa-catalog-title .line:nth-child(2) .line-in{ animation-delay:.12s; }
+        @keyframes aaLineUp{ to{ transform:translateY(0); } }
+        .aa-marker-y{ position:relative; color:var(--red); white-space:nowrap; }
+        .aa-marker-y::before{ content:''; position:absolute; inset:6% -6% 0 -6%; background:var(--yellow); transform:skew(-12deg) rotate(-1.5deg) scaleX(0); transform-origin:left center; z-index:-1; animation:aaMarkerIn .45s cubic-bezier(.22,1,.36,1) .5s forwards; }
+        @keyframes aaMarkerIn{ to{ transform:skew(-12deg) rotate(-1.5deg) scaleX(1); } }
+        .aa-cus{ color:var(--purple); }
+        .aa-catalog-sub{ font-family:'Work Sans',sans-serif; color:var(--on-surface-variant); font-weight:700; font-style:italic; margin-bottom:1.5rem; }
+        .aa-eyebrow{ display:flex; align-items:center; gap:.7rem; font-family:'Space Mono',monospace; font-weight:700; font-size:.78rem; text-transform:uppercase; letter-spacing:.14em; color:var(--ink); margin-bottom:1.2rem; }
+        .aa-live{ width:9px; height:9px; border-radius:50%; background:var(--red); border:2px solid var(--ink); animation:aaLive 1.6s infinite; flex:none; }
+        @keyframes aaLive{ 0%,100%{ box-shadow:0 0 0 0 rgba(187,0,3,.5);} 50%{ box-shadow:0 0 0 6px rgba(187,0,3,0);} }
+
+        /* ============ 6. GRANDE RECHERCHE ============ */
+        .search-big{ display:flex; align-items:center; background:var(--cream); border:3px solid var(--ink); box-shadow:6px 6px 0 var(--red); padding:.9rem 1.1rem; gap:.75rem; transition:all .15s ease; }
+        .search-big:focus-within{ box-shadow:6px 6px 0 var(--blue); border-color:var(--blue); transform:translate(-1px,-1px); }
+        .search-big input{ background:transparent; border:none; outline:none; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:14px; width:100%; color:var(--ink); }
+        .search-big input::placeholder{ color:var(--on-surface-variant); }
+        .search-big .material-symbols-outlined{ animation:searchPulse 1.8s ease-in-out infinite; display:inline-block; font-size:24px; }
+        @keyframes searchPulse{ 0%,100%{ color:var(--ink); transform:scale(1);} 50%{ color:var(--red); transform:scale(1.15);} }
+
+        /* ============ 7. FILTRES & COMPTEUR ============ */
+        .aa-filter-legend{ font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:.75rem; letter-spacing:.05em; color:var(--on-surface-variant); margin-bottom:.55rem; display:flex; align-items:center; gap:.4rem; }
+        .aa-filter-legend .material-symbols-outlined{ font-size:17px; color:var(--red); }
+        .aa-filter-btn{ font-family:'Epilogue',sans-serif; font-weight:900; font-size:11px; text-transform:uppercase; padding:7px 14px; border:2px solid var(--ink); cursor:pointer; letter-spacing:.05em; background:var(--cream); color:var(--ink); transition:all .15s ease; display:inline-flex; align-items:center; gap:6px; }
+        .aa-filter-btn:hover{ background:var(--cream2); transform:translateY(-2px); box-shadow:2px 3px 0 var(--ink); }
+        .aa-filter-btn.active{ color:var(--cream); box-shadow:3px 3px 0 var(--ink); transform:translate(-1px,-1px); }
+        .aa-filter-btn[data-value="all"].active{ background:var(--red); }
+        .aa-filter-btn.reproduction.active{ background:var(--blue); }
+        .aa-filter-btn.custom.active{ background:var(--purple); }
+        .aa-fdot{ width:9px; height:9px; border-radius:50%; display:inline-block; flex:none; border:1.5px solid rgba(52,46,30,.55); }
+        .aa-filter-btn.active .aa-fdot{ border-color:rgba(255,245,229,.8); }
+        .aa-active-filter-badge{ display:inline-flex; align-items:center; gap:.5rem; background:var(--red); color:var(--cream); font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:.72rem; letter-spacing:.03em; padding:.4rem .8rem; border:2px solid var(--ink); box-shadow:3px 3px 0 var(--ink); margin-right:.5rem; margin-bottom:.5rem; animation:popIn .3s cubic-bezier(.34,1.56,.64,1); }
+        .aa-active-filter-badge .material-symbols-outlined{ font-size:15px; color:var(--yellow); }
+        .aa-active-filter-badge button{ background:none; border:none; color:var(--yellow); cursor:pointer; font-weight:900; font-size:1rem; padding:0; line-height:1; transition:transform .15s; }
+        .aa-active-filter-badge button:hover{ transform:scale(1.25); }
+        .aa-results-bar{ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.8rem; background:var(--ink); border:3px solid var(--ink); box-shadow:5px 5px 0 var(--red); padding:.85rem 1.1rem; margin-bottom:1.75rem; }
+        .aa-rb-label{ font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; color:var(--yellow); font-size:clamp(.9rem,2vw,1.05rem); display:inline-flex; align-items:center; gap:.55rem; }
+        .aa-rb-label b{ min-width:2.2rem; height:2.2rem; background:var(--red); color:var(--cream); display:inline-flex; align-items:center; justify-content:center; border:2.5px solid var(--cream); font-size:1rem; padding:0 6px; }
+        #aa-reset-filters{ font-family:'Space Mono',monospace; font-weight:700; font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--yellow); background:transparent; border:2px solid var(--yellow); padding:.4rem .75rem; cursor:pointer; transition:all .15s ease; }
+        #aa-reset-filters:hover{ background:var(--yellow); color:var(--ink); }
+
+        /* ============ 8. CARTES PRODUITS ============ */
+        .aa-product-card{ box-shadow:6px 6px 0 var(--shc,#bb0003); transition:transform .18s ease, box-shadow .18s ease; }
+        .aa-product-card:hover{ transform:translateY(-5px); box-shadow:10px 11px 0 var(--shc,#bb0003); }
+        .aa-product-img{ position:relative; overflow:hidden; aspect-ratio:3/4; background:var(--cream4); margin-bottom:.75rem; }
+        .aa-product-img.aa-vendu{ filter:grayscale(.85); }
+        .aa-product-img img{ transition:opacity .3s ease, transform .55s cubic-bezier(.22,1,.36,1); background:var(--cream4); display:block; width:100%; height:100%; object-fit:cover; }
+        .aa-product-img:hover img{ transform:scale(1.05); }
+        .aa-product-img .verso{ position:absolute; inset:0; opacity:0; z-index:2; }
+        .aa-product-img:hover .recto{ opacity:0; }
+        .aa-product-img:hover .verso{ opacity:1; }
+        .aa-type-badge{ position:absolute; top:10px; left:10px; padding:4px 10px; font-family:'Epilogue',sans-serif; font-weight:900; font-size:10px; text-transform:uppercase; border:2px solid var(--ink); letter-spacing:.05em; z-index:5; box-shadow:2px 2px 0 var(--ink); transform:rotate(-2deg); display:inline-flex; align-items:center; gap:5px; }
+        .aa-bdot{ width:7px; height:7px; border-radius:50%; background:var(--cream); flex:none; }
+        .aa-type-reproduction{ background:var(--blue); color:#fff; }
+        .aa-type-custom{ background:var(--purple); color:#fff; }
+        .aa-product-foot{ border-top:2px solid rgba(52,46,30,.3); }
+        .btn-add-cart{ display:inline-flex; align-items:center; gap:4px; background:var(--red); color:#fff !important; padding:8px 12px; font-family:'Epilogue',sans-serif; font-weight:900; font-size:11px; text-transform:uppercase; letter-spacing:.05em; border:2px solid var(--ink); box-shadow:3px 3px 0 var(--ink); cursor:pointer; transition:all .15s ease; line-height:1; }
+        .btn-add-cart:hover{ background:var(--ink); color:var(--yellow) !important; transform:translate(-2px,-2px); box-shadow:5px 5px 0 var(--red); }
+        .btn-add-cart:active{ transform:translate(2px,2px); box-shadow:0 0 0 0 var(--red); }
+        .btn-add-cart .add-icon{ font-size:14px; font-weight:900; }
+        .btn-add-cart.added{ background:#16a34a !important; color:#fff !important; }
+        @keyframes popIn{ 0%{ transform:scale(.85); opacity:0;} 80%{ transform:scale(1.04); opacity:1;} 100%{ transform:scale(1); opacity:1;} }
+        .animate-pop-in{ animation:popIn .45s cubic-bezier(.34,1.56,.64,1) both; }
+
+        /* ============ 9. SKELETON ============ */
+        .skeleton-card{ background:var(--cream3); border:4px solid var(--ink); padding:.75rem; box-shadow:6px 6px 0 rgba(52,46,30,.15); }
+        .skeleton-card .skel-img{ aspect-ratio:3/4; background:linear-gradient(90deg, var(--cream4) 0%, var(--cream2) 50%, var(--cream4) 100%); background-size:200% 100%; animation:skeletonLoading 1.5s infinite; margin-bottom:.75rem; }
+        .skeleton-card .skel-line{ height:14px; background:linear-gradient(90deg, var(--cream4) 0%, var(--cream2) 50%, var(--cream4) 100%); background-size:200% 100%; animation:skeletonLoading 1.5s infinite; margin-bottom:.5rem; }
+        .skeleton-card .skel-line.short{ width:60%; }
+        .skeleton-card .skel-line.medium{ width:80%; }
+        @keyframes skeletonLoading{ 0%{ background-position:200% 0; } 100%{ background-position:-200% 0; } }
+
+        /* ============ 10. FOOTER ============ */
+        footer.aa-footer{ background:var(--ink); border-top:8px double var(--olive); color:var(--cream); }
+        .aa-social-link{ width:44px; height:44px; border:2.5px solid var(--yellow); color:var(--yellow); display:flex; align-items:center; justify-content:center; transition:all .2s ease; }
+        .aa-social-link:hover{ background:var(--yellow); color:var(--ink); transform:translate(-2px,-2px); box-shadow:3px 3px 0 var(--red); }
+        .aa-footer-ref{ font-family:'Space Mono',monospace; font-size:.62rem; letter-spacing:.15em; color:rgba(255,202,77,.6); text-transform:uppercase; }
+
+        /* ============ 11. TOASTS / DIVERS ============ */
+        #aa-toasts{ position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:8px; pointer-events:none; }
+        .aa-toast{ background:var(--ink); color:var(--cream); border:3px solid var(--yellow); padding:12px 18px; font-family:'Epilogue',sans-serif; font-weight:900; font-size:13px; text-transform:uppercase; display:flex; align-items:center; gap:10px; max-width:320px; transform:translateX(120%); opacity:0; transition:all .4s cubic-bezier(.34,1.56,.64,1); pointer-events:auto; }
+        .aa-toast.show{ transform:translateX(0); opacity:1; }
+        #aa-cart-badge{ position:absolute; top:-7px; right:-7px; min-width:18px; height:18px; background:var(--yellow); color:var(--ink); font-family:'Epilogue',sans-serif; font-weight:900; font-size:10px; border:2px solid var(--ink); border-radius:2px; display:none; align-items:center; justify-content:center; padding:0 3px; }
+        #aa-cart-badge.pop{ animation:aaBadgePop .4s cubic-bezier(.34,1.56,.64,1); }
+        @keyframes aaBadgePop{ 40%{ transform:scale(1.5) rotate(9deg);} }
+        .aa-stars-badge{ position:absolute; top:-7px; right:-8px; min-width:18px; height:18px; background:var(--yellow); color:var(--ink); font-family:'Epilogue',sans-serif; font-weight:900; font-size:10px; border:2px solid var(--ink); border-radius:2px; display:flex; align-items:center; justify-content:center; padding:0 3px; }
+        .aa-nav-gift-badge{ position:absolute; bottom:-8px; right:-8px; font-size:14px; display:none; align-items:center; justify-content:center; }
+        @keyframes giftPulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(255,202,77,.7);} 50%{ box-shadow:0 0 0 6px rgba(255,202,77,0);} }
+        .aa-nav-stars.aa-has-gift{ border-color:var(--yellow) !important; color:var(--yellow) !important; animation:giftPulse 1.5s infinite; }
+        #aaTop{ position:fixed; left:20px; bottom:20px; z-index:600; width:47px; height:47px; background:var(--yellow); color:var(--ink); border:3px solid var(--ink); box-shadow:4px 4px 0 var(--ink); display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transform:translateY(12px) rotate(-8deg); transition:opacity .3s, transform .3s; }
+        #aaTop.show{ opacity:1; pointer-events:auto; transform:none; }
+        #aaTop:hover{ background:var(--red); color:var(--yellow); }
+        .reveal{ opacity:0; transform:translateY(26px); transition:opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1); }
+        .reveal.in{ opacity:1; transform:none; }
+
+        /* ============ 12. RESPONSIVE ============ */
+        @media (max-width: 900px){
+            .aa-catalog-title{ font-size:clamp(1.9rem,4.8vw,2.4rem); }
+            .search-big{ padding:.7rem .85rem; }
+            .search-big input{ font-size:12px; }
+        }
+        @media (max-width: 480px){
+            .aa-catalog-title{ font-size:clamp(1.1rem,5.6vw,1.55rem); }
+            .aa-catalog-sub{ font-size:.9rem; }
+            .aa-marker-y::before{ inset:6% -4% 0 -4%; }
+        }
+        @media (prefers-reduced-motion: reduce){
+            *, *::before, *::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+            html{ scroll-behavior:auto; }
+            .reveal{ opacity:1; transform:none; }
         }
     </style>
 </head>
 <body class="bg-surface font-body text-on-surface overflow-x-hidden">
 
-<div class="aa-objective-banner">
-    🛒 VENTE EN LIGNE — <strong>BOÎTES VINTAGE</strong> POUR FIGURINES 1970–1990 — REPRODUCTIONS & CUSTOM 🛒
-</div>
+    <div class="aa-grain" aria-hidden="true"></div>
+    <div class="aa-cursor" id="aaCursorDot" aria-hidden="true"></div>
+    <div class="aa-cursor-ring" id="aaCursorRing" aria-hidden="true"></div>
+    <div id="aaProgress" aria-hidden="true"></div>
 
-<header class="w-full border-b-4 border-double border-[#bb0003] bg-[#fff5e5] shadow-[4px_4px_0px_0px_rgba(52,46,30,0.2)] z-50 sticky top-0">
-    <div class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
-        <a href="index.html" class="aa-logo-link flex items-center gap-3 group cursor-pointer" title="Retour à l'accueil">
-            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="eager" class="aa-logo h-12 md:h-14 w-auto"/>
-            <span class="text-2xl md:text-3xl font-black italic text-[#bb0003] font-headline uppercase tracking-tighter group-hover:text-[#0f56bf] transition-colors">Action Archive</span>
-        </a>
-        <nav class="hidden md:flex items-center gap-6 font-headline font-black uppercase tracking-tighter text-sm">
-            <a class="text-[#342e1e] hover:text-[#bb0003]" href="index.html">Accueil</a>
-            <a class="text-[#0f56bf] underline decoration-4 underline-offset-8" href="produits.html">Produits</a>
-            <a class="text-[#342e1e] hover:text-[#bb0003]" href="info.html">Info</a>
-            <a class="text-[#342e1e] hover:text-[#bb0003]" href="toys-history.html">Toys History</a>
-            <a class="text-[#342e1e] hover:text-[#bb0003]" href="panier.html">Commande</a>
-            <a class="text-[#342e1e] hover:text-[#bb0003]" href="inscription.html">Inscription</a>
-        </nav>
-        <div class="flex items-center gap-2">
-            <a class="aa-nav-stars relative p-2 text-[#755700] border-2 border-[#755700] rounded-sm btn-physical" href="inscription.html" style="display:none;" title="Mon programme fidélité">
-                <span class="material-symbols-outlined">stars</span>
-                <span class="aa-nav-stars-count aa-stars-badge">0</span>
-                <span class="aa-nav-gift-badge">🎁</span>
+    <!-- ═══ TICKER HAUT ═══ -->
+    <div class="aa-ticker" aria-hidden="true">
+        <div class="aa-ticker-track" data-dupe>
+            <div class="aa-ticker-chunk">
+                <span>BOÎTES <b>VINTAGE</b> POUR FIGURINES <b>1970–1990</b></span><span class="aa-tsep">✦</span>
+                <span>REPRODUCTIONS &amp; CUSTOM</span><span class="aa-tsep">✦</span>
+                <span>PAYPAL SÉCURISÉ</span><span class="aa-tsep">✦</span>
+                <span>EXPÉDIÉ DE FRANCE</span><span class="aa-tsep">✦</span>
+                <span>EMBALLAGE SOIGNÉ</span><span class="aa-tsep">✦</span>
+                <span>BOÎTES <b>VINTAGE</b> POUR FIGURINES <b>1970–1990</b></span><span class="aa-tsep">✦</span>
+                <span>REPRODUCTIONS &amp; CUSTOM</span><span class="aa-tsep">✦</span>
+                <span>PAYPAL SÉCURISÉ</span><span class="aa-tsep">✦</span>
+                <span>EXPÉDIÉ DE FRANCE</span><span class="aa-tsep">✦</span>
+                <span>EMBALLAGE SOIGNÉ</span><span class="aa-tsep">✦</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ HEADER ═══ -->
+    <header class="aa-header w-full z-50 sticky top-0">
+        <div class="flex justify-between items-center w-full px-6 py-3.5 max-w-screen-2xl mx-auto">
+            <a href="index.html" class="aa-logo-link flex items-center gap-3 group" title="Retour à l'accueil">
+                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="eager" class="aa-logo h-12 md:h-14 w-auto"/>
+                <span class="text-2xl md:text-3xl font-black italic text-[#bb0003] font-headline uppercase tracking-tighter group-hover:text-[#0f56bf] transition-colors">Action Archive</span>
             </a>
-            <a class="relative p-2 text-[#bb0003] border-2 border-[#bb0003] rounded-sm btn-physical" href="panier.html" title="Mon panier">
-                <span class="material-symbols-outlined">shopping_cart</span>
-                <span id="aa-cart-badge"></span>
-            </a>
-            <button onclick="toggleDrawer()" class="aa-menu-btn">☰ MENU</button>
-        </div>
-    </div>
-</header>
-
-<div id="drawer-overlay" class="drawer-overlay fixed inset-0 bg-on-background/40 backdrop-blur-sm z-[90]" onclick="toggleDrawer()"></div>
-<aside id="side-drawer" class="fixed top-0 right-0 h-full w-full max-w-[320px] bg-surface-container-high border-l-8 border-primary z-[100] transform translate-x-full overflow-y-auto">
-    <div class="p-8 space-y-8 flex flex-col h-full text-on-surface">
-        <div class="flex justify-between items-center border-b-4 border-on-background/10 pb-6">
-            <h2 class="font-headline font-black text-2xl text-primary italic uppercase">MENU</h2>
-            <button class="text-on-background" onclick="toggleDrawer()"><span class="material-symbols-outlined text-3xl">close</span></button>
-        </div>
-        <nav class="flex flex-col gap-3">
-            <a href="index.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">ACCUEIL</a>
-            <a href="produits.html" class="p-4 bg-surface-container-low border-2 border-primary font-headline font-black uppercase text-primary">PRODUITS</a>
-            <a href="info.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">INFO</a>
-            <a href="toys-history.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">TOYS HISTORY</a>
-            <a href="panier.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">COMMANDE</a>
-            <a href="inscription.html" class="p-4 bg-surface-container-low border-2 border-on-background font-headline font-black uppercase">INSCRIPTION</a>
-        </nav>
-    </div>
-</aside>
-
-<main class="container mx-auto px-6 py-12 min-h-screen">
-    <h1 class="aa-products-title font-headline font-black uppercase italic mb-2 border-b-4 border-on-background pb-4 leading-tight" style="color: #bb0003;">
-        Toutes les<br/>
-        Reproductions <span style="color: #7b1fa2;">&amp; Custom</span>
-    </h1>
-    <p class="aa-products-subtitle text-on-surface-variant font-bold italic mb-6">Filtrez par type, collection ou décennie pour trouver votre bonheur.</p>
-
-    <div id="aa-active-filters" class="mb-4"></div>
-    
-    <div class="search-big mb-6">
-        <span class="material-symbols-outlined">search</span>
-        <input id="aa-search-input" onkeyup="applyFilters()" type="search" placeholder="RECHERCHER UNE PIÈCE, UNE COLLECTION...">
-    </div>
-    
-    <div class="mb-4">
-        <p class="font-headline font-black uppercase text-xs mb-2 text-on-surface-variant">🏷️ Type de pièce</p>
-        <div class="flex flex-wrap gap-2">
-            <button class="aa-filter-btn active" data-filter="type" data-value="all" onclick="setFilter('type','all',this)">Toutes</button>
-            <button class="aa-filter-btn reproduction" data-filter="type" data-value="reproduction" onclick="setFilter('type','reproduction',this)">🔵 REPRODUCTIONS</button>
-            <button class="aa-filter-btn custom" data-filter="type" data-value="custom" onclick="setFilter('type','custom',this)">🟣 CUSTOM</button>
-        </div>
-    </div>
-    
-    <div class="flex items-center justify-between mb-6 border-2 border-on-background p-3" style="background: #342e1e; color: #ffca4d;">
-        <span class="font-headline font-black uppercase text-base"><span id="aa-results-count">0</span> pièce(s) trouvée(s)</span>
-        <button id="aa-reset-filters" onclick="resetAllFilters()" class="hidden text-xs font-bold uppercase text-secondary-container hover:underline">↻ Réinitialiser les filtres</button>
-    </div>
-    
-    <div id="aa-skeleton-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
-    <div id="aa-product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" style="display:none;"></div>
-</main>
-
-<footer class="bg-[#342e1e] border-t-8 border-double border-[#755700] w-full py-12 px-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-20">
-    <div class="flex flex-col items-center md:items-start gap-3">
-        <a href="index.html" class="aa-logo-link flex items-center gap-3 cursor-pointer" title="Action Archive">
-            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="lazy" class="aa-logo h-10 w-auto"/>
-            <span class="text-xl md:text-2xl font-black italic text-[#ffca4d] font-headline uppercase tracking-tighter hover:text-white transition-colors">Action Archive</span>
-        </a>
-        <p class="font-body font-medium text-[10px] text-[#ffca4d] tracking-widest uppercase">© 2026 Action Archive INC.</p>
-    </div>
-    <nav id="aa-social-nav" class="flex flex-wrap justify-center gap-10"></nav>
-</footer>
-
-<div id="aa-toasts"></div>
-
-<script src="aa-core.js"></script>
-<script>
-function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
-function aaEscapeAttr(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
-
-function aaOptimizeUrl(url, w) {
-    if (!url) return null;
-    if (!url.includes('cloudinary')) return url;
-    if (url.includes('f_auto')) return url;
-    return url.replace('/image/upload/', `/image/upload/f_auto,q_auto,w_${w},c_fill/`);
-}
-
-const FALLBACK_IMG = "data:image/svg+xml;charset=utf-8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="400" viewBox="0 0 300 400"><rect width="300" height="400" fill="#eadcbc"/><text x="150" y="200" text-anchor="middle" font-family="Arial Black" font-size="16" font-weight="900" fill="#635b48">PHOTO INDISPONIBLE</text></svg>');
-
-function handleImgError(img) { img.onerror = null; img.src = FALLBACK_IMG; img.style.objectFit = 'contain'; img.style.background = '#eadcbc'; }
-
-function detectTypeStrict(f) {
-    if (!f) return 'reproduction';
-    const rawType = f.Type || f.type || f.TYPE || '';
-    const t = String(rawType).trim().toLowerCase();
-    if (t === 'custom' || t.startsWith('custom') || t.includes('custom')) return 'custom';
-    return 'reproduction';
-}
-
-function formatPrice(price) { const num = parseFloat(price); if (isNaN(num)) return price + ' €'; return num.toFixed(2) + ' €'; }
-
-function getImageUrl(field) {
-    if (!field) return null;
-    let url = null;
-    if (typeof field === 'string') {
-        if (field.startsWith('http://') || field.startsWith('https://')) url = field;
-        else if (field.startsWith('v1/') || field.includes('cloudinary')) url = 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + field;
-        else url = field;
-    } else if (Array.isArray(field) && field.length > 0) {
-        const first = field[0];
-        if (typeof first === 'string') url = first.startsWith('http') ? first : 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + first;
-        else if (typeof first === 'object') url = first.url || first.secure_url || (first.filename ? 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + first.filename : null);
-    } else if (typeof field === 'object') {
-        url = field.url || field.secure_url || (field.filename ? 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + field.filename : null);
-    }
-    return url ? aaOptimizeUrl(url, 600) : null;
-}
-
-function shuffleBy5DaySeed(products) {
-    if (!products || products.length === 0) return products;
-    const FIVE_DAYS_MS = 5 * 24 * 60 * 60 * 1000;
-    const periodIndex = Math.floor(Date.now() / FIVE_DAYS_MS);
-    const shuffled = [...products];
-    let seed = periodIndex;
-    for (let i = shuffled.length - 1; i > 0; i--) {
-        seed = (seed * 9301 + 49297) % 233280;
-        const rand = seed / 233280;
-        const j = Math.floor(rand * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
-}
-
-const aaShadowColors = ['#bb0003', '#0f56bf', '#7b1fa2', '#755700', '#bb0003', '#0f56bf'];
-
-let aaAllProducts = [];
-let aaShuffledProducts = [];
-let aaCurrentFilter = { type: 'all', search: '', decade: null, brands: [] };
-
-const aaUrlParams = new URLSearchParams(window.location.search);
-if (aaUrlParams.get('type')) aaCurrentFilter.type = aaUrlParams.get('type');
-if (aaUrlParams.get('decade')) aaCurrentFilter.decade = aaUrlParams.get('decade');
-if (aaUrlParams.get('search')) {
-    aaCurrentFilter.search = aaUrlParams.get('search').toLowerCase();
-    setTimeout(() => { const input = document.getElementById('aa-search-input'); if (input) input.value = aaUrlParams.get('search'); }, 200);
-}
-if (aaUrlParams.get('brands')) {
-    aaCurrentFilter.brands = aaUrlParams.get('brands').split(',').map(b => b.trim()).filter(b => b);
-}
-
-function renderActiveFilters() {
-    const container = document.getElementById('aa-active-filters');
-    const resetBtn = document.getElementById('aa-reset-filters');
-    if (!container) return;
-    let html = '';
-    let hasFilter = false;
-    if (aaCurrentFilter.decade) { hasFilter = true; html += `<div class="aa-active-filter-badge">🎯 Années ${aaCurrentFilter.decade} <button onclick="clearDecade()" title="Retirer">✕</button></div>`; }
-    if (aaCurrentFilter.brands && aaCurrentFilter.brands.length > 0) { hasFilter = true; html += `<div class="aa-active-filter-badge">🏷️ ${aaEscapeHtml(aaCurrentFilter.brands.join(' / '))} <button onclick="clearBrands()" title="Retirer">✕</button></div>`; }
-    if (aaCurrentFilter.search) { hasFilter = true; html += `<div class="aa-active-filter-badge">🔍 "${aaEscapeHtml(aaCurrentFilter.search)}" <button onclick="clearSearch()" title="Retirer">✕</button></div>`; }
-    container.innerHTML = html;
-    if (resetBtn) resetBtn.classList.toggle('hidden', !hasFilter);
-}
-
-function clearDecade() { aaCurrentFilter.decade = null; const url = new URL(window.location); url.searchParams.delete('decade'); window.history.replaceState({}, '', url); applyFilters(); }
-function clearBrands() { aaCurrentFilter.brands = []; const url = new URL(window.location); url.searchParams.delete('brands'); window.history.replaceState({}, '', url); applyFilters(); }
-function clearSearch() { aaCurrentFilter.search = ''; const input = document.getElementById('aa-search-input'); if (input) input.value = ''; const url = new URL(window.location); url.searchParams.delete('search'); window.history.replaceState({}, '', url); applyFilters(); }
-
-function resetAllFilters() {
-    aaCurrentFilter = { type: 'all', search: '', decade: null, brands: [] };
-    const input = document.getElementById('aa-search-input');
-    if (input) input.value = '';
-    document.querySelectorAll('[data-filter="type"]').forEach(b => b.classList.remove('active'));
-    const btnAll = document.querySelector('[data-filter="type"][data-value="all"]');
-    if (btnAll) btnAll.classList.add('active');
-    window.history.replaceState({}, '', window.location.pathname);
-    applyFilters();
-}
-
-function setFilter(name, value, btn) {
-    aaCurrentFilter[name] = value;
-    document.querySelectorAll(`[data-filter="${name}"]`).forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-    applyFilters();
-}
-
-function renderSkeleton() {
-    const grid = document.getElementById('aa-skeleton-grid');
-    if (!grid) return;
-    let html = '';
-    for (let i = 0; i < 8; i++) {
-        html += `<div class="skeleton-card">
-            <div class="skel-img"></div>
-            <div class="skel-line medium"></div>
-            <div class="skel-line short"></div>
-        </div>`;
-    }
-    grid.innerHTML = html;
-}
-
-function applyFilters() {
-    aaCurrentFilter.search = (document.getElementById('aa-search-input')?.value || '').toLowerCase();
-    renderActiveFilters();
-    const filtered = aaShuffledProducts.filter(record => {
-        const f = record.fields || record;
-        if (aaCurrentFilter.type !== 'all' && detectTypeStrict(f) !== aaCurrentFilter.type) return false;
-        if (aaCurrentFilter.decade) {
-            const year = parseInt(f.Année);
-            if (isNaN(year)) return false;
-            const decadeStart = parseInt(aaCurrentFilter.decade);
-            if (year < decadeStart || year >= decadeStart + 10) return false;
-        }
-        if (aaCurrentFilter.brands && aaCurrentFilter.brands.length > 0) {
-            const haystack = `${f.Nom || ''} ${f.Collection || ''} ${f.Description || ''}`.toLowerCase();
-            const match = aaCurrentFilter.brands.some(brand => haystack.includes(brand.toLowerCase()));
-            if (!match) return false;
-        }
-        if (aaCurrentFilter.search) {
-            const s = aaCurrentFilter.search;
-            const searchable = `${f.Nom || ''} ${f.Collection || ''} ${f.Année || ''} ${f.Description || ''}`.toLowerCase();
-            if (!searchable.includes(s)) return false;
-        }
-        return true;
-    });
-    document.getElementById('aa-results-count').textContent = filtered.length;
-    renderProducts(filtered);
-}
-
-function renderProducts(products) {
-    const grid = document.getElementById('aa-product-grid');
-    const skeleton = document.getElementById('aa-skeleton-grid');
-    if (!grid) return;
-    
-    if (skeleton) skeleton.style.display = 'none';
-    grid.style.display = 'grid';
-    
-    if (products.length === 0) { 
-        grid.innerHTML = '<div class="col-span-full text-center py-12"><p class="font-bold italic text-xl mb-2">Aucune pièce trouvée.</p><p class="text-on-surface-variant">Essaie d\'autres filtres ou réinitialise la recherche.</p><button onclick="resetAllFilters()" class="mt-4 btn-physical bg-primary text-on-primary font-headline font-black px-6 py-2 uppercase shadow-[3px_3px_0px_0px_#342e1e]">↻ Tout afficher</button></div>'; 
-        return; 
-    }
-    grid.innerHTML = '';
-    products.forEach((record, index) => {
-        const f = record.fields || record;
-        const shadowColor = aaShadowColors[index % aaShadowColors.length];
-        const isVendu = f.Statut === 'Vendu' || f.Statut === 'Indisponible';
-        const type = detectTypeStrict(f);
-        const badge = type === 'custom' 
-            ? { text: '🟣 CUSTOM', className: 'aa-type-custom' }
-            : { text: '🔵 REPRODUCTION', className: 'aa-type-reproduction' };
-        const badgeHtml = `<span class="aa-type-badge ${badge.className}">${badge.text}</span>`;
-        const imgRecto = getImageUrl(f['Lien Recto']) || getImageUrl(f.Image) || FALLBACK_IMG;
-        const imgVersoUrl = getImageUrl(f['Lien Verso']);
-        const hasVerso = !!imgVersoUrl && imgVersoUrl !== imgRecto;
-        const price = parseFloat(f.Prix) || 0;
-        const nameHtml = aaEscapeHtml(f.Nom || 'Sans nom');
-        const imgAttrRecto = aaEscapeAttr(imgRecto);
-        const imgAttrVerso = aaEscapeAttr(imgVersoUrl);
-        const productId = record.id;
-        let statusBadge = '';
-        if (isVendu) statusBadge = `<div class="absolute top-2 right-2 bg-red-600 text-white px-2 py-1 font-headline font-black text-xs">VENDU</div>`;
-        else if (f.Statut === 'Réservé') statusBadge = `<div class="absolute top-2 right-2 bg-yellow-500 text-black px-2 py-1 font-headline font-black text-xs">RÉSERVÉ</div>`;
-        const addButton = isVendu ? '' : `<button class="btn-add-cart" data-id="${productId}" data-name="${aaEscapeAttr(f.Nom || '')}" data-price="${price}" data-url="produit.html?id=${productId}" data-image="${imgAttrRecto}"><span class="add-icon">+</span> AJOUTER</button>`;
-        const versoImg = hasVerso 
-            ? `<img src="${imgAttrVerso}" onerror="this.style.display='none'" class="verso" alt="${nameHtml} verso" width="300" height="400">`
-            : '';
-        grid.innerHTML += `<div class="group bg-surface-container-high border-4 border-on-background p-3 flex flex-col animate-pop-in" style="box-shadow: 6px 6px 0px 0px ${shadowColor};">
-            <div class="product-img-container mb-3 relative">
-                ${badgeHtml}
-                ${statusBadge}
-                <a href="produit.html?id=${productId}">
-                    <img src="${imgAttrRecto}" onerror="handleImgError(this)" class="recto" alt="${nameHtml}" width="300" height="400">
-                    ${versoImg}
+            <nav class="aa-nav hidden md:flex items-center gap-7 text-sm">
+                <a class="text-[#342e1e] hover:text-[#bb0003]" href="index.html">ACCUEIL</a>
+                <a class="aa-active text-[#0f56bf]" href="produits.html">PRODUITS</a>
+                <a class="text-[#342e1e] hover:text-[#bb0003]" href="info.html">INFO</a>
+                <a class="text-[#342e1e] hover:text-[#bb0003]" href="toys-history.html">TOYS HISTORY</a>
+                <a class="text-[#342e1e] hover:text-[#bb0003]" href="panier.html">COMMANDE</a>
+                <a class="text-[#342e1e] hover:text-[#bb0003]" href="inscription.html">INSCRIPTION</a>
+            </nav>
+            <div class="flex items-center gap-2.5">
+                <form class="aa-search" action="produits.html" method="get" role="search">
+                    <input type="search" name="search" placeholder="Rechercher…" aria-label="Rechercher une boîte, une marque"/>
+                    <button type="submit" aria-label="Lancer la recherche"><span class="material-symbols-outlined">search</span></button>
+                </form>
+                <a class="aa-nav-stars aa-icon-btn text-[#755700] border-2 border-[#755700] relative btn-physical" href="inscription.html" style="display:none;" title="Mon programme fidélité">
+                    <span class="material-symbols-outlined">stars</span>
+                    <span class="aa-nav-stars-count aa-stars-badge">0</span>
+                    <span class="aa-nav-gift-badge">🎁</span>
                 </a>
+                <a class="aa-cart-btn aa-icon-btn text-[#bb0003] border-2 border-[#bb0003] relative btn-physical" href="panier.html" title="Mon panier">
+                    <span class="material-symbols-outlined">shopping_cart</span>
+                    <span id="aa-cart-badge"></span>
+                </a>
+                <button onclick="toggleDrawer()" class="aa-menu-btn" aria-label="Ouvrir le menu">☰ MENU</button>
             </div>
-            <h3 class="font-headline font-black text-base uppercase mb-1"><a class="hover:text-primary" href="produit.html?id=${productId}">${nameHtml}</a></h3>
-            <p class="font-body text-[10px] text-on-surface-variant font-bold mb-2 italic">${aaEscapeHtml(f.Collection || '')}${f.Année ? ' • ' + f.Année : ''}</p>
-            <div class="flex justify-between items-center border-t-2 border-outline-variant pt-2 ${isVendu ? 'opacity-50' : ''}">
-                <span class="font-headline font-black text-lg text-tertiary">${formatPrice(price)}</span>
-                ${isVendu ? '<span class="material-symbols-outlined text-sm">lock</span>' : addButton}
-            </div>
-        </div>`;
-    });
-    
-    attachAddToCart();
-}
+        </div>
+    </header>
 
-function attachAddToCart() {
-    document.querySelectorAll('.btn-add-cart').forEach(btn => {
-        if (btn.dataset.bound) return;
-        btn.dataset.bound = '1';
-        btn.addEventListener('click', function() {
-            const cart = JSON.parse(localStorage.getItem('aa_cart') || '[]');
-            const name = this.dataset.name;
-            const existing = cart.find(i => i.name === name);
-            if (existing) { existing.qty++; } else { cart.push({ name, price: parseFloat(this.dataset.price), url: this.dataset.url, image: this.dataset.image, qty: 1 }); }
-            localStorage.setItem('aa_cart', JSON.stringify(cart));
-            if (typeof aaUpdateBadge === 'function') aaUpdateBadge();
-            if (typeof aaToast === 'function') aaToast(name + ' ajouté !', 'shopping_cart');
-            const o = this.innerHTML;
-            this.innerHTML = '<span class="add-icon">✓</span> AJOUTÉ';
-            this.classList.add('added');
-            setTimeout(() => { this.innerHTML = o; this.classList.remove('added'); }, 1200);
+    <!-- ═══ DRAWER ═══ -->
+    <div id="drawer-overlay" class="drawer-overlay fixed inset-0 bg-on-background/40 backdrop-blur-sm z-[90]" onclick="toggleDrawer()"></div>
+    <aside id="side-drawer" class="fixed top-0 right-0 h-full w-full max-w-[320px] bg-surface-container-high border-l-8 border-[#bb0003] z-[100] transform translate-x-full overflow-y-auto" aria-label="Menu latéral">
+        <div class="p-8 flex flex-col h-full text-on-surface">
+            <div class="flex justify-between items-center border-b-4 border-on-background/10 pb-6 mb-6">
+                <h2 class="font-headline font-black text-2xl text-[#bb0003] italic uppercase">MENU</h2>
+                <button class="text-on-background hover:text-[#bb0003] transition-colors" onclick="toggleDrawer()" aria-label="Fermer le menu"><span class="material-symbols-outlined text-3xl">close</span></button>
+            </div>
+            <form class="aa-search aa-search-drawer" action="produits.html" method="get" role="search">
+                <input type="search" name="search" placeholder="Rechercher…" aria-label="Rechercher une boîte, une marque"/>
+                <button type="submit" aria-label="Lancer la recherche"><span class="material-symbols-outlined">search</span></button>
+            </form>
+            <nav class="flex flex-col gap-3">
+                <a href="index.html" class="aa-drawer-link">ACCUEIL</a>
+                <a href="produits.html" class="aa-drawer-link aa-current">PRODUITS</a>
+                <a href="info.html" class="aa-drawer-link">INFO</a>
+                <a href="toys-history.html" class="aa-drawer-link">TOYS HISTORY</a>
+                <a href="panier.html" class="aa-drawer-link">COMMANDE</a>
+                <a href="inscription.html" class="aa-drawer-link">INSCRIPTION</a>
+            </nav>
+            <div class="aa-drawer-meta mt-auto pt-6">
+                <div>HEURE LOCALE — <b id="aaClock">--:--:--</b></div>
+                <div class="aa-barcode" aria-hidden="true"></div>
+                <p>CATALOGUE ACTION ARCHIVE<br/>OUVERT 24H/24 — 7J/7</p>
+            </div>
+        </div>
+    </aside>
+
+    <main class="container mx-auto px-6 py-12 min-h-screen">
+        <!-- ═══ TÊTE DE PAGE ═══ -->
+        <div class="aa-eyebrow reveal">
+            <span class="aa-live" aria-hidden="true"></span>
+            <span>CATALOGUE COMPLET — MISE À JOUR CONTINUE</span>
+        </div>
+        <h1 class="aa-catalog-title">
+            <span class="line"><span class="line-in">TOUTES LES</span></span>
+            <span class="line"><span class="line-in"><span class="aa-marker-y">REPRODUCTIONS</span> <span class="aa-cus">&amp; CUSTOM</span></span></span>
+        </h1>
+        <p class="aa-catalog-sub reveal" style="transition-delay:.2s">Filtrez par type, collection ou décennie pour trouver votre bonheur.</p>
+
+        <div id="aa-active-filters" class="mb-4"></div>
+
+        <div class="search-big mb-6 reveal">
+            <span class="material-symbols-outlined">search</span>
+            <input id="aa-search-input" onkeyup="applyFilters()" type="search" placeholder="RECHERCHER UNE PIÈCE, UNE COLLECTION...">
+        </div>
+
+        <div class="mb-4 reveal">
+            <p class="aa-filter-legend"><span class="material-symbols-outlined">sell</span>TYPE DE PIÈCE</p>
+            <div class="flex flex-wrap gap-2">
+                <button class="aa-filter-btn active" data-filter="type" data-value="all" onclick="setFilter('type','all',this)">TOUTES</button>
+                <button class="aa-filter-btn reproduction" data-filter="type" data-value="reproduction" onclick="setFilter('type','reproduction',this)"><span class="aa-fdot" style="background:#0f56bf"></span>REPRODUCTIONS</button>
+                <button class="aa-filter-btn custom" data-filter="type" data-value="custom" onclick="setFilter('type','custom',this)"><span class="aa-fdot" style="background:#7b1fa2"></span>CUSTOM</button>
+            </div>
+        </div>
+
+        <div class="aa-results-bar reveal">
+            <span class="aa-rb-label"><b id="aa-results-count">0</b><span>PIÈCE(S) TROUVÉE(S)</span></span>
+            <button id="aa-reset-filters" onclick="resetAllFilters()" class="hidden">↻ RÉINITIALISER LES FILTRES</button>
+        </div>
+
+        <div id="aa-skeleton-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+        <div id="aa-product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" style="display:none;"></div>
+    </main>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="aa-footer w-full py-12 px-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-20">
+        <div class="flex flex-col items-center md:items-start gap-3">
+            <a href="index.html" class="aa-logo-link flex items-center gap-3" title="Action Archive">
+                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="lazy" class="aa-logo h-10 w-auto"/>
+                <span class="text-xl md:text-2xl font-black italic text-[#ffca4d] font-headline uppercase tracking-tighter hover:text-white transition-colors">Action Archive</span>
+            </a>
+            <p class="font-body font-medium text-[10px] text-[#ffca4d] tracking-widest uppercase">© 2026 Action Archive INC.</p>
+            <p class="aa-footer-ref">CATALOGUE AA — ÉDITION 2026</p>
+        </div>
+        <nav id="aa-social-nav" class="flex flex-wrap justify-center gap-4" aria-label="Réseaux sociaux"></nav>
+    </footer>
+
+    <button id="aaTop" aria-label="Retour en haut"><span class="material-symbols-outlined">arrow_upward</span></button>
+    <div id="aa-toasts"></div>
+
+    <script src="aa-core.js"></script>
+    <script>
+    function aaEscapeHtml(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+    function aaEscapeAttr(s) { if (s == null) return ''; return String(s).replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    function toggleDrawer(){
+        const d=document.getElementById('side-drawer'), o=document.getElementById('drawer-overlay');
+        d.classList.toggle('open'); o.classList.toggle('open');
+        document.body.style.overflow = d.classList.contains('open') ? 'hidden' : '';
+    }
+
+    function aaOptimizeUrl(url, w) {
+        if (!url) return null;
+        if (!url.includes('cloudinary')) return url;
+        if (url.includes('f_auto')) return url;
+        return url.replace('/image/upload/', `/image/upload/f_auto,q_auto,w_${w},c_fill/`);
+    }
+
+    const FALLBACK_IMG = "data:image/svg+xml;charset=utf-8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="400" viewBox="0 0 300 400"><rect width="300" height="400" fill="#eadcbc"/><text x="150" y="200" text-anchor="middle" font-family="Arial Black" font-size="16" font-weight="900" fill="#635b48">PHOTO INDISPONIBLE</text></svg>');
+
+    function handleImgError(img) { img.onerror = null; img.src = FALLBACK_IMG; img.style.objectFit = 'contain'; img.style.background = '#eadcbc'; }
+
+    function detectTypeStrict(f) {
+        if (!f) return 'reproduction';
+        const rawType = f.Type || f.type || f.TYPE || '';
+        const t = String(rawType).trim().toLowerCase();
+        if (t === 'custom' || t.startsWith('custom') || t.includes('custom')) return 'custom';
+        return 'reproduction';
+    }
+
+    function formatPrice(price) { const num = parseFloat(price); if (isNaN(num)) return price + ' €'; return num.toFixed(2) + ' €'; }
+
+    function getImageUrl(field) {
+        if (!field) return null;
+        let url = null;
+        if (typeof field === 'string') {
+            if (field.startsWith('http://') || field.startsWith('https://')) url = field;
+            else if (field.startsWith('v1/') || field.includes('cloudinary')) url = 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + field;
+            else url = field;
+        } else if (Array.isArray(field) && field.length > 0) {
+            const first = field[0];
+            if (typeof first === 'string') url = first.startsWith('http') ? first : 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + first;
+            else if (typeof first === 'object') url = first.url || first.secure_url || (first.filename ? 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + first.filename : null);
+        } else if (typeof field === 'object') {
+            url = field.url || field.secure_url || (field.filename ? 'https://res.cloudinary.com/uvnbvhiw/image/upload/' + field.filename : null);
+        }
+        return url ? aaOptimizeUrl(url, 600) : null;
+    }
+
+    function shuffleBy5DaySeed(products) {
+        if (!products || products.length === 0) return products;
+        const FIVE_DAYS_MS = 5 * 24 * 60 * 60 * 1000;
+        const periodIndex = Math.floor(Date.now() / FIVE_DAYS_MS);
+        const shuffled = [...products];
+        let seed = periodIndex;
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            seed = (seed * 9301 + 49297) % 233280;
+            const rand = seed / 233280;
+            const j = Math.floor(rand * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+    }
+
+    const aaShadowColors = ['#bb0003', '#0f56bf', '#7b1fa2', '#755700', '#bb0003', '#0f56bf'];
+
+    let aaAllProducts = [];
+    let aaShuffledProducts = [];
+    let aaCurrentFilter = { type: 'all', search: '', decade: null, brands: [] };
+
+    const aaUrlParams = new URLSearchParams(window.location.search);
+    if (aaUrlParams.get('type')) aaCurrentFilter.type = aaUrlParams.get('type');
+    if (aaUrlParams.get('decade')) aaCurrentFilter.decade = aaUrlParams.get('decade');
+    if (aaUrlParams.get('search')) {
+        aaCurrentFilter.search = aaUrlParams.get('search').toLowerCase();
+        setTimeout(() => { const input = document.getElementById('aa-search-input'); if (input) input.value = aaUrlParams.get('search'); }, 200);
+    }
+    if (aaUrlParams.get('brands')) {
+        aaCurrentFilter.brands = aaUrlParams.get('brands').split(',').map(b => b.trim()).filter(b => b);
+    }
+
+    function renderActiveFilters() {
+        const container = document.getElementById('aa-active-filters');
+        const resetBtn = document.getElementById('aa-reset-filters');
+        if (!container) return;
+        let html = '';
+        let hasFilter = false;
+        if (aaCurrentFilter.decade) { hasFilter = true; html += `<div class="aa-active-filter-badge"><span class="material-symbols-outlined">calendar_month</span>Années ${aaEscapeHtml(aaCurrentFilter.decade)} <button onclick="clearDecade()" title="Retirer">✕</button></div>`; }
+        if (aaCurrentFilter.brands && aaCurrentFilter.brands.length > 0) { hasFilter = true; html += `<div class="aa-active-filter-badge"><span class="material-symbols-outlined">sell</span>${aaEscapeHtml(aaCurrentFilter.brands.join(' / '))} <button onclick="clearBrands()" title="Retirer">✕</button></div>`; }
+        if (aaCurrentFilter.search) { hasFilter = true; html += `<div class="aa-active-filter-badge"><span class="material-symbols-outlined">search</span>"${aaEscapeHtml(aaCurrentFilter.search)}" <button onclick="clearSearch()" title="Retirer">✕</button></div>`; }
+        container.innerHTML = html;
+        if (resetBtn) resetBtn.classList.toggle('hidden', !hasFilter);
+    }
+
+    function clearDecade() { aaCurrentFilter.decade = null; const url = new URL(window.location); url.searchParams.delete('decade'); window.history.replaceState({}, '', url); applyFilters(); }
+    function clearBrands() { aaCurrentFilter.brands = []; const url = new URL(window.location); url.searchParams.delete('brands'); window.history.replaceState({}, '', url); applyFilters(); }
+    function clearSearch() { aaCurrentFilter.search = ''; const input = document.getElementById('aa-search-input'); if (input) input.value = ''; const url = new URL(window.location); url.searchParams.delete('search'); window.history.replaceState({}, '', url); applyFilters(); }
+
+    function resetAllFilters() {
+        aaCurrentFilter = { type: 'all', search: '', decade: null, brands: [] };
+        const input = document.getElementById('aa-search-input');
+        if (input) input.value = '';
+        document.querySelectorAll('[data-filter="type"]').forEach(b => b.classList.remove('active'));
+        const btnAll = document.querySelector('[data-filter="type"][data-value="all"]');
+        if (btnAll) btnAll.classList.add('active');
+        window.history.replaceState({}, '', window.location.pathname);
+        applyFilters();
+    }
+
+    function setFilter(name, value, btn) {
+        aaCurrentFilter[name] = value;
+        document.querySelectorAll(`[data-filter="${name}"]`).forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        applyFilters();
+    }
+
+    function renderSkeleton() {
+        const grid = document.getElementById('aa-skeleton-grid');
+        if (!grid) return;
+        let html = '';
+        for (let i = 0; i < 8; i++) {
+            html += `<div class="skeleton-card">
+                <div class="skel-img"></div>
+                <div class="skel-line medium"></div>
+                <div class="skel-line short"></div>
+            </div>`;
+        }
+        grid.innerHTML = html;
+    }
+
+    function applyFilters() {
+        aaCurrentFilter.search = (document.getElementById('aa-search-input')?.value || '').toLowerCase();
+        renderActiveFilters();
+        const filtered = aaShuffledProducts.filter(record => {
+            const f = record.fields || record;
+            if (aaCurrentFilter.type !== 'all' && detectTypeStrict(f) !== aaCurrentFilter.type) return false;
+            if (aaCurrentFilter.decade) {
+                const year = parseInt(f.Année);
+                if (isNaN(year)) return false;
+                const decadeStart = parseInt(aaCurrentFilter.decade);
+                if (year < decadeStart || year >= decadeStart + 10) return false;
+            }
+            if (aaCurrentFilter.brands && aaCurrentFilter.brands.length > 0) {
+                const haystack = `${f.Nom || ''} ${f.Collection || ''} ${f.Description || ''}`.toLowerCase();
+                const match = aaCurrentFilter.brands.some(brand => haystack.includes(brand.toLowerCase()));
+                if (!match) return false;
+            }
+            if (aaCurrentFilter.search) {
+                const s = aaCurrentFilter.search;
+                const searchable = `${f.Nom || ''} ${f.Collection || ''} ${f.Année || ''} ${f.Description || ''}`.toLowerCase();
+                if (!searchable.includes(s)) return false;
+            }
+            return true;
         });
-    });
-}
-
-const AA_CACHE_KEY = 'aa_products_cache';
-const AA_CACHE_TTL = 5 * 60 * 1000;
-
-function getCachedProducts() {
-    try {
-        const raw = localStorage.getItem(AA_CACHE_KEY);
-        if (!raw) return null;
-        const cached = JSON.parse(raw);
-        if (Date.now() - cached.timestamp > AA_CACHE_TTL) return null;
-        return cached.data;
-    } catch (e) {
-        return null;
+        document.getElementById('aa-results-count').textContent = filtered.length;
+        renderProducts(filtered);
     }
-}
 
-function setCachedProducts(products) {
-    try {
-        localStorage.setItem(AA_CACHE_KEY, JSON.stringify({
-            timestamp: Date.now(),
-            data: products
-        }));
-    } catch (e) {}
-}
-
-async function fetchProducts() {
-    try {
-        const response = await fetch('/api/airtable-proxy');
-        if (!response.ok) throw new Error('HTTP ' + response.status);
-        const data = await response.json();
-        const products = Array.isArray(data) ? data : [];
-        setCachedProducts(products);
-        return products;
-    } catch (error) {
-        console.error('Erreur chargement produits:', error);
-        return null;
-    }
-}
-
-async function init() {
-    renderSkeleton();
-    
-    const cached = getCachedProducts();
-    if (cached) {
-        aaAllProducts = cached;
-        aaShuffledProducts = shuffleBy5DaySeed(aaAllProducts);
-        applyFilters();
-    }
-    
-    const fresh = await fetchProducts();
-    if (fresh && (!cached || JSON.stringify(fresh) !== JSON.stringify(cached))) {
-        aaAllProducts = fresh;
-        aaShuffledProducts = shuffleBy5DaySeed(aaAllProducts);
-        applyFilters();
-    } else if (!cached && !fresh) {
+    function renderProducts(products) {
         const grid = document.getElementById('aa-product-grid');
         const skeleton = document.getElementById('aa-skeleton-grid');
-        if (skeleton) skeleton.style.display = 'none';
-        if (grid) grid.style.display = 'grid';
-        grid.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-red-600 font-bold">❌ Impossible de charger les produits.</p><p class="text-sm mt-2">Vérifie la console (F12) pour plus de détails.</p></div>';
-    }
-}
-init();
+        if (!grid) return;
 
-(function() {
-    const social = JSON.parse(localStorage.getItem('aa_social_config') || '{}');
-    const nav = document.getElementById('aa-social-nav');
-    if (!nav) return;
-    const items = [{ key: 'facebook', icon: 'facebook', label: 'FACEBOOK' },{ key: 'twitter', icon: 'share', label: 'TWITTER' },{ key: 'instagram', icon: 'camera_alt', label: 'INSTAGRAM' },{ key: 'tiktok', icon: 'music_note', label: 'TIKTOK' },{ key: 'youtube', icon: 'play_circle', label: 'YOUTUBE' }];
-    items.forEach(item => {
-        const data = social[item.key];
-        if (data && data.enabled && data.url) nav.innerHTML += `<a href="${aaEscapeAttr(data.url)}" target="_blank" class="text-[#ffca4d]"><span class="material-symbols-outlined">${item.icon}</span></a>`;
-    });
-})();
-</script>
+        if (skeleton) skeleton.style.display = 'none';
+        grid.style.display = 'grid';
+
+        if (products.length === 0) {
+            grid.innerHTML = '<div class="col-span-full text-center py-16"><span class="material-symbols-outlined" style="font-size:44px;color:#635b48">search_off</span><p class="font-headline font-black italic uppercase text-xl mb-2 mt-3" style="color:#bb0003">Aucune pièce trouvée</p><p class="text-on-surface-variant italic font-bold">Essaie d\'autres filtres ou réinitialise la recherche.</p><button onclick="resetAllFilters()" class="mt-5 btn-add-cart" style="font-size:12px;padding:10px 18px;"><span class="add-icon">↻</span> TOUT AFFICHER</button></div>';
+            return;
+        }
+        grid.innerHTML = '';
+        products.forEach((record, index) => {
+            const f = record.fields || record;
+            const shadowColor = aaShadowColors[index % aaShadowColors.length];
+            const isVendu = f.Statut === 'Vendu' || f.Statut === 'Indisponible';
+            const type = detectTypeStrict(f);
+            const badge = type === 'custom'
+                ? { text: 'CUSTOM', className: 'aa-type-custom' }
+                : { text: 'REPRODUCTION', className: 'aa-type-reproduction' };
+            const badgeHtml = `<span class="aa-type-badge ${badge.className}"><span class="aa-bdot"></span>${badge.text}</span>`;
+            const imgRecto = getImageUrl(f['Lien Recto']) || getImageUrl(f.Image) || FALLBACK_IMG;
+            const imgVersoUrl = getImageUrl(f['Lien Verso']);
+            const hasVerso = !!imgVersoUrl && imgVersoUrl !== imgRecto;
+            const price = parseFloat(f.Prix) || 0;
+            const nameHtml = aaEscapeHtml(f.Nom || 'Sans nom');
+            const imgAttrRecto = aaEscapeAttr(imgRecto);
+            const imgAttrVerso = aaEscapeAttr(imgVersoUrl);
+            const productId = record.id;
+            let statusBadge = '';
+            if (isVendu) statusBadge = `<div class="absolute top-2 right-2 bg-red-600 text-white px-2 py-1 font-headline font-black text-xs border-2 border-[#342e1e]">VENDU</div>`;
+            else if (f.Statut === 'Réservé') statusBadge = `<div class="absolute top-2 right-2 bg-yellow-500 text-black px-2 py-1 font-headline font-black text-xs border-2 border-[#342e1e]">RÉSERVÉ</div>`;
+            const addButton = isVendu ? '' : `<button class="btn-add-cart" data-id="${productId}" data-name="${aaEscapeAttr(f.Nom || '')}" data-price="${price}" data-url="produit.html?id=${productId}" data-image="${imgAttrRecto}"><span class="add-icon">+</span> AJOUTER</button>`;
+            const versoImg = hasVerso
+                ? `<img src="${imgAttrVerso}" onerror="this.style.display='none'" class="verso" alt="${nameHtml} verso" width="300" height="400" loading="lazy">`
+                : '';
+            grid.innerHTML += `<div class="aa-product-card group bg-surface-container-high border-4 border-on-background p-3 flex flex-col animate-pop-in" style="--shc:${shadowColor};animation-delay:${(index % 8) * 70}ms;">
+                <div class="aa-product-img ${isVendu ? 'aa-vendu' : ''} mb-3 relative">
+                    ${badgeHtml}
+                    ${statusBadge}
+                    <a href="produit.html?id=${productId}">
+                        <img src="${imgAttrRecto}" onerror="handleImgError(this)" class="recto" alt="${nameHtml}" width="300" height="400" loading="lazy">
+                        ${versoImg}
+                    </a>
+                </div>
+                <h3 class="font-headline font-black text-base uppercase mb-1 leading-tight"><a class="hover:text-primary transition-colors" href="produit.html?id=${productId}">${nameHtml}</a></h3>
+                <p class="font-body text-[10px] text-on-surface-variant font-bold mb-2 italic tracking-wide">${aaEscapeHtml(f.Collection || '')}${f.Année ? ' • ' + f.Année : ''}</p>
+                <div class="mt-auto aa-product-foot flex justify-between items-center pt-2 ${isVendu ? 'opacity-50' : ''}">
+                    <span class="font-headline font-black text-lg text-tertiary">${formatPrice(price)}</span>
+                    ${isVendu ? '<span class="material-symbols-outlined text-sm">lock</span>' : addButton}
+                </div>
+            </div>`;
+        });
+
+        attachAddToCart();
+    }
+
+    function attachAddToCart() {
+        document.querySelectorAll('.btn-add-cart').forEach(btn => {
+            if (btn.dataset.bound) return;
+            btn.dataset.bound = '1';
+            btn.addEventListener('click', function() {
+                const cart = JSON.parse(localStorage.getItem('aa_cart') || '[]');
+                const name = this.dataset.name;
+                const existing = cart.find(i => i.name === name);
+                if (existing) { existing.qty++; } else { cart.push({ name, price: parseFloat(this.dataset.price), url: this.dataset.url, image: this.dataset.image, qty: 1 }); }
+                localStorage.setItem('aa_cart', JSON.stringify(cart));
+                if (typeof aaUpdateBadge === 'function') aaUpdateBadge();
+                if (typeof aaToast === 'function') aaToast(name + ' ajouté !', 'shopping_cart');
+                const o = this.innerHTML;
+                this.innerHTML = '<span class="add-icon">✓</span> AJOUTÉ';
+                this.classList.add('added');
+                setTimeout(() => { this.innerHTML = o; this.classList.remove('added'); }, 1200);
+            });
+        });
+    }
+
+    const AA_CACHE_KEY = 'aa_products_cache';
+    const AA_CACHE_TTL = 5 * 60 * 1000;
+
+    function getCachedProducts() {
+        try {
+            const raw = localStorage.getItem(AA_CACHE_KEY);
+            if (!raw) return null;
+            const cached = JSON.parse(raw);
+            if (Date.now() - cached.timestamp > AA_CACHE_TTL) return null;
+            return cached.data;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function setCachedProducts(products) {
+        try {
+            localStorage.setItem(AA_CACHE_KEY, JSON.stringify({
+                timestamp: Date.now(),
+                data: products
+            }));
+        } catch (e) {}
+    }
+
+    async function fetchProducts() {
+        try {
+            const response = await fetch('/api/airtable-proxy');
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            const data = await response.json();
+            const products = Array.isArray(data) ? data : [];
+            setCachedProducts(products);
+            return products;
+        } catch (error) {
+            console.error('Erreur chargement produits:', error);
+            return null;
+        }
+    }
+
+    async function init() {
+        renderSkeleton();
+
+        const cached = getCachedProducts();
+        if (cached) {
+            aaAllProducts = cached;
+            aaShuffledProducts = shuffleBy5DaySeed(aaAllProducts);
+            applyFilters();
+        }
+
+        const fresh = await fetchProducts();
+        if (fresh && (!cached || JSON.stringify(fresh) !== JSON.stringify(cached))) {
+            aaAllProducts = fresh;
+            aaShuffledProducts = shuffleBy5DaySeed(aaAllProducts);
+            applyFilters();
+        } else if (!cached && !fresh) {
+            const grid = document.getElementById('aa-product-grid');
+            const skeleton = document.getElementById('aa-skeleton-grid');
+            if (skeleton) skeleton.style.display = 'none';
+            if (grid) grid.style.display = 'grid';
+            grid.innerHTML = '<div class="col-span-full text-center py-16"><span class="material-symbols-outlined" style="font-size:44px;color:#635b48">wifi_off</span><p class="font-bold mt-3" style="color:#bb0003">Impossible de charger les produits.</p><p class="text-sm mt-2 text-on-surface-variant">Vérifie la console (F12) pour plus de détails.</p></div>';
+        }
+    }
+    init();
+
+    /* ═══ ═══ Améliorations UI (identiques à index.html) ═══ ═══ */
+
+    /* Ticker : duplication pour boucle infinie */
+    document.querySelectorAll('[data-dupe]').forEach(el=>{ el.innerHTML += el.innerHTML; });
+
+    /* Curseur custom (desktop uniquement) */
+    (function(){
+        if(!matchMedia('(pointer:fine)').matches) return;
+        const dot=document.getElementById('aaCursorDot'), ring=document.getElementById('aaCursorRing');
+        dot.style.display='block'; ring.style.display='block'; document.documentElement.classList.add('aa-cursor-on');
+        let mx=innerWidth/2, my=innerHeight/2, rx=mx, ry=my;
+        addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; dot.style.transform=`translate(${mx-5}px,${my-5}px)`; },{passive:true});
+        addEventListener('mousedown',()=>ring.classList.add('aa-press'));
+        addEventListener('mouseup',()=>ring.classList.remove('aa-press'));
+        document.addEventListener('mouseover',e=>{ if(e.target.closest('a,button,.aa-product-card')) ring.classList.add('aa-target'); });
+        document.addEventListener('mouseout',e=>{ if(e.target.closest('a,button,.aa-product-card')) ring.classList.remove('aa-target'); });
+        (function loop(){ rx+=(mx-rx)*.18; ry+=(my-ry)*.18; ring.style.transform=`translate(${rx-ring.offsetWidth/2}px,${ry-ring.offsetHeight/2}px)`; requestAnimationFrame(loop); })();
+    })();
+
+    /* Progression de scroll + header + retour haut */
+    (function(){
+        const bar=document.getElementById('aaProgress'), top=document.getElementById('aaTop'), header=document.querySelector('.aa-header');
+        let ticking=false;
+        function upd(){
+            const sc=scrollY, h=document.documentElement.scrollHeight-innerHeight;
+            bar.style.width=(h>0?(sc/h)*100:0)+'%';
+            top.classList.toggle('show',sc>600);
+            header.classList.toggle('aa-scrolled',sc>12);
+            ticking=false;
+        }
+        addEventListener('scroll',()=>{ if(!ticking){ requestAnimationFrame(upd); ticking=true; } },{passive:true});
+        upd();
+        top.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
+    })();
+
+    /* Apparitions au scroll */
+    (function(){
+        const els=document.querySelectorAll('.reveal');
+        if(!('IntersectionObserver' in window)){ els.forEach(e=>e.classList.add('in')); return; }
+        const io=new IntersectionObserver(es=>{ es.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } }); },{threshold:.12,rootMargin:'0px 0px -8% 0px'});
+        els.forEach(e=>io.observe(e));
+    })();
+
+    /* Badge panier : animation à chaque mise à jour */
+    (function(){
+        const badge=document.getElementById('aa-cart-badge'); if(!badge) return;
+        new MutationObserver(()=>{
+            badge.classList.remove('pop'); void badge.offsetWidth; badge.classList.add('pop');
+        }).observe(badge,{childList:true,characterData:true,subtree:true});
+    })();
+
+    /* Horloge du drawer */
+    (function(){
+        const c=document.getElementById('aaClock'); if(!c) return;
+        const t=()=>c.textContent=new Date().toLocaleTimeString('fr-FR');
+        t(); setInterval(t,1000);
+    })();
+
+    /* Code-barres décoratif (drawer) */
+    (function(){
+        const el=document.querySelector('.aa-barcode'); if(!el) return;
+        for(let i=0;i<30;i++){
+            const b=document.createElement('i'), s=(i*7)%9;
+            b.style.width=(s===0?5:s<3?2:s<6?1:3)+'px'; b.style.height='34px';
+            el.appendChild(b);
+        }
+    })();
+
+    /* Réseaux sociaux (config aa-core) */
+    (function(){
+        const social = JSON.parse(localStorage.getItem('aa_social_config') || '{}');
+        const nav = document.getElementById('aa-social-nav');
+        if (!nav) return;
+        const items = [{ key: 'facebook', icon: 'facebook', label: 'FACEBOOK' },{ key: 'twitter', icon: 'share', label: 'TWITTER' },{ key: 'instagram', icon: 'photo_camera', label: 'INSTAGRAM' },{ key: 'tiktok', icon: 'music_note', label: 'TIKTOK' },{ key: 'youtube', icon: 'play_circle', label: 'YOUTUBE' }];
+        items.forEach(item => {
+            const data = social[item.key];
+            if (data && data.enabled && data.url) {
+                const a=document.createElement('a');
+                a.href=aaEscapeAttr(data.url); a.target='_blank'; a.rel='noopener';
+                a.className='aa-social-link'; a.setAttribute('aria-label',item.label); a.title=item.label;
+                a.innerHTML=`<span class="material-symbols-outlined">${item.icon}</span>`;
+                nav.appendChild(a);
+            }
+        });
+    })();
+    </script>
 </body>
 </html>
