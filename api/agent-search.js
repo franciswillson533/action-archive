@@ -1,13 +1,13 @@
-// api/agent-search.js — DuckDuckGo (gratuit sans clé) + Groq (gratuit) + analyse photo (vision, avec diagnostic)
+// api/agent-search.js — Texte: Groq (gratuit) · Photos: Gemini (gratuit) · Recherche: DuckDuckGo (gratuit)
 const SYSTEM_PROMPT = `Tu es Action Archive-Bot, un expert mondial en jouets vintage, figurines de collection et rétrogaming des années 1970 à 2000. Ton but est d'aider l'utilisateur à identifier des jouets, estimer leur rareté, leur état (Loose, MIB, NRFB) et leur valeur historique. Si une photo est fournie, commence par ce que tu y vois (objet, marque probable, époque, état apparent, variantes visibles) avant l'estimation. Utilise toujours les résultats de recherche web fournis pour donner des estimations de prix réalistes et à jour. Sois passionné, précis, et mentionne les variantes connues (ex: variations de couleur, pays de fabrication) si elles impactent la valeur. Réponds toujours en français, structuré et concise (12 lignes maximum). Si les résultats sont vides ou insuffisants, dis-le et donne ton estimation avec réserves. Termine par "Sources utilisées : [n°1]..." si tu t'es appuyé sur les résultats.`;
 
 const PREF_TEXT = ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'llama-3.1-70b-versatile'];
-// Modèles VISION : on exclut "guard" (modérateur, pas un chat multimodal)
-const PREF_VISION = ['meta-llama/llama-4-scout-17b-16e-instruct', 'meta-llama/llama-4-maverick-17b-128e-instruct', 'llama-4-scout-17b-16e-instruct', 'llama-4-maverick-17b-128e-instruct'];
-const VISION_RE = /(llama[-_]4|scout|maverick|vision)/i;
 
 const GROQ_BASE = 'https://api.groq.com/openai/v1';
-let modelsCache = null, textPick = null, visionPick = null;
+const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
+const GEMINI_MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.5-flash-lite'];
+
+let modelsCache = null, textPick = null;
 const ddgCache = new Map();
 const CACHE_TTL = 60 * 60 * 1000;
 
@@ -32,22 +32,6 @@ async function pickTextModel() {
     return textPick;
 }
 
-function isVisionId(id) {
-    if (!id) return false;
-    if (/guard/i.test(id)) return false;   // llama-guard = modérateur, pas un assistant vision
-    return VISION_RE.test(id);
-}
-
-async function pickVisionModel() {
-    if (visionPick === '') return { model: null, reason: 'aucun modèle vision (scout/maverick/llama-4) dans la liste de ta clé' };
-    if (visionPick) return { model: visionPick, reason: '' };
-    const ids = await getGroqModels();
-    const found = PREF_VISION.find(p => ids.includes(p)) || ids.find(isVisionId) || '';
-    visionPick = found;
-    if (!found) return { model: null, reason: 'aucun modèle vision (scout/maverick/llama-4) dans la liste de ta clé' };
-    return { model: found, reason: '' };
-}
-
 async function chat(model, messages, maxTokens) {
     const res = await fetch(GROQ_BASE + '/chat/completions', {
         method: 'POST',
@@ -57,11 +41,34 @@ async function chat(model, messages, maxTokens) {
     const data = await res.json();
     const content = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
     if (!content) {
-        const msg = (data.error && data.error.message) || 'Réponse Groq vide';
-        if ((data.error && data.error.code === 'model_not_found') || /model/i.test(msg)) { textPick = null; visionPick = null; }
-        throw new Error(msg);
+        if ((data.error && data.error.code === 'model_not_found') || /model/i.test((data.error && data.error.message) || '')) textPick = null;
+        throw new Error((data.error && data.error.message) || 'Réponse Groq vide');
     }
     return content;
+}
+
+// ─── Gemini : analyse des photos ───
+async function geminiVision(dataUrl, prompt) {
+    const m = dataUrl.match(/^data:(image\/[a-z0-9+.-]+);base64,(.+)$/i);
+    if (!m) throw new Error('Image illisible');
+    let lastErr = '';
+    for (const model of GEMINI_MODELS) {
+        try {
+            const res = await fetch(GEMINI_BASE + '/' + model + ':generateContent?key=' + encodeURIComponent(process.env.GEMINI_API_KEY), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [ { text: prompt }, { inline_data: { mime_type: m[1], data: m[2] } } ] }]
+                })
+            });
+            const data = await res.json();
+            const parts = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts;
+            const text = parts ? parts.map(p => p.text || '').join('') : '';
+            if (text && text.trim()) return text.trim();
+            lastErr = (JSON.stringify(data) || '').slice(0, 200);
+        } catch (e) { lastErr = e.message; }
+    }
+    throw new Error(lastErr || 'Gemini sans réponse');
 }
 
 // ─── DuckDuckGo ───
@@ -141,34 +148,23 @@ module.exports = async (req, res) => {
             .filter(h => h && (h.role === 'user' || h.role === 'assistant') && typeof h.content === 'string' && h.content.length < 2000)
             .slice(-6).map(h => ({ role: h.role, content: h.content }));
 
-        // 1) PHOTO ? → identification par IA vision — et on CAPTURE la raison si ça rate
+        // 1) PHOTO → analyse par Gemini (vision)
         let imgDesc = '', photoNote = '';
         if (imageData) {
-            try {
-                const { model: visionModel, reason: whyNot } = await pickVisionModel();
-                if (visionModel) {
-                    try {
-                        imgDesc = await chat(visionModel, [{
-                            role: 'user',
-                            content: [
-                                { type: 'text', text: 'Identifie cette pièce de collection vintage (objet, figurine ou boîte : type, marque/fabricant probable, époque, état apparent, détails utiles). Français, 6 lignes max, sans décorum.' },
-                                { type: 'image_url', image_url: { url: imageData } }
-                            ]
-                        }], 400);
-                    } catch (e) {
-                        imgDesc = ''; photoNote = 'échec de l\'analyse vision : ' + e.message;
-                    }
-                } else {
-                    imgDesc = ''; photoNote = whyNot;
+            if (process.env.GEMINI_API_KEY) {
+                try {
+                    imgDesc = await geminiVision(imageData,
+                        'Identifie cette pièce de collection vintage (figurine, jouet ou boîte : type, marque/fabricant probable, époque, état apparent, variantes visibles). Français, 6 lignes max, sans décorum.');
+                } catch (e) {
+                    imgDesc = ''; photoNote = 'Gemini a échoué : ' + e.message;
                 }
-            } catch (e) {
-                imgDesc = ''; photoNote = 'liste des modèles inaccessible : ' + e.message;
+            } else {
+                photoNote = 'analyse photo impossible — ajoute GEMINI_API_KEY (gratuit : aistudio.google.com) dans Vercel pour activer la vision';
             }
         }
         const photoFailed = imageData && !imgDesc;
-        if (photoFailed && !photoNote) photoNote = 'raison inconnue';
 
-        // 2) Recherche web
+        // 2) Recherche web (texte +identification de la photo)
         let searchQuery = (query + ' ' + imgDesc).trim().slice(0, 200);
         const results = await searchDDG(searchQuery || query || 'figurine vintage 1970 1980');
         const context = results.length
@@ -176,20 +172,13 @@ module.exports = async (req, res) => {
               results.map((r, i) => `[${i + 1}] ${r.title}\n${r.url}\n${r.snippet}`).join('\n')
             : '\n\n(Aucun résultat web disponible — réponds avec ton expertise en le signalant.)';
 
-        // 3) Réponse finale — la note s'affiche dans la réponse elle-même (diagnostic visible dans le chat)
+        // 3) Réponse finale d'expert (Groq, texte — l'identification de la photo est incluse)
         const question = (query || (imgDesc ? 'Estime la pièce analysée en photo.' : 'J\'ai joint une photo de ma pièce.')) +
-            (imgDesc ? '\n\nIdentification de la photo (analyse IA) : ' + imgDesc : '') +
-            (photoFailed ? '\n\nIMPORTANT : la photo n\'a PAS pu être analysée — motif technique : "' + photoNote + '". Explique-le brièvement à l\'utilisateur et demande une description textuelle.' : '') + context;
-        const visionOk = imageData && !photoFailed;
-        const messages = [
-            { role: 'system', content: SYSTEM_PROMPT },
-            ...history,
-            visionOk
-                ? { role: 'user', content: [ { type: 'text', text: question }, { type: 'image_url', image_url: { url: imageData } } ] }
-                : { role: 'user', content: question }
-        ];
+            (imgDesc ? '\n\nIdentification de la photo (analyse Gemini) : ' + imgDesc : '') +
+            (photoFailed ? '\n\nIMPORTANT : la photo n\'a PAS été analysée — motif : "' + photoNote + '". Mentionne-le brièvement et propose une description textuelle.' : '') + context;
+
         const model = await pickTextModel();
-        const reply = await chat(model, messages, 700);
+        const reply = await chat(model, [ { role: 'system', content: SYSTEM_PROMPT }, ...history, { role: 'user', content: question } ], 700);
 
         return res.status(200).json({ reply, photoNote, sources: results.map(r => ({ title: r.title, url: r.url })) });
     } catch (err) {
