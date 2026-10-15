@@ -204,7 +204,7 @@ async function harvestPrices(query, results) {
     return out;
 }
 
-// ─── Catalogue de la boutique : prix réel des reproductions ───
+// ─── Catalogue boutique : les MÊMES champs que la page produits.html (Nom, Collection, Année, Prix) ───
 function norm(s) {
     return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
@@ -212,30 +212,49 @@ async function ownCatalog(host) {
     try {
         if (catCache && Date.now() - catCache.t < CACHE_TTL) return catCache.items;
         const res = await fetch('https://' + host + '/api/airtable-proxy', {
-            headers: { 'User-Agent': 'AA-Agent/1.0' },
-            signal: (function(){ const c=new AbortController(); setTimeout(()=>c.abort(), 4000); return c; })()
+            headers: { 'User-Agent': 'AA-Agent/1.0' }
         });
         if (!res.ok) return [];
         const data = await res.json();
-        const items = (Array.isArray(data) ? data : []).map(r => ({
-            id: r.id,
-            nom: (r.fields && r.fields.Nom) || '',
-            prix: parseFloat(r.fields && r.fields.Prix) || 0
-        })).filter(x => x.nom && x.prix > 0);
+        const items = (Array.isArray(data) ? data : []).map(r => {
+            const f = r.fields || r;
+            return {
+                id: r.id,
+                nom: f.Nom || '',
+                collection: f.Collection || '',
+                annee: parseInt(f.Année) || 0,
+                prix: parseFloat(f.Prix) || 0
+            };
+        }).filter(x => x.nom && x.prix > 0);
         catCache = { t: Date.now(), items };
         return items;
     } catch (e) { return []; }
 }
+
 function matchCatalogItem(items, texto) {
     const words = norm(texto).replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter(w => w.length > 3);
-    let best = null, bestScore = 0;
+    if (!words.length || !items.length) return null;
+    // Poids : un mot qui revient sur >30 % du catalogue ne compte pas (soldat, russe, figurine…)
+    const freq = {};
     for (const it of items) {
-        const n = norm(it.nom);
-        let sc = 0;
-        for (const w of words) if (n.includes(w)) sc++;
-        if (sc > bestScore) { bestScore = sc; best = it; }
+        const n = norm(it.nom + ' ' + it.collection);
+        for (const w of words) if (n.includes(w)) freq[w] = (freq[w] || 0) + 1;
     }
-    return bestScore >= 2 ? best : null;
+    const N = items.length || 1;
+    const scored = items.map(it => {
+        const n = norm(it.nom + ' ' + it.collection);
+        let sc = 0;
+        for (const w of words) {
+            if (n.includes(w) && ((freq[w] || 0) / N) < 0.3) sc++;
+        }
+        // Une année en 4 chiffres (1970-2000) qui correspond exactement au produit pèse lourd
+        const yearInQuery = (words.find(w => /^(19[7-9]\d|200\d)$/.test(w)) || '');
+        if (yearInQuery && it.annee === parseInt(yearInQuery)) sc += 2;
+        return { it, sc };
+    }).sort((a, b) => b.sc - a.sc);
+    const top = scored[0], second = scored[1];
+    if (!top || top.sc < 2 || (second ? top.sc - second.sc < 1 : false)) return null;
+    return top.it;
 }
 
 // ─── Point d'entrée ───
@@ -289,13 +308,13 @@ module.exports = async (req, res) => {
             priceCtx = '\n\n(Aucun prix exploitable trouvé dans les sources — fourchette indicative + signal clairement.)';
         }
 
-        // 2c) CATALOGUE BOUTIQUE : le vrai prix de la reproduction
+        // 2c) CATALOGUE BOUTIQUE : prix réel de la reproduction (champs Nom/Collection de la page produits)
         const catalog = await ownCatalog(hostHeader);
         const shopItem = matchCatalogItem(catalog, combo || query);
         let shopCtx = '';
         if (shopItem) {
             const link = 'https://' + hostHeader + '/produit.html?id=' + shopItem.id;
-            shopCtx = '\n\n★ CATALOGUE ACTION ARCHIVE : une reproduction neuve équivalente est EN VENTE dans la boutique : « ' + shopItem.nom + ' » au prix boutique de ' + shopItem.prix.toFixed(2).replace('.', ',') + ' € — ' + link + '\nLigne REPRODUCTION : donne EXACTEMENT ce prix et partage ce lien.';
+            shopCtx = '\n\n★ CATALOGUE ACTION ARCHIVE : une reproduction neuve équivalente est EN VENTE dans la boutique : « ' + shopItem.nom + ' » (Collection : ' + (shopItem.collection || '—') + (shopItem.annee ? ', ' + shopItem.annee : '') + ') au prix boutique de ' + shopItem.prix.toFixed(2).replace('.', ',') + ' € — ' + link + '\nLigne REPRODUCTION : donne EXACTEMENT ce prix et partage ce lien.';
             results.unshift({ title: 'Action Archive — ' + shopItem.nom, url: link, snippet: 'Reproduction neuve en vente sur le site' });
         }
 
