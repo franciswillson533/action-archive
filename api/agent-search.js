@@ -1,23 +1,25 @@
-// api/agent-search.js — Cerveau: Groq · Photos: Gemini · Recherche: DuckDuckGo 2 passes · Prix: eBay vendus + LULU-BERLU
+// api/agent-search.js — JUGEMENT: Gemini (gratuit) · Photos: Gemini (vision) · DuckDuckGo 2 passes · eBay soldés + Lulu-Berlu · Secours: Groq
 const SYSTEM_PROMPT = `Tu es Action Archive-Bot, un expert mondial en jouets vintage, figurines de collection et rétrogaming des années 1970 à 2000. Ton but : aider l'utilisateur à identifier des jouets, estimer leur rareté, leur état (Loose, MIB, NRFB) et leur valeur historique.
 
 RÈGLES (primordiales) :
-- Ne suppose JAMAIS reproduction/original (impossible par photo). Estime par défaut le MARCHÉ DE L'ORIGINAL, mention "(sous réserve d'une pièce originale)".
-- HIÉRARCHIE DES SOURCES DE PRIX : 1) VENTES SPÉCIALISÉES (Lulu-Berlu = adjugé réel) — ta référence N°1 pour MIB/NRFB, cite-les explicitement ; 2) ventes soldées eBay ; 3) extraits/annonces. N'invente JAMAIS de nom d'outil interne.
+- NE SUPPOSE JAMAIS que la pièce est une reproduction (impossible par photo). Estime par défaut le MARCHÉ DE L'ORIGINAL, mention "(sous réserve d'une pièce originale)".
+- HIÉRARCHIE DES PRIX : 1) VENTES SPÉCIALISÉES (Lulu-Berlu = adjugés réels) — ta référence N°1 pour MIB/NRFB, cite-la ; 2) ventes soldées eBay ; 3) relevés de pages/extraits. Les relevés sont des REPÈRES, pas un PLAFOND : si ta connaissance experte d'un état/référence demande est supérieure (ex. carte recherchée), donne TA fourchette experte et signale une phrase : "estimation experte — les relevés couvraient probablement d'autres conditions".
 - Marchés SÉPARÉS : (a) reproduction neuve, (b) original Loose, (c) original MIB/NRFB — en boîte/carte complète, souvent 3 à 10 fois le Loose.
-- MIB/NRFB : ancre-toi sur les VENTES SPÉCIALISÉES puis le haut des relevés (75e centile → max). ÉTIQUETTES : "(ventes exceptionnelles au-dessus)" pour MIB/NRFB ; "(marché courant)" pour Loose.
-- Devise : convertis £/$ en € (1 £ ≈ 1,17 € ; 1 $ ≈ 0,92 €).
-- Ligne REPRODUCTION : UNIQUEMENT depuis le CATALOGUE ACTION ARCHIVE fourni : pièce équivalente → prix boutique EXACT + "fiche produit" ; absent → "non proposée au catalogue". Jamais de prix de reproduction inventé. Contradiction de marque → pas de lien.
-- Interdits : phrases génériques, rappels d'astuces, outils fictifs.
+- ÉTIQUETTES obligatoires : "(fourchette basse du marché — ventes exceptionnelles au-dessus)" pour MIB/NRFB ; "(marché courant)" pour Loose ; "(sous réserve d'une pièce originale)".
+- Devise : convertis £/$ en € (1 £ ≈ 1,17 € ; 1 $ ≈ 0,92 €), devise d'origine entre parenthèses.
+- Ligne REPRODUCTION : UNIQUEMENT depuis le CATALOGUE ACTION ARCHIVE fourni : pièce de la MÊME marque/type → EXACTEMENT le prix boutique + le lien (formulé "fiche produit", pas l'URL brute) ; absent → "non proposée au catalogue". Contradiction de marque → ni lien ni prix. Jamais de prix de reproduction inventé.
+- Interdits : phrases génériques, rappels d'astuces, formules creuses, noms d'outils internes.
 
-STYLE : français, passionné, 4 blocs, 16 lignes max : IDENTIFICATION · PRIX OBSERVÉS (avec provenance + alerte si peu de relevés) · ESTIMATION (Reproduction / Loose / MIB-NRFB étiquetées) · CONSEIL (UNE ligne).
-"Sources utilisées : ..." UNIQUEMENT si des sources ont servi ; sinon rien.`;
+STYLE : français, passionné, 4 blocs, 16 lignes max :
+IDENTIFICATION · PRIX OBSERVÉS (courte liste avec provenance + alerte si relevés faibles) · ESTIMATION (Reproduction / Loose / MIB-NRFB, étiquetées) · CONSEIL (UNE seule ligne).
+"Aucun prix exploitable" → dis-le + fourchette indicative avec réserves. "Sources utilisées : ..." UNIQUEMENT si des sources ont servi ; sinon rien.`;
 
 const PREF_TEXT = ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'llama-3.1-70b-versatile'];
 
 const GROQ_BASE = 'https://api.groq.com/openai/v1';
 const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
-const GEMINI_MODELS = ['gemini-3.5-flash-lite', 'gemini-3.5-flash'];
+const GEMINI_FLASH = ['gemini-3.5-flash', 'gemini-3.5-flash-lite'];   // jugement final (meilleur d'abord)
+const GEMINI_LIGHT = ['gemini-3.5-flash-lite', 'gemini-3.5-flash'];   // photo + affinage (rapide)
 
 let modelsCache = null, textPick = null, catCache = null, luluCache = null;
 const ddgCache = new Map(), priceCache = new Map();
@@ -25,6 +27,7 @@ const CACHE_TTL = 60 * 60 * 1000;
 const BUDGET_MS = 8000;
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36';
 
+// ─── Groq (secours + affinage rapide) ───
 async function getGroqModels() {
     if (modelsCache && Date.now() - modelsCache.t < 10 * 60 * 1000) return modelsCache.ids;
     const res = await fetch(GROQ_BASE + '/models', { headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY } });
@@ -38,14 +41,12 @@ async function getGroqModels() {
     modelsCache = { t: Date.now(), ids };
     return ids;
 }
-
 async function pickTextModel() {
     if (textPick) return textPick;
     const ids = await getGroqModels();
     textPick = (PREF_TEXT.find(p => ids.includes(p)) || ids.find(i => /llama|instant|versatile|instruct/i.test(i)) || ids[0]) || null;
     return textPick;
 }
-
 async function chatOrNull(model, messages, maxTokens) {
     const res = await fetch(GROQ_BASE + '/chat/completions', {
         method: 'POST',
@@ -61,11 +62,12 @@ async function chatOrNull(model, messages, maxTokens) {
     if ((data.error && data.error.code === 'model_not_found') || /model/i.test(raw)) { textPick = null; throw new Error('MODEL_MISSING'); }
     return null;
 }
-
-async function chat(model, messages, maxTokens, liteMessages) {
+async function chatGroq(model, messages, maxTokens, liteMessages) {
     let out = null;
-    try { out = await chatOrNull(model, messages, maxTokens); } catch (e) {
-        if (String(e.message) === 'MODEL_MISSING') out = null; else { try { out = await chatOrNull(model, messages, maxTokens); } catch (e2) { out = null; } }
+    try { out = await chatOrNull(model, messages, maxTokens); }
+    catch (e) {
+        if (String(e.message) === 'MODEL_MISSING') out = null;
+        else { try { out = await chatOrNull(model, messages, maxTokens); } catch (e2) { out = null; } }
     }
     let attempt = 0;
     while (out === null && attempt < 2) {
@@ -77,28 +79,55 @@ async function chat(model, messages, maxTokens, liteMessages) {
     return out;
 }
 
-// ─── Gemini vision ───
+// ─── Gemini : vision + jugement final ───
+async function geminiCall(model, bodyObj) {
+    const res = await fetch(GEMINI_BASE + '/' + model + ':generateContent?key=' + encodeURIComponent(process.env.GEMINI_API_KEY), {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(bodyObj)
+    });
+    const data = await res.json();
+    const parts = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts;
+    const text = parts ? parts.map(p => p.text || '').join('') : '';
+    if (text && text.trim()) return text.trim();
+    throw new Error('HTTP ' + res.status + ' — ' + (JSON.stringify(data) || '').slice(0, 240));
+}
+
+// messages [{role, content}] → appel Gemini (texte)
+async function judge(messages, maxTokens) {
+    if (!process.env.GEMINI_API_KEY) throw new Error('GEMINI_API_KEY absente');
+    const sys = messages.filter(m => m.role === 'system').map(m => m.content).join('\n');
+    const contents = messages.filter(m => m.role !== 'system').map(m => ({
+        role: m.role === 'assistant' ? 'model' : 'user',
+        parts: [ { text: m.content } ]
+    }));
+    let lastErr = '';
+    for (const model of GEMINI_FLASH) {
+        try {
+            return await geminiCall(model, {
+                system_instruction: { parts: [ { text: sys } ] },
+                contents,
+                generationConfig: { temperature: 0.55, maxOutputTokens: maxTokens }
+            });
+        } catch (e) {
+            lastErr = e.message;
+            if (/API key|invalid|403|429/.test(lastErr)) throw new Error(lastErr);
+        }
+    }
+    throw new Error('Jugement indisponible : ' + lastErr);
+}
+
+// Analyse photo : description FACTUELLE, sans verdict reproduction/original
 async function geminiVision(dataUrl, prompt) {
     const m = dataUrl.match(/^data:(image\/[a-z0-9+.-]+);base64,(.+)$/i);
     if (!m) throw new Error('Image illisible');
     let lastErr = '';
-    for (const model of GEMINI_MODELS) {
+    for (const model of GEMINI_LIGHT) {
         try {
-            const res = await fetch(GEMINI_BASE + '/' + model + ':generateContent?key=' + encodeURIComponent(process.env.GEMINI_API_KEY), {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: [{ parts: [ { text: prompt }, { inline_data: { mime_type: m[1], data: m[2] } } ] }] })
+            return await geminiCall(model, {
+                contents: [{ role: 'user', parts: [ { text: prompt }, { inline_data: { mime_type: m[1], data: m[2] } } ] }]
             });
-            const data = await res.json();
-            const parts = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts;
-            const text = parts ? parts.map(p => p.text || '').join('') : '';
-            if (text && text.trim()) return text.trim();
-            lastErr = 'HTTP ' + res.status + ' — ' + (JSON.stringify(data) || '').slice(0, 300);
-            if (res.status === 400 && /API key|invalid/i.test(lastErr)) throw new Error(lastErr);
-            if (res.status === 403 || res.status === 429) throw new Error(lastErr);
         } catch (e) {
-            if (String(e.message).includes('HTTP')) throw new Error(e.message);
             lastErr = e.message;
+            if (/API key|invalid|403|429/.test(lastErr)) throw new Error(lastErr);
         }
     }
     throw new Error(lastErr || 'Gemini sans réponse');
@@ -198,11 +227,11 @@ function extractPrices(text) {
     }
     return found;
 }
-function convPush(found, src, out, cap, origLabel) {
+function convPush(found, src, out, cap) {
     found.forEach(x => {
         if (out.length >= cap) return;
         const k = x.cur === 'GBP' ? 1.17 : x.cur === 'USD' ? 0.92 : 1;
-        out.push({ p: Math.round(x.v * k * 100) / 100, src, orig: (x.cur === 'EUR' ? '' : ' (devise : ' + x.cur + ')') + (origLabel ? ' — ' + origLabel : '') });
+        out.push({ p: Math.round(x.v * k * 100) / 100, src, orig: x.cur === 'EUR' ? '' : ' (devise : ' + x.cur + ')' });
     });
 }
 
@@ -216,40 +245,36 @@ async function passFetch(query, results) {
     ].filter(t => t.url);
     const settled = await Promise.allSettled(targets.map(t => fetchPageText(t.url, 2300)));
     const prices = [];
-    let read = 0, total = targets.length;
+    let read = 0;
     for (let i = 0; i < settled.length; i++) {
         if (settled[i].status !== 'fulfilled' || !settled[i].value) continue;
         read++;
         convPush(extractPrices(settled[i].value), targets[i].src, prices, 14);
     }
     prices.sort((a, b) => a.p - b.p);
-    return { prices, read, total };
+    return { prices, read, total: targets.length };
 }
 
-// ─── LULU-BERLU : ventes spécialisées (adjudications) — priorité MIB/NRFB ───
+// ─── LULU-BERLU : adjudications réelles, priorité MIB/NRFB ───
 async function luluHarvest(query) {
     try {
         if (luluCache && Date.now() - luluCache.t < CACHE_TTL) return luluCache.data;
         const kw = query.slice(0, 80);
-        // 1) Recherche ciblée sur leur site via DuckDuckGo (fiable) + 2) lecture directe de leur moteur interne
-        const [siteResults, direct] = await Promise.allSettled([
+        const [siteResults, directResult] = await Promise.allSettled([
             searchDDG('site:lulu-berlu.com ' + kw),
             fetchPageText('https://www.lulu-berlu.com/?s=' + encodeURIComponent(kw) + '&post_type=product', 2600)
         ]);
         let urls = [];
         if (siteResults.status === 'fulfilled') urls = siteResults.value.slice(0, 3).map(r => r.url);
-        const toFetch = [];
-        urls.forEach(u => { if (/lulu-berlu\.com/.test(u)) toFetch.push(u); });
+        const toFetch = urls.filter(u => /lulu-berlu\.com/.test(u));
         const settled2 = await Promise.allSettled(toFetch.map(u => fetchPageText(u, 2600)));
         const prices = [], listings = [];
-        // extraits des résultats DDG (souvent "adjudiqué 320 €")
         if (siteResults.status === 'fulfilled') {
             siteResults.value.slice(0, 5).forEach(r => {
-                convPush(extractPrices((r.title || '') + ' ' + (r.snippet || '')), 'Lulu-Berlu (extrait vente)', prices, 6, 'adjudication spécialisée');
+                convPush(extractPrices((r.title || '') + ' ' + (r.snippet || '')), 'Lulu-Berlu (extrait vente) — adjudication', prices, 6);
                 if (r.title) listings.push({ title: r.title.slice(0, 80), url: r.url });
             });
         }
-        // pages lues : prix avec contexte (le mot-clé précédant le prix)
         for (let i = 0; i < settled2.length && prices.length < 10; i++) {
             if (settled2[i].status !== 'fulfilled' || !settled2[i].value) continue;
             const txt = settled2[i].value;
@@ -269,24 +294,25 @@ async function luluHarvest(query) {
 }
 
 // ─── Passe d'affinage ───
-async function refinePass(query, imgDesc, snippets) {
+async function refinePass(query, imgDesc) {
     try {
-        const model = await pickTextModel();
         const msg = `Question utilisateur : ${query || '(photo uniquement)'}
 Note visuelle (photo) : ${imgDesc || '(aucune)'}
-Extraits de pages trouvées :
-${snippets || '(aucun extrait)'}
-
-Tâche : précise l'identification (marque, référence EXACTE telle qu'écrite par les collectionneurs/fabricants de l'époque, année, état) puis produis la requête optimale pour trouver des VENTES RÉELLES de CETTE pièce précise (termes anglais si plus efficaces, inclut l'état si pertinent, ex: "carded", "MIB", "sealed").
+Tâche : précise l'identification (marque, référence EXACTE des collectionneurs, année, état) puis produis la requête optimale pour trouver des VENTES RÉELLES de CETTE pièce précise (anglais si plus efficace, état inclus: "carded", "MIB", "sealed").
 Réponds UNIQUEMENT en JSON compact : {"identification":"...","query":"..."}`;
-        const out = await chat(model, [{ role: 'user', content: msg }], 320, [{ role: 'user', content: 'Extraits:\n' + (snippets || '').slice(0, 300) + '\nRends UNIQUEMENT: {"identification":"...","query":"..."}' }]);
+        let out = null;
+        if (process.env.GEMINI_API_KEY) { try { out = await judge([{ role: 'user', content: msg }], 320); } catch (e) { out = null; } }
+        if (!out) out = await chatGroq(await pickTextModel(), [{ role: 'user', content: msg }], 320);
         const t = String(out).replace(/```json|```/g, '').trim();
         const j = t.match(/\{[\s\S]*\}/) ? JSON.parse(t.match(/\{[\s\S]*\}/)[0]) : null;
-        return { identification: stripTags(j && j.identification || '').slice(0, 400), query: stripTags(j && j.query || '').slice(0, 160) };
+        return {
+            identification: stripTags(j && j.identification || '').slice(0, 400),
+            query: stripTags(j && j.query || '').slice(0, 160)
+        };
     } catch (e) { return { identification: '', query: '' }; }
 }
 
-// ─── Catalogue boutique ───
+// ─── Catalogue boutique (les champs réels de produits.html) ───
 function norm(s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
 async function ownCatalog(host) {
     try {
@@ -296,7 +322,7 @@ async function ownCatalog(host) {
         const data = await res.json();
         const items = (Array.isArray(data) ? data : []).map(r => {
             const f = r.fields || r;
-            return { id: r.id, nom: f.Nom || '', collection: f.Collection || '', prix: parseFloat(f.Prix) || 0 };
+            return { id: r.id, nom: f.Nom || '', collection: f.Collection || '', annee: parseInt(f.Année) || 0, prix: parseFloat(f.Prix) || 0 };
         }).filter(x => x.nom && x.prix > 0);
         catCache = { t: Date.now(), items };
         return items;
@@ -326,6 +352,8 @@ function matchCatalogItem(items, texto) {
         const n = norm(it.nom + ' ' + it.collection);
         let sc = 0;
         for (const w of words) if (n.includes(w) && ((freq[w] || 0) / N) < 0.3) sc++;
+        const yearInQuery = words.find(w => /^(19[7-9]\d|200\d)$/.test(w));
+        if (yearInQuery && it.annee === parseInt(yearInQuery)) sc += 2;
         return { it, sc };
     }).filter(x => brandGuard(x.it, sourceText)).sort((a, b) => b.sc - a.sc);
     const top = scored[0], second = scored[1];
@@ -338,7 +366,6 @@ module.exports = async (req, res) => {
     if (req.method !== 'POST') return res.status(405).json({ error: 'Utilise POST' });
     const t0 = Date.now();
     try {
-        if (!process.env.GROQ_API_KEY) return res.status(500).json({ error: 'Clé IA absente dans Vercel (GROQ_API_KEY)' });
         const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
         const query = String(body.query || '').slice(0, 300).trim();
         const imageData = typeof body.image === 'string' && body.image.startsWith('data:image/') ? body.image : null;
@@ -349,27 +376,27 @@ module.exports = async (req, res) => {
 
         const hostHeader = (req.headers && (req.headers['x-forwarded-host'] || req.headers.host)) || 'www.actionarchive.ink';
 
-        // ─── PASSE 1 ───
+        // ─── PASSE 1 : description factuelle + recherche, en parallèle ───
         let imgDesc = '', photoNote = '';
         const p1 = await Promise.all([
             imageData && process.env.GEMINI_API_KEY
-                ? geminiVision(imageData, 'Décris CETTE pièce de collection vintage de façon FACTUELLE (type, marque ou fabricant VISIBLE ou probable — avec ton incertitude, époque, texte imprimé visible, état apparent : jaunement, plis, usure). Ne conclus PAS reproduction/original (impossible par photo). Marque incertaine ? Écris-le. Français, 7 lignes max.')
+                ? geminiVision(imageData, 'Décris CETTE pièce de collection vintage de façon FACTUELLE (type, marque ou fabricant VISIBLE ou probable — avec ton incertitude, époque, texte imprimé visible, état apparent : jaunement, plis, usure). IMPORTANT : ne conclus PAS reproduction/original (impossible par photo) — note seulement des indices observables. Marque incertaine ? Écris-le. Français, 7 lignes max.')
                 : Promise.resolve(''),
             query ? searchDDG(query) : Promise.resolve([])
         ]);
         imgDesc = p1[0];
-        if (imageData && !process.env.GEMINI_API_KEY) photoNote = 'La variable GEMINI_API_KEY est absente de Vercel — ajoute-la (gratuit : aistudio.google.com) pour activer les photos';
+        if (imageData && !process.env.GEMINI_API_KEY) photoNote = 'La variable GEMINI_API_KEY est absente de Vercel — ajoute-la (gratuit : aistudio.google.com) pour la photo ET le jugement expert';
         let results1 = p1[1];
         if (!query && imageData) results1 = await searchDDG(imgDesc.slice(0, 160));
         const photoFailed = imageData && !imgDesc;
 
         const harv1 = await passFetch(query || 'figurine vintage', results1);
 
-        // ─── PASSE 2 ───
+        // ─── PASSE 2 : affinage + marché réel + Lulu-Berlu ───
         let refineId = '', results2 = [], harv2 = { prices: [], read: 0, total: 0 };
         let lulu = { prices: [], listings: [] };
         if (Date.now() - t0 < BUDGET_MS) {
-            const r = await refinePass(query, imgDesc, '');
+            const r = await refinePass(query, imgDesc);
             refineId = r.identification;
             const refined = (r.query || '').trim();
             if (refined && Date.now() - t0 < BUDGET_MS + 1500) {
@@ -383,16 +410,18 @@ module.exports = async (req, res) => {
             }
         }
 
-        // ─── Fusion ───
+        // ─── Fusion : sources + prix (extraits de recherche compris, cette fois) ───
         const seen = new Set(); const merged = [];
         [...results1, ...results2].forEach(r => { if (!seen.has(r.url)) { seen.add(r.url); merged.push(r); } });
 
         const pk = {}; const pushPrice = x => { if (x && x.p) pk[x.p.toFixed(2) + '|' + x.src] = x; };
         [...harv1.prices, ...harv2.prices, ...lulu.prices].forEach(pushPrice);
-        // Les extraits DDG eux-mêmes (souvent des prix d'adjudication)
+        const snippetPrices = [];
         merged.slice(0, 8).forEach(r => {
-            convPush(extractPrices(stripTags((r.title || '') + ' ' + (r.snippet || ''))), 'extrait de recherche', [], 3, '');
+            convPush(extractPrices(stripTags((r.title || '') + ' ' + (r.snippet || ''))).slice(0, 2), 'extrait de recherche', snippetPrices, 4);
         });
+        snippetPrices.forEach(pushPrice);
+
         const prices = Object.values(pk).sort((a, b) => a.p - b.p).slice(0, 18);
 
         let context = '';
@@ -403,7 +432,7 @@ module.exports = async (req, res) => {
             context = '\n\n(Aucun résultat web — réponds avec ton expertise en le signalant.)';
         }
 
-        const readInfo = 'pages lues : ' + (harv1.read + harv2.read) + '/' + (harv1.total + harv2.total) + ' (sources bloquées ignorées)';
+        const readInfo = 'pages lues : ' + (harv1.read + harv2.read) + '/' + (harv1.total + harv2.total) + ' · relevés Lulu-Berlu : ' + lulu.prices.length;
         let priceCtx = '';
         if (prices.length) {
             const arr = prices.map(x => x.p);
@@ -414,36 +443,41 @@ module.exports = async (req, res) => {
                 prices.map(pr => '• ' + pr.p.toFixed(2).replace('.', ',') + ' €' + (pr.orig || '') + ' ← ' + pr.src).join('\n') +
                 (arr.length < 5 ? '\nⓘ Peu de relevés fiables — ta fourchette experte peut être plus juste ; dis-le.' : '');
         } else {
-            priceCtx = '\n\n(' + readInfo + ') AUCUN prix exploitable — fourchette experte + dis-le clairement.';
+            priceCtx = '\n\n(' + readInfo + ') AUCUN prix exploitable — fourchette experte obligatoire + dis-le clairement.';
         }
-        if (lulu.listings.length) {
-            context += '\n\nVentes spécialisées consultées (Lulu-Berlu) : ' + lulu.listings.map(l => l.title).join(' | ');
-        }
+        if (lulu.listings.length) context += '\n\nVentes spécialisées consultées (Lulu-Berlu) : ' + lulu.listings.map(l => l.title).join(' | ');
 
-        // ─── Catalogue ───
+        // ─── Catalogue boutique ───
         const catalog = await ownCatalog(hostHeader);
         const shopItem = matchCatalogItem(catalog, { q: query, d: imgDesc });
         let shopCtx = '';
         if (shopItem) {
             const linkRel = 'produit.html?id=' + shopItem.id;
-            shopCtx = '\n\n★ CATALOGUE ACTION ARCHIVE — reproduction neuve équivalente EN VENTE : « ' + shopItem.nom + ' » (' + (shopItem.collection || '—') + ') — PRIX BOUTIQUE RÉEL : ' + shopItem.prix.toFixed(2).replace('.', ',') + ' € — lien : ' + linkRel + '\nLigne REPRODUCTION : donne EXACTEMENT ce prix + "fiche produit".';
+            shopCtx = '\n\n★ CATALOGUE ACTION ARCHIVE — reproduction neuve équivalente EN VENTE : « ' + shopItem.nom + ' » (' + (shopItem.collection || '—') + ') — PRIX BOUTIQUE RÉEL : ' + shopItem.prix.toFixed(2).replace('.', ',') + ' € — lien : ' + linkRel + '\nLigne REPRODUCTION : EXACTEMENT ce prix + cite le lien sous la forme "fiche produit".';
             results1.unshift({ title: 'Action Archive — ' + shopItem.nom, url: 'https://' + hostHeader + '/' + linkRel, snippet: 'Reproduction neuve en vente sur le site' });
         } else if (catalog.length) {
-            shopCtx = '\n\n★ CATALOGUE ACTION ARCHIVE : aucune reproduction équivalente → ligne REPRODUCTION = "non proposée au catalogue".';
+            shopCtx = '\n\n★ CATALOGUE ACTION ARCHIVE : aucune reproduction équivalente → ligne REPRODUCTION = "non proposée au catalogue" (aucun prix inventé).';
         }
 
-        // ─── Réponse finale ───
+        // ─── Réponse finale : Gemini (meilleur jugement) puis Groq en secours ───
         const questionFull = (query || (imgDesc ? 'Estime la pièce analysée en photo.' : 'J\'ai joint une photo de ma pièce.')) +
             (imgDesc ? '\n\nDescription factuelle (photo) : ' + imgDesc : '') +
             (refineId ? '\n\nPrécision (passe 2) : ' + refineId : '') +
             shopCtx + context + priceCtx;
-        const questionLite = (query || (imgDesc ? 'Estime la pièce (Reproduction / Loose / MIB-NRFB).' : 'Identifie et estime la pièce.')) +
+        const questionLite = (query || (imgDesc ? 'Estime la pièce (Reproduction / Loose / MIB-NRFB).' : 'Identifie et estime la pièce (données ci-dessus).')) +
             (imgDesc ? '\nDescription : ' + imgDesc.slice(0, 300) : '') +
+            (refineId ? '\nPrécision : ' + refineId.slice(0, 200) : '') +
             shopCtx + priceCtx;
-        const model = await pickTextModel();
-        const base = [ { role: 'system', content: SYSTEM_PROMPT }, ...history ];
-        let reply = await chat(model, [...base, { role: 'user', content: questionFull }], 900,
-            [...base, { role: 'user', content: questionLite }]);
+
+        let reply = null, judgeErr = '';
+        if (process.env.GEMINI_API_KEY) {
+            try { reply = await judge([ { role: 'system', content: SYSTEM_PROMPT }, ...history, { role: 'user', content: questionFull } ], 900); }
+            catch (e1) { judgeErr = e1.message; reply = null; }
+        }
+        if (!reply) {
+            reply = await chatGroq(await pickTextModel(), [ { role: 'system', content: SYSTEM_PROMPT }, ...history, { role: 'user', content: questionFull } ], 900, [ { role: 'user', content: questionLite } ]);
+            if (judgeErr) reply += '\n\n⚠️ Détail technique (jugement par plan B) : ' + judgeErr.slice(0, 120);
+        }
 
         if (photoFailed && photoNote) reply += '\n\n⚠️ Détail technique : ' + photoNote;
         return res.status(200).json({
