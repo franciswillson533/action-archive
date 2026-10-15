@@ -75,13 +75,21 @@
         .aa-barcode{ display:flex; align-items:flex-end; gap:1px; height:34px; color:var(--ink); }
         .aa-barcode i{ display:inline-block; background:currentColor; }
 
-        /* ============ 4. TÊTE DE PAGE + MASCOTTE ============ */
-        .aa-mascot-wrap{ display:flex; justify-content:center; margin-bottom:1rem; }
-        .aa-mascot{ width:110px; height:auto; filter:drop-shadow(4px 5px 0 var(--red)); animation:aaBob 4.5s ease-in-out infinite; }
-        @keyframes aaBob{ 0%,100%{ transform:translateY(0) rotate(-2deg);} 50%{ transform:translateY(-7px) rotate(2deg);} }
-        .aa-eyebrow{ display:flex; align-items:center; gap:.55rem; font-family:'Space Mono',monospace; font-weight:700; font-size:.78rem; text-transform:uppercase; letter-spacing:.14em; color:var(--ink); margin-bottom:1rem; justify-content:center; }
+        /* ============ 4. TÊTE DE PAGE + MASCOTTE TRANSLUCIDE ============ */
+        .aa-headzone{ position:relative; text-align:center; padding-top:.5rem; }
+        .aa-mascot-wrap{ display:flex; justify-content:center; position:relative; z-index:0; margin-bottom:calc(-1 * clamp(3.2rem, 7vw, 4.6rem)); }
+        .aa-mascot{
+            width:clamp(150px, 26vw, 250px); height:auto;
+            opacity:.85; mix-blend-mode:multiply;
+            filter:drop-shadow(5px 7px 0 rgba(187,0,3,.35));
+            animation:aaBob 4.5s ease-in-out infinite;
+            transition:opacity .3s ease, transform .3s ease;
+        }
+        .aa-headzone:hover .aa-mascot{ opacity:1; transform:scale(1.04) rotate(-1deg); }
+        @keyframes aaBob{ 0%,100%{ transform:translateY(0) rotate(-2deg);} 50%{ transform:translateY(-9px) rotate(2deg);} }
+        .aa-eyebrow{ display:flex; align-items:center; gap:.55rem; font-family:'Space Mono',monospace; font-weight:700; font-size:.78rem; text-transform:uppercase; letter-spacing:.14em; color:var(--ink); margin-bottom:1rem; justify-content:center; position:relative; z-index:1; }
         .aa-eyebrow .material-symbols-outlined{ font-size:17px; color:var(--red); font-variation-settings:'FILL' 1; }
-        .aa-agent-title{ font-family:'Epilogue',sans-serif; font-weight:900; font-style:italic; text-transform:uppercase; color:var(--red); letter-spacing:-.02em; line-height:.98; font-size:clamp(2rem,4.5vw,3rem); text-align:center; margin-bottom:.5rem; }
+        .aa-agent-title{ position:relative; z-index:1; font-family:'Epilogue',sans-serif; font-weight:900; font-style:italic; text-transform:uppercase; color:var(--red); letter-spacing:-.02em; line-height:.98; font-size:clamp(2rem,4.5vw,3rem); text-align:center; margin-bottom:.5rem; }
         .aa-agent-title .line{ display:block; overflow:hidden; padding-bottom:.06em; }
         .aa-agent-title .line-in{ display:inline-block; transform:translateY(115%); animation:aaLineUp .8s cubic-bezier(.22,1,.36,1) forwards; }
         .aa-agent-title .line:nth-child(2) .line-in{ animation-delay:.12s; }
@@ -100,7 +108,7 @@
         .aa-msg.error{ align-self:center; background:#fff3cd; border-color:#ffaa00; text-align:center; font-size:.8rem; }
         .aa-msg-h{ font-family:'Epilogue',sans-serif; font-weight:900; font-style:italic; text-transform:uppercase; font-size:.6rem; letter-spacing:.12em; margin-bottom:.4rem; display:flex; align-items:center; gap:.4rem; color:var(--red); }
         .aa-msg.user .aa-msg-h{ color:var(--yellow); }
-        .aa-bot-ava{ width:20px; height:20px; border-radius:50%; border:2px solid var(--ink); object-fit:cover; flex:none; }
+        .aa-bot-ava{ width:22px; height:22px; border-radius:50%; border:2px solid var(--ink); object-fit:cover; flex:none; }
         .aa-msg-h .material-symbols-outlined{ font-size:13px; }
         .aa-msg-img{ display:block; max-width:130px; max-height:130px; border:2px solid var(--ink); margin-bottom:.5rem; }
         .aa-srcs{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.8rem; padding-top:.7rem; border-top:2px dashed rgba(52,46,30,.3); }
@@ -124,7 +132,7 @@
         .aa-photo-btn:hover{ background:var(--yellow); transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--red); }
         .aa-tip{ position:absolute; bottom:calc(100% + 10px); left:50%; transform:translateX(-50%); background:var(--ink); color:var(--yellow); border:2.5px solid var(--ink); box-shadow:3px 3px 0 var(--red); font-family:'Space Mono',monospace; font-weight:700; font-size:.6rem; text-transform:uppercase; letter-spacing:.06em; padding:.45rem .7rem; white-space:nowrap; opacity:0; pointer-events:none; transition:opacity .2s ease, transform .2s ease; z-index:20; }
         .aa-photo-btn:hover .aa-tip, .aa-photo-btn:focus .aa-tip{ opacity:1; transform:translateX(-50%) translateY(-4px); }
-        .aa-chat-input{ flex:1; border:3px solid var(--ink); padding:.9rem 1rem; font-weight:700; font-size:.95rem; background:var(--cream); font-family:'Work Sans',sans-serif; color:var(--ink); box-shadow:4px 4px 0 var(--red); transition:all .15s ease; }
+        .aa-chat-input{ flex:1; min-width:0; border:3px solid var(--ink); padding:.9rem 1rem; font-weight:700; font-size:.95rem; background:var(--cream); font-family:'Work Sans',sans-serif; color:var(--ink); box-shadow:4px 4px 0 var(--red); transition:all .15s ease; }
         .aa-chat-input:focus{ outline:none; box-shadow:4px 4px 0 var(--blue); transform:translate(-2px,-2px); }
         .aa-send{ width:58px; flex:none; background:var(--yellow); color:var(--ink); border:3px solid var(--ink); box-shadow:4px 4px 0 var(--ink); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .15s ease; }
         .aa-send:hover{ background:var(--red); color:var(--yellow); transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--blue); }
@@ -135,7 +143,7 @@
         .aa-chip{ font-family:'Space Mono',monospace; font-weight:700; font-size:.64rem; text-transform:uppercase; letter-spacing:.03em; background:var(--cream); color:var(--ink); border:2px solid var(--ink); box-shadow:3px 3px 0 var(--red); padding:.45rem .75rem; cursor:pointer; transition:all .15s ease; }
         .aa-chip:hover{ background:var(--yellow); transform:translate(-2px,-2px); box-shadow:5px 5px 0 var(--blue); }
 
-        /* ============ 6. BOUTON EFFACER (clignotant) ============ */
+        /* ============ 6. BOUTON EFFACER ============ */
         .aa-clear-wrap{ text-align:center; margin-top:1.3rem; }
         .aa-clear-btn{ display:inline-flex; align-items:center; gap:.55rem; background:var(--ink); color:var(--yellow); font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:1rem; letter-spacing:.03em; border:3px solid var(--ink); box-shadow:5px 5px 0 var(--red); padding:.85rem 1.5rem; cursor:pointer; animation:aaBlinkClear 1.4s ease-in-out infinite; transition:background .15s ease, color .15s ease; }
         .aa-clear-btn:hover{ background:var(--red); color:var(--cream); }
@@ -158,7 +166,20 @@
         @media (max-width: 900px){
             .aa-chat-box{ height:min(56vh,560px); padding:1rem; }
             .aa-msg{ max-width:94%; }
-            .aa-mascot{ width:88px; }
+            .aa-mascot-wrap{ margin-bottom:calc(-1 * clamp(2.2rem, 6vw, 3rem)); }
+            .aa-mascot{ width:clamp(110px, 30vw, 150px); filter:drop-shadow(3px 4px 0 rgba(187,0,3,.3)); }
+        }
+        @media (max-width: 480px){
+            .aa-mascot{ width:clamp(96px, 28vw, 120px); }
+            .aa-chat-box{ padding:.8rem; border-width:3px; box-shadow:7px 7px 0 var(--red); }
+            .aa-msg{ padding:.75rem .85rem; font-size:.88rem; }
+            .aa-photo-btn, .aa-send{ width:50px; }
+            .aa-photo-btn .material-symbols-outlined, .aa-send .material-symbols-outlined{ font-size:20px; }
+            .aa-chat-input{ font-size:.85rem; padding:.75rem .8rem; }
+            .aa-chip{ font-size:.58rem; padding:.4rem .6rem; }
+            .aa-clear-btn{ font-size:.85rem; padding:.7rem 1.1rem; }
+            .aa-src{ font-size:.56rem; padding:.25rem .45rem; max-width:160px; }
+            .aa-srcs{ gap:.3rem; }
         }
         @media (prefers-reduced-motion: reduce){
             *, *::before, *::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
@@ -171,7 +192,7 @@
 
     <div class="aa-grain" aria-hidden="true"></div>
     <div class="aa-cursor" id="aaCursorDot" aria-hidden="true"></div>
-    <div class="aa-cursor-ring" id="aaCursorRing" aria-hidden="true"></div>
+    <div class="aa-cursor-ring" id="aaCursorRing"></div>
     <div id="aaProgress" aria-hidden="true"></div>
 
     <!-- ═══ TICKER ═══ -->
@@ -237,20 +258,22 @@
     </aside>
 
     <main class="container mx-auto px-6 py-10 min-h-screen">
-        <div class="aa-mascot-wrap reveal">
-            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1792068823/Change_text_in_circle_2K_20261015145043_ror30z.png" alt="Expert Jouets — Action Archive" class="aa-mascot" loading="eager"/>
+        <div class="aa-headzone">
+            <div class="aa-mascot-wrap reveal">
+                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1792068823/Change_text_in_circle_2K_20261015145043_ror30z.png" alt="Expert Jouets — Action Archive" class="aa-mascot" loading="eager"/>
+            </div>
+            <div class="aa-eyebrow reveal" style="transition-delay:.1s;">
+                <span class="material-symbols-outlined">smart_toy</span>
+                <span>AGENT IA</span>
+            </div>
+            <h1 class="aa-agent-title">
+                <span class="line"><span class="line-in">EXPERT</span></span>
+                <span class="line"><span class="line-in"><span class="aa-agent-tag">JOUETS VINTAGE</span></span></span>
+            </h1>
+            <p class="text-center font-body font-bold max-w-2xl mx-auto mb-6" style="color:var(--on-surface-variant);">
+                Identifie tes figurines (photo acceptée), évalue la rareté (Loose, MIB, NRFB) et obtiens une estimation de valeur. Estimations indicatives, pas une cote officielle.
+            </p>
         </div>
-        <div class="aa-eyebrow reveal" style="transition-delay:.1s;">
-            <span class="material-symbols-outlined">smart_toy</span>
-            <span>AGENT IA</span>
-        </div>
-        <h1 class="aa-agent-title">
-            <span class="line"><span class="line-in">EXPERT</span></span>
-            <span class="line"><span class="line-in"><span class="aa-agent-tag">JOUETS VINTAGE</span></span></span>
-        </h1>
-        <p class="text-center font-body font-bold max-w-2xl mx-auto mb-6" style="color:var(--on-surface-variant);">
-            Identifie tes figurines (photo acceptée), Évalue la rareté (Loose, MIB, NRFB) et obtiens une estimation de valeur. Estimations indicatives, pas une cote officielle.
-        </p>
 
         <div class="aa-chat-wrap">
             <div class="aa-chat-box reveal" id="aaChat" aria-live="polite"></div>
@@ -371,7 +394,6 @@
         const AGENT_LOGO='https://res.cloudinary.com/uvnbvhiw/image/upload/v1792068823/Change_text_in_circle_2K_20261015145043_ror30z.png';
         let history=[], loading=false, typingEl=null, pendingPhoto=null;
 
-        /* Photo : bouton joindre + réduction à 1024px + aperçu */
         photoBtn.addEventListener('click',()=>photoInput.click());
         photoInput.addEventListener('change',()=>{
             const f=photoInput.files && photoInput.files[0]; if(!f) return;
