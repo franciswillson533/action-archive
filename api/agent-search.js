@@ -1,25 +1,25 @@
-// api/agent-search.js — JUGEMENT: Gemini (gratuit) · Photos: Gemini (vision) · DuckDuckGo 2 passes · eBay soldés + Lulu-Berlu · Secours: Groq
+// api/agent-search.js — JUGEMENT: Gemini · Photos: Gemini (vision) · DuckDuckGo 2 passes · eBay soldés + Lulu-Berlu · Secours: Groq
 const SYSTEM_PROMPT = `Tu es Action Archive-Bot, un expert mondial en jouets vintage, figurines de collection et rétrogaming des années 1970 à 2000. Ton but : aider l'utilisateur à identifier des jouets, estimer leur rareté, leur état (Loose, MIB, NRFB) et leur valeur historique.
 
 RÈGLES (primordiales) :
-- NE SUPPOSE JAMAIS que la pièce est une reproduction (impossible par photo). Estime par défaut le MARCHÉ DE L'ORIGINAL, mention "(sous réserve d'une pièce originale)".
-- HIÉRARCHIE DES PRIX : 1) VENTES SPÉCIALISÉES (Lulu-Berlu = adjugés réels) — ta référence N°1 pour MIB/NRFB, cite-la ; 2) ventes soldées eBay ; 3) relevés de pages/extraits. Les relevés sont des REPÈRES, pas un PLAFOND : si ta connaissance experte d'un état/référence demande est supérieure (ex. carte recherchée), donne TA fourchette experte et signale une phrase : "estimation experte — les relevés couvraient probablement d'autres conditions".
+- NE SUPPOSE JAMAIS que la pièce est une reproduction (impossible par photo). Estime par défaut le MARCHÉ DE L'ORIGINAL et ajoute "(sous réserve d'une pièce originale)" à tes fourchettes d'original.
+- HIÉRARCHIE DES PRIX : 1) VENTES SPÉCIALISÉES (Lulu-Berlu = adjugés réels) — référence N°1 pour MIB/NRFB ; 2) ventes soldées eBay ; 3) relevés/extraits. Les relevés sont des REPÈRES, pas un PLAFOND : si ta connaissance experte est supérieure pour l'état/référence demandé(e), donne TA fourchette sans t'excuser ni t'expliquer.
 - Marchés SÉPARÉS : (a) reproduction neuve, (b) original Loose, (c) original MIB/NRFB — en boîte/carte complète, souvent 3 à 10 fois le Loose.
-- ÉTIQUETTES obligatoires : "(fourchette basse du marché — ventes exceptionnelles au-dessus)" pour MIB/NRFB ; "(marché courant)" pour Loose ; "(sous réserve d'une pièce originale)".
-- Devise : convertis £/$ en € (1 £ ≈ 1,17 € ; 1 $ ≈ 0,92 €), devise d'origine entre parenthèses.
-- Ligne REPRODUCTION : UNIQUEMENT depuis le CATALOGUE ACTION ARCHIVE fourni : pièce de la MÊME marque/type → EXACTEMENT le prix boutique + le lien (formulé "fiche produit", pas l'URL brute) ; absent → "non proposée au catalogue". Contradiction de marque → ni lien ni prix. Jamais de prix de reproduction inventé.
-- Interdits : phrases génériques, rappels d'astuces, formules creuses, noms d'outils internes.
+- Devise : convertis £/$ en € (1 £ ≈ 1,17 € ; 1 $ ≈ 0,92 €).
+- Ligne REPRODUCTION : UNIQUEMENT depuis le CATALOGUE ACTION ARCHIVE fourni. Pièce de la même marque/type présente → donne EXACTEMENT le prix boutique et écris simplement "fiche produit" dans la ligne — JAMAIS d'URL dans le texte (le lien figure déjà dans les sources de la réponse). Absente → "Reproduction : non proposée au catalogue". Jamais de prix de reproduction inventé. Contradiction de marque → la ligne Reproduction dit "non proposée au catalogue".
+- Interdits dans la réponse : toute mention technique (nombre de relevés, pages lues, sources bloquées, noms d'outils internes), phrases génériques, rappels d'astuces, formules creuses. Les données parlent, pas les appareils.
+- Quand aucun prix observé n'est fourni, estime par ton expertise tout de suite — sans commentaire sur l'absence de données.
 
-STYLE : français, passionné, 4 blocs, 16 lignes max :
-IDENTIFICATION · PRIX OBSERVÉS (courte liste avec provenance + alerte si relevés faibles) · ESTIMATION (Reproduction / Loose / MIB-NRFB, étiquetées) · CONSEIL (UNE seule ligne).
-"Aucun prix exploitable" → dis-le + fourchette indicative avec réserves. "Sources utilisées : ..." UNIQUEMENT si des sources ont servi ; sinon rien.`;
+STYLE : français, passionné, 4 blocs, 14 lignes max :
+IDENTIFICATION · PRIX OBSERVÉS (bloc ABSENT s'il n'y a aucun prix) · ESTIMATION (Reproduction / Loose / MIB-NRFB — valeurs propres, sans étiquette de marché, sans URL) · CONSEIL (UNE seule ligne).
+Ligne "Sources utilisées : ..." UNIQUEMENT si tu as utilisé des sources numérotées ; sinon rien.`;
 
 const PREF_TEXT = ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'llama-3.1-70b-versatile'];
 
 const GROQ_BASE = 'https://api.groq.com/openai/v1';
 const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
-const GEMINI_FLASH = ['gemini-3.5-flash', 'gemini-3.5-flash-lite'];   // jugement final (meilleur d'abord)
-const GEMINI_LIGHT = ['gemini-3.5-flash-lite', 'gemini-3.5-flash'];   // photo + affinage (rapide)
+const GEMINI_FLASH = ['gemini-3.5-flash', 'gemini-3.5-flash-lite'];
+const GEMINI_LIGHT = ['gemini-3.5-flash-lite', 'gemini-3.5-flash'];
 
 let modelsCache = null, textPick = null, catCache = null, luluCache = null;
 const ddgCache = new Map(), priceCache = new Map();
@@ -27,7 +27,7 @@ const CACHE_TTL = 60 * 60 * 1000;
 const BUDGET_MS = 8000;
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36';
 
-// ─── Groq (secours + affinage rapide) ───
+// ─── Groq (secours) ───
 async function getGroqModels() {
     if (modelsCache && Date.now() - modelsCache.t < 10 * 60 * 1000) return modelsCache.ids;
     const res = await fetch(GROQ_BASE + '/models', { headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY } });
@@ -90,8 +90,6 @@ async function geminiCall(model, bodyObj) {
     if (text && text.trim()) return text.trim();
     throw new Error('HTTP ' + res.status + ' — ' + (JSON.stringify(data) || '').slice(0, 240));
 }
-
-// messages [{role, content}] → appel Gemini (texte)
 async function judge(messages, maxTokens) {
     if (!process.env.GEMINI_API_KEY) throw new Error('GEMINI_API_KEY absente');
     const sys = messages.filter(m => m.role === 'system').map(m => m.content).join('\n');
@@ -114,8 +112,6 @@ async function judge(messages, maxTokens) {
     }
     throw new Error('Jugement indisponible : ' + lastErr);
 }
-
-// Analyse photo : description FACTUELLE, sans verdict reproduction/original
 async function geminiVision(dataUrl, prompt) {
     const m = dataUrl.match(/^data:(image\/[a-z0-9+.-]+);base64,(.+)$/i);
     if (!m) throw new Error('Image illisible');
@@ -255,7 +251,7 @@ async function passFetch(query, results) {
     return { prices, read, total: targets.length };
 }
 
-// ─── LULU-BERLU : adjudications réelles, priorité MIB/NRFB ───
+// ─── LULU-BERLU : adjudications, prioritaire MIB/NRFB ───
 async function luluHarvest(query) {
     try {
         if (luluCache && Date.now() - luluCache.t < CACHE_TTL) return luluCache.data;
@@ -312,7 +308,7 @@ Réponds UNIQUEMENT en JSON compact : {"identification":"...","query":"..."}`;
     } catch (e) { return { identification: '', query: '' }; }
 }
 
-// ─── Catalogue boutique (les champs réels de produits.html) ───
+// ─── Catalogue boutique ───
 function norm(s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
 async function ownCatalog(host) {
     try {
@@ -376,7 +372,7 @@ module.exports = async (req, res) => {
 
         const hostHeader = (req.headers && (req.headers['x-forwarded-host'] || req.headers.host)) || 'www.actionarchive.ink';
 
-        // ─── PASSE 1 : description factuelle + recherche, en parallèle ───
+        // ─── PASSE 1 ───
         let imgDesc = '', photoNote = '';
         const p1 = await Promise.all([
             imageData && process.env.GEMINI_API_KEY
@@ -392,7 +388,7 @@ module.exports = async (req, res) => {
 
         const harv1 = await passFetch(query || 'figurine vintage', results1);
 
-        // ─── PASSE 2 : affinage + marché réel + Lulu-Berlu ───
+        // ─── PASSE 2 ───
         let refineId = '', results2 = [], harv2 = { prices: [], read: 0, total: 0 };
         let lulu = { prices: [], listings: [] };
         if (Date.now() - t0 < BUDGET_MS) {
@@ -410,7 +406,7 @@ module.exports = async (req, res) => {
             }
         }
 
-        // ─── Fusion : sources + prix (extraits de recherche compris, cette fois) ───
+        // ─── Fusion (les diagnostics ne vont que dans le log serveur) ───
         const seen = new Set(); const merged = [];
         [...results1, ...results2].forEach(r => { if (!seen.has(r.url)) { seen.add(r.url); merged.push(r); } });
 
@@ -421,30 +417,25 @@ module.exports = async (req, res) => {
             convPush(extractPrices(stripTags((r.title || '') + ' ' + (r.snippet || ''))).slice(0, 2), 'extrait de recherche', snippetPrices, 4);
         });
         snippetPrices.forEach(pushPrice);
-
         const prices = Object.values(pk).sort((a, b) => a.p - b.p).slice(0, 18);
+
+        console.log('diagnostic: pages lues ' + (harv1.read + harv2.read) + '/' + (harv1.total + harv2.total) + ' · lulu ' + lulu.prices.length + ' · prix totaux ' + prices.length);
 
         let context = '';
         if (merged.length) {
             context = '\n\nRésultats de recherche web (2 passes) :\n' +
                 merged.slice(0, 8).map((r, i) => `[${i + 1}] ${r.title}\n${r.url}\n${r.snippet}`).join('\n');
         } else {
-            context = '\n\n(Aucun résultat web — réponds avec ton expertise en le signalant.)';
+            context = '\n\n(Aucun résultat web — réponds avec ton expertise sans le signaler.)';
         }
 
-        const readInfo = 'pages lues : ' + (harv1.read + harv2.read) + '/' + (harv1.total + harv2.total) + ' · relevés Lulu-Berlu : ' + lulu.prices.length;
         let priceCtx = '';
         if (prices.length) {
             const arr = prices.map(x => x.p);
-            const med = arr[Math.floor(arr.length / 2)];
-            const p75 = arr[Math.floor(arr.length * 0.75)];
-            const max = arr[arr.length - 1];
-            priceCtx = '\n\nPRIX OBSERVÉS (' + readInfo + ' — triés croissant, € convertis) : min ' + arr[0].toFixed(2).replace('.', ',') + ' € · médiane ' + med.toFixed(2).replace('.', ',') + ' € · 75e centile ' + p75.toFixed(2).replace('.', ',') + ' € · maximum ' + max.toFixed(2).replace('.', ',') + ' €\n' +
-                prices.map(pr => '• ' + pr.p.toFixed(2).replace('.', ',') + ' €' + (pr.orig || '') + ' ← ' + pr.src).join('\n') +
-                (arr.length < 5 ? '\nⓘ Peu de relevés fiables — ta fourchette experte peut être plus juste ; dis-le.' : '');
-        } else {
-            priceCtx = '\n\n(' + readInfo + ') AUCUN prix exploitable — fourchette experte obligatoire + dis-le clairement.';
+            priceCtx = '\n\nPRIX OBSERVÉS :\n' + prices.map(pr => '• ' + pr.p.toFixed(2).replace('.', ',') + ' €' + (pr.orig || '') + ' ← ' + pr.src).join('\n');
         }
+        // (aucun prix → aucun bloc : le cerveau estime par son expertise, sans commentaire)
+
         if (lulu.listings.length) context += '\n\nVentes spécialisées consultées (Lulu-Berlu) : ' + lulu.listings.map(l => l.title).join(' | ');
 
         // ─── Catalogue boutique ───
@@ -452,14 +443,13 @@ module.exports = async (req, res) => {
         const shopItem = matchCatalogItem(catalog, { q: query, d: imgDesc });
         let shopCtx = '';
         if (shopItem) {
-            const linkRel = 'produit.html?id=' + shopItem.id;
-            shopCtx = '\n\n★ CATALOGUE ACTION ARCHIVE — reproduction neuve équivalente EN VENTE : « ' + shopItem.nom + ' » (' + (shopItem.collection || '—') + ') — PRIX BOUTIQUE RÉEL : ' + shopItem.prix.toFixed(2).replace('.', ',') + ' € — lien : ' + linkRel + '\nLigne REPRODUCTION : EXACTEMENT ce prix + cite le lien sous la forme "fiche produit".';
-            results1.unshift({ title: 'Action Archive — ' + shopItem.nom, url: 'https://' + hostHeader + '/' + linkRel, snippet: 'Reproduction neuve en vente sur le site' });
+            shopCtx = '\n\n★ CATALOGUE ACTION ARCHIVE — reproduction neuve équivalente EN VENTE : « ' + shopItem.nom + ' » (' + (shopItem.collection || '—') + ') — PRIX BOUTIQUE RÉEL : ' + shopItem.prix.toFixed(2).replace('.', ',') + ' €.\nLigne REPRODUCTION : donne EXACTEMENT ce prix et écris "disponible en fiche produit" — JAMAIS d\'URL dans le texte : le lien figure déjà dans les sources de la réponse.';
+            results1.unshift({ title: 'Action Archive — ' + shopItem.nom, url: 'https://' + hostHeader + '/produit.html?id=' + shopItem.id, snippet: 'Reproduction neuve en vente sur le site' });
         } else if (catalog.length) {
-            shopCtx = '\n\n★ CATALOGUE ACTION ARCHIVE : aucune reproduction équivalente → ligne REPRODUCTION = "non proposée au catalogue" (aucun prix inventé).';
+            shopCtx = '\n\n★ CATALOGUE ACTION ARCHIVE : aucune reproduction équivalente → ligne REPRODUCTION = "non proposée au catalogue".';
         }
 
-        // ─── Réponse finale : Gemini (meilleur jugement) puis Groq en secours ───
+        // ─── Réponse finale ───
         const questionFull = (query || (imgDesc ? 'Estime la pièce analysée en photo.' : 'J\'ai joint une photo de ma pièce.')) +
             (imgDesc ? '\n\nDescription factuelle (photo) : ' + imgDesc : '') +
             (refineId ? '\n\nPrécision (passe 2) : ' + refineId : '') +
@@ -467,15 +457,17 @@ module.exports = async (req, res) => {
         const questionLite = (query || (imgDesc ? 'Estime la pièce (Reproduction / Loose / MIB-NRFB).' : 'Identifie et estime la pièce (données ci-dessus).')) +
             (imgDesc ? '\nDescription : ' + imgDesc.slice(0, 300) : '') +
             (refineId ? '\nPrécision : ' + refineId.slice(0, 200) : '') +
-            shopCtx + priceCtx;
+            shopCtx + (prices.length ? priceCtx : '');
+        const base = [ { role: 'system', content: SYSTEM_PROMPT }, ...history ];
 
         let reply = null, judgeErr = '';
         if (process.env.GEMINI_API_KEY) {
-            try { reply = await judge([ { role: 'system', content: SYSTEM_PROMPT }, ...history, { role: 'user', content: questionFull } ], 900); }
+            try { reply = await judge([ ...base, { role: 'user', content: questionFull } ], 900); }
             catch (e1) { judgeErr = e1.message; reply = null; }
         }
         if (!reply) {
-            reply = await chatGroq(await pickTextModel(), [ { role: 'system', content: SYSTEM_PROMPT }, ...history, { role: 'user', content: questionFull } ], 900, [ { role: 'user', content: questionLite } ]);
+            const model = await pickTextModel();
+            reply = await chatGroq(model, [ ...base, { role: 'user', content: questionFull } ], 900, [ ...base, { role: 'user', content: questionLite } ]);
             if (judgeErr) reply += '\n\n⚠️ Détail technique (jugement par plan B) : ' + judgeErr.slice(0, 120);
         }
 
@@ -484,6 +476,7 @@ module.exports = async (req, res) => {
             reply,
             photoNote,
             priceCount: prices.length,
+            pagesRead: (harv1.read + harv2.read),
             luluCount: lulu.prices.length,
             matchedShop: shopItem ? { name: shopItem.nom, price: shopItem.prix, id: shopItem.id } : null,
             sources: results1.map(r => ({ title: r.title, url: r.url }))
