@@ -1,25 +1,17 @@
-// api/agent-search.js — JUGEMENT: Gemini · Photos: Gemini (vision) · DuckDuckGo 2 passes · eBay soldés + Lulu-Berlu · Secours: Groq
+// api/agent-search.js — Photos + JUGEMENT: Gemini (gratuit) · Recherche: DuckDuckGo 2 passes · Secours: Groq
 const SYSTEM_PROMPT = `Tu es Action Archive-Bot, un expert mondial en jouets vintage, figurines de collection et rétrogaming des années 1970 à 2000. Ton but : aider l'utilisateur à identifier des jouets, estimer leur rareté, leur état (Loose, MIB, NRFB) et leur valeur historique.
 
 RÈGLES (primordiales) :
-- NE SUPPOSE JAMAIS que la pièce est une reproduction (impossible par photo). Estime par défaut le MARCHÉ DE L'ORIGINAL et ajoute "(sous réserve d'une pièce originale)" à tes fourchettes d'original.
-- HIÉRARCHIE DES PRIX : 1) VENTES SPÉCIALISÉES (Lulu-Berlu = adjugés réels) — référence N°1 pour MIB/NRFB ; 2) ventes soldées eBay ; 3) relevés/extraits. Les relevés sont des REPÈRES, pas un PLAFOND : si ta connaissance experte est supérieure pour l'état/référence demandé(e), donne TA fourchette sans t'excuser ni t'expliquer.
-- Marchés SÉPARÉS : (a) reproduction neuve, (b) original Loose, (c) original MIB/NRFB — en boîte/carte complète, souvent 3 à 10 fois le Loose.
-- Devise : convertis £/$ en € (1 £ ≈ 1,17 € ; 1 $ ≈ 0,92 €).
-- Ligne REPRODUCTION : UNIQUEMENT depuis le CATALOGUE ACTION ARCHIVE fourni. Pièce de la même marque/type présente → donne EXACTEMENT le prix boutique et écris simplement "fiche produit" dans la ligne — JAMAIS d'URL dans le texte (le lien figure déjà dans les sources de la réponse). Absente → "Reproduction : non proposée au catalogue". Jamais de prix de reproduction inventé. Contradiction de marque → la ligne Reproduction dit "non proposée au catalogue".
-- Interdits dans la réponse : toute mention technique (nombre de relevés, pages lues, sources bloquées, noms d'outils internes), phrases génériques, rappels d'astuces, formules creuses. Les données parlent, pas les appareils.
-- Quand aucun prix observé n'est fourni, estime par ton expertise tout de suite — sans commentaire sur l'absence de données.
+- Ne suppose JAMAIS reproduction/original (impossible par photo). Estime le MARCHÉ DE L'ORIGINAL par défaut, mention "(sous réserve d'une pièce originale)".
+- HIÉRARCHIE PRIX : Lulu-Berlu (adjudés) N°1 pour MIB/NRFB, puis ventes soldées eBay, puis relevés. Les relevés sont des REPÈRES, pas un PLAFOND : si ta connaissance experte d'un état/référence est supérieure, donne TA fourchette et signale "les relevés couvraient d'autres conditions". Marchés séparés : Repro / Loose / MIB-NRFB (3 à 10× le Loose). ÉTIQUETTES obligatoires : "(fourchette basse du marché — ventes exceptionnelles au-dessus)" pour MIB/NRFB, "(marché courant)" pour Loose. Convertis £/$ en € (1£≈1,17€, 1$≈0,92€). REPRODUCTION : UNIQUEMENT depuis le CATALOGUE fourni — exact prix boutique + "fiche produit" ; absent → "non proposée au catalogue" ; contradiction de marque → sans lien. Interdits : phrases génériques, rappels d'astuces, noms d'outils internes.
 
-STYLE : français, passionné, 4 blocs, 14 lignes max :
-IDENTIFICATION · PRIX OBSERVÉS (bloc ABSENT s'il n'y a aucun prix) · ESTIMATION (Reproduction / Loose / MIB-NRFB — valeurs propres, sans étiquette de marché, sans URL) · CONSEIL (UNE seule ligne).
-Ligne "Sources utilisées : ..." UNIQUEMENT si tu as utilisé des sources numérotées ; sinon rien.`;
+STYLE : français, passionné, 4 blocs, 16 lignes max : IDENTIFICATION · PRIX OBSERVÉS (provenance, alerte si faibles) · ESTIMATION (étiquetée) · CONSEIL (UNE ligne). "Sources utilisées..." uniquement si réellement utilisées.`;
 
-const PREF_TEXT = ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'llama-3.1-70b-versatile'];
-
+const PREF_TEXT = ['llama-3.1-8b-instant', 'openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'llama-3.1-70b-versatile'];
 const GROQ_BASE = 'https://api.groq.com/openai/v1';
 const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
-const GEMINI_FLASH = ['gemini-3.5-flash', 'gemini-3.5-flash-lite'];
-const GEMINI_LIGHT = ['gemini-3.5-flash-lite', 'gemini-3.5-flash'];
+const GEMINI_FLASH = ['gemini-3.5-flash', 'gemini-3.5-flash-lite'];   // jugement final (meilleur d'abord)
+const GEMINI_LIGHT = ['gemini-3.5-flash-lite', 'gemini-3.5-flash'];   // photo (rapide)
 
 let modelsCache = null, textPick = null, catCache = null, luluCache = null;
 const ddgCache = new Map(), priceCache = new Map();
@@ -27,13 +19,13 @@ const CACHE_TTL = 60 * 60 * 1000;
 const BUDGET_MS = 8000;
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36';
 
-// ─── Groq (secours) ───
+// ─── Groq (secours + affinage) ───
 async function getGroqModels() {
     if (modelsCache && Date.now() - modelsCache.t < 10 * 60 * 1000) return modelsCache.ids;
     const res = await fetch(GROQ_BASE + '/models', { headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY } });
     if (!res.ok) {
         if (res.status === 401) throw new Error('Clé IA INVALIDE — vérifie GROQ_API_KEY dans Vercel');
-        throw new Error('Cerveau IA momentanément indisponible (HTTP ' + res.status + ')');
+        throw new Error('Cerveau IA (secours) indisponible (HTTP ' + res.status + ')');
     }
     const data = await res.json();
     const ids = (data.data || []).map(x => x.id);
@@ -44,7 +36,7 @@ async function getGroqModels() {
 async function pickTextModel() {
     if (textPick) return textPick;
     const ids = await getGroqModels();
-    textPick = (PREF_TEXT.find(p => ids.includes(p)) || ids.find(i => /llama|instant|versatile|instruct/i.test(i)) || ids[0]) || null;
+    textPick = (PREF_TEXT.find(p => ids.includes(p)) || ids[0]) || null;
     return textPick;
 }
 async function chatOrNull(model, messages, maxTokens) {
@@ -58,7 +50,7 @@ async function chatOrNull(model, messages, maxTokens) {
     const content = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
     if (content && content.trim()) return content;
     const raw = (data.error && data.error.message) || (JSON.stringify(data) || '').slice(0, 300);
-    console.error('brain: HTTP ' + res.status + ' (modèle ' + model + ') — ' + raw);
+    console.error('brain error (modèle ' + model + ') : HTTP ' + res.status + ' — ' + raw + ' ; message utilisateur = "' + query + '"'); // log : détail technique, pas pour le visiteur
     if ((data.error && data.error.code === 'model_not_found') || /model/i.test(raw)) { textPick = null; throw new Error('MODEL_MISSING'); }
     return null;
 }
@@ -79,7 +71,7 @@ async function chatGroq(model, messages, maxTokens, liteMessages) {
     return out;
 }
 
-// ─── Gemini : vision + jugement final ───
+// ─── Gemini : appel bas niveau + vision + jugement ───
 async function geminiCall(model, bodyObj) {
     const res = await fetch(GEMINI_BASE + '/' + model + ':generateContent?key=' + encodeURIComponent(process.env.GEMINI_API_KEY), {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(bodyObj)
@@ -223,11 +215,11 @@ function extractPrices(text) {
     }
     return found;
 }
-function convPush(found, src, out, cap) {
+function convPush(found, src, out, cap, label) {
     found.forEach(x => {
         if (out.length >= cap) return;
         const k = x.cur === 'GBP' ? 1.17 : x.cur === 'USD' ? 0.92 : 1;
-        out.push({ p: Math.round(x.v * k * 100) / 100, src, orig: x.cur === 'EUR' ? '' : ' (devise : ' + x.cur + ')' });
+        out.push({ p: Math.round(x.v * k * 100) / 100, src: label ? label : src, orig: x.cur === 'EUR' ? '' : ' (devise : ' + x.cur + ')' });
     });
 }
 
@@ -235,7 +227,7 @@ async function passFetch(query, results) {
     const kw = encodeURIComponent(query.slice(0, 110));
     const targets = [
         { url: 'https://www.ebay.fr/sch/i.html?_nkw=' + kw + '&LH_Complete=1&LH_Sold=1', src: 'eBay FR — ventes soldées' },
-        { url: 'https://www.ebay.com/sch/i.html?_nkw=' + kw + '&LH_Complete=1&LH_Sold=1', src: 'eBay COM — ventes soldées (€ converti)' },
+        { url: 'https://www.ebay.com/sch/i.html?_nkw=' + kw + '&LH_Complete=1&LH_Sold=1', src: 'eBay COM — ventes soldées' },
         { url: results[0] ? results[0].url : '', src: 'page web 1' },
         { url: results[1] ? results[1].url : '', src: 'page web 2' }
     ].filter(t => t.url);
@@ -251,7 +243,7 @@ async function passFetch(query, results) {
     return { prices, read, total: targets.length };
 }
 
-// ─── LULU-BERLU : adjudications, prioritaire MIB/NRFB ───
+// ─── LULU-BERLU : adjudications réelles, prioritaire MIB/NRFB ───
 async function luluHarvest(query) {
     try {
         if (luluCache && Date.now() - luluCache.t < CACHE_TTL) return luluCache.data;
@@ -267,7 +259,7 @@ async function luluHarvest(query) {
         const prices = [], listings = [];
         if (siteResults.status === 'fulfilled') {
             siteResults.value.slice(0, 5).forEach(r => {
-                convPush(extractPrices((r.title || '') + ' ' + (r.snippet || '')), 'Lulu-Berlu (extrait vente) — adjudication', prices, 6);
+                convPush(extractPrices((r.title || '') + ' ' + (r.snippet || '')), 'Lulu-Berlu (extrait vente) — adjudication', prices, 6, 'adjudication');
                 if (r.title) listings.push({ title: r.title.slice(0, 80), url: r.url });
             });
         }
@@ -289,7 +281,7 @@ async function luluHarvest(query) {
     } catch (e) { return { prices: [], listings: [] }; }
 }
 
-// ─── Passe d'affinage ───
+// ─── Passe d'affinage : sur Groq (économie du quota Gemini) ───
 async function refinePass(query, imgDesc) {
     try {
         const msg = `Question utilisateur : ${query || '(photo uniquement)'}
@@ -297,9 +289,8 @@ Note visuelle (photo) : ${imgDesc || '(aucune)'}
 Tâche : précise l'identification (marque, référence EXACTE des collectionneurs, année, état) puis produis la requête optimale pour trouver des VENTES RÉELLES de CETTE pièce précise (anglais si plus efficace, état inclus: "carded", "MIB", "sealed").
 Réponds UNIQUEMENT en JSON compact : {"identification":"...","query":"..."}`;
         let out = null;
-        if (process.env.GEMINI_API_KEY) { try { out = await judge([{ role: 'user', content: msg }], 320); } catch (e) { out = null; } }
-        if (!out) out = await chatGroq(await pickTextModel(), [{ role: 'user', content: msg }], 320);
-        const t = String(out).replace(/```json|```/g, '').trim();
+        try { out = await chatGroq(await pickTextModel(), [{ role: 'user', content: msg }], 320); } catch (e) { out = null; }
+        const t = String(out || '').replace(/```json|```/g, '').trim();
         const j = t.match(/\{[\s\S]*\}/) ? JSON.parse(t.match(/\{[\s\S]*\}/)[0]) : null;
         return {
             identification: stripTags(j && j.identification || '').slice(0, 400),
@@ -328,11 +319,11 @@ const BRANDS = ['mego', 'meccano', 'palitoy', 'mattel', 'big jim', 'gi joe', 'gi
 function brandGuard(item, texto) {
     const t = norm(texto);
     const mentioned = BRANDS.filter(b => t.includes(norm(b)));
-    if (!mentioned.length) return true;
+    if (!mentioned.length) return true;                       // pas de marque citée → libre
     const n = norm(item.nom + ' ' + item.collection);
-    const present = BRANDS.filter(b => n.includes(norm(b)));
-    if (!present.length) return true;
-    return mentioned.some(b => present.includes(b));
+    const present = BRANDS.filter(b => n.includes(norm(b)));  // marques visibles sur le produit
+    if (!present.length) return true;                         // produit sans marque visible → autorisé
+    return mentioned.some(b => present.includes(b));          // contradiction interdite
 }
 function matchCatalogItem(items, texto) {
     const sourceText = texto.q || texto.d || '';
@@ -372,7 +363,7 @@ module.exports = async (req, res) => {
 
         const hostHeader = (req.headers && (req.headers['x-forwarded-host'] || req.headers.host)) || 'www.actionarchive.ink';
 
-        // ─── PASSE 1 ───
+        // ─── PASSE 1 : photo (Gemini) + première recherche (parallèle) ───
         let imgDesc = '', photoNote = '';
         const p1 = await Promise.all([
             imageData && process.env.GEMINI_API_KEY
@@ -381,14 +372,14 @@ module.exports = async (req, res) => {
             query ? searchDDG(query) : Promise.resolve([])
         ]);
         imgDesc = p1[0];
-        if (imageData && !process.env.GEMINI_API_KEY) photoNote = 'La variable GEMINI_API_KEY est absente de Vercel — ajoute-la (gratuit : aistudio.google.com) pour la photo ET le jugement expert';
+        if (imageData && !process.env.GEMINI_API_KEY) photoNote = 'La variable GEMINI_API_KEY est absente de Vercel — ajoute-la (gratuit : aistudio.google.com) pour activer les photos';
         let results1 = p1[1];
         if (!query && imageData) results1 = await searchDDG(imgDesc.slice(0, 160));
         const photoFailed = imageData && !imgDesc;
 
         const harv1 = await passFetch(query || 'figurine vintage', results1);
 
-        // ─── PASSE 2 ───
+        // ─── PASSE 2 : affinage (Groq) + marché réel + Lulu-Berlu ───
         let refineId = '', results2 = [], harv2 = { prices: [], read: 0, total: 0 };
         let lulu = { prices: [], listings: [] };
         if (Date.now() - t0 < BUDGET_MS) {
@@ -406,7 +397,7 @@ module.exports = async (req, res) => {
             }
         }
 
-        // ─── Fusion (les diagnostics ne vont que dans le log serveur) ───
+        // ─── Fusion (les compteurs ne vont que dans le log serveur) ───
         const seen = new Set(); const merged = [];
         [...results1, ...results2].forEach(r => { if (!seen.has(r.url)) { seen.add(r.url); merged.push(r); } });
 
@@ -449,7 +440,7 @@ module.exports = async (req, res) => {
             shopCtx = '\n\n★ CATALOGUE ACTION ARCHIVE : aucune reproduction équivalente → ligne REPRODUCTION = "non proposée au catalogue".';
         }
 
-        // ─── Réponse finale ───
+        // ─── Réponse finale : Gemini (meilleur jugement) puis Groq en secours ───
         const questionFull = (query || (imgDesc ? 'Estime la pièce analysée en photo.' : 'J\'ai joint une photo de ma pièce.')) +
             (imgDesc ? '\n\nDescription factuelle (photo) : ' + imgDesc : '') +
             (refineId ? '\n\nPrécision (passe 2) : ' + refineId : '') +
@@ -460,24 +451,21 @@ module.exports = async (req, res) => {
             shopCtx + (prices.length ? priceCtx : '');
         const base = [ { role: 'system', content: SYSTEM_PROMPT }, ...history ];
 
-        let reply = null, judgeErr = '';
+        let reply = null;
         if (process.env.GEMINI_API_KEY) {
             try { reply = await judge([ ...base, { role: 'user', content: questionFull } ], 900); }
-            catch (e1) { judgeErr = e1.message; reply = null; }
+            catch (e1) { reply = null; }
         }
         if (!reply) {
             const model = await pickTextModel();
             reply = await chatGroq(model, [ ...base, { role: 'user', content: questionFull } ], 900, [ ...base, { role: 'user', content: questionLite } ]);
-            if (judgeErr) reply += '\n\n⚠️ Détail technique (jugement par plan B) : ' + judgeErr.slice(0, 120);
         }
 
-        if (photoFailed && photoNote) reply += '\n\n⚠️ Détail technique : ' + photoNote;
         return res.status(200).json({
             reply,
-            photoNote,
             priceCount: prices.length,
-            pagesRead: (harv1.read + harv2.read),
             luluCount: lulu.prices.length,
+            pagesRead: (harv1.read + harv2.read),
             matchedShop: shopItem ? { name: shopItem.nom, price: shopItem.prix, id: shopItem.id } : null,
             sources: results1.map(r => ({ title: r.title, url: r.url }))
         });
