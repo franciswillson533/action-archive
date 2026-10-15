@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html class="light" lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta name="description" content="Expert Jouets Vintage : pose tes questions sur les figurines des années 70-90, identification, rareté et estimation de valeur."/>
+    <title>Expert Jouets Vintage - Action Archive</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,900;1,700;1,900&family=Work+Sans:wght@400;500;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL@20..48,100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = { darkMode: "class", theme: { extend: { colors: {
+            "secondary": "#755700", "surface-container-low": "#fdefd5", "surface-container-high": "#efe1c3",
+            "surface": "#fff5e5", "primary": "#bb0003", "tertiary": "#0f56bf", "on-surface": "#342e1e",
+            "secondary-container": "#ffca4d", "on-background": "#342e1e", "background": "#fff5e5",
+            "surface-variant": "#eadcbc", "on-surface-variant": "#635b48",
+        }, fontFamily: { "headline": ["Epilogue"], "body": ["Work Sans"], "label": ["Work Sans"], "mono": ["Space Mono"] } } } }
+    </script>
+    <style>
+        /* ============ 0. VARIABLES & BASE ============ */
+        :root{
+            --cream:#fff5e5; --cream2:#fdefd5; --cream3:#efe1c3; --cream4:#eadcbc; --ink:#342e1e;
+            --red:#bb0003; --blue:#0f56bf; --yellow:#ffca4d; --olive:#755700;
+        }
+        html{ scroll-behavior:smooth; }
+        ::selection{ background:var(--yellow); color:var(--ink); }
+        ::-webkit-scrollbar{ width:12px; }
+        ::-webkit-scrollbar-track{ background:var(--cream2); }
+        ::-webkit-scrollbar-thumb{ background:var(--ink); border:3px solid var(--cream2); }
+        :focus-visible{ outline:3px dashed var(--red); outline-offset:3px; }
+
+        /* ============ 1. GRAIN / CURSEUR / PROGRESSION ============ */
+        .aa-grain{
+            position:fixed; inset:0; z-index:500; pointer-events:none; mix-blend-mode:multiply; opacity:.05;
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+        .aa-cursor, .aa-cursor-ring{ position:fixed; top:0; left:0; border-radius:50%; pointer-events:none; z-index:10002; display:none; }
+        .aa-cursor{ width:10px; height:10px; background:var(--red); border:2px solid var(--ink); }
+        .aa-cursor-ring{ width:36px; height:36px; border:2.5px solid rgba(52,46,30,.55); transition:width .2s, height .2s, background-color .2s, border-color .2s; }
+        .aa-cursor-ring.aa-target{ width:54px; height:54px; background:rgba(255,202,77,.85); border-color:var(--ink); }
+        .aa-cursor-ring.aa-press{ transform:translate(-50%,-50%) scale(.75) !important; }
+        html.aa-cursor-on, html.aa-cursor-on *{ cursor:none !important; }
+        #aaProgress{ position:fixed; top:0; left:0; height:4px; width:0; background:var(--red); z-index:300; box-shadow:1px 1px 0 var(--ink); }
+
+        /* ============ 2. TICKER ============ */
+        .aa-ticker{ background:var(--red); border-bottom:4px solid var(--ink); overflow:hidden; }
+        .aa-ticker-track{ display:flex; width:max-content; animation:aaTicker 26s linear infinite; }
+        .aa-ticker:hover .aa-ticker-track{ animation-play-state:paused; }
+        .aa-ticker-chunk{ display:flex; align-items:center; gap:1.4rem; padding:.65rem 1.4rem .65rem 0; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:.85rem; letter-spacing:.04em; color:var(--cream); white-space:nowrap; }
+        .aa-ticker-chunk b{ color:var(--yellow); }
+        .aa-tsep{ color:var(--yellow); font-size:1rem; }
+        @keyframes aaTicker{ to{ transform:translateX(-50%); } }
+
+        /* ============ 3. HEADER / DRAWER ============ */
+        header.aa-header{ background:var(--cream); border-bottom:4px double var(--red); box-shadow:4px 4px 0 rgba(52,46,30,.12); transition:box-shadow .3s; }
+        header.aa-header.aa-scrolled{ box-shadow:0 10px 30px -12px rgba(52,46,30,.35), 4px 4px 0 rgba(52,46,30,.12); }
+        .aa-nav a{ font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; letter-spacing:-.01em; font-size:.85rem; transition:color .2s; }
+        .aa-logo{ transition:transform .3s cubic-bezier(.34,1.56,.64,1), filter .3s ease; filter:drop-shadow(2px 2px 0 rgba(52,46,30,.15)); }
+        .aa-logo-link:hover .aa-logo{ transform:rotate(-6deg) scale(1.06); filter:drop-shadow(3px 3px 0 rgba(187,0,3,.4)); }
+        .aa-icon-btn{ display:inline-flex; padding:.5rem; border-radius:2px; transition:all .12s ease; background:var(--cream); }
+        .aa-icon-btn:hover{ transform:translate(-2px,-2px); }
+        .aa-menu-btn{ font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; letter-spacing:.05em; background:var(--red); color:var(--cream); border:3px solid var(--ink); padding:10px 20px; font-size:1rem; box-shadow:4px 4px 0 var(--ink); cursor:pointer; transition:all .15s ease; }
+        .aa-menu-btn:hover{ background:var(--ink); color:var(--yellow); transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--red); }
+        #side-drawer{ box-shadow:-8px 0 0 rgba(52,46,30,.2); transition:transform .45s cubic-bezier(.77,0,.175,1); }
+        #side-drawer.open{ transform:translateX(0); }
+        .drawer-overlay{ opacity:0; pointer-events:none; transition:opacity .3s ease; }
+        .drawer-overlay.open{ opacity:1; pointer-events:auto; }
+        .aa-drawer-link{ display:flex; align-items:center; justify-content:space-between; background:var(--cream2); border:2px solid var(--ink); padding:14px 16px; font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:.9rem; color:var(--ink); transition:all .18s ease; }
+        .aa-drawer-link::after{ content:'→'; opacity:0; transform:translateX(-6px); transition:all .18s ease; }
+        .aa-drawer-link:hover{ transform:translateX(-4px); background:var(--yellow); box-shadow:4px 4px 0 var(--red); }
+        .aa-drawer-link:hover::after{ opacity:1; transform:none; }
+        .aa-drawer-link.aa-current{ background:var(--blue); color:var(--cream); border-color:var(--ink); }
+        .aa-drawer-meta{ border-top:4px solid rgba(52,46,30,.12); padding-top:1.25rem; font-family:'Space Mono',monospace; font-size:.72rem; color:var(--on-surface-variant); letter-spacing:.05em; display:flex; flex-direction:column; gap:.6rem; }
+        .aa-drawer-meta b{ color:var(--red); }
+        .aa-barcode{ display:flex; align-items:flex-end; gap:1px; height:34px; color:var(--ink); }
+        .aa-barcode i{ display:inline-block; background:currentColor; }
+
+        /* ============ 4. TÊTE DE PAGE ============ */
+        .aa-eyebrow{ display:flex; align-items:center; gap:.55rem; font-family:'Space Mono',monospace; font-weight:700; font-size:.78rem; text-transform:uppercase; letter-spacing:.14em; color:var(--ink); margin-bottom:1rem; justify-content:center; }
+        .aa-eyebrow .material-symbols-outlined{ font-size:17px; color:var(--red); font-variation-settings:'FILL' 1; }
+        .aa-agent-title{ font-family:'Epilogue',sans-serif; font-weight:900; font-style:italic; text-transform:uppercase; color:var(--red); letter-spacing:-.02em; line-height:.98; font-size:clamp(2rem,4.5vw,3rem); text-align:center; margin-bottom:.5rem; }
+        .aa-agent-title .line{ display:block; overflow:hidden; padding-bottom:.06em; }
+        .aa-agent-title .line-in{ display:inline-block; transform:translateY(115%); animation:aaLineUp .8s cubic-bezier(.22,1,.36,1) forwards; }
+        .aa-agent-title .line:nth-child(2) .line-in{ animation-delay:.12s; }
+        @keyframes aaLineUp{ to{ transform:translateY(0); } }
+        .aa-agent-tag{ position:relative; white-space:nowrap; display:inline-block; padding:0 .06em; }
+        .aa-agent-tag::before{ content:''; position:absolute; inset:6% -6% 0 -6%; background:var(--yellow); transform:skew(-12deg) rotate(-1.5deg) scaleX(0); transform-origin:left center; z-index:-1; animation:aaMarkerIn .45s cubic-bezier(.22,1,.36,1) .5s forwards; }
+        @keyframes aaMarkerIn{ to{ transform:skew(-12deg) rotate(-1.5deg) scaleX(1); } }
+        @keyframes popIn{ 0%{ transform:scale(.85); opacity:0;} 80%{ transform:scale(1.04); opacity:1;} 100%{ transform:scale(1); opacity:1;} }
+
+        /* ============ 5. CHAT ============ */
+        .aa-chat-wrap{ max-width:760px; margin:0 auto; }
+        .aa-chat-box{ background:var(--cream3); border:4px solid var(--ink); box-shadow:10px 10px 0 var(--red); height:min(60vh,620px); overflow-y:auto; padding:1.25rem; display:flex; flex-direction:column; gap:1rem; }
+        .aa-msg{ max-width:88%; padding:.9rem 1.1rem; border:3px solid var(--ink); font-family:'Work Sans',sans-serif; font-size:.95rem; line-height:1.55; animation:popIn .3s both; }
+        .aa-msg.user{ align-self:flex-end; background:var(--ink); color:var(--cream); box-shadow:4px 4px 0 var(--red); border-top-right-radius:0; }
+        .aa-msg.bot{ align-self:flex-start; background:var(--cream); box-shadow:4px 4px 0 var(--red); border-top-left-radius:0; }
+        .aa-msg.error{ align-self:center; background:#fff3cd; border-color:#ffaa00; text-align:center; font-size:.8rem; }
+        .aa-msg-h{ font-family:'Epilogue',sans-serif; font-weight:900; font-style:italic; text-transform:uppercase; font-size:.6rem; letter-spacing:.12em; margin-bottom:.4rem; display:flex; align-items:center; gap:.35rem; color:var(--red); }
+        .aa-msg.user .aa-msg-h{ color:var(--yellow); }
+        .aa-msg-h .material-symbols-outlined{ font-size:13px; }
+        .aa-srcs{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.8rem; padding-top:.7rem; border-top:2px dashed rgba(52,46,30,.3); }
+        .aa-src{ font-family:'Space Mono',monospace; font-weight:700; font-size:.62rem; color:var(--ink); background:var(--cream2); border:2px solid var(--ink); padding:.3rem .6rem; max-width:210px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-decoration:none; display:inline-flex; align-items:center; gap:.3rem; transition:all .15s ease; }
+        .aa-src:hover{ background:var(--yellow); transform:translateY(-1px); }
+        .aa-src .material-symbols-outlined{ font-size:12px; color:var(--red); }
+        .aa-typing{ display:flex; align-items:center; gap:.5rem; font-family:'Space Mono',monospace; font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--on-surface-variant); }
+        .aa-typing .dots{ display:flex; gap:4px; }
+        .aa-typing .dots i{ width:8px; height:8px; border-radius:50%; background:var(--red); animation:aaDot 1s infinite; }
+        .aa-typing .dots i:nth-child(2){ animation-delay:.15s; }
+        .aa-typing .dots i:nth-child(3){ animation-delay:.3s; }
+        @keyframes aaDot{ 0%,100%{ transform:translateY(0); opacity:.4; } 50%{ transform:translateY(-5px); opacity:1; } }
+        .aa-inputrow{ display:flex; gap:.7rem; margin-top:1.1rem; }
+        .aa-chat-input{ flex:1; border:3px solid var(--ink); padding:.9rem 1rem; font-weight:700; font-size:.95rem; background:var(--cream); font-family:'Work Sans',sans-serif; color:var(--ink); box-shadow:4px 4px 0 var(--red); transition:all .15s ease; }
+        .aa-chat-input:focus{ outline:none; box-shadow:4px 4px 0 var(--blue); transform:translate(-2px,-2px); }
+        .aa-send{ width:58px; flex:none; background:var(--yellow); color:var(--ink); border:3px solid var(--ink); box-shadow:4px 4px 0 var(--ink); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .15s ease; }
+        .aa-send:hover{ background:var(--red); color:var(--yellow); transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--blue); }
+        .aa-send:disabled{ opacity:.5; cursor:not-allowed; transform:none; }
+        .aa-chips{ display:flex; flex-wrap:wrap; gap:.5rem; justify-content:center; margin-top:1.1rem; }
+        .aa-chip{ font-family:'Space Mono',monospace; font-weight:700; font-size:.64rem; text-transform:uppercase; letter-spacing:.03em; background:var(--cream); color:var(--ink); border:2px solid var(--ink); box-shadow:3px 3px 0 var(--red); padding:.45rem .75rem; cursor:pointer; transition:all .15s ease; }
+        .aa-chip:hover{ background:var(--yellow); transform:translate(-2px,-2px); box-shadow:5px 5px 0 var(--blue); }
+        .aa-clear{ display:block; margin:.9rem auto 0; font-family:'Space Mono',monospace; font-weight:700; font-size:.62rem; letter-spacing:.08em; text-transform:uppercase; color:var(--on-surface-variant); background:none; border:none; cursor:pointer; }
+        .aa-clear:hover{ color:var(--red); }
+
+        /* ============ 6. FOOTER / BADGE ============ */
+        footer.aa-footer{ background:var(--ink); border-top:8px double var(--olive); color:var(--cream); }
+        .aa-social-link{ width:44px; height:44px; border:2.5px solid var(--yellow); color:var(--yellow); display:flex; align-items:center; justify-content:center; transition:all .2s ease; }
+        .aa-social-link:hover{ background:var(--yellow); color:var(--ink); transform:translate(-2px,-2px); box-shadow:3px 3px 0 var(--red); }
+        .aa-footer-ref{ font-family:'Space Mono',monospace; font-size:.62rem; letter-spacing:.15em; color:rgba(255,202,77,.6); text-transform:uppercase; }
+        #aa-cart-badge{ position:absolute; top:-7px; right:-7px; min-width:18px; height:18px; background:var(--yellow); color:var(--ink); font-family:'Epilogue',sans-serif; font-weight:900; font-size:10px; border:2px solid var(--ink); border-radius:2px; display:none; align-items:center; justify-content:center; padding:0 3px; }
+        #aa-cart-badge.pop{ animation:aaBadgePop .4s cubic-bezier(.34,1.56,.64,1); }
+        @keyframes aaBadgePop{ 40%{ transform:scale(1.5) rotate(9deg);} }
+        .aa-stars-badge{ position:absolute; top:-7px; right:-8px; min-width:18px; height:18px; background:var(--yellow); color:var(--ink); font-family:'Epilogue',sans-serif; font-weight:900; font-size:10px; border:2px solid var(--ink); border-radius:2px; display:flex; align-items:center; justify-content:center; padding:0 3px; }
+        .aa-nav-gift-badge{ position:absolute; bottom:-8px; right:-8px; font-size:14px; display:none; align-items:center; justify-content:center; }
+        @keyframes giftPulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(255,202,77,.7);} 50%{ box-shadow:0 0 0 6px rgba(255,202,77,0);} }
+        .aa-nav-stars.aa-has-gift{ border-color:var(--yellow) !important; color:var(--yellow) !important; animation:giftPulse 1.5s infinite; }
+
+        /* ============ 7. RESPONSIVE ============ */
+        @media (max-width: 900px){
+            .aa-chat-box{ height:min(56vh,560px); padding:1rem; }
+            .aa-msg{ max-width:94%; }
+        }
+        @media (prefers-reduced-motion: reduce){
+            *, *::before, *::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+            html{ scroll-behavior:auto; }
+            .reveal{ opacity:1; transform:none; }
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface overflow-x-hidden">
+
+    <div class="aa-grain" aria-hidden="true"></div>
+    <div class="aa-cursor" id="aaCursorDot" aria-hidden="true"></div>
+    <div class="aa-cursor-ring" id="aaCursorRing" aria-hidden="true"></div>
+    <div id="aaProgress" aria-hidden="true"></div>
+
+    <!-- ═══ TICKER ═══ -->
+    <div class="aa-ticker" aria-hidden="true">
+        <div class="aa-ticker-track" data-dupe>
+            <div class="aa-ticker-chunk">
+                <span>EXPERT <b>JOUETS</b> — IDENTIFICATION <b>RARETÉ</b> — ESTIMATION <b>1970–1990</b></span><span class="aa-tsep">✦</span>
+                <span>LOOSE</span><span class="aa-tsep">✦</span><span>MIB</span><span class="aa-tsep">✦</span><span>NRFB</span><span class="aa-tsep">✦</span>
+                <span>EXPERT <b>JOUETS</b> — IDENTIFICATION <b>RARETÉ</b> — ESTIMATION <b>1970–1990</b></span><span class="aa-tsep">✦</span>
+                <span>LOOSE</span><span class="aa-tsep">✦</span><span>MIB</span><span class="aa-tsep">✦</span><span>NRFB</span><span class="aa-tsep">✦</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ HEADER ═══ -->
+    <header class="aa-header w-full z-50 sticky top-0">
+        <div class="flex justify-between items-center w-full px-6 py-3.5 max-w-screen-2xl mx-auto">
+            <a href="index.html" class="aa-logo-link flex items-center gap-3 group" title="Retour à l'accueil">
+                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="eager" class="aa-logo h-12 md:h-14 w-auto"/>
+                <span class="text-2xl md:text-3xl font-black italic text-[#bb0003] font-headline uppercase tracking-tighter group-hover:text-[#0f56bf] transition-colors">Action Archive</span>
+            </a>
+            <nav class="aa-nav hidden md:flex items-center gap-7 text-sm">
+                <a class="text-[#342e1e] hover:text-[#bb0003]" href="index.html">ACCUEIL</a>
+                <a class="text-[#342e1e] hover:text-[#bb0003]" href="produits.html">PRODUITS</a>
+                <a class="text-[#342e1e] hover:text-[#bb0003]" href="info.html">INFO</a>
+                <a class="text-[#342e1e] hover:text-[#bb0003]" href="toys-history.html">TOYS HISTORY</a>
+                <a class="text-[#342e1e] hover:text-[#bb0003]" href="panier.html">COMMANDE</a>
+                <a class="text-[#342e1e] hover:text-[#bb0003]" href="inscription.html">INSCRIPTION</a>
+            </nav>
+            <div class="flex items-center gap-2.5">
+                <a class="aa-icon-btn text-[#bb0003] border-2 border-[#bb0003] relative btn-physical" href="panier.html" title="Mon panier">
+                    <span class="material-symbols-outlined">shopping_cart</span>
+                    <span id="aa-cart-badge"></span>
+                </a>
+                <button onclick="toggleDrawer()" class="aa-menu-btn" aria-label="Ouvrir le menu">☰ MENU</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ═══ DRAWER ═══ -->
+    <div id="drawer-overlay" class="drawer-overlay fixed inset-0 bg-on-background/40 backdrop-blur-sm z-[90]" onclick="toggleDrawer()"></div>
+    <aside id="side-drawer" class="fixed top-0 right-0 h-full w-full max-w-[320px] bg-surface-container-high border-l-8 border-[#bb0003] z-[100] transform translate-x-full overflow-y-auto" aria-label="Menu latéral">
+        <div class="p-8 flex flex-col h-full text-on-surface">
+            <div class="flex justify-between items-center border-b-4 border-on-background/10 pb-6 mb-6">
+                <h2 class="font-headline font-black text-2xl text-[#bb0003] italic uppercase">MENU</h2>
+                <button class="text-on-background hover:text-[#bb0003] transition-colors" onclick="toggleDrawer()" aria-label="Fermer le menu"><span class="material-symbols-outlined text-3xl">close</span></button>
+            </div>
+            <nav class="flex flex-col gap-3">
+                <a href="index.html" class="aa-drawer-link">ACCUEIL</a>
+                <a href="produits.html" class="aa-drawer-link">PRODUITS</a>
+                <a href="info.html" class="aa-drawer-link">INFO</a>
+                <a href="toys-history.html" class="aa-drawer-link">TOYS HISTORY</a>
+                <a href="agent.html" class="aa-drawer-link aa-current">EXPERT JOUETS</a>
+                <a href="panier.html" class="aa-drawer-link">COMMANDE</a>
+                <a href="inscription.html" class="aa-drawer-link">INSCRIPTION</a>
+            </nav>
+            <div class="aa-drawer-meta mt-auto pt-6">
+                <div>HEURE LOCALE — <b id="aaClock">--:--:--</b></div>
+                <div class="aa-barcode" aria-hidden="true"></div>
+                <p>CATALOGUE ACTION ARCHIVE<br/>OUVERT 24H/24 — 7J/7</p>
+            </div>
+        </div>
+    </aside>
+
+    <main class="container mx-auto px-6 py-10 min-h-screen">
+        <div class="aa-eyebrow reveal">
+            <span class="material-symbols-outlined">smart_toy</span>
+            <span>AGENT IA — RECHERCHE DUCKDUCKGO</span>
+        </div>
+        <h1 class="aa-agent-title">
+            <span class="line"><span class="line-in">EXPERT</span></span>
+            <span class="line"><span class="line-in"><span class="aa-agent-tag">JOUETS VINTAGE</span></span></span>
+        </h1>
+        <p class="text-center font-body font-bold max-w-2xl mx-auto mb-6" style="color:var(--on-surface-variant);">
+            Identifie tes figurines, évalue la rareté (Loose, MIB, NRFB) et obtiens une estimation de valeur, appuyée sur une recherche web en direct. Estimations indicatives, pas une cote officielle.
+        </p>
+
+        <div class="aa-chat-wrap">
+            <div class="aa-chat-box reveal" id="aaChat" aria-live="polite"></div>
+
+            <div class="aa-chips">
+                <button class="aa-chip" data-q="Quelle est la valeur d'une figurine Star Wars Kenner MIB de 1978 ?">STAR WARS KENNER MIB ?</button>
+                <button class="aa-chip" data-q="Comment reconnaître une contrefaçon de G.I. Joe Cobra Commander ?">RECONNAÎTRE UNE CONTREFAÇON ?</button>
+                <button class="aa-chip" data-q="Différence de valeur entre Loose, MIB et NRFB pour un Big Jim de 1980 ?">LOOSE / MIB / NRFB ?</button>
+            </div>
+
+            <div class="aa-inputrow">
+                <input type="text" id="aaChatInput" class="aa-chat-input" placeholder="Pose ta question : pièce, rareté, valeur…" maxlength="300" autocomplete="off"/>
+                <button id="aaSend" class="aa-send" aria-label="Envoyer"><span class="material-symbols-outlined">send</span></button>
+            </div>
+            <button class="aa-clear" id="aaClear">✕ Effacer la conversation</button>
+        </div>
+    </main>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="aa-footer w-full py-12 px-10 flex flex-col md:flex-row justify-between items-center gap-8 mt-20">
+        <div class="flex flex-col items-center md:items-start gap-3">
+            <a href="index.html" class="aa-logo-link flex items-center gap-3" title="Action Archive">
+                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1783335304/3efe7fd2-4c1c-4990-b26a-a6bf8c782d65_edfwuh.png" alt="Action Archive" loading="lazy" class="aa-logo h-10 w-auto"/>
+                <span class="text-xl md:text-2xl font-black italic text-[#ffca4d] font-headline uppercase tracking-tighter hover:text-white transition-colors">Action Archive</span>
+            </a>
+            <p class="font-body font-medium text-[10px] text-[#ffca4d] tracking-widest uppercase">© 2026 Action Archive INC.</p>
+            <p class="aa-footer-ref">EXPERT JOUETS — ÉDITION 2026</p>
+        </div>
+        <nav id="aa-social-nav" class="flex flex-wrap justify-center gap-4" aria-label="Réseaux sociaux"></nav>
+    </footer>
+
+    <div id="aa-toasts"></div>
+
+    <script src="aa-core.js"></script>
+    <script>
+    function aaEscapeHtml(s){ if(s==null) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+    function toggleDrawer(){
+        const d=document.getElementById('side-drawer'), o=document.getElementById('drawer-overlay');
+        d.classList.toggle('open'); o.classList.toggle('open');
+        document.body.style.overflow = d.classList.contains('open') ? 'hidden' : '';
+    }
+    </script>
+    <script>
+    /* ═══ Ticker : duplication boucle ═══ */
+    document.querySelectorAll('[data-dupe]').forEach(el=>{ el.innerHTML += el.innerHTML; });
+
+    /* ═══ Curseur personnalisé (desktop uniquement) ═══ */
+    (function(){
+        if(!matchMedia('(pointer:fine)').matches) return;
+        const dot=document.getElementById('aaCursorDot'), ring=document.getElementById('aaCursorRing');
+        dot.style.display='block'; ring.style.display='block'; document.documentElement.classList.add('aa-cursor-on');
+        let mx=innerWidth/2, my=innerHeight/2, rx=mx, ry=my;
+        addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; dot.style.transform=`translate(${mx-5}px,${my-5}px)`; },{passive:true});
+        addEventListener('mousedown',()=>ring.classList.add('aa-press'));
+        addEventListener('mouseup',()=>ring.classList.remove('aa-press'));
+        document.addEventListener('mouseover',e=>{ if(e.target.closest('a,button,input')) ring.classList.add('aa-target'); });
+        document.addEventListener('mouseout',e=>{ if(e.target.closest('a,button,input')) ring.classList.remove('aa-target'); });
+        (function loop(){ rx+=(mx-rx)*.18; ry+=(my-ry)*.18; ring.style.transform=`translate(${rx-ring.offsetWidth/2}px,${ry-ring.offsetHeight/2}px)`; requestAnimationFrame(loop); })();
+    })();
+
+    /* ═══ Progression de scroll + header ═══ */
+    (function(){
+        const bar=document.getElementById('aaProgress'), header=document.querySelector('.aa-header');
+        let ticking=false;
+        function upd(){
+            const sc=scrollY, h=document.documentElement.scrollHeight-innerHeight;
+            bar.style.width=(h>0?(sc/h)*100:0)+'%';
+            header.classList.toggle('aa-scrolled',sc>12);
+            ticking=false;
+        }
+        addEventListener('scroll',()=>{ if(!ticking){ requestAnimationFrame(upd); ticking=true; } },{passive:true});
+        upd();
+    })();
+
+    /* ═══ Apparitions au scroll ═══ */
+    (function(){
+        const els=document.querySelectorAll('.reveal');
+        if(!('IntersectionObserver' in window)){ els.forEach(e=>e.classList.add('in')); return; }
+        const io=new IntersectionObserver(es=>{ es.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } }); },{threshold:.12});
+        els.forEach(e=>io.observe(e));
+    })();
+
+    /* ═══ Horloge + code-barres du drawer ═══ */
+    (function(){
+        const c=document.getElementById('aaClock'); if(!c) return;
+        const t=()=>c.textContent=new Date().toLocaleTimeString('fr-FR');
+        t(); setInterval(t,1000);
+    })();
+    (function(){
+        const el=document.querySelector('.aa-barcode'); if(!el) return;
+        for(let i=0;i<30;i++){
+            const b=document.createElement('i'), s=(i*7)%9;
+            b.style.width=(s===0?5:s<3?2:s<6?1:3)+'px'; b.style.height='34px';
+            el.appendChild(b);
+        }
+    })();
+
+    /* ═══ LE CHAT ═══ */
+    (function(){
+        const box=document.getElementById('aaChat'), input=document.getElementById('aaChatInput'), sendBtn=document.getElementById('aaSend');
+        const STORE='aa_agent_history';
+        let history=[], loading=false, typingEl=null;
+
+        function fmt(t){
+            return aaEscapeHtml(t).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+        }
+        function scrollBottom(){ box.scrollTop=box.scrollHeight; }
+
+        function addBubble(kind, text, sources){
+            const d=document.createElement('div');
+            if(kind==='error'){
+                d.className='aa-msg error'; d.innerHTML='<span class="material-symbols-outlined" style="font-size:16px;vertical-align:-4px;">warning</span> '+aaEscapeHtml(text);
+            } else {
+                d.className='aa-msg '+kind;
+                const tag = kind==='user'
+                    ? '<div class="aa-msg-h"><span class="material-symbols-outlined">person</span>TOI</div>'
+                    : '<div class="aa-msg-h"><span class="material-symbols-outlined">smart_toy</span>AA-EXPERT</div>';
+                let html = tag + '<div>'+fmt(text)+'</div>';
+                if(kind==='bot' && sources && sources.length){
+                    html += '<div class="aa-srcs">'+sources.map(s=>
+                        `<a class="aa-src" href="${aaEscapeHtml(s.url)}" target="_blank" rel="noopener" title="${aaEscapeHtml(s.title)}"><span class="material-symbols-outlined">link</span>${aaEscapeHtml((s.title||'Source').slice(0,42))}</a>`
+                    ).join('')+'</div>';
+                }
+                d.innerHTML=html;
+            }
+            box.appendChild(d); scrollBottom();
+            return d;
+        }
+
+        function showTyping(label){
+            typingEl=document.createElement('div'); typingEl.className='aa-msg bot';
+            typingEl.innerHTML='<div class="aa-msg-h"><span class="material-symbols-outlined">smart_toy</span>AA-EXPERT</div><div class="aa-typing"><span class="lbl">'+aaEscapeHtml(label)+'</span><span class="dots"><i></i><i></i><i></i></span></div>';
+            box.appendChild(typingEl); scrollBottom();
+            typingEl._sw=setTimeout(()=>{ if(typingEl){ const l=typingEl.querySelector('.lbl'); if(l) l.textContent='Lecture experte des résultats…'; } },2500);
+        }
+        function hideTyping(){ if(typingEl){ clearTimeout(typingEl._sw); typingEl.remove(); typingEl=null; } }
+
+        function save(){ try{ localStorage.setItem(STORE, JSON.stringify(history.slice(-20))); }catch(e){} }
+
+        function renderSaved(){
+            if(history.length===0){
+                addBubble('bot',"Salut, collectionneur ! Je suis l'expert Action Archive. Décris ta pièce (nom, année, marque, état : Loose / MIB / NRFB) et je la recherche en direct pour t'aider à l'identifier et estimer sa valeur. Une question ? Je fouille le web pour toi. 🔎");
+            } else {
+                history.forEach(h=>addBubble(h.role==='user'?'user':'bot', h.content));
+            }
+        }
+
+        async function ask(q){
+            if(loading) return;
+            q=(q||'').trim(); if(!q) return;
+            loading=true; sendBtn.disabled=true;
+            history.push({role:'user',content:q}); addBubble('user',q); save();
+            input.value='';
+            showTyping('Recherche DuckDuckGo…');
+            try{
+                const res=await fetch('/api/agent-search',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ query:q, history:history.slice(-7) }) });
+                const data=await res.json();
+                hideTyping();
+                if(!res.ok || !data.reply){ throw new Error(data.error||"Le serveur n'a pas répondu"); }
+                history.push({role:'assistant',content:data.reply}); save();
+                addBubble('bot',data.reply,data.sources||[]);
+            }catch(err){
+                hideTyping();
+                addBubble('error','Recherche impossible : '+err.message+' — réessaie dans un instant.');
+            }finally{
+                loading=false; sendBtn.disabled=false;
+            }
+        }
+
+        sendBtn.addEventListener('click',()=>ask(input.value));
+        input.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); ask(input.value); } });
+        document.querySelectorAll('.aa-chip').forEach(ch=>ch.addEventListener('click',()=>ask(ch.dataset.q)));
+        document.getElementById('aaClear').addEventListener('click',()=>{ localStorage.removeItem(STORE); history=[]; box.innerHTML=''; renderSaved(); });
+
+        try{ history=JSON.parse(localStorage.getItem(STORE)||'[]'); }catch(e){}
+        renderSaved();
+    })();
+
+    /* ═══ Réseaux sociaux (config aa-core) ═══ */
+    (function(){
+        const social=JSON.parse(localStorage.getItem('aa_social_config')||'{}');
+        const nav=document.getElementById('aa-social-nav'); if(!nav) return;
+        const items=[{key:'facebook',icon:'facebook',label:'FACEBOOK'},{key:'twitter',icon:'share',label:'TWITTER'},{key:'instagram',icon:'photo_camera',label:'INSTAGRAM'},{key:'tiktok',icon:'music_note',label:'TIKTOK'},{key:'youtube',icon:'play_circle',label:'YOUTUBE'}];
+        let found=false;
+        items.forEach(item=>{
+            const data=social[item.key];
+            if(data&&data.enabled&&data.url){
+                found=true;
+                const a=document.createElement('a');
+                a.href=data.url; a.target='_blank'; a.rel='noopener';
+                a.className='aa-social-link'; a.setAttribute('aria-label',item.label); a.title=item.label;
+                a.innerHTML=`<span class="material-symbols-outlined">${item.icon}</span>`;
+                nav.appendChild(a);
+            }
+        });
+        if(!found) nav.innerHTML='<p class="font-mono text-xs italic" style="color:#eadcbc;">Aucun réseau social configuré</p>';
+    })();
+    </script>
+</body>
+</html>
