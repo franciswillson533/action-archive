@@ -170,6 +170,18 @@
         .aa-trust-item .material-symbols-outlined{ font-size:19px; }
         .aa-trust-item:not(:last-child)::after{ content:'✦'; margin-left:1.4rem; color:var(--red); font-size:1rem; }
 
+        /* ============ 7b. PAVÉ AGENT EXpert (logo + texte + lien) ============ */
+        .aa-agent-call{ display:flex; flex-direction:column; align-items:center; gap:1.25rem; padding:3.4rem 1.5rem 3.8rem; text-decoration:none; }
+        .aa-agent-logo-btn{ display:block; width:clamp(120px,18vw,175px); height:auto; filter:drop-shadow(4px 6px 0 var(--red)); transition:transform .35s cubic-bezier(.34,1.56,.64,1), filter .3s ease; animation:aaBobLogo 5s ease-in-out infinite; }
+        .aa-agent-call:hover .aa-agent-logo-btn{ transform:rotate(-4deg) scale(1.07); filter:drop-shadow(7px 9px 0 var(--ink)); }
+        @keyframes aaBobLogo{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-8px);} }
+        .aa-agent-msg{ font-family:'Work Sans',sans-serif; font-weight:800; font-size:clamp(1.05rem,2.3vw,1.4rem); text-align:center; max-width:46rem; color:var(--ink); line-height:1.45; }
+        .aa-agent-msg .hl{ color:var(--red); }
+        .aa-agent-msg .brand{ color:var(--blue); font-style:italic; }
+        .aa-agent-cta{ display:inline-flex; align-items:center; gap:.5rem; background:var(--ink); color:var(--yellow); font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:.85rem; letter-spacing:.04em; padding:.6rem 1.1rem; border:3px solid var(--ink); box-shadow:4px 4px 0 var(--red); transition:all .2s ease; }
+        .aa-agent-call:hover .aa-agent-cta{ background:var(--yellow); color:var(--ink); transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--red); }
+        .aa-agent-cta .material-symbols-outlined{ font-size:18px; font-variation-settings:'FILL' 1; }
+
         /* ============ 8. TITRES DE SECTION ============ */
         .aa-section-title{ display:flex; align-items:center; gap:1rem; margin-bottom:.8rem; }
         .aa-section-title h2{ font-family:'Epilogue',sans-serif; font-weight:900; font-style:italic; font-size:clamp(1.6rem,3.4vw,2.2rem); text-transform:uppercase; color:var(--ink); letter-spacing:-.02em; }
@@ -282,6 +294,10 @@
             .aa-carousel{ width:280px; height:280px; }
             .aa-badge-circ{ width:48px; height:48px; font-size:.85rem; }
 
+            /* --- Pavé agent sur mobile --- */
+            .aa-agent-call{ padding:2.6rem 1.25rem 3rem; gap:1rem; }
+            .aa-agent-msg{ font-size:1rem; max-width:100%; }
+
             /* --- Programme Collectionneur : centré sur mobile / tablette --- */
             .aa-programme{ padding:3.25rem 0 3.5rem; }
             .aa-programme-grid{ grid-template-columns:minmax(0,1fr); gap:2.2rem; text-align:center; }
@@ -307,6 +323,7 @@
             .aa-lcell{ height:36px; font-size:1.1rem; }
             .aa-programme-pill{ font-size:.8rem; padding:.55rem .8rem; }
             .aa-ribbon{ margin:2.5rem -1rem; }
+            .aa-agent-logo-btn{ width:104px; }
         }
         @media (prefers-reduced-motion: reduce){
             *, *::before, *::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
@@ -386,6 +403,7 @@
                 <a href="produits.html" class="aa-drawer-link">PRODUITS</a>
                 <a href="info.html" class="aa-drawer-link">INFO</a>
                 <a href="toys-history.html" class="aa-drawer-link">TOYS HISTORY</a>
+                <a href="agent.html" class="aa-drawer-link">EXPERT JOUETS</a>
                 <a href="panier.html" class="aa-drawer-link">COMMANDE</a>
                 <a href="inscription.html" class="aa-drawer-link">INSCRIPTION</a>
             </nav>
@@ -456,6 +474,15 @@
                     <div class="aa-trust-item"><span class="aa-trust-ico"><span class="material-symbols-outlined">assignment_return</span></span>RETOUR 14 JOURS</div>
                 </div>
             </div>
+        </section>
+
+        <!-- ═══ PAVÉ AGENT EXPERT (logo cliquable) ═══ -->
+        <section aria-label="Expert Jouets Vintage">
+            <a href="agent.html" class="aa-agent-call reveal" aria-label="Ouvrir l'agent Expert Jouets Vintage — identification et estimation">
+                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1792068823/Change_text_in_circle_2K_20261015145043_ror30z.png" alt="Logo de l'agent Expert Jouets Vintage" class="aa-agent-logo-btn" loading="lazy"/>
+                <p class="aa-agent-msg">Identifie tes figurines <span class="hl">(photo acceptée)</span>, évalue la rareté <span class="hl">(Loose, MIB, NRFB)</span> et obtiens une estimation de valeur.</p>
+                <span class="aa-agent-cta"><span class="material-symbols-outlined">smart_toy</span>Ouvrir l'Expert <span class="material-symbols-outlined" style="margin-left:.2rem;">arrow_forward</span></span>
+            </a>
         </section>
 
         <!-- ═══ RACCOURCIS ═══ -->
