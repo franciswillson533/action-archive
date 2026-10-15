@@ -1,17 +1,18 @@
-// api/agent-search.js — Groq (texte) · Gemini (photos) · DuckDuckGo + prix réels + catalogue boutique
+// api/agent-search.js — Groq (texte) · Gemini (photos) · DuckDuckGo + PRIX RÉELS (eBay vendus) + catalogue
 const SYSTEM_PROMPT = `Tu es Action Archive-Bot, un expert mondial en jouets vintage, figurines de collection et rétrogaming des années 1970 à 2000. Ton but : aider l'utilisateur à identifier des jouets, estimer leur rareté, leur état (Loose, MIB, NRFB) et leur valeur historique.
 
 RÈGLES D'ESTIMATION (primordiales) :
-- Les PRIX OBSERVÉS extraits des pages sources sont ta base prioritaire ; cite la provenance, sans inventer de nom d'outil ou de système interne.
-- Un même jouet a des MARCHÉS SÉPARÉS : (a) reproduction/impression neuve, (b) original Loose, (c) original MIB ou NRFB — souvent 3 à 10 fois le prix Loose. Prends le HAUT des relevés pour les exemplaires complets, le bas pour les Loose.
-- ÉTIQUETTE OBLIGATOIRE après chaque fourchette : écris "(fourchette basse du marché — ventes exceptionnelles, états supérieurs ou exemplaires rares : au-dessus)" pour le MIB/NRFB, et "(marché courant)" pour les Loose. Ne cite jamais une fourchette sans savoir ce qu'elle représente.
-- Ligne REPRODUCTION : si une pièce EXACTEMENT de la même marque et du même type figure dans le CATALOGUE ACTION ARCHIVE (indiqué dans les données), donne EXACTEMENT ce prix boutique. S'il y a le moindre doute sur la marque ou le type (ex. demandé Meccano, catalogue propose Mego), NE METS PAS le lien et n'utilise pas ce prix.
-- Jamais de phrases génériques, de rappels d'astuces ou de formules creuses : seuls les chiffres concrets comptent.
+- Les PRIX OBSERVÉS extraits (ventes soldées et annonces) sont ta base prioritaire ; cite la provenance. N'invente JAMAIS de nom d'outil ou de système interne ("readWebUrlTool", etc. interdits) — parle des "pages consultées".
+- Marchés SÉPARÉS pour un même jouet : (a) reproduction neuve, (b) original Loose, (c) original MIB/NRFB — en boîte complète, compte souvent 3 à 10 fois le Loose.
+- MIB/NRFB : calcule ta fourchette dans la MOITIÉ SUPÉRIEURE des relevés : du 75e centile (donné) au maximum observé (donné). Ne prends JAMAIS le bas des relevés pour un exemplaire en boîte. ÉTIQUETTE OBLIGATOIRE : "MIB/NRFB : X–Y € (fourchette basse du marché — ventes exceptionnelles, états supérieurs ou raretés : au-dessus)". Loose : "(marché courant)".
+- Devise : convertis £/$ en € (1 £ ≈ 1,17 € ; 1 $ ≈ 0,92 €) et garde la devise d'origine entre parenthèses.
+- Ligne REPRODUCTION : si une pièce de la MÊME marque et du MÊME type figure dans le CATALOGUE ACTION ARCHIVE (données), donne EXACTEMENT ce prix boutique et ce lien relatif. S'il y a le moindre doute (marque ou type différent), pas de lien, pas de prix catalogue.
+- Interdits : phrases génériques, rappels d'astuces, formules creuses. Seuls les chiffres concrets comptent.
 
-STYLE : français, passionné, structuré en 4 blocs sur 14 lignes max :
-IDENTIFICATION · PRIX OBSERVÉS (courte liste avec provenance) · ESTIMATION (Reproduction / Loose / MIB-NRFB, fourchettes étiquetées) · CONSEIL (UNE seule ligne : le piège ou la variante la plus décisive).
-Si aucun prix exploitable n'a été trouvé, dis-le et donne une fourchette indicative avec réserves explicites.
-Écris la ligne "Sources utilisées : ..." UNIQUEMENT si tu as réellement utilisé des sources numérotées ; autrement, ne l'écris pas du tout.`;
+STYLE : français, passionné, 4 blocs sur 14 lignes max :
+IDENTIFICATION · PRIX OBSERVÉS (courte liste avec provenance) · ESTIMATION (Reproduction / Loose / MIB-NRFB, fourchettes étiquetées) · CONSEIL (UNE seule ligne).
+"Aucun prix exploitable" → dis-le et fourchette indicative avec réserves.
+Ligne "Sources utilisées : ..." UNIQUEMENT si des sources ont réellement servi ; sinon ne l'écris pas du tout.`;
 
 const PREF_TEXT = ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'llama-3.1-70b-versatile'];
 
@@ -153,10 +154,10 @@ async function searchDDG(query) {
     return results;
 }
 
-// ─── Extraction de PRIX RÉELS ───
+// ─── PRIX RÉELS : priorité aux VENTES SOLDÉES eBay ───
 async function fetchPageText(url, timeoutMs) {
     const ctrl = new AbortController();
-    const to = setTimeout(() => ctrl.abort(), timeoutMs || 3500);
+    const to = setTimeout(() => ctrl.abort(), timeoutMs || 3000);
     try {
         const res = await fetch(url, {
             signal: ctrl.signal,
@@ -175,7 +176,7 @@ function extractPrices(text) {
     const re = /(\d{1,4}(?:[ .]\d{3})*(?:[.,]\d{1,2})?)\s*(?:€|eurs?|EUR)|(?:€|EUR)\s*(\d{1,4}(?:[ .]\d{3})*(?:[.,]\d{1,2})?)|£\s*(\d{1,4}(?:[ .]\d{3})*(?:[.,]\d{1,2})?)|(\d{1,4}(?:[.,]\d{1,2})?)\s*(?:£|GBP)|(?:\$|USD)\s*(\d{1,4}(?:[ .]\d{3})*(?:[.,]\d{1,2})?)|(\d{1,4}(?:[.,]\d{1,2})?)\s*(?:USD|\$)/gi;
     const found = [];
     let m;
-    while ((m = re.exec(text)) && found.length < 8) {
+    while ((m = re.exec(text)) && found.length < 10) {
         const raw = m[1] || m[2] || m[3] || m[4] || m[5] || m[6];
         if (!raw) continue;
         const num = parseFloat(raw.replace(/[ .](?=\d{3}\b)/g, '').replace(',', '.'));
@@ -187,20 +188,30 @@ function extractPrices(text) {
 async function harvestPrices(query, results) {
     const hit = priceCache.get(query.toLowerCase());
     if (hit && Date.now() - hit.t < CACHE_TTL) return hit.prices;
+    const kw = encodeURIComponent(query.slice(0, 110));
     const targets = [
-        'https://www.ebay.fr/sch/i.html?_nkw=' + encodeURIComponent(query.slice(0, 110)),
-        'https://www.ebay.com/sch/i.html?_nkw=' + encodeURIComponent(query.slice(0, 110))
-    ];
-    results.slice(0, 3).forEach(r => targets.push(r.url));
-    const settled = await Promise.allSettled(targets.map(u => fetchPageText(u, 3500)));
+        { url: 'https://www.ebay.fr/sch/i.html?_nkw=' + kw + '&LH_Complete=1&LH_Sold=1', src: 'eBay FR — ventes soldées' },
+        { url: 'https://www.ebay.com/sch/i.html?_nkw=' + kw + '&LH_Complete=1&LH_Sold=1', src: 'eBay COM — ventes soldées' },
+        { url: 'https://www.ebay.fr/sch/i.html?_nkw=' + kw + '&_sop=16', src: 'eBay FR — annonces courantes' },
+        { url: results[0] ? results[0].url : '', src: 'source web 1' },
+        { url: results[1] ? results[1].url : '', src: 'source web 2' },
+        { url: results[2] ? results[2].url : '', src: 'source web 3' }
+    ].filter(t => t.url);
+    const settled = await Promise.allSettled(targets.map(t => fetchPageText(t.url, 3000)));
     const prices = [];
-    for (let i = 0; i < settled.length && prices.length < 12; i++) {
+    for (let i = 0; i < settled.length && prices.length < 16; i++) {
         if (settled[i].status !== 'fulfilled' || !settled[i].value) continue;
         const found = extractPrices(settled[i].value);
-        found.forEach(p => prices.push({ p, src: targets[i] }));
+        found.forEach(p => {
+            let pe = p;
+            const srcS = targets[i].src || '';
+            if (/£|GBP/.test(srcS)) pe = p * 1.17;
+            else if (/USD|\$/.test(srcS)) pe = p * 0.92;
+            prices.push({ p: Math.round(pe * 100) / 100, src: targets[i].src, cur: targets[i].src });
+        });
     }
     prices.sort((a, b) => a.p - b.p);
-    const out = prices.slice(0, 12);
+    const out = prices.slice(0, 16);
     priceCache.set(query.toLowerCase(), { t: Date.now(), prices: out });
     return out;
 }
@@ -212,9 +223,7 @@ function norm(s) {
 async function ownCatalog(host) {
     try {
         if (catCache && Date.now() - catCache.t < CACHE_TTL) return catCache.items;
-        const res = await fetch('https://' + host + '/api/airtable-proxy', {
-            headers: { 'User-Agent': 'AA-Agent/1.0' }
-        });
+        const res = await fetch('https://' + host + '/api/airtable-proxy', { headers: { 'User-Agent': 'AA-Agent/1.0' } });
         if (!res.ok) return [];
         const data = await res.json();
         const items = (Array.isArray(data) ? data : []).map(r => {
@@ -232,22 +241,20 @@ async function ownCatalog(host) {
     } catch (e) { return []; }
 }
 
-// Gardien de marque : si l'utilisateur nomme une marque/ligne précise, le produit lié DOIVIT la contenir
-const BRANDS = ['mego', 'meccano', 'palitoy', 'mattel', 'big jim', 'gi joe', 'gijoe', 'hasbro', 'ceji', 'arbois', 'popy', 'action man', 'action joe', 'kenner', 'matchbox', 'creta', 'lone star', 'gama', 'cherilea', 'britains', 'timpo', 'starlux', 'claude'];
+const BRANDS = ['mego', 'meccano', 'palitoy', 'mattel', 'big jim', 'gi joe', 'gijoe', 'hasbro', 'ceji', 'arbois', 'popy', 'action man', 'action joe', 'kenner', 'matchbox', 'creta', 'lone star', 'gama', 'cherilea', 'britains', 'timpo', 'starlux'];
 function brandGuard(item, texto) {
     const t = norm(texto);
     const mentioned = BRANDS.filter(b => t.includes(norm(b)));
-    if (mentioned.length === 0) return true; // pas de marque précisée → pas de contrainte
+    if (mentioned.length === 0) return true;
     const n = norm(item.nom + ' ' + item.collection);
     return mentioned.some(b => n.includes(norm(b)));
 }
-
-function matchCatalogItem(items, texto) {
-    if (!items.length) return null;
-    // TA question prime : jamais la description IA en mélange
-    const sourceText = queryOrDescription(texto);
+let __matchCtx = { q: '', d: '' };
+function matchCatalogItem(items) {
+    const texto = __matchCtx;
+    const sourceText = texto.q || texto.d || '';
     const words = norm(sourceText).replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter(w => w.length > 3);
-    if (!words.length) return null;
+    if (!words.length || !items.length) return null;
     const freq = {};
     for (const it of items) {
         const n = norm(it.nom + ' ' + it.collection);
@@ -268,9 +275,6 @@ function matchCatalogItem(items, texto) {
     if (!top || top.sc < 2 || (second ? top.sc - second.sc < 1 : false)) return null;
     return top.it;
 }
-// texto = {q: question utilisateur, d: description IA} — la question gagne toujours
-let __matchCtx = { q: '', d: '' };
-function queryOrDescription(texto) { return texto.q || texto.d || ''; }
 
 // ─── Point d'entrée ───
 module.exports = async (req, res) => {
@@ -287,13 +291,13 @@ module.exports = async (req, res) => {
 
         const hostHeader = (req.headers && (req.headers['x-forwarded-host'] || req.headers.host)) || 'www.actionarchive.ink';
 
-        // 1) PHOTO → identification par Gemini
+        // 1) PHOTO → identification Gemini
         let imgDesc = '', photoNote = '';
         if (imageData) {
             if (process.env.GEMINI_API_KEY) {
                 try {
                     imgDesc = await geminiVision(imageData,
-                        'Identifie cette pièce de collection vintage (figurine, jouet ou boîte : type, marque/fabricant probable, époque, état apparent, variantes visibles). Indique aussi si l\'objet semble être une impression neuve (reproduction, carton non fatigué) ou un article vintage d\'origine. Français, 7 lignes max, sans décorum. Si tu es incertain de la marque, écris "marque incertaine" au lieu de citer une marque par conjecture.');
+                        'Identifie cette pièce de collection vintage (figurine, jouet ou boîte : type, marque/fabricant probable, époque, état apparent, variantes visibles). Indique aussi si l\'objet semble être une impression neuve (reproduction) ou un article vintage d\'origine. Français, 7 lignes max, sans décorum. Marque incertaine ? Écris-le, ne conjecture pas.');
                 } catch (e) {
                     imgDesc = ''; photoNote = 'Gemini a échoué : ' + e.message;
                 }
@@ -313,25 +317,30 @@ module.exports = async (req, res) => {
               results.map((r, i) => `[${i + 1}] ${r.title}\n${r.url}\n${r.snippet}`).join('\n')
             : '\n\n(Aucun résultat web disponible — réponds avec ton expertise en le signalant.)';
 
-        // 2b) PRIX RÉELS
+        // 2b) PRIX : ventes soldées en priorité + stats hautes
         const prices = await harvestPrices(searchQuery || query || 'figurine vintage', results);
         let priceCtx = '';
         if (prices.length) {
-            priceCtx = '\n\nPRIX OBSERVÉS (extraction automatique, triés du plus bas au plus haut — ' + prices.length + ' relevés, entre ' + prices[0].p.toFixed(2).replace('.', ',') + ' € et ' + prices[prices.length - 1].p.toFixed(2).replace('.', ',') + ' €) :\n' +
-                prices.map(pr => '• ' + pr.p.toFixed(2).replace('.', ',') + ' ← ' + pr.src).join('\n');
+            const arr = prices.map(x => x.p);
+            const med = arr[Math.floor(arr.length / 2)];
+            const p75 = arr[Math.floor(arr.length * 0.75)];
+            const max = arr[arr.length - 1];
+            priceCtx = '\n\nPRIX OBSERVÉS (' + arr.length + ' relevés, € convertis) : min ' + arr[0].toFixed(2).replace('.', ',') + ' € · médiane ' + med.toFixed(2).replace('.', ',') + ' € · 75e centile ' + p75.toFixed(2).replace('.', ',') + ' € · maximum ' + max.toFixed(2).replace('.', ',') + ' €\n' +
+                prices.map(pr => '• ' + pr.p.toFixed(2).replace('.', ',') + ' € ← ' + (pr.src || 'source')).join('\n') +
+                '\n(MIB/NRFB = zone 75e centile → maximum ; Loose = zone basse/médiane.)';
         } else {
-            priceCtx = '\n\n(Aucun prix exploitable trouvé dans les sources — fourchette indicative + signal clairement.)';
+            priceCtx = '\n\n(Aucun prix exploitable trouvé — fourchette indicative + signale-le clairement.)';
         }
 
-        // 2c) CATALOGUE BOUTIQUE — ta question prime, la description IA ne rentre que si tu n'as rien tapé
+        // 2c) CATALOGUE : prix boutique réel + lien RELATIF
         __matchCtx = { q: query, d: imgDesc };
         const catalog = await ownCatalog(hostHeader);
-        const shopItem = matchCatalogItem(catalog, __matchCtx);
+        const shopItem = matchCatalogItem(catalog);
         let shopCtx = '';
         if (shopItem) {
-            const link = 'https://' + hostHeader + '/produit.html?id=' + shopItem.id;
-            shopCtx = '\n\n★ CATALOGUE ACTION ARCHIVE : une reproduction neuve équivalente est EN VENTE dans la boutique : « ' + shopItem.nom + ' » (Collection : ' + (shopItem.collection || '—') + (shopItem.annee ? ', ' + shopItem.annee : '') + ') au prix boutique de ' + shopItem.prix.toFixed(2).replace('.', ',') + ' € — ' + link + '\nLigne REPRODUCTION : donne EXACTEMENT ce prix et partage ce lien.';
-            results.unshift({ title: 'Action Archive — ' + shopItem.nom, url: link, snippet: 'Reproduction neuve en vente sur le site' });
+            const linkRel = 'produit.html?id=' + shopItem.id;
+            shopCtx = '\n\n★ CATALOGUE ACTION ARCHIVE — reproduction neuve équivalente EN VENTE : « ' + shopItem.nom + ' » (' + (shopItem.collection || '—') + (shopItem.annee ? ' · ' + shopItem.annee : '') + ') — PRIX BOUTIQUE : ' + shopItem.prix.toFixed(2).replace('.', ',') + ' € — lien : ' + linkRel + '\nLigne REPRODUCTION : donne EXACTEMENT ce prix et cite ce lien relatif tel quel.';
+            results.unshift({ title: 'Action Archive — ' + shopItem.nom, url: 'https://' + hostHeader + '/' + linkRel, snippet: 'Reproduction neuve en vente sur le site' });
         }
 
         // 3) Réponse finale
