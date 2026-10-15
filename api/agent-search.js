@@ -1,13 +1,13 @@
-// api/agent-search.js — Groq (texte) · Gemini (photos) · DuckDuckGo 2 passes + prix réels + catalogue
+// api/agent-search.js — Cerveau: Groq (gratuit) · Photos: Gemini (gratuit) · DuckDuckGo 2 passes + prix réels + catalogue
 const SYSTEM_PROMPT = `Tu es Action Archive-Bot, un expert mondial en jouets vintage, figurines de collection et rétrogaming des années 1970 à 2000. Ton but : aider l'utilisateur à identifier des jouets, estimer leur rareté, leur état (Loose, MIB, NRFB) et leur valeur historique.
 
 RÈGLES D'ESTIMATION (primordiales) :
-- Deux vagues de recherche ont été menées : une pour l'identification, une pour le marché réel. Exploite-en tout.
+- Deux vagues de recherche ont été menées : identification, puis marché réel. Exploite-toutes.
 - Les PRIX OBSERVÉS (ventes soldées eBay en priorité) sont ta base ; cite la provenance. N'invente JAMAIS de nom d'outil interne ("readWebUrlTool", etc. interdits) — parle des "pages consultées".
 - Marchés SÉPARÉS pour un même jouet : (a) reproduction neuve, (b) original Loose, (c) original MIB/NRFB — en boîte complète, souvent 3 à 10 fois le Loose.
 - MIB/NRFB : fourchette dans la MOITIÉ SUPÉRIEURE des relevés (75e centile → max observé). Ne JAMAIS prendre le bas pour un exemplaire en boîte. ÉTIQUETTES obligatoires : "(fourchette basse du marché — ventes exceptionnelles au-dessus)" pour MIB/NRFB ; "(marché courant)" pour Loose.
 - Devise : convertis £/$ en € (1 £ ≈ 1,17 € ; 1 $ ≈ 0,92 €), devise d'origine entre parenthèses.
-- Reproduction : si une pièce de la MÊME marque/type est dans le CATALOGUE ACTION ARCHIVE, EXACTEMENT le prix boutique + son lien relatif ; doute de marque → ni lien ni prix catalogue.
+- Reproduction : si une pièce de la MÊME marque/type est dans le CATALOGUE ACTION ARCHIVE, EXACTEMENT le prix boutique + son lien (formulé "fiche produit", pas l'URL brute) ; doute de marque → ni lien ni prix catalogue.
 - Interdits : phrases génériques, rappels d'astuces, formules creuses. Seuls les chiffres concrets comptent.
 
 STYLE : français, passionné, 4 blocs, 16 lignes max : IDENTIFICATION · PRIX OBSERVÉS (avec provenance) · ESTIMATION (Reproduction / Loose / MIB-NRFB étiquetés) · CONSEIL (UNE ligne). "Aucun prix exploitable" → dis-le + fourchette indicative avec réserves. Ligne "Sources utilisées : ..." UNIQUEMENT si des sources ont servi ; sinon rien.`;
@@ -22,18 +22,18 @@ let modelsCache = null, textPick = null, catCache = null;
 const ddgCache = new Map();
 const priceCache = new Map();
 const CACHE_TTL = 60 * 60 * 1000;
-const BUDGET_MS = 8000; // garde-fou : au-delà, on saute la 2e passe
+const BUDGET_MS = 8000;
 
 async function getGroqModels() {
     if (modelsCache && Date.now() - modelsCache.t < 10 * 60 * 1000) return modelsCache.ids;
     const res = await fetch(GROQ_BASE + '/models', { headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY } });
     if (!res.ok) {
-        if (res.status === 401) throw new Error('Clé Groq INVALIDE — vérifie GROQ_API_KEY dans Vercel');
-        throw new Error('Modèles Groq indisponibles (HTTP ' + res.status + ')');
+        if (res.status === 401) throw new Error('Clé IA INVALIDE — vérifie GROQ_API_KEY dans Vercel');
+        throw new Error('Cerveau IA momentanément indisponible (HTTP ' + res.status + ')');
     }
     const data = await res.json();
     const ids = (data.data || []).map(x => x.id);
-    if (!ids.length) throw new Error('Ta clé Groq n\'expose aucun modèle');
+    if (!ids.length) throw new Error('La clé IA n\'expose aucun modèle');
     modelsCache = { t: Date.now(), ids };
     return ids;
 }
@@ -45,19 +45,30 @@ async function pickTextModel() {
     return textPick;
 }
 
+// ─── Appel cerveau : 2 tentatives + erreurs lisibles (sans jargon devant les visiteurs) ───
 async function chat(model, messages, maxTokens) {
-    const res = await fetch(GROQ_BASE + '/chat/completions', {
-        method: 'POST',
-        headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model, temperature: 0.55, max_tokens: maxTokens, messages })
-    });
-    const data = await res.json();
-    const content = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
-    if (!content) {
-        if ((data.error && data.error.code === 'model_not_found') || /model/i.test((data.error && data.error.message) || '')) textPick = null;
-        throw new Error((data.error && data.error.message) || 'Réponse Groq vide');
+    let lastStatus = 0, lastRaw = '';
+    for (let attempt = 0; attempt < 2; attempt++) {
+        const res = await fetch(GROQ_BASE + '/chat/completions', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ model, temperature: 0.55, max_tokens: maxTokens, messages })
+        });
+        let data = {};
+        try { data = await res.json(); } catch (e) {}
+        const content = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+        if (content) return content;
+        lastStatus = res.status;
+        lastRaw = (data.error && data.error.message) || (JSON.stringify(data) || '').slice(0, 200);
+        if ((data.error && data.error.code === 'model_not_found') || /model/i.test(lastRaw)) textPick = null;
+        console.error('brain error (essai ' + (attempt + 1) + ', modèle ' + model + ') : HTTP ' + lastStatus + ' — ' + lastRaw);
+        if (res.status === 429 || lastStatus >= 500 || !lastRaw) {
+            await new Promise(r => setTimeout(r, attempt === 0 ? 900 : 400));
+            continue;
+        }
+        break;
     }
-    return content;
+    throw new Error('Le cerveau de l\'agent n\'a pas répondu pour le moment (réessaie dans un instant — code ' + lastStatus + ')');
 }
 
 // ─── Gemini vision ───
@@ -194,19 +205,14 @@ async function passFetch(query, results, withText) {
     const prices = [], texts = [];
     for (let i = 0; i < settled.length && prices.length < 16; i++) {
         if (settled[i].status !== 'fulfilled' || !settled[i].value) continue;
-        extractPrices(settled[i].value).forEach(p => {
-            let pe = p;
-            if (/COM/.test(targets[i].src)) pe = p * 0.92;   // $→€
-            else if (/FR/.test(targets[i].src)) pe = pe;      // €
-            prices.push({ p: Math.round(pe * 100) / 100, src: targets[i].src });
-        });
+        extractPrices(settled[i].value).forEach(p => prices.push({ p, src: targets[i].src }));
         if (withText && texts.length < 2) texts.push(settled[i].value.slice(0, 600));
     }
     prices.sort((a, b) => a.p - b.p);
     return { prices: prices.slice(0, 16), texts };
 }
 
-// ─── Passe d'affinage : identification précise + requête marché optimale ───
+// ─── Passe d'affinage ───
 async function refinePass(query, imgDesc, snippets) {
     try {
         const model = await pickTextModel();
@@ -277,7 +283,7 @@ module.exports = async (req, res) => {
     if (req.method !== 'POST') return res.status(405).json({ error: 'Utilise POST' });
     const t0 = Date.now();
     try {
-        if (!process.env.GROQ_API_KEY) return res.status(500).json({ error: 'Clé GROQ_API_KEY absente dans Vercel (Environment Variables)' });
+        if (!process.env.GROQ_API_KEY) return res.status(500).json({ error: 'Clé IA absente dans Vercel (Environment Variables : GROQ_API_KEY)' });
         const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
         const query = String(body.query || '').slice(0, 300).trim();
         const imageData = typeof body.image === 'string' && body.image.startsWith('data:image/') ? body.image : null;
@@ -288,9 +294,9 @@ module.exports = async (req, res) => {
 
         const hostHeader = (req.headers && (req.headers['x-forwarded-host'] || req.headers.host)) || 'www.actionarchive.ink';
 
-        // ─── PASSE 1 : identification (photo + recherche en parallèle) ───
+        // ─── PASSE 1 : identification ───
         let imgDesc = '', photoNote = '';
-        let p1 = await Promise.all([
+        const p1 = await Promise.all([
             imageData && process.env.GEMINI_API_KEY
                 ? geminiVision(imageData, 'Identifie cette pièce de collection vintage (figurine, jouet ou boîte : type, marque/fabricant probable, époque, état apparent, variantes visibles). Indique si l\'objet semble être une impression neuve (reproduction) ou un vintage d\'origine. Français, 7 lignes max. Marque incertaine ? Écris-le, ne conjecture pas.')
                 : Promise.resolve(''),
@@ -304,7 +310,7 @@ module.exports = async (req, res) => {
 
         const harv1 = await passFetch(query || 'figurine vintage', results1, true);
 
-        // ─── PASSE 2 : affinage + requête marché + ventes soldées ciblées ───
+        // ─── PASSE 2 : affinage + marché ───
         let refineId = '', results2 = [], harv2 = { prices: [], texts: [] };
         if (Date.now() - t0 < BUDGET_MS) {
             const r = await refinePass(query, imgDesc, (harv1.texts || []).join('\n'));
@@ -316,16 +322,15 @@ module.exports = async (req, res) => {
             }
         }
 
-        // ─── Fusion : contextes, sources, prix ───
+        // ─── Fusion ───
         const seen = new Set(); const merged = [];
         [...results1, ...results2].forEach(r => { if (!seen.has(r.url)) { seen.add(r.url); merged.push(r); } });
-        const allPrices = [...harv1.prices, ...harv2.prices];
-        const pk = {}; allPrices.forEach(x => { pk[x.p + '|' + x.src] = x; });
+        const pk = {}; [...harv1.prices, ...harv2.prices].forEach(x => { pk[x.p + '|' + x.src] = x; });
         const prices = Object.values(pk).sort((a, b) => a.p - b.p).slice(0, 16);
 
         let context = '';
         if (merged.length) {
-            context = '\n\nRésultats de recherche web (DuckDuckGo, 2 passes) :\n' +
+            context = '\n\nRésultats de recherche web (2 passes) :\n' +
                 merged.slice(0, 8).map((r, i) => `[${i + 1}] ${r.title}\n${r.url}\n${r.snippet}`).join('\n');
         } else {
             context = '\n\n(Aucun résultat web — réponds avec ton expertise en le signalant.)';
@@ -337,7 +342,7 @@ module.exports = async (req, res) => {
             const med = arr[Math.floor(arr.length / 2)];
             const p75 = arr[Math.floor(arr.length * 0.75)];
             const max = arr[arr.length - 1];
-            priceCtx = '\n\nPRIX OBSERVÉS (' + arr.length + ' relevés, ventes soldées eBay en priorité — triés croissant) : min ' + arr[0].toFixed(2).replace('.', ',') + ' € · médiane ' + med.toFixed(2).replace('.', ',') + ' € · 75e centile ' + p75.toFixed(2).replace('.', ',') + ' € · maximum ' + max.toFixed(2).replace('.', ',') + ' €\n' +
+            priceCtx = '\n\nPRIX OBSERVÉS (' + arr.length + ' relevés, ventes soldées en priorité — triés croissant) : min ' + arr[0].toFixed(2).replace('.', ',') + ' € · médiane ' + med.toFixed(2).replace('.', ',') + ' € · 75e centile ' + p75.toFixed(2).replace('.', ',') + ' € · maximum ' + max.toFixed(2).replace('.', ',') + ' €\n' +
                 prices.map(pr => '• ' + pr.p.toFixed(2).replace('.', ',') + ' € ← ' + pr.src).join('\n') +
                 '\n(MIB/NRFB = zone 75e centile → maximum ; Loose = zone basse/médiane.)';
         } else {
@@ -350,7 +355,7 @@ module.exports = async (req, res) => {
         let shopCtx = '';
         if (shopItem) {
             const linkRel = 'produit.html?id=' + shopItem.id;
-            shopCtx = '\n\n★ CATALOGUE ACTION ARCHIVE — reproduction neuve équivalente EN VENTE : « ' + shopItem.nom + ' » (' + (shopItem.collection || '—') + ') — PRIX BOUTIQUE : ' + shopItem.prix.toFixed(2).replace('.', ',') + ' € — lien : ' + linkRel + '\nLigne REPRODUCTION : EXACTEMENT ce prix + ce lien relatif (reformulé en un mot, "fiche produit", pas l\'URL brute).';
+            shopCtx = '\n\n★ CATALOGUE ACTION ARCHIVE — reproduction neuve équivalente EN VENTE : « ' + shopItem.nom + ' » (' + (shopItem.collection || '—') + ') — PRIX BOUTIQUE : ' + shopItem.prix.toFixed(2).replace('.', ',') + ' € — lien : ' + linkRel + '\nLigne REPRODUCTION : EXACTEMENT ce prix + cite ce lien en écrivant "fiche produit" (pas l\'URL brute).';
             results1.unshift({ title: 'Action Archive — ' + shopItem.nom, url: 'https://' + hostHeader + '/' + linkRel, snippet: 'Reproduction neuve en vente sur le site' });
         }
 
