@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <meta name="description" content="Expert Jouets Vintage : pose tes questions sur les figurines des années 70-90, identification, rareté et estimation de valeur."/>
+    <meta name="description" content="Expert Jouets Vintage : pose tes questions (ou joins une photo) sur les figurines des années 70-90 : identification, rareté, estimation."/>
     <title>Expert Jouets Vintage - Action Archive</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,900;1,700;1,900&family=Work+Sans:wght@400;500;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
@@ -98,6 +98,7 @@
         .aa-msg-h{ font-family:'Epilogue',sans-serif; font-weight:900; font-style:italic; text-transform:uppercase; font-size:.6rem; letter-spacing:.12em; margin-bottom:.4rem; display:flex; align-items:center; gap:.35rem; color:var(--red); }
         .aa-msg.user .aa-msg-h{ color:var(--yellow); }
         .aa-msg-h .material-symbols-outlined{ font-size:13px; }
+        .aa-msg-img{ display:block; max-width:130px; max-height:130px; border:2px solid var(--ink); margin-bottom:.5rem; }
         .aa-srcs{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.8rem; padding-top:.7rem; border-top:2px dashed rgba(52,46,30,.3); }
         .aa-src{ font-family:'Space Mono',monospace; font-weight:700; font-size:.62rem; color:var(--ink); background:var(--cream2); border:2px solid var(--ink); padding:.3rem .6rem; max-width:210px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-decoration:none; display:inline-flex; align-items:center; gap:.3rem; transition:all .15s ease; }
         .aa-src:hover{ background:var(--yellow); transform:translateY(-1px); }
@@ -108,12 +109,20 @@
         .aa-typing .dots i:nth-child(2){ animation-delay:.15s; }
         .aa-typing .dots i:nth-child(3){ animation-delay:.3s; }
         @keyframes aaDot{ 0%,100%{ transform:translateY(0); opacity:.4; } 50%{ transform:translateY(-5px); opacity:1; } }
+        .aa-photo-preview{ display:flex; align-items:center; gap:.7rem; margin-top:1rem; font-family:'Space Mono',monospace; font-size:.66rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--on-surface-variant); }
+        .aa-photo-preview img{ width:52px; height:52px; object-fit:cover; border:3px solid var(--ink); box-shadow:3px 3px 0 var(--red); }
+        .aa-photo-x{ background:var(--ink); color:var(--yellow); border:none; width:26px; height:26px; cursor:pointer; font-weight:900; }
+        .aa-photo-x:hover{ background:var(--red); color:#fff; }
         .aa-inputrow{ display:flex; gap:.7rem; margin-top:1.1rem; }
+        .aa-photo-btn{ width:58px; flex:none; background:var(--cream); color:var(--ink); border:3px solid var(--ink); box-shadow:4px 4px 0 var(--olive); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .15s ease; }
+        .aa-photo-btn:hover{ background:var(--yellow); transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--red); }
         .aa-chat-input{ flex:1; border:3px solid var(--ink); padding:.9rem 1rem; font-weight:700; font-size:.95rem; background:var(--cream); font-family:'Work Sans',sans-serif; color:var(--ink); box-shadow:4px 4px 0 var(--red); transition:all .15s ease; }
         .aa-chat-input:focus{ outline:none; box-shadow:4px 4px 0 var(--blue); transform:translate(-2px,-2px); }
         .aa-send{ width:58px; flex:none; background:var(--yellow); color:var(--ink); border:3px solid var(--ink); box-shadow:4px 4px 0 var(--ink); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .15s ease; }
         .aa-send:hover{ background:var(--red); color:var(--yellow); transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--blue); }
         .aa-send:disabled{ opacity:.5; cursor:not-allowed; transform:none; }
+        .aa-send.aa-sending{ animation:aaPulse .8s infinite; }
+        @keyframes aaPulse{ 0%,100%{ transform:scale(1);} 50%{ transform:scale(1.08);} }
         .aa-chips{ display:flex; flex-wrap:wrap; gap:.5rem; justify-content:center; margin-top:1.1rem; }
         .aa-chip{ font-family:'Space Mono',monospace; font-weight:700; font-size:.64rem; text-transform:uppercase; letter-spacing:.03em; background:var(--cream); color:var(--ink); border:2px solid var(--ink); box-shadow:3px 3px 0 var(--red); padding:.45rem .75rem; cursor:pointer; transition:all .15s ease; }
         .aa-chip:hover{ background:var(--yellow); transform:translate(-2px,-2px); box-shadow:5px 5px 0 var(--blue); }
@@ -217,14 +226,14 @@
     <main class="container mx-auto px-6 py-10 min-h-screen">
         <div class="aa-eyebrow reveal">
             <span class="material-symbols-outlined">smart_toy</span>
-            <span>AGENT IA — RECHERCHE DUCKDUCKGO</span>
+            <span>AGENT IA — PHOTO & RECHERCHE DUCKDUCKGO</span>
         </div>
         <h1 class="aa-agent-title">
             <span class="line"><span class="line-in">EXPERT</span></span>
             <span class="line"><span class="line-in"><span class="aa-agent-tag">JOUETS VINTAGE</span></span></span>
         </h1>
         <p class="text-center font-body font-bold max-w-2xl mx-auto mb-6" style="color:var(--on-surface-variant);">
-            Identifie tes figurines, évalue la rareté (Loose, MIB, NRFB) et obtiens une estimation de valeur, appuyée sur une recherche web en direct. Estimations indicatives, pas une cote officielle.
+            Identifie tes figurines (photo acceptée), évalue la rareté (Loose, MIB, NRFB) et obtiens une estimation de valeur. Estimations indicatives, pas une cote officielle.
         </p>
 
         <div class="aa-chat-wrap">
@@ -236,8 +245,16 @@
                 <button class="aa-chip" data-q="Différence de valeur entre Loose, MIB et NRFB pour un Big Jim de 1980 ?">LOOSE / MIB / NRFB ?</button>
             </div>
 
+            <div id="aaPhotoPreview" class="aa-photo-preview" style="display:none;">
+                <img id="aaPhotoThumb" alt="Aperçu photo"/>
+                <span>Photo jointe — elle sera analysée</span>
+                <button id="aaPhotoRemove" class="aa-photo-x" aria-label="Retirer la photo">✕</button>
+            </div>
+
             <div class="aa-inputrow">
-                <input type="text" id="aaChatInput" class="aa-chat-input" placeholder="Pose ta question : pièce, rareté, valeur…" maxlength="300" autocomplete="off"/>
+                <button id="aaPhotoBtn" class="aa-photo-btn" aria-label="Joindre une photo"><span class="material-symbols-outlined">add_photo_alternate</span></button>
+                <input type="file" id="aaPhotoInput" accept="image/*" style="display:none;"/>
+                <input type="text" id="aaChatInput" class="aa-chat-input" placeholder="Pose ta question ou joins une photo…" maxlength="300" autocomplete="off"/>
                 <button id="aaSend" class="aa-send" aria-label="Envoyer"><span class="material-symbols-outlined">send</span></button>
             </div>
             <button class="aa-clear" id="aaClear">✕ Effacer la conversation</button>
@@ -323,27 +340,53 @@
         }
     })();
 
-    /* ═══ LE CHAT ═══ */
+    /* ═══ LE CHAT (texte + photo) ═══ */
     (function(){
         const box=document.getElementById('aaChat'), input=document.getElementById('aaChatInput'), sendBtn=document.getElementById('aaSend');
+        const photoBtn=document.getElementById('aaPhotoBtn'), photoInput=document.getElementById('aaPhotoInput'),
+              photoPrev=document.getElementById('aaPhotoPreview'), photoThumb=document.getElementById('aaPhotoThumb'),
+              photoX=document.getElementById('aaPhotoRemove');
         const STORE='aa_agent_history';
-        let history=[], loading=false, typingEl=null;
+        let history=[], loading=false, typingEl=null, pendingPhoto=null;
+
+        /* Photo : bouton joindre + réduction à 1024px + aperçu */
+        photoBtn.addEventListener('click',()=>photoInput.click());
+        photoInput.addEventListener('change',()=>{
+            const f=photoInput.files && photoInput.files[0]; if(!f) return;
+            const reader=new FileReader();
+            reader.onload=e=>{
+                const img=new Image();
+                img.onload=()=>{
+                    const s=Math.min(1,1024/Math.max(img.width,img.height));
+                    const c=document.createElement('canvas');
+                    c.width=Math.round(img.width*s); c.height=Math.round(img.height*s);
+                    c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+                    pendingPhoto=c.toDataURL('image/jpeg',0.82);
+                    photoThumb.src=pendingPhoto; photoPrev.style.display='flex';
+                };
+                img.src=e.target.result;
+            };
+            reader.readAsDataURL(f);
+            photoInput.value='';
+        });
+        photoX.addEventListener('click',()=>{ pendingPhoto=null; photoPrev.style.display='none'; });
 
         function fmt(t){
             return aaEscapeHtml(t).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
         }
         function scrollBottom(){ box.scrollTop=box.scrollHeight; }
 
-        function addBubble(kind, text, sources){
+        function addBubble(kind, text, sources, photo){
             const d=document.createElement('div');
             if(kind==='error'){
                 d.className='aa-msg error'; d.innerHTML='<span class="material-symbols-outlined" style="font-size:16px;vertical-align:-4px;">warning</span> '+aaEscapeHtml(text);
             } else {
                 d.className='aa-msg '+kind;
-                const tag = kind==='user'
+                let html = (kind==='user'
                     ? '<div class="aa-msg-h"><span class="material-symbols-outlined">person</span>TOI</div>'
-                    : '<div class="aa-msg-h"><span class="material-symbols-outlined">smart_toy</span>AA-EXPERT</div>';
-                let html = tag + '<div>'+fmt(text)+'</div>';
+                    : '<div class="aa-msg-h"><span class="material-symbols-outlined">smart_toy</span>AA-EXPERT</div>')
+                    + '<div>'+fmt(text)+'</div>';
+                if(kind==='user' && photo){ html='<img class="aa-msg-img" src="'+photo+'" alt="Photo jointe">'+html; }
                 if(kind==='bot' && sources && sources.length){
                     html += '<div class="aa-srcs">'+sources.map(s=>
                         `<a class="aa-src" href="${aaEscapeHtml(s.url)}" target="_blank" rel="noopener" title="${aaEscapeHtml(s.title)}"><span class="material-symbols-outlined">link</span>${aaEscapeHtml((s.title||'Source').slice(0,42))}</a>`
@@ -359,7 +402,7 @@
             typingEl=document.createElement('div'); typingEl.className='aa-msg bot';
             typingEl.innerHTML='<div class="aa-msg-h"><span class="material-symbols-outlined">smart_toy</span>AA-EXPERT</div><div class="aa-typing"><span class="lbl">'+aaEscapeHtml(label)+'</span><span class="dots"><i></i><i></i><i></i></span></div>';
             box.appendChild(typingEl); scrollBottom();
-            typingEl._sw=setTimeout(()=>{ if(typingEl){ const l=typingEl.querySelector('.lbl'); if(l) l.textContent='Lecture experte des résultats…'; } },2500);
+            typingEl._sw=setTimeout(()=>{ if(typingEl){ const l=typingEl.querySelector('.lbl'); if(l) l.textContent=pendingPhoto?'Analyse de la photo…':'Lecture experte des résultats…'; } },2500);
         }
         function hideTyping(){ if(typingEl){ clearTimeout(typingEl._sw); typingEl.remove(); typingEl=null; } }
 
@@ -367,7 +410,7 @@
 
         function renderSaved(){
             if(history.length===0){
-                addBubble('bot',"Salut, collectionneur ! Je suis l'expert Action Archive. Décris ta pièce (nom, année, marque, état : Loose / MIB / NRFB) et je la recherche en direct pour t'aider à l'identifier et estimer sa valeur. Une question ? Je fouille le web pour toi. 🔎");
+                addBubble('bot',"Salut, collectionneur ! Je suis l'expert Action Archive. Décris ta pièce (nom, année, marque, état : Loose / MIB / NRFB) — ou **joins une photo**, je la reconnais puis la recherche en direct pour estimer sa valeur. 🔎");
             } else {
                 history.forEach(h=>addBubble(h.role==='user'?'user':'bot', h.content));
             }
@@ -375,13 +418,16 @@
 
         async function ask(q){
             if(loading) return;
-            q=(q||'').trim(); if(!q) return;
-            loading=true; sendBtn.disabled=true;
-            history.push({role:'user',content:q}); addBubble('user',q); save();
+            q=(q||'').trim();
+            if(!q && !pendingPhoto) return;
+            loading=true; sendBtn.disabled=true; sendBtn.classList.add('aa-sending');
+            history.push({role:'user',content: q || 'Identifie cette pièce en photo'});
+            addBubble('user', q || '(photo jointe)', null, pendingPhoto); save();
             input.value='';
+            photoPrev.style.display='none';
             showTyping('Recherche DuckDuckGo…');
             try{
-                const res=await fetch('/api/agent-search',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ query:q, history:history.slice(-7) }) });
+                const res=await fetch('/api/agent-search',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ query:q, history:history.slice(-7), image:pendingPhoto }) });
                 const data=await res.json();
                 hideTyping();
                 if(!res.ok || !data.reply){ throw new Error(data.error||"Le serveur n'a pas répondu"); }
@@ -391,7 +437,8 @@
                 hideTyping();
                 addBubble('error','Recherche impossible : '+err.message+' — réessaie dans un instant.');
             }finally{
-                loading=false; sendBtn.disabled=false;
+                loading=false; sendBtn.disabled=false; sendBtn.classList.remove('aa-sending');
+                pendingPhoto=null;
             }
         }
 
