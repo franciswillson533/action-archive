@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <meta name="description" content="Fiche produit Action Archive : reproduction de boîte vintage ou création custom pour figurines de collection — photo, prix, ajout au panier."/>
+    <meta name="description" content="Fiche produit Action Archive : reproduction de boîte vintage ou création custom pour figurines de collection — photo, prix, ajout au panier, pièces proches."/>
     <title>Produit - Action Archive</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,900;1,700;1,900&family=Work+Sans:wght@400;500;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
@@ -107,7 +107,6 @@
         #aa-product-name{ font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; color:var(--ink); letter-spacing:-.03em; line-height:.95; font-size:clamp(2rem,4.5vw,3.2rem); margin-bottom:.75rem; }
         #aa-product-price{ font-size:3rem; }
         #aa-product-collection{ font-family:'Work Sans',sans-serif; font-weight:800; text-transform:uppercase; letter-spacing:.14em; font-size:.8rem; color:var(--olive); }
-        /* Description en grand : ton choix d'origine conservé */
         #aa-product-desc{ font-size:1.6rem !important; line-height:1.45 !important; font-weight:500; color:var(--ink); }
         .aa-info-box{ background:var(--blue); border:4px solid var(--ink); box-shadow:4px 4px 0 var(--ink); padding:1.1rem 1.3rem; display:flex; gap:.9rem; align-items:center; }
         .aa-info-box .aa-ico-chip{ background:var(--cream); color:var(--ink); border:2.5px solid var(--ink); width:42px; height:42px; flex:none; display:flex; align-items:center; justify-content:center; transform:rotate(-5deg); }
@@ -125,6 +124,25 @@
         .aa-add-btn .material-symbols-outlined{ transition:transform .2s ease; }
         .aa-add-btn:disabled{ animation:none; opacity:.5; cursor:not-allowed; transform:none; }
         @keyframes urgentBlink{ 0%,100%{ transform:scale(1); box-shadow:6px 6px 0 var(--ink);} 50%{ transform:scale(1.02); box-shadow:8px 8px 0 var(--yellow);} }
+
+        /* ============ 7b. PIÈCES PROCHES (mêmes critères / même époque) ============ */
+        .aa-similar{ margin-top:3.5rem; }
+        .aa-sim-title{ font-family:'Epilogue',sans-serif; font-weight:900; font-style:italic; text-transform:uppercase; color:var(--ink); font-size:clamp(1.3rem,2.8vw,1.8rem); display:flex; align-items:center; gap:.8rem; margin-bottom:.4rem; }
+        .aa-sim-line{ flex:1; height:4px; background:var(--ink); min-width:30px; }
+        .aa-sim-star{ color:var(--red); font-size:1.1rem; flex:none; }
+        .aa-sim-sub{ font-family:'Work Sans',sans-serif; color:var(--on-surface-variant); font-style:italic; font-weight:600; font-size:.85rem; margin-bottom:1.2rem; }
+        .aa-sim-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:1rem; }
+        .aa-sim-card{ display:flex; flex-direction:column; gap:.4rem; background:var(--cream); border:3px solid var(--ink); box-shadow:4px 4px 0 var(--shc,var(--red)); padding:.55rem; text-decoration:none; transition:transform .18s ease, box-shadow .18s ease, background .18s ease; }
+        .aa-sim-card:hover{ transform:translateY(-4px); box-shadow:6px 8px 0 var(--shc,var(--red)); background:var(--cream2); }
+        .aa-sim-img{ aspect-ratio:3/4; border:2px solid var(--ink); overflow:hidden; background:var(--cream4); }
+        .aa-sim-img img{ width:100%; height:100%; object-fit:cover; display:block; transition:transform .35s cubic-bezier(.22,1,.36,1); }
+        .aa-sim-card:hover .aa-sim-img img{ transform:scale(1.07); }
+        .aa-sim-name{ font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:.68rem; line-height:1.15; color:var(--ink); }
+        .aa-sim-card:hover .aa-sim-name{ color:var(--red); }
+        .aa-sim-meta{ font-family:'Space Mono',monospace; font-size:.55rem; font-weight:700; color:var(--on-surface-variant); letter-spacing:.04em; }
+        .aa-sim-price{ font-family:'Epilogue',sans-serif; font-weight:900; color:var(--blue); font-size:.88rem; }
+        .aa-sim-card.aa-sim-vendu{ opacity:.75; }
+        .aa-sim-card.aa-sim-vendu .aa-sim-img{ filter:grayscale(.85); }
 
         /* ============ 8. LIGHTBOX (image plein écran) ============ */
         .aa-lightbox{ position:fixed; inset:0; background:rgba(52,46,30,.96); z-index:2000; display:none; align-items:center; justify-content:center; padding:2rem; }
@@ -158,6 +176,10 @@
         /* ============ 10. RESPONSIVE ============ */
         @media (max-width: 1024px){
             .zoom-container{ box-shadow:8px 8px 0 var(--ink); }
+            /* pièces proches = carrousel horizontal sur tablette/mobile */
+            .aa-sim-grid{ display:flex; overflow-x:auto; gap:.8rem; padding-bottom:.5rem; scrollbar-width:none; scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch; }
+            .aa-sim-grid::-webkit-scrollbar{ display:none; }
+            .aa-sim-card{ flex:0 0 42vw; max-width:190px; min-width:132px; scroll-snap-align:start; }
         }
         @media (max-width: 768px){
             #aa-product-desc{ font-size:1.15rem !important; line-height:1.5 !important; }
@@ -165,6 +187,7 @@
         @media (max-width: 480px){
             #aa-product-price{ font-size:2.4rem; }
             .aa-buy-card{ padding:1.1rem; }
+            .aa-sim-card{ flex:0 0 46vw; min-width:124px; }
         }
         @media (prefers-reduced-motion: reduce){
             *, *::before, *::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
@@ -198,7 +221,7 @@
         </div>
     </div>
 
-    <!-- ═══ HEADER ============ -->
+    <!-- ═══ HEADER ═══ -->
     <header class="aa-header w-full z-50 sticky top-0">
         <div class="flex justify-between items-center w-full px-6 py-3.5 max-w-screen-2xl mx-auto">
             <a href="index.html" class="aa-logo-link flex items-center gap-3 group" title="Retour à l'accueil">
@@ -308,6 +331,13 @@
                     </div>
                 </div>
             </div>
+
+            <!-- ═══ PIÈCES PROCHES (mêmes critères / même époque) ═══ -->
+            <div class="aa-similar" id="aa-similar" style="display:none;">
+                <h2 class="aa-sim-title">Pièces proches <span class="aa-sim-line"></span><span class="aa-sim-star">✦</span></h2>
+                <p class="aa-sim-sub">Même collection ou même époque — clique pour découvrir.</p>
+                <div class="aa-sim-grid" id="aa-similar-grid"></div>
+            </div>
         </div>
     </main>
 
@@ -346,6 +376,7 @@
     let currentProduct = null;
     let currentQty = 1;
     let currentImgRecto = null;
+    let allRecords = [];                          // tout le catalogue (pour les pièces proches)
 
     function changeQty(delta) {
         currentQty = Math.max(1, currentQty + delta);
@@ -403,6 +434,11 @@
         return null;
     }
 
+    function thUrl(url, w) { // miniature optimisée (Cloudinary)
+        if (!url || !url.includes('cloudinary') || url.includes('f_auto')) return url;
+        return url.replace('/image/upload/', '/image/upload/f_auto,q_auto,w_' + w + ',c_fill/');
+    }
+
     const API_URL = '/api/airtable-proxy';
 
     async function loadProduct() {
@@ -416,9 +452,10 @@
             const response = await fetch(API_URL);
             if (!response.ok) throw new Error('HTTP ' + response.status);
             const records = await response.json();
-            const record = records.find(r => String(r.id) === String(productId));
+            allRecords = Array.isArray(records) ? records : [];
+            const record = allRecords.find(r => String(r.id) === String(productId));
             if (!record) {
-                document.getElementById('aa-loading').innerHTML = `<p class="font-bold" style="color:#bb0003;">Produit introuvable.</p><p class="text-sm">ID: ${productId} | ${records.length} produits chargés</p><a href="produits.html" class="aa-back-link mt-4" style="font-size:.75rem;padding:.5rem .9rem;">⟵ RETOUR AU CATALOGUE</a>`;
+                document.getElementById('aa-loading').innerHTML = `<p class="font-bold" style="color:#bb0003;">Produit introuvable.</p><p class="text-sm">ID: ${productId} | ${allRecords.length} produits chargés</p><a href="produits.html" class="aa-back-link mt-4" style="font-size:.75rem;padding:.5rem .9rem;">⟵ RETOUR AU CATALOGUE</a>`;
                 return;
             }
             currentProduct = record;
@@ -471,10 +508,67 @@
             } else {
                 badge.classList.add('bg-green-600', 'text-white');
             }
+
+            renderSimilar(productId, f);
         } catch (error) {
             console.error('Erreur chargement produit:', error);
             document.getElementById('aa-loading').innerHTML = `<p class="font-bold" style="color:#bb0003;">Impossible de charger le produit.</p><p class="text-sm mt-2 text-on-surface-variant">${error.message}</p><a href="produits.html" class="aa-back-link mt-4" style="font-size:.75rem;padding:.5rem .9rem;">⟵ RETOUR AU CATALOGUE</a>`;
         }
+    }
+
+    /* ═══ PIÈCES PROCHES : même collection, année proche, mots du nom en commun ═══ */
+    const simShadows = ['#bb0003', '#0f56bf', '#7b1fa2', '#755700'];
+    function renderSimilar(productId, f) {
+        const wrap = document.getElementById('aa-similar');
+        const grid = document.getElementById('aa-similar-grid');
+        if (!wrap || !grid) return;
+        const myYear = parseInt(f.Année) || 0;
+        const myDecade = myYear ? Math.floor(myYear / 10) * 10 : null;
+        const myType = detectProductType(f);
+        const myCol = (f.Collection || '').toLowerCase();
+        const myName = (f.Nom || '').toLowerCase();
+
+        const scored = allRecords
+            .filter(r => String(r.id) !== String(productId))
+            .map(r => {
+                const g = r.fields || r;
+                let sc = 0;
+                const col = (g.Collection || '').toLowerCase();
+                if (col && myCol && col === myCol) sc += 4;                 // même collection : priorité
+                const y = parseInt(g.Année) || 0;
+                if (y && myYear) {
+                    const d = Math.abs(y - myYear);
+                    if (d <= 2) sc += 3;                                     // ± 2 ans : production quasi identique
+                    else if (d <= 5) sc += 2;
+                    if (myDecade && Math.floor(y / 10) * 10 === myDecade) sc += 1;
+                }
+                if (detectProductType(g) === myType) sc += 1;
+                const gName = (g.Nom || '').toLowerCase();
+                let shared = gName.split(/[^a-z]+/).filter(w => w.length > 3 && myName.includes(w));
+                sc += Math.min(shared.length, 2);                            // mots du nom en commun (max 2)
+                const isVendu = g.Statut === 'Vendu' || g.Statut === 'Indisponible';
+                return { r, g, sc, isVendu, hasImg: !!(getImageUrl(g['Lien Recto']) || getImageUrl(g.Image)) };
+            })
+            .filter(x => x.sc > 0 && x.hasImg)
+            .sort((a, b) => b.sc - a.sc || (a.isVendu ? 1 : 0) - (b.isVendu ? 1 : 0));
+
+        const top = scored.slice(0, 5);
+        if (top.length === 0) { wrap.style.display = 'none'; return; }
+        grid.innerHTML = '';
+        top.forEach((x, i) => {
+            const g = x.g;
+            const img = getImageUrl(g['Lien Recto']) || getImageUrl(g.Image) || '';
+            const colText = aaEscapeHtml(g.Collection || '') + (g.Année ? ' • ' + aaEscapeHtml(String(g.Année)) : '');
+            grid.innerHTML += `<a class="aa-sim-card ${x.isVendu ? 'aa-sim-vendu' : ''}" href="produit.html?id=${x.r.id}" style="--shc:${simShadows[i % simShadows.length]};">
+                <div class="aa-sim-img"><img src="${aaEscapeAttr(thUrl(img, 420))}" alt="${aaEscapeHtml(g.Nom || 'Pièce')}" loading="lazy"></div>
+                <span class="aa-sim-name">${aaEscapeHtml(g.Nom || 'Sans nom')}</span>
+                <span class="aa-sim-meta">${colText}${x.isVendu ? ' • vendu' : ''}</span>
+                <span class="aa-sim-price">${typeof formatPrice === 'function' ? formatPrice(g.Prix) : (parseFloat(g.Prix) || 0).toFixed(2) + ' €'}</span>
+            </a>`;
+        });
+        wrap.style.display = 'block';
+        const io = ('IntersectionObserver' in window) ? new IntersectionObserver(en => { if (en[0].isIntersecting) { wrap.classList.add('in'); io.disconnect(); } }, { threshold: .1 }) : null;
+        if (io) io.observe(wrap); else wrap.classList.add('in');
     }
 
     loadProduct();
@@ -511,8 +605,8 @@
         addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; dot.style.transform=`translate(${mx-5}px,${my-5}px)`; },{passive:true});
         addEventListener('mousedown',()=>ring.classList.add('aa-press'));
         addEventListener('mouseup',()=>ring.classList.remove('aa-press'));
-        document.addEventListener('mouseover',e=>{ if(e.target.closest('a,button,.zoom-container')) ring.classList.add('aa-target'); });
-        document.addEventListener('mouseout',e=>{ if(e.target.closest('a,button,.zoom-container')) ring.classList.remove('aa-target'); });
+        document.addEventListener('mouseover',e=>{ if(e.target.closest('a,button,.zoom-container,.aa-sim-card')) ring.classList.add('aa-target'); });
+        document.addEventListener('mouseout',e=>{ if(e.target.closest('a,button,.zoom-container,.aa-sim-card')) ring.classList.remove('aa-target'); });
         (function loop(){ rx+=(mx-rx)*.18; ry+=(my-ry)*.18; ring.style.transform=`translate(${rx-ring.offsetWidth/2}px,${ry-ring.offsetHeight/2}px)`; requestAnimationFrame(loop); })();
     })();
 
