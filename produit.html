@@ -125,7 +125,7 @@
         .aa-add-btn:disabled{ animation:none; opacity:.5; cursor:not-allowed; transform:none; }
         @keyframes urgentBlink{ 0%,100%{ transform:scale(1); box-shadow:6px 6px 0 var(--ink);} 50%{ transform:scale(1.02); box-shadow:8px 8px 0 var(--yellow);} }
 
-        /* ============ 7b. PIÈCES PROCHES (mêmes critères / même époque) ============ */
+        /* ============ 7b. PIÈCES PROCHES ============ */
         .aa-similar{ margin-top:3.5rem; }
         .aa-sim-title{ font-family:'Epilogue',sans-serif; font-weight:900; font-style:italic; text-transform:uppercase; color:var(--ink); font-size:clamp(1.3rem,2.8vw,1.8rem); display:flex; align-items:center; gap:.8rem; margin-bottom:.4rem; }
         .aa-sim-line{ flex:1; height:4px; background:var(--ink); min-width:30px; }
@@ -144,7 +144,7 @@
         .aa-sim-card.aa-sim-vendu{ opacity:.75; }
         .aa-sim-card.aa-sim-vendu .aa-sim-img{ filter:grayscale(.85); }
 
-        /* ============ 8. LIGHTBOX (image plein écran) ============ */
+        /* ============ 8. LIGHTBOX ============ */
         .aa-lightbox{ position:fixed; inset:0; background:rgba(52,46,30,.96); z-index:2000; display:none; align-items:center; justify-content:center; padding:2rem; }
         .aa-lightbox.open{ display:flex; animation:fadeIn .3s ease; }
         .aa-lightbox img{ max-width:92vw; max-height:88vh; border:6px solid var(--ink); box-shadow:12px 12px 0 var(--yellow); background:var(--ink); object-fit:contain; }
@@ -176,7 +176,6 @@
         /* ============ 10. RESPONSIVE ============ */
         @media (max-width: 1024px){
             .zoom-container{ box-shadow:8px 8px 0 var(--ink); }
-            /* pièces proches = carrousel horizontal sur tablette/mobile */
             .aa-sim-grid{ display:flex; overflow-x:auto; gap:.8rem; padding-bottom:.5rem; scrollbar-width:none; scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch; }
             .aa-sim-grid::-webkit-scrollbar{ display:none; }
             .aa-sim-card{ flex:0 0 42vw; max-width:190px; min-width:132px; scroll-snap-align:start; }
@@ -332,7 +331,7 @@
                 </div>
             </div>
 
-            <!-- ═══ PIÈCES PROCHES (mêmes critères / même époque) ═══ -->
+            <!-- ═══ PIÈCES PROCHES ═══ -->
             <div class="aa-similar" id="aa-similar" style="display:none;">
                 <h2 class="aa-sim-title">Pièces proches <span class="aa-sim-line"></span><span class="aa-sim-star">✦</span></h2>
                 <p class="aa-sim-sub">Même collection ou même époque — clique pour découvrir.</p>
@@ -376,7 +375,7 @@
     let currentProduct = null;
     let currentQty = 1;
     let currentImgRecto = null;
-    let allRecords = [];                          // tout le catalogue (pour les pièces proches)
+    let allRecords = [];
 
     function changeQty(delta) {
         currentQty = Math.max(1, currentQty + delta);
@@ -434,7 +433,7 @@
         return null;
     }
 
-    function thUrl(url, w) { // miniature optimisée (Cloudinary)
+    function thUrl(url, w) {
         if (!url || !url.includes('cloudinary') || url.includes('f_auto')) return url;
         return url.replace('/image/upload/', '/image/upload/f_auto,q_auto,w_' + w + ',c_fill/');
     }
@@ -516,7 +515,7 @@
         }
     }
 
-    /* ═══ PIÈCES PROCHES : même collection, année proche, mots du nom en commun ═══ */
+    /* ═══ PIÈCES PROCHES ═══ */
     const simShadows = ['#bb0003', '#0f56bf', '#7b1fa2', '#755700'];
     function renderSimilar(productId, f) {
         const wrap = document.getElementById('aa-similar');
@@ -534,18 +533,18 @@
                 const g = r.fields || r;
                 let sc = 0;
                 const col = (g.Collection || '').toLowerCase();
-                if (col && myCol && col === myCol) sc += 4;                 // même collection : priorité
+                if (col && myCol && col === myCol) sc += 4;
                 const y = parseInt(g.Année) || 0;
                 if (y && myYear) {
                     const d = Math.abs(y - myYear);
-                    if (d <= 2) sc += 3;                                     // ± 2 ans : production quasi identique
+                    if (d <= 2) sc += 3;
                     else if (d <= 5) sc += 2;
                     if (myDecade && Math.floor(y / 10) * 10 === myDecade) sc += 1;
                 }
                 if (detectProductType(g) === myType) sc += 1;
                 const gName = (g.Nom || '').toLowerCase();
-                let shared = gName.split(/[^a-z]+/).filter(w => w.length > 3 && myName.includes(w));
-                sc += Math.min(shared.length, 2);                            // mots du nom en commun (max 2)
+                const shared = gName.split(/[^a-z]+/).filter(w => w.length > 3 && myName.includes(w));
+                sc += Math.min(shared.length, 2);
                 const isVendu = g.Statut === 'Vendu' || g.Statut === 'Indisponible';
                 return { r, g, sc, isVendu, hasImg: !!(getImageUrl(g['Lien Recto']) || getImageUrl(g.Image)) };
             })
@@ -573,7 +572,7 @@
 
     loadProduct();
 
-    /* ═══ LIGHTBOX image plein écran ═══ */
+    /* ═══ LIGHTBOX ═══ */
     (function(){
         const lb=document.getElementById('aa-lightbox'), lbImg=document.getElementById('aa-lightbox-img');
         function open(){ const src=document.getElementById('aa-main-img').src; if(!src) return; lbImg.src=src; lb.classList.add('open'); document.body.style.overflow='hidden'; }
@@ -594,7 +593,15 @@
         if (addBtn) addBtn.addEventListener('click', addCurrentToCart);
     });
 
-    /* ═══ Améliorations UI (identiques à index.html) ═══ */
+    /* ═══ Retour au catalogue = VRAI retour en arrière (scroll conservé) ═══ */
+    document.querySelectorAll('.aa-back-link').forEach(a => {
+        a.addEventListener('click', function(e) {
+            if (history.length > 1) { e.preventDefault(); history.back(); }
+            // sinon : arrivée directe sur la fiche → le href="produits.html" sert de secours
+        });
+    });
+
+    /* ═══ Améliorations UI ═══ */
     document.querySelectorAll('[data-dupe]').forEach(el=>{ el.innerHTML += el.innerHTML; });
 
     (function(){
