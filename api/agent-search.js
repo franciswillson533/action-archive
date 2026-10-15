@@ -65,8 +65,15 @@ async function geminiVision(dataUrl, prompt) {
             const parts = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts;
             const text = parts ? parts.map(p => p.text || '').join('') : '';
             if (text && text.trim()) return text.trim();
-            lastErr = (JSON.stringify(data) || '').slice(0, 200);
-        } catch (e) { lastErr = e.message; }
+            lastErr = 'HTTP ' + res.status + ' — ' + (JSON.stringify(data) || '').slice(0, 300);
+            // Si un modèle n'existe pas, on tente le suivant : mais si c'est un problème de clé/quota,
+            // on arrête tout de suite pour afficher la vraie cause
+            if (res.status === 400 && /API key|invalid/i.test(lastErr)) throw new Error(lastErr);
+            if (res.status === 403 || res.status === 429) throw new Error(lastErr);
+        } catch (e) {
+            if (String(e.message).includes('HTTP')) throw new Error(e.message);
+            lastErr = e.message;
+        }
     }
     throw new Error(lastErr || 'Gemini sans réponse');
 }
@@ -148,7 +155,7 @@ module.exports = async (req, res) => {
             .filter(h => h && (h.role === 'user' || h.role === 'assistant') && typeof h.content === 'string' && h.content.length < 2000)
             .slice(-6).map(h => ({ role: h.role, content: h.content }));
 
-        // 1) PHOTO → analyse par Gemini (vision)
+        // 1) PHOTO → analyse Gemini
         let imgDesc = '', photoNote = '';
         if (imageData) {
             if (process.env.GEMINI_API_KEY) {
@@ -159,12 +166,12 @@ module.exports = async (req, res) => {
                     imgDesc = ''; photoNote = 'Gemini a échoué : ' + e.message;
                 }
             } else {
-                photoNote = 'analyse photo impossible — ajoute GEMINI_API_KEY (gratuit : aistudio.google.com) dans Vercel pour activer la vision';
+                photoNote = 'La variable GEMINI_API_KEY est absente de Vercel — ajoute-la (gratuit : aistudio.google.com) pour activer les photos';
             }
         }
         const photoFailed = imageData && !imgDesc;
 
-        // 2) Recherche web (texte +identification de la photo)
+        // 2) Recherche web
         let searchQuery = (query + ' ' + imgDesc).trim().slice(0, 200);
         const results = await searchDDG(searchQuery || query || 'figurine vintage 1970 1980');
         const context = results.length
@@ -172,14 +179,13 @@ module.exports = async (req, res) => {
               results.map((r, i) => `[${i + 1}] ${r.title}\n${r.url}\n${r.snippet}`).join('\n')
             : '\n\n(Aucun résultat web disponible — réponds avec ton expertise en le signalant.)';
 
-        // 3) Réponse finale d'expert (Groq, texte — l'identification de la photo est incluse)
-        const question = (query || (imgDesc ? 'Estime la pièce analysée en photo.' : 'J\'ai joint une photo de ma pièce.')) +
-            (imgDesc ? '\n\nIdentification de la photo (analyse Gemini) : ' + imgDesc : '') +
-            (photoFailed ? '\n\nIMPORTANT : la photo n\'a PAS été analysée — motif : "' + photoNote + '". Mentionne-le brièvement et propose une description textuelle.' : '') + context;
-
+        // 3) Réponse finale (Groq) — puis l'erreur technique brute, NON paraphrasée
+        const question = (query || 'J\'ai joint une photo de ma pièce.') +
+            (imgDesc ? '\n\nIdentification de la photo (analyse Gemini) : ' + imgDesc : '') + context;
         const model = await pickTextModel();
-        const reply = await chat(model, [ { role: 'system', content: SYSTEM_PROMPT }, ...history, { role: 'user', content: question } ], 700);
+        let reply = await chat(model, [ { role: 'system', content: SYSTEM_PROMPT }, ...history, { role: 'user', content: question } ], 700);
 
+        if (photoFailed && photoNote) reply += '\n\n⚠️ Détail technique : ' + photoNote;
         return res.status(200).json({ reply, photoNote, sources: results.map(r => ({ title: r.title, url: r.url })) });
     } catch (err) {
         console.error('agent-search:', err);
