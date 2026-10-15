@@ -75,7 +75,10 @@
         .aa-barcode{ display:flex; align-items:flex-end; gap:1px; height:34px; color:var(--ink); }
         .aa-barcode i{ display:inline-block; background:currentColor; }
 
-        /* ============ 4. TÊTE DE PAGE ============ */
+        /* ============ 4. TÊTE DE PAGE + MASCOTTE ============ */
+        .aa-mascot-wrap{ display:flex; justify-content:center; margin-bottom:1rem; }
+        .aa-mascot{ width:110px; height:auto; filter:drop-shadow(4px 5px 0 var(--red)); animation:aaBob 4.5s ease-in-out infinite; }
+        @keyframes aaBob{ 0%,100%{ transform:translateY(0) rotate(-2deg);} 50%{ transform:translateY(-7px) rotate(2deg);} }
         .aa-eyebrow{ display:flex; align-items:center; gap:.55rem; font-family:'Space Mono',monospace; font-weight:700; font-size:.78rem; text-transform:uppercase; letter-spacing:.14em; color:var(--ink); margin-bottom:1rem; justify-content:center; }
         .aa-eyebrow .material-symbols-outlined{ font-size:17px; color:var(--red); font-variation-settings:'FILL' 1; }
         .aa-agent-title{ font-family:'Epilogue',sans-serif; font-weight:900; font-style:italic; text-transform:uppercase; color:var(--red); letter-spacing:-.02em; line-height:.98; font-size:clamp(2rem,4.5vw,3rem); text-align:center; margin-bottom:.5rem; }
@@ -93,16 +96,19 @@
         .aa-chat-box{ background:var(--cream3); border:4px solid var(--ink); box-shadow:10px 10px 0 var(--red); height:min(60vh,620px); overflow-y:auto; padding:1.25rem; display:flex; flex-direction:column; gap:1rem; }
         .aa-msg{ max-width:88%; padding:.9rem 1.1rem; border:3px solid var(--ink); font-family:'Work Sans',sans-serif; font-size:.95rem; line-height:1.55; animation:popIn .3s both; }
         .aa-msg.user{ align-self:flex-end; background:var(--ink); color:var(--cream); box-shadow:4px 4px 0 var(--red); border-top-right-radius:0; }
-        .aa-msg.bot{ align-self:flex-start; background:var(--cream); box-shadow:4px 4px 0 var(--red); border-top-left-radius:0; }
+        .aa-msg.bot{ position:relative; align-self:flex-start; background:var(--cream); box-shadow:4px 4px 0 var(--red); border-top-left-radius:0; padding-right:3.6rem; }
         .aa-msg.error{ align-self:center; background:#fff3cd; border-color:#ffaa00; text-align:center; font-size:.8rem; }
-        .aa-msg-h{ font-family:'Epilogue',sans-serif; font-weight:900; font-style:italic; text-transform:uppercase; font-size:.6rem; letter-spacing:.12em; margin-bottom:.4rem; display:flex; align-items:center; gap:.35rem; color:var(--red); }
+        .aa-msg-h{ font-family:'Epilogue',sans-serif; font-weight:900; font-style:italic; text-transform:uppercase; font-size:.6rem; letter-spacing:.12em; margin-bottom:.4rem; display:flex; align-items:center; gap:.4rem; color:var(--red); }
         .aa-msg.user .aa-msg-h{ color:var(--yellow); }
+        .aa-bot-ava{ width:20px; height:20px; border-radius:50%; border:2px solid var(--ink); object-fit:cover; flex:none; }
         .aa-msg-h .material-symbols-outlined{ font-size:13px; }
         .aa-msg-img{ display:block; max-width:130px; max-height:130px; border:2px solid var(--ink); margin-bottom:.5rem; }
         .aa-srcs{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.8rem; padding-top:.7rem; border-top:2px dashed rgba(52,46,30,.3); }
         .aa-src{ font-family:'Space Mono',monospace; font-weight:700; font-size:.62rem; color:var(--ink); background:var(--cream2); border:2px solid var(--ink); padding:.3rem .6rem; max-width:210px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-decoration:none; display:inline-flex; align-items:center; gap:.3rem; transition:all .15s ease; }
         .aa-src:hover{ background:var(--yellow); transform:translateY(-1px); }
         .aa-src .material-symbols-outlined{ font-size:12px; color:var(--red); }
+        .aa-copy{ position:absolute; top:7px; right:7px; font-family:'Space Mono',monospace; font-weight:700; font-size:.55rem; letter-spacing:.06em; text-transform:uppercase; background:var(--cream2); color:var(--on-surface-variant); border:2px dashed var(--ink); cursor:pointer; padding:.28rem .5rem; display:inline-flex; align-items:center; gap:.25rem; transition:all .15s ease; }
+        .aa-copy:hover{ background:var(--yellow); color:var(--ink); }
         .aa-typing{ display:flex; align-items:center; gap:.5rem; font-family:'Space Mono',monospace; font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--on-surface-variant); }
         .aa-typing .dots{ display:flex; gap:4px; }
         .aa-typing .dots i{ width:8px; height:8px; border-radius:50%; background:var(--red); animation:aaDot 1s infinite; }
@@ -114,8 +120,10 @@
         .aa-photo-x{ background:var(--ink); color:var(--yellow); border:none; width:26px; height:26px; cursor:pointer; font-weight:900; }
         .aa-photo-x:hover{ background:var(--red); color:#fff; }
         .aa-inputrow{ display:flex; gap:.7rem; margin-top:1.1rem; }
-        .aa-photo-btn{ width:58px; flex:none; background:var(--cream); color:var(--ink); border:3px solid var(--ink); box-shadow:4px 4px 0 var(--olive); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .15s ease; }
+        .aa-photo-btn{ width:58px; flex:none; background:var(--cream); color:var(--ink); border:3px solid var(--ink); box-shadow:4px 4px 0 var(--olive); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .15s ease; position:relative; }
         .aa-photo-btn:hover{ background:var(--yellow); transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--red); }
+        .aa-tip{ position:absolute; bottom:calc(100% + 10px); left:50%; transform:translateX(-50%); background:var(--ink); color:var(--yellow); border:2.5px solid var(--ink); box-shadow:3px 3px 0 var(--red); font-family:'Space Mono',monospace; font-weight:700; font-size:.6rem; text-transform:uppercase; letter-spacing:.06em; padding:.45rem .7rem; white-space:nowrap; opacity:0; pointer-events:none; transition:opacity .2s ease, transform .2s ease; z-index:20; }
+        .aa-photo-btn:hover .aa-tip, .aa-photo-btn:focus .aa-tip{ opacity:1; transform:translateX(-50%) translateY(-4px); }
         .aa-chat-input{ flex:1; border:3px solid var(--ink); padding:.9rem 1rem; font-weight:700; font-size:.95rem; background:var(--cream); font-family:'Work Sans',sans-serif; color:var(--ink); box-shadow:4px 4px 0 var(--red); transition:all .15s ease; }
         .aa-chat-input:focus{ outline:none; box-shadow:4px 4px 0 var(--blue); transform:translate(-2px,-2px); }
         .aa-send{ width:58px; flex:none; background:var(--yellow); color:var(--ink); border:3px solid var(--ink); box-shadow:4px 4px 0 var(--ink); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .15s ease; }
@@ -126,10 +134,14 @@
         .aa-chips{ display:flex; flex-wrap:wrap; gap:.5rem; justify-content:center; margin-top:1.1rem; }
         .aa-chip{ font-family:'Space Mono',monospace; font-weight:700; font-size:.64rem; text-transform:uppercase; letter-spacing:.03em; background:var(--cream); color:var(--ink); border:2px solid var(--ink); box-shadow:3px 3px 0 var(--red); padding:.45rem .75rem; cursor:pointer; transition:all .15s ease; }
         .aa-chip:hover{ background:var(--yellow); transform:translate(-2px,-2px); box-shadow:5px 5px 0 var(--blue); }
-        .aa-clear{ display:block; margin:.9rem auto 0; font-family:'Space Mono',monospace; font-weight:700; font-size:.62rem; letter-spacing:.08em; text-transform:uppercase; color:var(--on-surface-variant); background:none; border:none; cursor:pointer; }
-        .aa-clear:hover{ color:var(--red); }
 
-        /* ============ 6. FOOTER / BADGE ============ */
+        /* ============ 6. BOUTON EFFACER (clignotant) ============ */
+        .aa-clear-wrap{ text-align:center; margin-top:1.3rem; }
+        .aa-clear-btn{ display:inline-flex; align-items:center; gap:.55rem; background:var(--ink); color:var(--yellow); font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:1rem; letter-spacing:.03em; border:3px solid var(--ink); box-shadow:5px 5px 0 var(--red); padding:.85rem 1.5rem; cursor:pointer; animation:aaBlinkClear 1.4s ease-in-out infinite; transition:background .15s ease, color .15s ease; }
+        .aa-clear-btn:hover{ background:var(--red); color:var(--cream); }
+        @keyframes aaBlinkClear{ 0%,100%{ transform:scale(1); box-shadow:5px 5px 0 var(--red);} 50%{ transform:scale(1.06); box-shadow:8px 8px 0 var(--yellow);} }
+
+        /* ============ 7. FOOTER / BADGE ============ */
         footer.aa-footer{ background:var(--ink); border-top:8px double var(--olive); color:var(--cream); }
         .aa-social-link{ width:44px; height:44px; border:2.5px solid var(--yellow); color:var(--yellow); display:flex; align-items:center; justify-content:center; transition:all .2s ease; }
         .aa-social-link:hover{ background:var(--yellow); color:var(--ink); transform:translate(-2px,-2px); box-shadow:3px 3px 0 var(--red); }
@@ -142,10 +154,11 @@
         @keyframes giftPulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(255,202,77,.7);} 50%{ box-shadow:0 0 0 6px rgba(255,202,77,0);} }
         .aa-nav-stars.aa-has-gift{ border-color:var(--yellow) !important; color:var(--yellow) !important; animation:giftPulse 1.5s infinite; }
 
-        /* ============ 7. RESPONSIVE ============ */
+        /* ============ 8. RESPONSIVE ============ */
         @media (max-width: 900px){
             .aa-chat-box{ height:min(56vh,560px); padding:1rem; }
             .aa-msg{ max-width:94%; }
+            .aa-mascot{ width:88px; }
         }
         @media (prefers-reduced-motion: reduce){
             *, *::before, *::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
@@ -224,16 +237,19 @@
     </aside>
 
     <main class="container mx-auto px-6 py-10 min-h-screen">
-        <div class="aa-eyebrow reveal">
+        <div class="aa-mascot-wrap reveal">
+            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1792068823/Change_text_in_circle_2K_20261015145043_ror30z.png" alt="Expert Jouets — Action Archive" class="aa-mascot" loading="eager"/>
+        </div>
+        <div class="aa-eyebrow reveal" style="transition-delay:.1s;">
             <span class="material-symbols-outlined">smart_toy</span>
-            <span>AGENT IA — PHOTO & RECHERCHE DUCKDUCKGO</span>
+            <span>AGENT IA</span>
         </div>
         <h1 class="aa-agent-title">
             <span class="line"><span class="line-in">EXPERT</span></span>
             <span class="line"><span class="line-in"><span class="aa-agent-tag">JOUETS VINTAGE</span></span></span>
         </h1>
         <p class="text-center font-body font-bold max-w-2xl mx-auto mb-6" style="color:var(--on-surface-variant);">
-            Identifie tes figurines (photo acceptée), évalue la rareté (Loose, MIB, NRFB) et obtiens une estimation de valeur. Estimations indicatives, pas une cote officielle.
+            Identifie tes figurines (photo acceptée), Évalue la rareté (Loose, MIB, NRFB) et obtiens une estimation de valeur. Estimations indicatives, pas une cote officielle.
         </p>
 
         <div class="aa-chat-wrap">
@@ -252,12 +268,17 @@
             </div>
 
             <div class="aa-inputrow">
-                <button id="aaPhotoBtn" class="aa-photo-btn" aria-label="Joindre une photo"><span class="material-symbols-outlined">add_photo_alternate</span></button>
+                <button id="aaPhotoBtn" class="aa-photo-btn" aria-label="Joindre une photo">
+                    <span class="aa-tip" aria-hidden="true">Déposer ton image ici</span>
+                    <span class="material-symbols-outlined">add_photo_alternate</span>
+                </button>
                 <input type="file" id="aaPhotoInput" accept="image/*" style="display:none;"/>
                 <input type="text" id="aaChatInput" class="aa-chat-input" placeholder="Pose ta question ou joins une photo…" maxlength="300" autocomplete="off"/>
                 <button id="aaSend" class="aa-send" aria-label="Envoyer"><span class="material-symbols-outlined">send</span></button>
             </div>
-            <button class="aa-clear" id="aaClear">✕ Effacer la conversation</button>
+            <div class="aa-clear-wrap">
+                <button class="aa-clear-btn" id="aaClear"><span class="material-symbols-outlined">delete</span> EFFACER LA CONVERSATION</button>
+            </div>
         </div>
     </main>
 
@@ -347,6 +368,7 @@
               photoPrev=document.getElementById('aaPhotoPreview'), photoThumb=document.getElementById('aaPhotoThumb'),
               photoX=document.getElementById('aaPhotoRemove');
         const STORE='aa_agent_history';
+        const AGENT_LOGO='https://res.cloudinary.com/uvnbvhiw/image/upload/v1792068823/Change_text_in_circle_2K_20261015145043_ror30z.png';
         let history=[], loading=false, typingEl=null, pendingPhoto=null;
 
         /* Photo : bouton joindre + réduction à 1024px + aperçu */
@@ -384,7 +406,7 @@
                 d.className='aa-msg '+kind;
                 let html = (kind==='user'
                     ? '<div class="aa-msg-h"><span class="material-symbols-outlined">person</span>TOI</div>'
-                    : '<div class="aa-msg-h"><span class="material-symbols-outlined">smart_toy</span>AA-EXPERT</div>')
+                    : '<div class="aa-msg-h"><img class="aa-bot-ava" src="'+AGENT_LOGO+'" alt="">AA-EXPERT</div>')
                     + '<div>'+fmt(text)+'</div>';
                 if(kind==='user' && photo){ html='<img class="aa-msg-img" src="'+photo+'" alt="Photo jointe">'+html; }
                 if(kind==='bot' && sources && sources.length){
@@ -393,14 +415,34 @@
                     ).join('')+'</div>';
                 }
                 d.innerHTML=html;
+                if(kind==='bot'){
+                    const b=document.createElement('button');
+                    b.className='aa-copy'; b.setAttribute('aria-label','Copier la réponse');
+                    b.innerHTML='<span class="material-symbols-outlined" style="font-size:12px;vertical-align:-2px;">content_copy</span> COPIER';
+                    b.addEventListener('click',()=>{
+                        copyText(text).then(()=>{
+                            b.innerHTML='<span class="material-symbols-outlined" style="font-size:12px;vertical-align:-2px;">check</span> COPIÉ';
+                            setTimeout(()=>{ b.innerHTML='<span class="material-symbols-outlined" style="font-size:12px;vertical-align:-2px;">content_copy</span> COPIER'; },1400);
+                        });
+                    });
+                    d.appendChild(b);
+                }
             }
             box.appendChild(d); scrollBottom();
             return d;
         }
 
+        function copyText(t){
+            if(navigator.clipboard && window.isSecureContext){ return navigator.clipboard.writeText(t); }
+            const ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0';
+            document.body.appendChild(ta); ta.select();
+            try{ document.execCommand('copy'); }catch(e){}
+            ta.remove(); return Promise.resolve();
+        }
+
         function showTyping(label){
             typingEl=document.createElement('div'); typingEl.className='aa-msg bot';
-            typingEl.innerHTML='<div class="aa-msg-h"><span class="material-symbols-outlined">smart_toy</span>AA-EXPERT</div><div class="aa-typing"><span class="lbl">'+aaEscapeHtml(label)+'</span><span class="dots"><i></i><i></i><i></i></span></div>';
+            typingEl.innerHTML='<div class="aa-msg-h"><img class="aa-bot-ava" src="'+AGENT_LOGO+'" alt="">AA-EXPERT</div><div class="aa-typing"><span class="lbl">'+aaEscapeHtml(label)+'</span><span class="dots"><i></i><i></i><i></i></span></div>';
             box.appendChild(typingEl); scrollBottom();
             typingEl._sw=setTimeout(()=>{ if(typingEl){ const l=typingEl.querySelector('.lbl'); if(l) l.textContent=pendingPhoto?'Analyse de la photo…':'Lecture experte des résultats…'; } },2500);
         }
@@ -425,7 +467,7 @@
             addBubble('user', q || '(photo jointe)', null, pendingPhoto); save();
             input.value='';
             photoPrev.style.display='none';
-            showTyping('Recherche DuckDuckGo…');
+            showTyping('Recherche en cours…');
             try{
                 const res=await fetch('/api/agent-search',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ query:q, history:history.slice(-7), image:pendingPhoto }) });
                 const data=await res.json();
