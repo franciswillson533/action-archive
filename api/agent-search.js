@@ -1,16 +1,17 @@
-// api/agent-search.js — Cerveau: Groq (gratuit) · Photos: Gemini (gratuit) · DuckDuckGo 2 passes + prix réels + catalogue
+// api/agent-search.js — Groq (texte) · Gemini (photos) · DuckDuckGo 2 passes + prix réels + catalogue boutique
 const SYSTEM_PROMPT = `Tu es Action Archive-Bot, un expert mondial en jouets vintage, figurines de collection et rétrogaming des années 1970 à 2000. Ton but : aider l'utilisateur à identifier des jouets, estimer leur rareté, leur état (Loose, MIB, NRFB) et leur valeur historique.
 
-RÈGLES D'ESTIMATION (primordiales) :
-- Deux vagues de recherche ont été menées : identification, puis marché réel. Exploite-toutes.
-- Les PRIX OBSERVÉS (ventes soldées eBay en priorité) sont ta base ; cite la provenance. N'invente JAMAIS de nom d'outil interne ("readWebUrlTool", etc. interdits) — parle des "pages consultées".
-- Marchés SÉPARÉS pour un même jouet : (a) reproduction neuve, (b) original Loose, (c) original MIB/NRFB — en boîte complète, souvent 3 à 10 fois le Loose.
-- MIB/NRFB : fourchette dans la MOITIÉ SUPÉRIEURE des relevés (75e centile → max observé). Ne JAMAIS prendre le bas pour un exemplaire en boîte. ÉTIQUETTES obligatoires : "(fourchette basse du marché — ventes exceptionnelles au-dessus)" pour MIB/NRFB ; "(marché courant)" pour Loose.
-- Devise : convertis £/$ en € (1 £ ≈ 1,17 € ; 1 $ ≈ 0,92 €), devise d'origine entre parenthèses.
-- Reproduction : si une pièce de la MÊME marque/type est dans le CATALOGUE ACTION ARCHIVE, EXACTEMENT le prix boutique + son lien (formulé "fiche produit", pas l'URL brute) ; doute de marque → ni lien ni prix catalogue.
-- Interdits : phrases génériques, rappels d'astuces, formules creuses. Seuls les chiffres concrets comptent.
+RÈGLES (primordiales) :
+- NE SUPPOSE JAMAIS que la pièce montrée ou décrite est une reproduction : une photo ne permet pas de trancher original/reproduction (ni l'âge, ni le papier). Tu estimes par défaut le MARCHÉ DE L'ORIGINAL, et tu ajoutes la mention "(sous réserve d'une pièce originale)" après tes fourchettes.
+- Les PRIX OBSERVÉS (ventes soldées eBay en priorité) sont ta base chiffrée ; cite la provenance. N'invente JAMAIS de nom d'outil interne — parle des "pages consultées".
+- Marchés SÉPARÉS pour un même jouet : (a) reproduction neuve, (b) original Loose, (c) original MIB/NRFB — en boîte/carte complète, souvent 3 à 10 fois le Loose.
+- MIB/NRFB : fourchette dans la MOITIÉ SUPÉRIEURE des relevés (75e centile → maximum observé). ÉTIQUETTES obligatoires : "(fourchette basse du marché — ventes exceptionnelles au-dessus)" pour MIB/NRFB ; "(marché courant)" pour Loose ; "(sous réserve d'une pièce originale)" sur les estimations d'original.
+- Ligne REPRODUCTION : elle vient UNIQUEMENT du CATALOGUE ACTION ARCHIVE fourni dans les données. Pièce équivalente présente → EXACTEMENT le prix boutique + le lien (formulé "fiche produit", pas l'URL brute). Rien ne correspond → "Reproduction : non proposée au catalogue" — JAMAIS de prix de reproduction inventé.
+- Interdits : phrases génériques, rappels d'astuces, formules creuses. Les données parlent, pas les suppositions.
 
-STYLE : français, passionné, 4 blocs, 16 lignes max : IDENTIFICATION · PRIX OBSERVÉS (avec provenance) · ESTIMATION (Reproduction / Loose / MIB-NRFB étiquetés) · CONSEIL (UNE ligne). "Aucun prix exploitable" → dis-le + fourchette indicative avec réserves. Ligne "Sources utilisées : ..." UNIQUEMENT si des sources ont servi ; sinon rien.`;
+STYLE : français, passionné, 4 blocs, 16 lignes max :
+IDENTIFICATION · PRIX OBSERVÉS (courte liste avec provenance) · ESTIMATION (Reproduction / Loose / MIB-NRFB, fourchettes étiquetées) · CONSEIL (UNE seule ligne).
+"Aucun prix exploitable" → dis-le + fourchette indicative avec réserves. "Sources utilisées : ..." UNIQUEMENT si des sources ont servi ; sinon rien.`;
 
 const PREF_TEXT = ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'llama-3.1-70b-versatile'];
 
@@ -45,7 +46,6 @@ async function pickTextModel() {
     return textPick;
 }
 
-// ─── Appel cerveau : renvoie null si réponse vide en HTTP 200 (le caller décide du repli) ───
 async function chatOrNull(model, messages, maxTokens) {
     const res = await fetch(GROQ_BASE + '/chat/completions', {
         method: 'POST',
@@ -59,10 +59,9 @@ async function chatOrNull(model, messages, maxTokens) {
     const raw = (data.error && data.error.message) || (JSON.stringify(data) || '').slice(0, 300);
     console.error('brain: HTTP ' + res.status + ' (modèle ' + model + ') — ' + raw);
     if ((data.error && data.error.code === 'model_not_found') || /model/i.test(raw)) { textPick = null; throw new Error('MODEL_MISSING'); }
-    return null; // réponse vide/silencieuse → repli géré par le caller
+    return null;
 }
 
-// Appel avec 2 tentatives + repli sur version allégée du contexte
 async function chat(model, messages, maxTokens, liteMessages) {
     let out = null;
     try { out = await chatOrNull(model, messages, maxTokens); } catch (e) {
@@ -72,17 +71,13 @@ async function chat(model, messages, maxTokens, liteMessages) {
     while (out === null && attempt < 2) {
         attempt++;
         await new Promise(r => setTimeout(r, attempt === 1 ? 800 : 500));
-        if (attempt === 2 && liteMessages) {
-            out = await chatOrNull(model, liteMessages, maxTokens - 100);
-        } else {
-            out = await chatOrNull(model, messages, maxTokens);
-        }
+        out = await chatOrNull(model, (attempt === 2 && liteMessages) ? liteMessages : messages, (attempt === 2 && liteMessages) ? maxTokens - 100 : maxTokens);
     }
     if (!out) throw new Error('Le cerveau de l\'agent n\'a pas répondu pour le moment (réessaie dans un instant)');
     return out;
 }
 
-// ─── Gemini vision ───
+// ─── Gemini : description FACTUELLE, sans verdict original/reproduction ───
 async function geminiVision(dataUrl, prompt) {
     const m = dataUrl.match(/^data:(image\/[a-z0-9+.-]+);base64,(.+)$/i);
     if (!m) throw new Error('Image illisible');
@@ -92,7 +87,9 @@ async function geminiVision(dataUrl, prompt) {
             const res = await fetch(GEMINI_BASE + '/' + model + ':generateContent?key=' + encodeURIComponent(process.env.GEMINI_API_KEY), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: [{ parts: [ { text: prompt }, { inline_data: { mime_type: m[1], data: m[2] } } ] }] })
+                body: JSON.stringify({
+                    contents: [{ parts: [ { text: prompt }, { inline_data: { mime_type: m[1], data: m[2] } } ] }]
+                })
             });
             const data = await res.json();
             const parts = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts;
@@ -232,7 +229,7 @@ Note visuelle (photo) : ${imgDesc || '(aucune)'}
 Extraits de pages trouvées :
 ${snippets || '(aucun extrait)'}
 
-Tâche : précise l'identification (marque, référence EXACTE telle qu'écrite par les collectionneurs, année, état) puis produis la requête optimale pour trouver des VENTES RÉELLES de CETTE pièce (termes anglais si plus efficaces, état inclus si pertinent, ex: "carded", "MIB", "sealed").
+Tâche : précise l'identification (marque, référence EXACTE telle qu'écrite par les collectionneurs/fabricants de l'époque, année, état) puis produis la requête optimale pour trouver des VENTES RÉELLES de CETTE pièce précise (termes anglais si plus efficaces, inclut l'état si pertinent, ex: "carded", "MIB", "sealed").
 Réponds UNIQUEMENT en JSON compact : {"identification":"...","query":"..."}`;
         const out = await chat(model, [{ role: 'user', content: msg }], 320, [{ role: 'user', content: 'Extraits:\n' + (snippets || '').slice(0, 300) + '\nRends UNIQUEMENT: {"identification":"...","query":"..."}' }]);
         const t = String(out).replace(/```json|```/g, '').trim();
@@ -260,13 +257,17 @@ async function ownCatalog(host) {
         return items;
     } catch (e) { return []; }
 }
+
+// Garde-fou de marque par CONTRADICTION : ne bloque que si le produit lié porte une marque DIFFÉRENTE de celle demandée
 const BRANDS = ['mego', 'meccano', 'palitoy', 'mattel', 'big jim', 'gi joe', 'gijoe', 'hasbro', 'ceji', 'arbois', 'popy', 'action man', 'action joe', 'kenner', 'matchbox', 'creta', 'lone star', 'gama', 'cherilea', 'britains', 'timpo', 'starlux'];
 function brandGuard(item, texto) {
     const t = norm(texto);
     const mentioned = BRANDS.filter(b => t.includes(norm(b)));
-    if (!mentioned.length) return true;
+    if (!mentioned.length) return true;                       // pas de marque citée → libre
     const n = norm(item.nom + ' ' + item.collection);
-    return mentioned.some(b => n.includes(norm(b)));
+    const present = BRANDS.filter(b => n.includes(norm(b)));  // marques visibles sur le produit
+    if (present.length === 0) return true;                    // produit sans marque visible → autorisé (pas de contradiction)
+    return mentioned.some(b => present.includes(b));          // contradiction interdite : demandé Meccano, produit Mego → refusé
 }
 function matchCatalogItem(items, texto) {
     const sourceText = texto.q || texto.d || '';
@@ -307,11 +308,11 @@ module.exports = async (req, res) => {
 
         const hostHeader = (req.headers && (req.headers['x-forwarded-host'] || req.headers.host)) || 'www.actionarchive.ink';
 
-        // ─── PASSE 1 ───
+        // ─── PASSE 1 : description factuelle + recherche ───
         let imgDesc = '', photoNote = '';
         const p1 = await Promise.all([
             imageData && process.env.GEMINI_API_KEY
-                ? geminiVision(imageData, 'Identifie cette pièce de collection vintage (figurine, jouet ou boîte : type, marque/fabricant probable, époque, état apparent, variantes visibles). Indique si l\'objet semble être une impression neuve (reproduction) ou un vintage d\'origine. Français, 7 lignes max. Marque incertaine ? Écris-le, ne conjecture pas.')
+                ? geminiVision(imageData, 'Décris CETTE pièce de collection vintage de façon FACTUELLE (figurine, jouet ou boîte : type, marque ou fabricant VISIBLE ou probable — avec incertitude, époque, texte imprimé visible, état apparent : jaunement, plis, usure, couleurs). IMPORTANT : ne conclus PAS s\'il s\'agit d\'une reproduction ou d\'un original (impossible par photo) — note seulement des indices observables. Marque incertaine ? Écris-le. Français, 7 lignes max.')
                 : Promise.resolve(''),
             query ? searchDDG(query) : Promise.resolve([])
         ]);
@@ -323,7 +324,7 @@ module.exports = async (req, res) => {
 
         const harv1 = await passFetch(query || 'figurine vintage', results1, true);
 
-        // ─── PASSE 2 ───
+        // ─── PASSE 2 : affinage + marché ───
         let refineId = '', results2 = [], harv2 = { prices: [], texts: [] };
         if (Date.now() - t0 < BUDGET_MS) {
             const r = await refinePass(query, imgDesc, (harv1.texts || []).join('\n'));
@@ -338,7 +339,7 @@ module.exports = async (req, res) => {
         // ─── Fusion ───
         const seen = new Set(); const merged = [];
         [...results1, ...results2].forEach(r => { if (!seen.has(r.url)) { seen.add(r.url); merged.push(r); } });
-        const pk = {}; [...harv1.prices, ...harv2.prices].forEach(x => { pk[x.p + '|' + x.src] = x; });
+        const pk = {}; [... harv1.prices, ...harv2.prices].forEach(x => { pk[x.p + '|' + x.src] = x; });
         const prices = Object.values(pk).sort((a, b) => a.p - b.p).slice(0, 16);
 
         let context = '';
@@ -362,23 +363,25 @@ module.exports = async (req, res) => {
             priceCtx = '\n\n(Aucun prix exploitable — fourchette indicative + signale-le clairement.)';
         }
 
-        // ─── Catalogue ───
+        // ─── Catalogue : l'utilisateur identifie la marque → on regarde SI ce genre de produit existe ICI ───
         const catalog = await ownCatalog(hostHeader);
         const shopItem = matchCatalogItem(catalog, { q: query, d: imgDesc });
         let shopCtx = '';
         if (shopItem) {
             const linkRel = 'produit.html?id=' + shopItem.id;
-            shopCtx = '\n\n★ CATALOGUE ACTION ARCHIVE — reproduction neuve équivalente EN VENTE : « ' + shopItem.nom + ' » (' + (shopItem.collection || '—') + ') — PRIX BOUTIQUE : ' + shopItem.prix.toFixed(2).replace('.', ',') + ' € — lien : ' + linkRel + '\nLigne REPRODUCTION : EXACTEMENT ce prix + cite ce lien en écrivant "fiche produit" (pas l\'URL brute).';
+            shopCtx = '\n\n★ CATALOGUE ACTION ARCHIVE — reproduction neuve équivalente EN VENTE : « ' + shopItem.nom + ' » (' + (shopItem.collection || '—') + ') — PRIX BOUTIQUE RÉEL : ' + shopItem.prix.toFixed(2).replace('.', ',') + ' € — lien : ' + linkRel + '\nLigne REPRODUCTION : EXACTEMENT ce prix + cite le lien sous la forme "fiche produit".';
             results1.unshift({ title: 'Action Archive — ' + shopItem.nom, url: 'https://' + hostHeader + '/' + linkRel, snippet: 'Reproduction neuve en vente sur le site' });
+        } else if (catalog.length) {
+            shopCtx = '\n\n★ CATALOGUE ACTION ARCHIVE : aucune reproduction équivalente trouvée au catalogue → ligne REPRODUCTION = "non proposée au catalogue" (aucun prix inventé).';
         }
 
-        // ─── Réponse finale : version complète, puis version allégée si le cerveau boudé ───
+        // ─── Réponse finale : version complète puis allégée si le cerveau boudé ───
         const questionFull = (query || (imgDesc ? 'Estime la pièce analysée en photo.' : 'J\'ai joint une photo de ma pièce.')) +
-            (imgDesc ? '\n\nIdentification de la photo (analyse Gemini) : ' + imgDesc : '') +
+            (imgDesc ? '\n\nDescription factuelle de la photo (analyse Gemini) : ' + imgDesc : '') +
             (refineId ? '\n\nPrécision d\'identification (passe 2) : ' + refineId : '') +
             shopCtx + context + priceCtx;
-        const questionLite = (query || (imgDesc ? 'Estime la pièce (reproduction / Loose / MIB-NRFB).' : 'Identifie et estime la pièce en photo d\'après les données.')) +
-            (imgDesc ? '\nAnalyse photo : ' + imgDesc.slice(0, 300) : '') +
+        const questionLite = (query || (imgDesc ? 'Estime la pièce (Reproduction / Loose / MIB-NRFB).' : 'Identifie et estime la pièce en photo d\'après les données.')) +
+            (imgDesc ? '\nDescription photo : ' + imgDesc.slice(0, 300) : '') +
             (refineId ? '\nPrécision passe 2 : ' + refineId.slice(0, 200) : '') +
             shopCtx + priceCtx;
         const model = await pickTextModel();
