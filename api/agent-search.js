@@ -1,17 +1,17 @@
-// api/agent-search.js — Groq (texte) · Gemini (photos) · DuckDuckGo 2 passes + prix réels + catalogue
+// api/agent-search.js — Cerveau: Groq · Photos: Gemini · Recherche: DuckDuckGo 2 passes · Prix: eBay vendus + LULU-BERLU
 const SYSTEM_PROMPT = `Tu es Action Archive-Bot, un expert mondial en jouets vintage, figurines de collection et rétrogaming des années 1970 à 2000. Ton but : aider l'utilisateur à identifier des jouets, estimer leur rareté, leur état (Loose, MIB, NRFB) et leur valeur historique.
 
 RÈGLES (primordiales) :
-- NE SUPPOSE JAMAIS reproduction/original (impossible par photo). Estime par défaut le MARCHÉ DE L'ORIGINAL avec la mention "(sous réserve d'une pièce originale)".
-- Les PRIX OBSERVÉS sont des relevés RÉELS mais peuvent couvrir des conditions/variantes hétérogènes (Loose, boîtes pliées, jouets modernes, rééditions). Utilise-les comme REPÈRES, pas comme PLAFOND : si la pièce décrite (état, référence recherchée) correspond au haut de marché et que ta connaissance d'expert est supérieure au relevé, donne ta fourchette experte ET signale l'écart d'une phrase. Jamais de fourchette écrasée par des relevés qui ne correspondent pas à l'état décrit.
+- Ne suppose JAMAIS reproduction/original (impossible par photo). Estime par défaut le MARCHÉ DE L'ORIGINAL, mention "(sous réserve d'une pièce originale)".
+- HIÉRARCHIE DES SOURCES DE PRIX : 1) VENTES SPÉCIALISÉES (Lulu-Berlu = adjugé réel) — ta référence N°1 pour MIB/NRFB, cite-les explicitement ; 2) ventes soldées eBay ; 3) extraits/annonces. N'invente JAMAIS de nom d'outil interne.
 - Marchés SÉPARÉS : (a) reproduction neuve, (b) original Loose, (c) original MIB/NRFB — en boîte/carte complète, souvent 3 à 10 fois le Loose.
-- MIB/NRFB : part du haut des relevés pertinents ET/OU de ta fourchette experte si supérieure. ÉTIQUETTES : "(fourchette basse — ventes exceptionnelles au-dessus)" pour MIB/NRFB ; "(marché courant)" pour Loose.
-- Devise : convertis £/$ en € (1 £ ≈ 1,17 € ; 1 $ ≈ 0,92 €)
-- Ligne REPRODUCTION : UNIQUEMENT depuis le CATALOGUE ACTION ARCHIVE fourni : pièce équivalente → prix boutique EXACT + "fiche produit" ; absent → "non proposée au catalogue". JAMAIS de prix de reproduction inventé. Contradiction de marque (demandé Meccano, catalogue Mego) → pas de lien.
-- Interdits : phrases génériques, rappels d'astuces, nommer des outils internes.
+- MIB/NRFB : ancre-toi sur les VENTES SPÉCIALISÉES puis le haut des relevés (75e centile → max). ÉTIQUETTES : "(ventes exceptionnelles au-dessus)" pour MIB/NRFB ; "(marché courant)" pour Loose.
+- Devise : convertis £/$ en € (1 £ ≈ 1,17 € ; 1 $ ≈ 0,92 €).
+- Ligne REPRODUCTION : UNIQUEMENT depuis le CATALOGUE ACTION ARCHIVE fourni : pièce équivalente → prix boutique EXACT + "fiche produit" ; absent → "non proposée au catalogue". Jamais de prix de reproduction inventé. Contradiction de marque → pas de lien.
+- Interdits : phrases génériques, rappels d'astuces, outils fictifs.
 
-STYLE : français, passionné, 4 blocs, 16 lignes max : IDENTIFICATION · PRIX OBSERVÉS (avec provenance + ligne d'alerte si relevés faibles) · ESTIMATION (Reproduction / Loose / MIB-NRFB étiquetées) · CONSEIL (UNE ligne).
-Ligne "Sources utilisées : ..." UNIQUEMENT si des sources ont servi ; sinon rien.`;
+STYLE : français, passionné, 4 blocs, 16 lignes max : IDENTIFICATION · PRIX OBSERVÉS (avec provenance + alerte si peu de relevés) · ESTIMATION (Reproduction / Loose / MIB-NRFB étiquetées) · CONSEIL (UNE ligne).
+"Sources utilisées : ..." UNIQUEMENT si des sources ont servi ; sinon rien.`;
 
 const PREF_TEXT = ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'llama-3.1-70b-versatile'];
 
@@ -19,11 +19,11 @@ const GROQ_BASE = 'https://api.groq.com/openai/v1';
 const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
 const GEMINI_MODELS = ['gemini-3.5-flash-lite', 'gemini-3.5-flash'];
 
-let modelsCache = null, textPick = null, catCache = null;
-const ddgCache = new Map();
-const priceCache = new Map();
+let modelsCache = null, textPick = null, catCache = null, luluCache = null;
+const ddgCache = new Map(), priceCache = new Map();
 const CACHE_TTL = 60 * 60 * 1000;
 const BUDGET_MS = 8000;
+const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36';
 
 async function getGroqModels() {
     if (modelsCache && Date.now() - modelsCache.t < 10 * 60 * 1000) return modelsCache.ids;
@@ -65,7 +65,7 @@ async function chatOrNull(model, messages, maxTokens) {
 async function chat(model, messages, maxTokens, liteMessages) {
     let out = null;
     try { out = await chatOrNull(model, messages, maxTokens); } catch (e) {
-        if (String(e.message) === 'MODEL_MISSING') out = null; else out = await chatOrNull(model, messages, maxTokens);
+        if (String(e.message) === 'MODEL_MISSING') out = null; else { try { out = await chatOrNull(model, messages, maxTokens); } catch (e2) { out = null; } }
     }
     let attempt = 0;
     while (out === null && attempt < 2) {
@@ -77,7 +77,7 @@ async function chat(model, messages, maxTokens, liteMessages) {
     return out;
 }
 
-// ─── Gemini : description factuelle ───
+// ─── Gemini vision ───
 async function geminiVision(dataUrl, prompt) {
     const m = dataUrl.match(/^data:(image\/[a-z0-9+.-]+);base64,(.+)$/i);
     if (!m) throw new Error('Image illisible');
@@ -121,7 +121,7 @@ function decodeDdg(href) {
 }
 async function ddgLite(q) {
     const res = await fetch('https://lite.duckduckgo.com/lite/?q=' + encodeURIComponent(q) + '&kl=fr-fr', {
-        headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36', 'Accept-Language': 'fr-fr,fr;q=0.9' }
+        headers: { 'User-Agent': UA, 'Accept-Language': 'fr-fr,fr;q=0.9' }
     });
     if (!res.ok) return [];
     const html = await res.text();
@@ -142,7 +142,7 @@ async function ddgLite(q) {
 }
 async function ddgHtml(q) {
     const res = await fetch('https://html.duckduckgo.com/html/?q=' + encodeURIComponent(q), {
-        headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36', 'Accept-Language': 'fr-fr,fr;q=0.9' }
+        headers: { 'User-Agent': UA, 'Accept-Language': 'fr-fr,fr;q=0.9' }
     });
     if (!res.ok) return [];
     const html = await res.text();
@@ -173,10 +173,7 @@ async function fetchPageText(url, timeoutMs) {
     const ctrl = new AbortController();
     const to = setTimeout(() => ctrl.abort(), timeoutMs || 2300);
     try {
-        const res = await fetch(url, {
-            signal: ctrl.signal,
-            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36', 'Accept': 'text/html', 'Accept-Language': 'fr-fr,fr;q=0.9' }
-        });
+        const res = await fetch(url, { signal: ctrl.signal, headers: { 'User-Agent': UA, 'Accept': 'text/html', 'Accept-Language': 'fr-fr,fr;q=0.9' } });
         if (!res.ok) return '';
         const ct = res.headers.get('content-type') || '';
         if (!ct.includes('html') && !ct.includes('text') && !ct.includes('json')) return '';
@@ -190,48 +187,85 @@ function extractPrices(text) {
     const re = /(\d{1,4}(?:[ .]\d{3})*(?:[.,]\d{1,2})?)\s*(?:€|eurs?|EUR)|(?:€|EUR)\s*(\d{1,4}(?:[ .]\d{3})*(?:[.,]\d{1,2})?)|£\s*(\d{1,4}(?:[ .]\d{3})*(?:[.,]\d{1,2})?)|(\d{1,4}(?:[.,]\d{1,2})?)\s*(?:£|GBP)|(?:\$|USD)\s*(\d{1,4}(?:[ .]\d{3})*(?:[.,]\d{1,2})?)|(\d{1,4}(?:[.,]\d{1,2})?)\s*(?:USD|\$)/gi;
     const found = [];
     let m;
-    while ((m = re.exec(text)) && found.length < 10) {
+    while ((m = re.exec(String(text || ''))) && found.length < 10) {
         const idx = [1, 2, 3, 4, 5, 6].find(i => m[i] !== undefined);
         const raw = idx !== undefined ? m[idx] : null;
         if (!raw) continue;
         const num = parseFloat(raw.replace(/[ .](?=\d{3}\b)/g, '').replace(',', '.'));
         if (isNaN(num) || num < 1 || num > 25000) continue;
-        let cur = 'EUR';
-        if (idx === 3 || idx === 4) cur = 'GBP';
-        if (idx === 5 || idx === 6) cur = 'USD';
+        let cur = 'EUR'; if (idx === 3 || idx === 4) cur = 'GBP'; if (idx === 5 || idx === 6) cur = 'USD';
         found.push({ v: num, cur });
     }
     return found;
 }
-function convPush(found, src, out, cap) {
+function convPush(found, src, out, cap, origLabel) {
     found.forEach(x => {
         if (out.length >= cap) return;
         const k = x.cur === 'GBP' ? 1.17 : x.cur === 'USD' ? 0.92 : 1;
-        out.push({ p: Math.round(x.v * k * 100) / 100, src, orig: x.cur === 'EUR' ? '' : ' (devise : ' + x.cur + ')' });
+        out.push({ p: Math.round(x.v * k * 100) / 100, src, orig: (x.cur === 'EUR' ? '' : ' (devise : ' + x.cur + ')') + (origLabel ? ' — ' + origLabel : '') });
     });
 }
 
-async function passFetch(query, results, withText) {
+async function passFetch(query, results) {
     const kw = encodeURIComponent(query.slice(0, 110));
     const targets = [
         { url: 'https://www.ebay.fr/sch/i.html?_nkw=' + kw + '&LH_Complete=1&LH_Sold=1', src: 'eBay FR — ventes soldées' },
-        { url: 'https://www.ebay.com/sch/i.html?_nkw=' + kw + '&LH_Complete=1&LH_Sold=1', src: 'eBay COM — ventes soldées' },
-        { url: results[0] ? results[0].url : '', src: 'source web 1' },
-        { url: results[1] ? results[1].url : '', src: 'source web 2' },
-        { url: results[2] ? results[2].url : '', src: 'source web 3' },
-        { url: results[3] ? results[3].url : '', src: 'source web 4' }
+        { url: 'https://www.ebay.com/sch/i.html?_nkw=' + kw + '&LH_Complete=1&LH_Sold=1', src: 'eBay COM — ventes soldées (€ converti)' },
+        { url: results[0] ? results[0].url : '', src: 'page web 1' },
+        { url: results[1] ? results[1].url : '', src: 'page web 2' }
     ].filter(t => t.url);
     const settled = await Promise.allSettled(targets.map(t => fetchPageText(t.url, 2300)));
-    const prices = [], texts = [];
-    let read = 0;
+    const prices = [];
+    let read = 0, total = targets.length;
     for (let i = 0; i < settled.length; i++) {
         if (settled[i].status !== 'fulfilled' || !settled[i].value) continue;
         read++;
-        convPush(extractPrices(settled[i].value), targets[i].src, prices, 16);
-        if (withText && texts.length < 2) texts.push(settled[i].value.slice(0, 600));
+        convPush(extractPrices(settled[i].value), targets[i].src, prices, 14);
     }
     prices.sort((a, b) => a.p - b.p);
-    return { prices: prices.slice(0, 16), texts, read, total: targets.length };
+    return { prices, read, total };
+}
+
+// ─── LULU-BERLU : ventes spécialisées (adjudications) — priorité MIB/NRFB ───
+async function luluHarvest(query) {
+    try {
+        if (luluCache && Date.now() - luluCache.t < CACHE_TTL) return luluCache.data;
+        const kw = query.slice(0, 80);
+        // 1) Recherche ciblée sur leur site via DuckDuckGo (fiable) + 2) lecture directe de leur moteur interne
+        const [siteResults, direct] = await Promise.allSettled([
+            searchDDG('site:lulu-berlu.com ' + kw),
+            fetchPageText('https://www.lulu-berlu.com/?s=' + encodeURIComponent(kw) + '&post_type=product', 2600)
+        ]);
+        let urls = [];
+        if (siteResults.status === 'fulfilled') urls = siteResults.value.slice(0, 3).map(r => r.url);
+        const toFetch = [];
+        urls.forEach(u => { if (/lulu-berlu\.com/.test(u)) toFetch.push(u); });
+        const settled2 = await Promise.allSettled(toFetch.map(u => fetchPageText(u, 2600)));
+        const prices = [], listings = [];
+        // extraits des résultats DDG (souvent "adjudiqué 320 €")
+        if (siteResults.status === 'fulfilled') {
+            siteResults.value.slice(0, 5).forEach(r => {
+                convPush(extractPrices((r.title || '') + ' ' + (r.snippet || '')), 'Lulu-Berlu (extrait vente)', prices, 6, 'adjudication spécialisée');
+                if (r.title) listings.push({ title: r.title.slice(0, 80), url: r.url });
+            });
+        }
+        // pages lues : prix avec contexte (le mot-clé précédant le prix)
+        for (let i = 0; i < settled2.length && prices.length < 10; i++) {
+            if (settled2[i].status !== 'fulfilled' || !settled2[i].value) continue;
+            const txt = settled2[i].value;
+            const re = /(\d{1,4}(?:[ .]\d{3})*(?:[.,]\d{1,2})?)\s*(?:€|EUR)/g;
+            let m;
+            while ((m = re.exec(txt)) && prices.length < 10) {
+                const before = txt.slice(Math.max(0, m.index - 140), m.index).slice(-80);
+                const num = parseFloat(m[1].replace(/[ .](?=\d{3}\b)/g, '').replace(',', '.'));
+                if (isNaN(num) || num < 5 || num > 25000) continue;
+                prices.push({ p: Math.round(num * 100) / 100, src: 'Lulu-Berlu (page consultée) — « ' + stripTags(before) + ' »', orig: '' });
+            }
+        }
+        const data = { prices: prices.slice(0, 10), listings: listings.slice(0, 4) };
+        luluCache = { t: Date.now(), data };
+        return data;
+    } catch (e) { return { prices: [], listings: [] }; }
 }
 
 // ─── Passe d'affinage ───
@@ -292,8 +326,6 @@ function matchCatalogItem(items, texto) {
         const n = norm(it.nom + ' ' + it.collection);
         let sc = 0;
         for (const w of words) if (n.includes(w) && ((freq[w] || 0) / N) < 0.3) sc++;
-        const yearInQuery = (words.find(w => /^(19[7-9]\d|200\d)$/.test(w)) || '');
-        if (yearInQuery && it.annee === parseInt(yearInQuery)) sc += 2;
         return { it, sc };
     }).filter(x => brandGuard(x.it, sourceText)).sort((a, b) => b.sc - a.sc);
     const top = scored[0], second = scored[1];
@@ -321,7 +353,7 @@ module.exports = async (req, res) => {
         let imgDesc = '', photoNote = '';
         const p1 = await Promise.all([
             imageData && process.env.GEMINI_API_KEY
-                ? geminiVision(imageData, 'Décris CETTE pièce de collection vintage de façon FACTUELLE (type, marque ou fabricant VISIBLE ou probable — avec ton incertitude, époque, texte imprimé visible, état apparent : jaunement, plis, usure). IMPORTANT : ne conclus PAS reproduction/original (impossible par photo) — note seulement des indices visibles. Marque incertaine ? Écris-le. Français, 7 lignes max.')
+                ? geminiVision(imageData, 'Décris CETTE pièce de collection vintage de façon FACTUELLE (type, marque ou fabricant VISIBLE ou probable — avec ton incertitude, époque, texte imprimé visible, état apparent : jaunement, plis, usure). Ne conclus PAS reproduction/original (impossible par photo). Marque incertaine ? Écris-le. Français, 7 lignes max.')
                 : Promise.resolve(''),
             query ? searchDDG(query) : Promise.resolve([])
         ]);
@@ -331,35 +363,36 @@ module.exports = async (req, res) => {
         if (!query && imageData) results1 = await searchDDG(imgDesc.slice(0, 160));
         const photoFailed = imageData && !imgDesc;
 
-        const combo = (query + ' ' + imgDesc).trim();
-
-        const harv1 = await passFetch(query || 'figurine vintage', results1, true);
+        const harv1 = await passFetch(query || 'figurine vintage', results1);
 
         // ─── PASSE 2 ───
-        let refineId = '', results2 = [], harv2 = { prices: [], texts: [], read: 0, total: 0 };
+        let refineId = '', results2 = [], harv2 = { prices: [], read: 0, total: 0 };
+        let lulu = { prices: [], listings: [] };
         if (Date.now() - t0 < BUDGET_MS) {
-            const r = await refinePass(query, imgDesc, (harv1.texts || []).join('\n'));
+            const r = await refinePass(query, imgDesc, '');
             refineId = r.identification;
             const refined = (r.query || '').trim();
             if (refined && Date.now() - t0 < BUDGET_MS + 1500) {
                 results2 = await searchDDG(refined);
-                harv2 = await passFetch(refined, results2, false);
+                const [h2, luluRes] = await Promise.allSettled([
+                    passFetch(refined, results2),
+                    luluHarvest(refined.split(' ').slice(0, 8).join(' '))
+                ]);
+                if (h2.status === 'fulfilled') harv2 = h2.value;
+                if (luluRes.status === 'fulfilled') lulu = luluRes.value;
             }
         }
 
-        // ─── Fusion + extraction de prix depuis les EXTRAITDDG eux-mêmes (zéro blocage possible) ───
+        // ─── Fusion ───
         const seen = new Set(); const merged = [];
         [...results1, ...results2].forEach(r => { if (!seen.has(r.url)) { seen.add(r.url); merged.push(r); } });
-        merged.forEach(r => {
-            convPush(extractPrices(stripTags((r.title || '') + ' ' + (r.snippet || ''))).slice(0, 3), 'extrait de recherche (' + String(r.url || '').split('/')[2] + ')', [], 3);
-        });
+
         const pk = {}; const pushPrice = x => { if (x && x.p) pk[x.p.toFixed(2) + '|' + x.src] = x; };
-        [...harv1.prices, ...harv2.prices].forEach(pushPrice);
-        const snippetPrices = [];
+        [...harv1.prices, ...harv2.prices, ...lulu.prices].forEach(pushPrice);
+        // Les extraits DDG eux-mêmes (souvent des prix d'adjudication)
         merged.slice(0, 8).forEach(r => {
-            convPush(extractPrices(stripTags((r.title || '') + ' ' + (r.snippet || ''))).slice(0, 2), 'extrait de recherche', snippetPrices, 4);
+            convPush(extractPrices(stripTags((r.title || '') + ' ' + (r.snippet || ''))), 'extrait de recherche', [], 3, '');
         });
-        snippetPrices.forEach(pushPrice);
         const prices = Object.values(pk).sort((a, b) => a.p - b.p).slice(0, 18);
 
         let context = '';
@@ -377,11 +410,14 @@ module.exports = async (req, res) => {
             const med = arr[Math.floor(arr.length / 2)];
             const p75 = arr[Math.floor(arr.length * 0.75)];
             const max = arr[arr.length - 1];
-            priceCtx = '\n\nPRIX OBSERVÉS (' + readInfo + ' — triés croissant) : min ' + arr[0].toFixed(2).replace('.', ',') + ' € · médiane ' + med.toFixed(2).replace('.', ',') + ' € · 75e centile ' + p75.toFixed(2).replace('.', ',') + ' € · maximum ' + max.toFixed(2).replace('.', ',') + ' €\n' +
+            priceCtx = '\n\nPRIX OBSERVÉS (' + readInfo + ' — triés croissant, € convertis) : min ' + arr[0].toFixed(2).replace('.', ',') + ' € · médiane ' + med.toFixed(2).replace('.', ',') + ' € · 75e centile ' + p75.toFixed(2).replace('.', ',') + ' € · maximum ' + max.toFixed(2).replace('.', ',') + ' €\n' +
                 prices.map(pr => '• ' + pr.p.toFixed(2).replace('.', ',') + ' €' + (pr.orig || '') + ' ← ' + pr.src).join('\n') +
-                (arr.length < 5 ? '\nⓘ ATtENTION : peu de relevés fiables — ta fourchette experte peut être plus juste ; dis-le.' : '');
+                (arr.length < 5 ? '\nⓘ Peu de relevés fiables — ta fourchette experte peut être plus juste ; dis-le.' : '');
         } else {
-            priceCtx = '\n\n(' + readInfo + ') AUCUN prix exploitable — fourchette experte obligatoire + dis-le clairement.';
+            priceCtx = '\n\n(' + readInfo + ') AUCUN prix exploitable — fourchette experte + dis-le clairement.';
+        }
+        if (lulu.listings.length) {
+            context += '\n\nVentes spécialisées consultées (Lulu-Berlu) : ' + lulu.listings.map(l => l.title).join(' | ');
         }
 
         // ─── Catalogue ───
@@ -390,10 +426,10 @@ module.exports = async (req, res) => {
         let shopCtx = '';
         if (shopItem) {
             const linkRel = 'produit.html?id=' + shopItem.id;
-            shopCtx = '\n\n★ CATALOGUE ACTION ARCHIVE — reproduction neuve équivalente EN VENTE : « ' + shopItem.nom + ' » (' + (shopItem.collection || '—') + ') — PRIX BOUTIQUE RÉEL : ' + shopItem.prix.toFixed(2).replace('.', ',') + ' € — lien : ' + linkRel + '\nLigne REPRODUCTION : EXACTEMENT ce prix + cite le lien sous la forme "fiche produit".';
+            shopCtx = '\n\n★ CATALOGUE ACTION ARCHIVE — reproduction neuve équivalente EN VENTE : « ' + shopItem.nom + ' » (' + (shopItem.collection || '—') + ') — PRIX BOUTIQUE RÉEL : ' + shopItem.prix.toFixed(2).replace('.', ',') + ' € — lien : ' + linkRel + '\nLigne REPRODUCTION : donne EXACTEMENT ce prix + "fiche produit".';
             results1.unshift({ title: 'Action Archive — ' + shopItem.nom, url: 'https://' + hostHeader + '/' + linkRel, snippet: 'Reproduction neuve en vente sur le site' });
         } else if (catalog.length) {
-            shopCtx = '\n\n★ CATALOGUE ACTION ARCHIVE : aucune reproduction équivalente au catalogue → ligne REPRODUCTION = "non proposée au catalogue" (aucun prix inventé).';
+            shopCtx = '\n\n★ CATALOGUE ACTION ARCHIVE : aucune reproduction équivalente → ligne REPRODUCTION = "non proposée au catalogue".';
         }
 
         // ─── Réponse finale ───
@@ -401,9 +437,8 @@ module.exports = async (req, res) => {
             (imgDesc ? '\n\nDescription factuelle (photo) : ' + imgDesc : '') +
             (refineId ? '\n\nPrécision (passe 2) : ' + refineId : '') +
             shopCtx + context + priceCtx;
-        const questionLite = (query || (imgDesc ? 'Estime la pièce (Reproduction / Loose / MIB-NRFB avec étiquettes).' : 'Identifie et estime la pièce (données ci-dessus).')) +
+        const questionLite = (query || (imgDesc ? 'Estime la pièce (Reproduction / Loose / MIB-NRFB).' : 'Identifie et estime la pièce.')) +
             (imgDesc ? '\nDescription : ' + imgDesc.slice(0, 300) : '') +
-            (refineId ? '\nPrécision : ' + refineId.slice(0, 200) : '') +
             shopCtx + priceCtx;
         const model = await pickTextModel();
         const base = [ { role: 'system', content: SYSTEM_PROMPT }, ...history ];
@@ -415,7 +450,7 @@ module.exports = async (req, res) => {
             reply,
             photoNote,
             priceCount: prices.length,
-            pagesRead: harv1.read + harv2.read,
+            luluCount: lulu.prices.length,
             matchedShop: shopItem ? { name: shopItem.nom, price: shopItem.prix, id: shopItem.id } : null,
             sources: results1.map(r => ({ title: r.title, url: r.url }))
         });
