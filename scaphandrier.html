@@ -38,379 +38,79 @@
         .btn-physical { transition: all 0.1s ease; }
         .btn-physical:active { transform: translateY(4px); box-shadow: 0px 0px 0px 0px !important; }
 
-        .aa-scene {
-            position: relative;
-            width: 100%;
-            min-height: 85vh;
-            background: #fff5e5;
-            overflow: hidden;
-        }
+        .aa-scene { position: relative; width: 100%; min-height: 85vh; background: #fff5e5; overflow: hidden; }
 
-        .aa-scene-title {
-            font-family: 'Epilogue', sans-serif;
-            font-weight: 900;
-            font-style: italic;
-            text-transform: uppercase;
-            color: #342e1e;
-            font-size: 3rem;
-            letter-spacing: -0.02em;
-            text-align: center;
-            padding: 2rem 1rem 1rem;
-            border-bottom: 4px solid #342e1e;
-            background: #ffca4d;
-            box-shadow: 0 6px 0 0 #bb0003;
-            position: relative;
-            z-index: 5;
-        }
-        .aa-scene-title small {
-            display: block;
-            font-size: 0.95rem;
-            color: #bb0003;
-            font-style: italic;
-            font-weight: 800;
-            letter-spacing: 0.05em;
-            margin-top: 0.4rem;
-            line-height: 1.3;
-        }
+        .aa-scene-title { font-family: 'Epilogue', sans-serif; font-weight: 900; font-style: italic; text-transform: uppercase; color: #342e1e; font-size: 3rem; letter-spacing: -0.02em; text-align: center; padding: 2rem 1rem 1rem; border-bottom: 4px solid #342e1e; background: #ffca4d; box-shadow: 0 6px 0 0 #bb0003; position: relative; z-index: 5; }
+        .aa-scene-title small { display: block; font-size: 0.95rem; color: #bb0003; font-style: italic; font-weight: 800; letter-spacing: 0.05em; margin-top: 0.4rem; line-height: 1.3; }
 
-        .aa-perso {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 420px;
-            max-width: 45vw;
-            z-index: 2;
-            pointer-events: none;
-        }
-        .aa-yeux {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 420px;
-            max-width: 45vw;
-            z-index: 1;
-            pointer-events: none;
-            will-change: transform;
-            transition: transform 0.15s ease-out;
-        }
+        .aa-perso { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 420px; max-width: 45vw; z-index: 2; pointer-events: none; }
+        .aa-yeux { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 420px; max-width: 45vw; z-index: 1; pointer-events: none; will-change: transform; transition: transform 0.15s ease-out; }
 
-        .aa-obj {
-            position: absolute;
-            width: 150px;
-            height: 150px;
-            background: #fff5e5;
-            border: 3px solid #342e1e;
-            box-shadow: 5px 5px 0 0 #bb0003;
-            cursor: pointer;
-            transition: transform 0.25s ease, box-shadow 0.25s ease, z-index 0s;
-            z-index: 3;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        .aa-obj img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            padding: 6px;
-        }
-        .aa-obj-label {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #342e1e;
-            color: #ffca4d;
-            font-family: 'Epilogue', sans-serif;
-            font-weight: 900;
-            font-style: italic;
-            text-transform: uppercase;
-            font-size: 0.7rem;
-            text-align: center;
-            padding: 5px 4px;
-            opacity: 0;
-            transition: opacity 0.25s ease;
-            line-height: 1.15;
-            border-top: 2px solid #ffca4d;
-        }
-        .aa-obj:hover {
-            transform: scale(1.22);
-            box-shadow: 9px 9px 0 0 #bb0003;
-            z-index: 12;
-        }
+        .aa-obj { position: absolute; width: 150px; height: 150px; background: #fff5e5; border: 3px solid #342e1e; box-shadow: 5px 5px 0 0 #bb0003; cursor: pointer; transition: transform 0.25s ease, box-shadow 0.25s ease, z-index 0s; z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
+        .aa-obj img { width: 100%; height: 100%; object-fit: contain; padding: 6px; }
+        .aa-obj-label { position: absolute; bottom: 0; left: 0; right: 0; background: #342e1e; color: #ffca4d; font-family: 'Epilogue', sans-serif; font-weight: 900; font-style: italic; text-transform: uppercase; font-size: 0.7rem; text-align: center; padding: 5px 4px; opacity: 0; transition: opacity 0.25s ease; line-height: 1.15; border-top: 2px solid #ffca4d; }
+        .aa-obj:hover { transform: scale(1.22); box-shadow: 9px 9px 0 0 #bb0003; z-index: 12; }
         .aa-obj:hover .aa-obj-label { opacity: 1; }
-        /* FIX : l'objet centré conserve son décalage à l'agrandissement */
-        .row3-pos3:hover { transform: translateX(-50%) scale(1.22) !important; box-shadow: 9px 9px 0 0 #bb0003; z-index: 12; }
 
+        /* RANGÉE 3 : 6 objets symétriques (l'ancien centrage disparaît — plus de saut au survol) */
         .row1-pos1 { top: 22%; left: 28%; z-index: 6; }
         .row1-pos2 { top: 22%; right: 28%; z-index: 6; }
         .row2-pos1 { top: 48%; left: 8%;  }
         .row2-pos2 { top: 48%; left: 26%; }
         .row2-pos3 { top: 48%; right: 26%; }
         .row2-pos4 { top: 48%; right: 8%; }
-        .row3-pos1 { bottom: 4%; left: 4%;  }
-        .row3-pos2 { bottom: 4%; left: 22%; }
-        .row3-pos3 { bottom: 4%; left: 50%; transform: translateX(-50%); }
-        .row3-pos4 { bottom: 4%; right: 22%; }
-        .row3-pos5 { bottom: 4%; right: 4%; }
+        .row3-pos1 { bottom: 4%; left: 2%;  }
+        .row3-pos2 { bottom: 4%; left: 18%; }
+        .row3-pos3 { bottom: 4%; left: 34%; }   /* Tuyaux d'air : repositionné (plus de centrage) */
+        .row3-pos4 { bottom: 4%; right: 18%; }  /* Pieuvre noire */
+        .row3-pos5 { bottom: 4%; right: 2%;  }  /* Coffre aux trésors */
+        .row3-pos6 { bottom: 4%; right: 34%; }  /* NOUVEAU : Scaphandrier */
 
         @media (max-width: 900px) {
-            .aa-scene {
-                min-height: auto;
-                overflow: visible;
-                padding-bottom: 1.5rem;
-            }
-
-            .aa-scene-title {
-                font-size: 1.6rem;
-                padding: 1rem;
-                position: sticky;
-                top: 0;
-                z-index: 20;
-            }
-            .aa-scene-title small {
-                font-size: 0.7rem;
-                margin-top: 0.2rem;
-            }
-
-            .aa-perso-wrap,
-            .aa-perso,
-            .aa-yeux {
-                display: none !important;
-            }
-
-            .aa-carousel {
-                display: flex;
-                gap: 12px;
-                overflow-x: auto;
-                scroll-snap-type: x mandatory;
-                -webkit-overflow-scrolling: touch;
-                padding: 1.5rem 1rem;
-                margin: 0 -1rem;
-                scrollbar-width: none;
-            }
+            .aa-scene { min-height: auto; overflow: visible; padding-bottom: 1.5rem; }
+            .aa-scene-title { font-size: 1.6rem; padding: 1rem; position: sticky; top: 0; z-index: 20; }
+            .aa-scene-title small { font-size: 0.7rem; margin-top: 0.2rem; }
+            .aa-perso-wrap, .aa-perso, .aa-yeux { display: none !important; }
+            .aa-carousel { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding: 1.5rem 1rem; margin: 0 -1rem; scrollbar-width: none; }
             .aa-carousel::-webkit-scrollbar { display: none; }
-
-            .aa-obj {
-                position: relative !important;
-                top: auto !important;
-                bottom: auto !important;
-                left: auto !important;
-                right: auto !important;
-                transform: none !important;
-                flex: 0 0 75%;
-                max-width: 280px;
-                min-width: 220px;
-                height: 280px;
-                scroll-snap-align: center;
-                z-index: 1 !important;
-                transition: transform 0.25s ease, box-shadow 0.25s ease;
-            }
+            .aa-obj { position: relative !important; top: auto !important; bottom: auto !important; left: auto !important; right: auto !important; transform: none !important; flex: 0 0 75%; max-width: 280px; min-width: 220px; height: 280px; scroll-snap-align: center; z-index: 1 !important; transition: transform 0.25s ease, box-shadow 0.25s ease; }
             .aa-obj:active { transform: scale(0.97); }
-            .aa-obj .aa-obj-label {
-                opacity: 1;
-                font-size: 0.8rem;
-                padding: 8px 4px;
-            }
-
-            .aa-dots {
-                display: flex;
-                justify-content: center;
-                gap: 6px;
-                padding: 0.5rem 1rem 1rem;
-            }
-            .aa-dot {
-                width: 8px;
-                height: 8px;
-                border-radius: 50%;
-                background: #eadcbc;
-                border: 2px solid #342e1e;
-                transition: background 0.25s ease, transform 0.25s ease;
-            }
-            .aa-dot.active {
-                background: #bb0003;
-                transform: scale(1.3);
-            }
+            .aa-obj .aa-obj-label { opacity: 1; font-size: 0.8rem; padding: 8px 4px; }
+            .aa-dots { display: flex; justify-content: center; gap: 6px; padding: 0.5rem 1rem 1rem; }
+            .aa-dot { width: 8px; height: 8px; border-radius: 50%; background: #eadcbc; border: 2px solid #342e1e; transition: background 0.25s ease, transform 0.25s ease; }
+            .aa-dot.active { background: #bb0003; transform: scale(1.3); }
         }
-
-        @media (max-width: 600px) {
-            .aa-obj {
-                flex: 0 0 85%;
-                height: 260px;
-            }
-        }
+        @media (max-width: 600px) { .aa-obj { flex: 0 0 85%; height: 260px; } }
 
         /* ⭐ BREADCRUMB */
-        .aa-breadcrumb {
-            background: #eadcbc;
-            border-bottom: 2px solid #342e1e;
-            padding: 0.7rem 1.5rem;
-            font-family: 'Work Sans', sans-serif;
-            font-size: 0.85rem;
-            color: #342e1e;
-        }
-        .aa-breadcrumb ol {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 0.5rem;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            max-width: 1280px;
-            margin: 0 auto;
-        }
-        .aa-breadcrumb li {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .aa-breadcrumb a {
-            color: #342e1e;
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.15s ease;
-        }
-        .aa-breadcrumb a:hover {
-            color: #bb0003;
-        }
-        .aa-breadcrumb .separator {
-            color: #635b48;
-            font-weight: 700;
-        }
-        .aa-breadcrumb .current {
-            color: #bb0003;
-            font-weight: 800;
-            font-style: italic;
-            text-transform: uppercase;
-        }
-        .aa-breadcrumb-back {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-            background: #342e1e;
-            color: #ffca4d;
-            padding: 0.3rem 0.7rem;
-            border: 2px solid #342e1e;
-            font-family: 'Epilogue', sans-serif;
-            font-weight: 800;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-left: auto;
-            transition: all 0.15s ease;
-            text-decoration: none;
-        }
-        .aa-breadcrumb-back:hover {
-            background: #bb0003;
-            border-color: #bb0003;
-            color: #fff5e5;
-            transform: translate(-2px, -2px);
-            box-shadow: 3px 3px 0 0 #342e1e;
-        }
-        .aa-breadcrumb-back .material-symbols-outlined {
-            font-size: 18px;
-        }
+        .aa-breadcrumb { background: #eadcbc; border-bottom: 2px solid #342e1e; padding: 0.7rem 1.5rem; font-family: 'Work Sans', sans-serif; font-size: 0.85rem; color: #342e1e; }
+        .aa-breadcrumb ol { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; list-style: none; margin: 0; padding: 0; max-width: 1280px; margin: 0 auto; }
+        .aa-breadcrumb li { display: flex; align-items: center; gap: 0.5rem; }
+        .aa-breadcrumb a { color: #342e1e; text-decoration: none; font-weight: 600; transition: color 0.15s ease; }
+        .aa-breadcrumb a:hover { color: #bb0003; }
+        .aa-breadcrumb .separator { color: #635b48; font-weight: 700; }
+        .aa-breadcrumb .current { color: #bb0003; font-weight: 800; font-style: italic; text-transform: uppercase; }
+        .aa-breadcrumb-back { display: inline-flex; align-items: center; gap: 0.3rem; background: #342e1e; color: #ffca4d; padding: 0.3rem 0.7rem; border: 2px solid #342e1e; font-family: 'Epilogue', sans-serif; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-left: auto; transition: all 0.15s ease; text-decoration: none; }
+        .aa-breadcrumb-back:hover { background: #bb0003; border-color: #bb0003; color: #fff5e5; transform: translate(-2px, -2px); box-shadow: 3px 3px 0 0 #342e1e; }
+        .aa-breadcrumb-back .material-symbols-outlined { font-size: 18px; }
 
         /* ⭐ NAVIGATION PRÉCÉDENT/SUIVANT */
-        .aa-nav-pager {
-            background: #fff5e5;
-            padding: 3rem 1.5rem;
-            border-top: 4px double #bb0003;
-        }
-        .aa-nav-pager-inner {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-        }
-        .aa-pager-btn {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            background: #fff5e5;
-            border: 3px solid #342e1e;
-            box-shadow: 6px 6px 0 0 #bb0003;
-            padding: 1rem 1.25rem;
-            text-decoration: none;
-            color: #342e1e;
-            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-            min-height: 90px;
-        }
-        .aa-pager-btn:hover {
-            transform: translate(-3px, -3px);
-            box-shadow: 9px 9px 0 0 #bb0003;
-            background: #ffca4d;
-        }
-        .aa-pager-btn:active {
-            transform: translate(2px, 2px);
-            box-shadow: 2px 2px 0 0 #bb0003;
-        }
-        .aa-pager-btn.next {
-            justify-content: flex-end;
-            text-align: right;
-        }
-        .aa-pager-btn .arrow-icon {
-            font-size: 36px;
-            color: #bb0003;
-            flex-shrink: 0;
-        }
-        .aa-pager-btn .pager-text {
-            display: flex;
-            flex-direction: column;
-            line-height: 1.1;
-        }
-        .aa-pager-btn .pager-label {
-            font-family: 'Work Sans', sans-serif;
-            font-weight: 700;
-            font-size: 0.75rem;
-            color: #635b48;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.2rem;
-        }
-        .aa-pager-btn .pager-title {
-            font-family: 'Epilogue', sans-serif;
-            font-weight: 900;
-            font-style: italic;
-            font-size: 1.15rem;
-            text-transform: uppercase;
-            color: #342e1e;
-            letter-spacing: -0.01em;
-        }
-        .aa-pager-btn.back-btn {
-            background: #342e1e;
-            border-color: #342e1e;
-            color: #ffca4d;
-            grid-column: 1 / -1;
-            justify-content: center;
-            margin-top: 0.5rem;
-        }
-        .aa-pager-btn.back-btn .pager-title {
-            color: #ffca4d;
-        }
-        .aa-pager-btn.back-btn .arrow-icon {
-            color: #ffca4d;
-        }
-        .aa-pager-btn.back-btn .pager-label {
-            color: #ffca4d;
-            opacity: 0.8;
-        }
-        .aa-pager-btn.back-btn:hover {
-            background: #bb0003;
-            border-color: #bb0003;
-        }
-        .aa-pager-btn.back-btn:hover .pager-title,
-        .aa-pager-btn.back-btn:hover .arrow-icon,
-        .aa-pager-btn.back-btn:hover .pager-label {
-            color: #fff5e5;
-        }
-
+        .aa-nav-pager { background: #fff5e5; padding: 3rem 1.5rem; border-top: 4px double #bb0003; }
+        .aa-nav-pager-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .aa-pager-btn { display: flex; align-items: center; gap: 1rem; background: #fff5e5; border: 3px solid #342e1e; box-shadow: 6px 6px 0 0 #bb0003; padding: 1rem 1.25rem; text-decoration: none; color: #342e1e; transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease; min-height: 90px; }
+        .aa-pager-btn:hover { transform: translate(-3px, -3px); box-shadow: 9px 9px 0 0 #bb0003; background: #ffca4d; }
+        .aa-pager-btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 0 #bb0003; }
+        .aa-pager-btn.next { justify-content: flex-end; text-align: right; }
+        .aa-pager-btn .arrow-icon { font-size: 36px; color: #bb0003; flex-shrink: 0; }
+        .aa-pager-btn .pager-text { display: flex; flex-direction: column; line-height: 1.1; }
+        .aa-pager-btn .pager-label { font-family: 'Work Sans', sans-serif; font-weight: 700; font-size: 0.75rem; color: #635b48; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.2rem; }
+        .aa-pager-btn .pager-title { font-family: 'Epilogue', sans-serif; font-weight: 900; font-style: italic; font-size: 1.15rem; text-transform: uppercase; color: #342e1e; letter-spacing: -0.01em; }
+        .aa-pager-btn.back-btn { background: #342e1e; border-color: #342e1e; color: #ffca4d; grid-column: 1 / -1; justify-content: center; margin-top: 0.5rem; }
+        .aa-pager-btn.back-btn .pager-title { color: #ffca4d; }
+        .aa-pager-btn.back-btn .arrow-icon { color: #ffca4d; }
+        .aa-pager-btn.back-btn .pager-label { color: #ffca4d; opacity: 0.8; }
+        .aa-pager-btn.back-btn:hover { background: #bb0003; border-color: #bb0003; }
+        .aa-pager-btn.back-btn:hover .pager-title, .aa-pager-btn.back-btn:hover .arrow-icon, .aa-pager-btn.back-btn:hover .pager-label { color: #fff5e5; }
         @media (max-width: 600px) {
             .aa-nav-pager { padding: 2rem 1rem; }
             .aa-nav-pager-inner { grid-template-columns: 1fr; gap: 1rem; }
@@ -461,7 +161,6 @@
         <li><a href="toys-history.html">Toys History</a></li>
         <li class="separator">›</li>
         <li class="current">Le Scaphandrier</li>
-        
     </ol>
 </nav>
 
@@ -493,17 +192,8 @@
         </h1>
 
         <div class="aa-perso-wrap">
-            <img
-                src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791628301/Yeux_qui_bougent_1_mnckmm.png"
-                alt="Le Scaphandrier"
-                class="aa-perso"
-            >
-            <img
-                src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791628319/Yeux_qui_bougent_2_bcf0e6.png"
-                alt="Yeux"
-                class="aa-yeux"
-                id="imgYeux"
-            >
+            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791628301/Yeux_qui_bougent_1_mnckmm.png" alt="Le Scaphandrier" class="aa-perso">
+            <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791628319/Yeux_qui_bougent_2_bcf0e6.png" alt="Yeux" class="aa-yeux" id="imgYeux">
         </div>
 
         <div class="aa-carousel" id="aaCarousel">
@@ -540,7 +230,7 @@
                 <div class="aa-obj-label">Chaussures noires</div>
             </div>
 
-            <!-- RANGÉE 3 — BAS (5) -->
+            <!-- RANGÉE 3 — BAS (6) -->
             <div class="aa-obj row3-pos1">
                 <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791631433/1_semelles_de_plonb_i4zeq8.png">
                 <div class="aa-obj-label">Semelles de plongée</div>
@@ -554,6 +244,11 @@
             <div class="aa-obj row3-pos3">
                 <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791714267/1_tuyaux_d_air_ikylce.jpg">
                 <div class="aa-obj-label">Tuyaux d'air</div>
+            </div>
+
+            <div class="aa-obj row3-pos6">
+                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1791631428/1_scaphandier_vrt5zm.png">
+                <div class="aa-obj-label">Scaphandre</div>
             </div>
 
             <div class="aa-obj row3-pos4">
@@ -575,8 +270,6 @@
     <!-- ⭐ NAVIGATION PRÉCÉDENT/SUIVANT ⭐ -->
     <section class="aa-nav-pager">
         <div class="aa-nav-pager-inner">
-
-            <!-- Précédent : Le Soldat Russe (loop) -->
             <a href="soldat-russe.html" class="aa-pager-btn prev">
                 <span class="material-symbols-outlined arrow-icon">arrow_back</span>
                 <div class="pager-text">
@@ -584,8 +277,6 @@
                     <span class="pager-title">Le Soldat Russe</span>
                 </div>
             </a>
-
-            <!-- Suivant : Le Résistant Français -->
             <a href="resistant-francais.html" class="aa-pager-btn next">
                 <div class="pager-text">
                     <span class="pager-label">Suivant →</span>
@@ -593,8 +284,6 @@
                 </div>
                 <span class="material-symbols-outlined arrow-icon">arrow_forward</span>
             </a>
-
-            <!-- Bouton retour Toys History (pleine largeur) -->
             <a href="toys-history.html" class="aa-pager-btn back-btn">
                 <span class="material-symbols-outlined arrow-icon">list</span>
                 <div class="pager-text">
@@ -602,7 +291,6 @@
                     <span class="pager-title">Tous les personnages</span>
                 </div>
             </a>
-
         </div>
     </section>
 
