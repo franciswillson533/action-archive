@@ -45,30 +45,41 @@ async function pickTextModel() {
     return textPick;
 }
 
-// ─── Appel cerveau : 2 tentatives + erreurs lisibles (sans jargon devant les visiteurs) ───
-async function chat(model, messages, maxTokens) {
-    let lastStatus = 0, lastRaw = '';
-    for (let attempt = 0; attempt < 2; attempt++) {
-        const res = await fetch(GROQ_BASE + '/chat/completions', {
-            method: 'POST',
-            headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model, temperature: 0.55, max_tokens: maxTokens, messages })
-        });
-        let data = {};
-        try { data = await res.json(); } catch (e) {}
-        const content = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
-        if (content) return content;
-        lastStatus = res.status;
-        lastRaw = (data.error && data.error.message) || (JSON.stringify(data) || '').slice(0, 200);
-        if ((data.error && data.error.code === 'model_not_found') || /model/i.test(lastRaw)) textPick = null;
-        console.error('brain error (essai ' + (attempt + 1) + ', modèle ' + model + ') : HTTP ' + lastStatus + ' — ' + lastRaw);
-        if (res.status === 429 || lastStatus >= 500 || !lastRaw) {
-            await new Promise(r => setTimeout(r, attempt === 0 ? 900 : 400));
-            continue;
-        }
-        break;
+// ─── Appel cerveau : renvoie null si réponse vide en HTTP 200 (le caller décide du repli) ───
+async function chatOrNull(model, messages, maxTokens) {
+    const res = await fetch(GROQ_BASE + '/chat/completions', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model, temperature: 0.55, max_tokens: maxTokens, messages })
+    });
+    let data = {};
+    try { data = await res.json(); } catch (e) {}
+    const content = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+    if (content && content.trim()) return content;
+    const raw = (data.error && data.error.message) || (JSON.stringify(data) || '').slice(0, 300);
+    console.error('brain: HTTP ' + res.status + ' (modèle ' + model + ') — ' + raw);
+    if ((data.error && data.error.code === 'model_not_found') || /model/i.test(raw)) { textPick = null; throw new Error('MODEL_MISSING'); }
+    return null; // réponse vide/silencieuse → repli géré par le caller
+}
+
+// Appel avec 2 tentatives + repli sur version allégée du contexte
+async function chat(model, messages, maxTokens, liteMessages) {
+    let out = null;
+    try { out = await chatOrNull(model, messages, maxTokens); } catch (e) {
+        if (String(e.message) === 'MODEL_MISSING') out = null; else out = await chatOrNull(model, messages, maxTokens);
     }
-    throw new Error('Le cerveau de l\'agent n\'a pas répondu pour le moment (réessaie dans un instant — code ' + lastStatus + ')');
+    let attempt = 0;
+    while (out === null && attempt < 2) {
+        attempt++;
+        await new Promise(r => setTimeout(r, attempt === 1 ? 800 : 500));
+        if (attempt === 2 && liteMessages) {
+            out = await chatOrNull(model, liteMessages, maxTokens - 100);
+        } else {
+            out = await chatOrNull(model, messages, maxTokens);
+        }
+    }
+    if (!out) throw new Error('Le cerveau de l\'agent n\'a pas répondu pour le moment (réessaie dans un instant)');
+    return out;
 }
 
 // ─── Gemini vision ───
@@ -162,7 +173,7 @@ async function searchDDG(query) {
     return results;
 }
 
-// ─── Pages + PRIX (une passe) ───
+// ─── Pages + PRIX ───
 async function fetchPageText(url, timeoutMs) {
     const ctrl = new AbortController();
     const to = setTimeout(() => ctrl.abort(), timeoutMs || 2300);
@@ -221,9 +232,9 @@ Note visuelle (photo) : ${imgDesc || '(aucune)'}
 Extraits de pages trouvées :
 ${snippets || '(aucun extrait)'}
 
-Tâche : précise l'identification (marque, référence EXACTE telle qu'écrite par les collectionneurs/fabricants de l'époque, année, état) puis produit la requête optimale pour trouver des VENTES RÉELLES de CETTE pièce précise (termes anglais si plus efficaces, inclut l'état si pertinent, ex: "carded", "MIB", "sealed").
+Tâche : précise l'identification (marque, référence EXACTE telle qu'écrite par les collectionneurs, année, état) puis produis la requête optimale pour trouver des VENTES RÉELLES de CETTE pièce (termes anglais si plus efficaces, état inclus si pertinent, ex: "carded", "MIB", "sealed").
 Réponds UNIQUEMENT en JSON compact : {"identification":"...","query":"..."}`;
-        const out = await chat(model, [{ role: 'user', content: msg }], 320);
+        const out = await chat(model, [{ role: 'user', content: msg }], 320, [{ role: 'user', content: 'Extraits:\n' + (snippets || '').slice(0, 300) + '\nRends UNIQUEMENT: {"identification":"...","query":"..."}' }]);
         const t = String(out).replace(/```json|```/g, '').trim();
         const j = t.match(/\{[\s\S]*\}/) ? JSON.parse(t.match(/\{[\s\S]*\}/)[0]) : null;
         return {
@@ -243,7 +254,7 @@ async function ownCatalog(host) {
         const data = await res.json();
         const items = (Array.isArray(data) ? data : []).map(r => {
             const f = r.fields || r;
-            return { id: r.id, nom: f.Nom || '', collection: f.Collection || '', prix: parseFloat(f.Prix) || 0 };
+            return { id: r.id, nom: f.Nom || '', collection: f.Collection || '', annee: parseInt(f.Année) || 0, prix: parseFloat(f.Prix) || 0 };
         }).filter(x => x.nom && x.prix > 0);
         catCache = { t: Date.now(), items };
         return items;
@@ -271,6 +282,8 @@ function matchCatalogItem(items, texto) {
         const n = norm(it.nom + ' ' + it.collection);
         let sc = 0;
         for (const w of words) if (n.includes(w) && ((freq[w] || 0) / N) < 0.3) sc++;
+        const yearInQuery = (words.find(w => /^(19[7-9]\d|200\d)$/.test(w)) || '');
+        if (yearInQuery && it.annee === parseInt(yearInQuery)) sc += 2;
         return { it, sc };
     }).filter(x => brandGuard(x.it, sourceText)).sort((a, b) => b.sc - a.sc);
     const top = scored[0], second = scored[1];
@@ -283,7 +296,7 @@ module.exports = async (req, res) => {
     if (req.method !== 'POST') return res.status(405).json({ error: 'Utilise POST' });
     const t0 = Date.now();
     try {
-        if (!process.env.GROQ_API_KEY) return res.status(500).json({ error: 'Clé IA absente dans Vercel (Environment Variables : GROQ_API_KEY)' });
+        if (!process.env.GROQ_API_KEY) return res.status(500).json({ error: 'Clé IA absente dans Vercel (GROQ_API_KEY)' });
         const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
         const query = String(body.query || '').slice(0, 300).trim();
         const imageData = typeof body.image === 'string' && body.image.startsWith('data:image/') ? body.image : null;
@@ -294,7 +307,7 @@ module.exports = async (req, res) => {
 
         const hostHeader = (req.headers && (req.headers['x-forwarded-host'] || req.headers.host)) || 'www.actionarchive.ink';
 
-        // ─── PASSE 1 : identification ───
+        // ─── PASSE 1 ───
         let imgDesc = '', photoNote = '';
         const p1 = await Promise.all([
             imageData && process.env.GEMINI_API_KEY
@@ -310,7 +323,7 @@ module.exports = async (req, res) => {
 
         const harv1 = await passFetch(query || 'figurine vintage', results1, true);
 
-        // ─── PASSE 2 : affinage + marché ───
+        // ─── PASSE 2 ───
         let refineId = '', results2 = [], harv2 = { prices: [], texts: [] };
         if (Date.now() - t0 < BUDGET_MS) {
             const r = await refinePass(query, imgDesc, (harv1.texts || []).join('\n'));
@@ -349,7 +362,7 @@ module.exports = async (req, res) => {
             priceCtx = '\n\n(Aucun prix exploitable — fourchette indicative + signale-le clairement.)';
         }
 
-        // ─── Catalogue boutique ───
+        // ─── Catalogue ───
         const catalog = await ownCatalog(hostHeader);
         const shopItem = matchCatalogItem(catalog, { q: query, d: imgDesc });
         let shopCtx = '';
@@ -359,13 +372,19 @@ module.exports = async (req, res) => {
             results1.unshift({ title: 'Action Archive — ' + shopItem.nom, url: 'https://' + hostHeader + '/' + linkRel, snippet: 'Reproduction neuve en vente sur le site' });
         }
 
-        // ─── Réponse finale ───
-        const question = (query || (imgDesc ? 'Estime la pièce analysée en photo.' : 'J\'ai joint une photo de ma pièce.')) +
+        // ─── Réponse finale : version complète, puis version allégée si le cerveau boudé ───
+        const questionFull = (query || (imgDesc ? 'Estime la pièce analysée en photo.' : 'J\'ai joint une photo de ma pièce.')) +
             (imgDesc ? '\n\nIdentification de la photo (analyse Gemini) : ' + imgDesc : '') +
             (refineId ? '\n\nPrécision d\'identification (passe 2) : ' + refineId : '') +
             shopCtx + context + priceCtx;
+        const questionLite = (query || (imgDesc ? 'Estime la pièce (reproduction / Loose / MIB-NRFB).' : 'Identifie et estime la pièce en photo d\'après les données.')) +
+            (imgDesc ? '\nAnalyse photo : ' + imgDesc.slice(0, 300) : '') +
+            (refineId ? '\nPrécision passe 2 : ' + refineId.slice(0, 200) : '') +
+            shopCtx + priceCtx;
         const model = await pickTextModel();
-        let reply = await chat(model, [ { role: 'system', content: SYSTEM_PROMPT }, ...history, { role: 'user', content: question } ], 900);
+        const base = [ { role: 'system', content: SYSTEM_PROMPT }, ...history ];
+        let reply = await chat(model, [...base, { role: 'user', content: questionFull }], 900,
+            [...base, { role: 'user', content: questionLite }]);
 
         if (photoFailed && photoNote) reply += '\n\n⚠️ Détail technique : ' + photoNote;
         return res.status(200).json({
