@@ -5,7 +5,8 @@ const PREF_TEXT = ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'openai/gp
 
 const GROQ_BASE = 'https://api.groq.com/openai/v1';
 const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
-const GEMINI_MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.5-flash-lite'];
+// Nouvelle génération Gemini (3.5) — les anciens noms ne sont plus accessibles aux nouvelles clés
+const GEMINI_MODELS = ['gemini-3.5-flash-lite', 'gemini-3.5-flash'];
 
 let modelsCache = null, textPick = null;
 const ddgCache = new Map();
@@ -66,8 +67,7 @@ async function geminiVision(dataUrl, prompt) {
             const text = parts ? parts.map(p => p.text || '').join('') : '';
             if (text && text.trim()) return text.trim();
             lastErr = 'HTTP ' + res.status + ' — ' + (JSON.stringify(data) || '').slice(0, 300);
-            // Si un modèle n'existe pas, on tente le suivant : mais si c'est un problème de clé/quota,
-            // on arrête tout de suite pour afficher la vraie cause
+            // Clé/quota/région : on coupe tout de suite (inutile d'essayer l'autre modèle)
             if (res.status === 400 && /API key|invalid/i.test(lastErr)) throw new Error(lastErr);
             if (res.status === 403 || res.status === 429) throw new Error(lastErr);
         } catch (e) {
@@ -155,7 +155,7 @@ module.exports = async (req, res) => {
             .filter(h => h && (h.role === 'user' || h.role === 'assistant') && typeof h.content === 'string' && h.content.length < 2000)
             .slice(-6).map(h => ({ role: h.role, content: h.content }));
 
-        // 1) PHOTO → analyse Gemini
+        // 1) PHOTO → analyse par Gemini (vision)
         let imgDesc = '', photoNote = '';
         if (imageData) {
             if (process.env.GEMINI_API_KEY) {
@@ -171,7 +171,7 @@ module.exports = async (req, res) => {
         }
         const photoFailed = imageData && !imgDesc;
 
-        // 2) Recherche web
+        // 2) Recherche web (texte + identification de la photo)
         let searchQuery = (query + ' ' + imgDesc).trim().slice(0, 200);
         const results = await searchDDG(searchQuery || query || 'figurine vintage 1970 1980');
         const context = results.length
@@ -179,8 +179,8 @@ module.exports = async (req, res) => {
               results.map((r, i) => `[${i + 1}] ${r.title}\n${r.url}\n${r.snippet}`).join('\n')
             : '\n\n(Aucun résultat web disponible — réponds avec ton expertise en le signalant.)';
 
-        // 3) Réponse finale (Groq) — puis l'erreur technique brute, NON paraphrasée
-        const question = (query || 'J\'ai joint une photo de ma pièce.') +
+        // 3) Réponse finale d'expert (Groq, texte) — + erreur technique brute si photo loupée
+        const question = (query || (imgDesc ? 'Estime la pièce analysée en photo.' : 'J\'ai joint une photo de ma pièce.')) +
             (imgDesc ? '\n\nIdentification de la photo (analyse Gemini) : ' + imgDesc : '') + context;
         const model = await pickTextModel();
         let reply = await chat(model, [ { role: 'system', content: SYSTEM_PROMPT }, ...history, { role: 'user', content: question } ], 700);
