@@ -1,9 +1,9 @@
-// api/agent-search.js — DuckDuckGo (gratuit sans clé) + Groq (gratuit) + analyse photo (vision)
+// api/agent-search.js — DuckDuckGo (gratuit sans clé) + Groq (gratuit) + analyse photo (vision, avec diagnostic)
 const SYSTEM_PROMPT = `Tu es Action Archive-Bot, un expert mondial en jouets vintage, figurines de collection et rétrogaming des années 1970 à 2000. Ton but est d'aider l'utilisateur à identifier des jouets, estimer leur rareté, leur état (Loose, MIB, NRFB) et leur valeur historique. Si une photo est fournie, commence par ce que tu y vois (objet, marque probable, époque, état apparent, variantes visibles) avant l'estimation. Utilise toujours les résultats de recherche web fournis pour donner des estimations de prix réalistes et à jour. Sois passionné, précis, et mentionne les variantes connues (ex: variations de couleur, pays de fabrication) si elles impactent la valeur. Réponds toujours en français, structuré et concise (12 lignes maximum). Si les résultats sont vides ou insuffisants, dis-le et donne ton estimation avec réserves. Termine par "Sources utilisées : [n°1]..." si tu t'es appuyé sur les résultats.`;
 
 const PREF_TEXT = ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'llama-3.1-70b-versatile'];
-// Modèles VISION uniquement — pas de "llama" générique : les llama-3 ne voient pas d'images
-const PREF_VISION = ['meta-llama/llama-4-scout-17b-16e-instruct', 'meta-llama/llama-4-maverick-17b-128e-instruct'];
+// Modèles VISION : on exclut "guard" (modérateur, pas un chat multimodal)
+const PREF_VISION = ['meta-llama/llama-4-scout-17b-16e-instruct', 'meta-llama/llama-4-maverick-17b-128e-instruct', 'llama-4-scout-17b-16e-instruct', 'llama-4-maverick-17b-128e-instruct'];
 const VISION_RE = /(llama[-_]4|scout|maverick|vision)/i;
 
 const GROQ_BASE = 'https://api.groq.com/openai/v1';
@@ -15,12 +15,12 @@ async function getGroqModels() {
     if (modelsCache && Date.now() - modelsCache.t < 10 * 60 * 1000) return modelsCache.ids;
     const res = await fetch(GROQ_BASE + '/models', { headers: { 'Authorization': 'Bearer ' + process.env.GROQ_API_KEY } });
     if (!res.ok) {
-        if (res.status === 401) throw new Error('Clé Groq INVALIDE — vérifie GROQ_API_KEY dans Vercel (Environment Variables)');
+        if (res.status === 401) throw new Error('Clé Groq INVALIDE — vérifie GROQ_API_KEY dans Vercel');
         throw new Error('Modèles Groq indisponibles (HTTP ' + res.status + ')');
     }
     const data = await res.json();
     const ids = (data.data || []).map(x => x.id);
-    if (!ids.length) throw new Error('Ta clé Groq n\'expose aucun modèle — vérifie le compte sur console.groq.com');
+    if (!ids.length) throw new Error('Ta clé Groq n\'expose aucun modèle');
     modelsCache = { t: Date.now(), ids };
     return ids;
 }
@@ -31,12 +31,21 @@ async function pickTextModel() {
     textPick = (PREF_TEXT.find(p => ids.includes(p)) || ids.find(i => /llama|instant|versatile|instruct/i.test(i)) || ids[0]) || null;
     return textPick;
 }
+
+function isVisionId(id) {
+    if (!id) return false;
+    if (/guard/i.test(id)) return false;   // llama-guard = modérateur, pas un assistant vision
+    return VISION_RE.test(id);
+}
+
 async function pickVisionModel() {
-    if (visionPick === '') return null; // déjà vérifié : pas de vision sur cette clé
-    if (visionPick) return visionPick;
+    if (visionPick === '') return { model: null, reason: 'aucun modèle vision (scout/maverick/llama-4) dans la liste de ta clé' };
+    if (visionPick) return { model: visionPick, reason: '' };
     const ids = await getGroqModels();
-    visionPick = PREF_VISION.find(p => ids.includes(p)) || ids.find(i => VISION_RE.test(i)) || '';
-    return visionPick || null;
+    const found = PREF_VISION.find(p => ids.includes(p)) || ids.find(isVisionId) || '';
+    visionPick = found;
+    if (!found) return { model: null, reason: 'aucun modèle vision (scout/maverick/llama-4) dans la liste de ta clé' };
+    return { model: found, reason: '' };
 }
 
 async function chat(model, messages, maxTokens) {
@@ -132,27 +141,32 @@ module.exports = async (req, res) => {
             .filter(h => h && (h.role === 'user' || h.role === 'assistant') && typeof h.content === 'string' && h.content.length < 2000)
             .slice(-6).map(h => ({ role: h.role, content: h.content }));
 
-        // 1) PHOTO ? → identification par IA vision (avec repli gracieux si le modèle boudé)
-        let imgDesc = '';
+        // 1) PHOTO ? → identification par IA vision — et on CAPTURE la raison si ça rate
+        let imgDesc = '', photoNote = '';
         if (imageData) {
             try {
-                const visionModel = await pickVisionModel();
+                const { model: visionModel, reason: whyNot } = await pickVisionModel();
                 if (visionModel) {
-                    imgDesc = await chat(visionModel, [{
-                        role: 'user',
-                        content: [
-                            { type: 'text', text: 'Identifie cette pièce de collection vintage (objet, figurine ou boîte : type, marque/fabricant probable, époque, état apparent, détails utiles). Français, 6 lignes max, sans décorum.' },
-                            { type: 'image_url', image_url: { url: imageData } }
-                        ]
-                    }], 400);
+                    try {
+                        imgDesc = await chat(visionModel, [{
+                            role: 'user',
+                            content: [
+                                { type: 'text', text: 'Identifie cette pièce de collection vintage (objet, figurine ou boîte : type, marque/fabricant probable, époque, état apparent, détails utiles). Français, 6 lignes max, sans décorum.' },
+                                { type: 'image_url', image_url: { url: imageData } }
+                            ]
+                        }], 400);
+                    } catch (e) {
+                        imgDesc = ''; photoNote = 'échec de l\'analyse vision : ' + e.message;
+                    }
                 } else {
-                    imgDesc = ''; // pas de modèle vision sur ta clé → on continue en texte
+                    imgDesc = ''; photoNote = whyNot;
                 }
             } catch (e) {
-                imgDesc = ''; // l'analyse a échoué → l'agent répond quand même avec le texte
+                imgDesc = ''; photoNote = 'liste des modèles inaccessible : ' + e.message;
             }
         }
         const photoFailed = imageData && !imgDesc;
+        if (photoFailed && !photoNote) photoNote = 'raison inconnue';
 
         // 2) Recherche web
         let searchQuery = (query + ' ' + imgDesc).trim().slice(0, 200);
@@ -162,10 +176,10 @@ module.exports = async (req, res) => {
               results.map((r, i) => `[${i + 1}] ${r.title}\n${r.url}\n${r.snippet}`).join('\n')
             : '\n\n(Aucun résultat web disponible — réponds avec ton expertise en le signalant.)';
 
-        // 3) Réponse finale (image renvoyée au modèle seulement si vision actif)
+        // 3) Réponse finale — la note s'affiche dans la réponse elle-même (diagnostic visible dans le chat)
         const question = (query || (imgDesc ? 'Estime la pièce analysée en photo.' : 'J\'ai joint une photo de ma pièce.')) +
             (imgDesc ? '\n\nIdentification de la photo (analyse IA) : ' + imgDesc : '') +
-            (photoFailed ? '\n\n(La photo n\'a pas pu être analysée par le modèle. Dis-le gentiment et demande une description textuelle de la pièce.)' : '') + context;
+            (photoFailed ? '\n\nIMPORTANT : la photo n\'a PAS pu être analysée — motif technique : "' + photoNote + '". Explique-le brièvement à l\'utilisateur et demande une description textuelle.' : '') + context;
         const visionOk = imageData && !photoFailed;
         const messages = [
             { role: 'system', content: SYSTEM_PROMPT },
@@ -177,11 +191,7 @@ module.exports = async (req, res) => {
         const model = await pickTextModel();
         const reply = await chat(model, messages, 700);
 
-        return res.status(200).json({
-            reply,
-            photoHandled: visionOk,
-            sources: results.map(r => ({ title: r.title, url: r.url }))
-        });
+        return res.status(200).json({ reply, photoNote, sources: results.map(r => ({ title: r.title, url: r.url })) });
     } catch (err) {
         console.error('agent-search:', err);
         return res.status(500).json({ error: err.message || 'Erreur serveur' });
