@@ -4,11 +4,12 @@ const SYSTEM_PROMPT = `Tu es Action Archive-Bot, un expert mondial en jouets vin
 RÈGLES D'ESTIMATION (primordiales) :
 - Les PRIX OBSERVÉS extraits des pages sources sont ta base prioritaire ; cite la provenance, sans inventer de nom d'outil ou de système interne.
 - Un même jouet a des MARCHÉS SÉPARÉS : (a) reproduction/impression neuve, (b) original Loose, (c) original MIB ou NRFB — souvent 3 à 10 fois le prix Loose. Prends le HAUT des relevés pour les exemplaires complets, le bas pour les Loose.
-- Ligne REPRODUCTION : si une pièce identique figure dans le CATALOGUE ACTION ARCHIVE (indiqué dans les données), donne EXACTEMENT ce prix boutique — ne l'estime jamais. Sinon, fourchette prudente et marquée comme indicative.
-- Jamais de phrases génériques ou de rappels d'astuces : seuls les chiffres concrets comptent.
+- ÉTIQUETTE OBLIGATOIRE après chaque fourchette : écris "(fourchette basse du marché — ventes exceptionnelles, états supérieurs ou exemplaires rares : au-dessus)" pour le MIB/NRFB, et "(marché courant)" pour les Loose. Ne cite jamais une fourchette sans savoir ce qu'elle représente.
+- Ligne REPRODUCTION : si une pièce EXACTEMENT de la même marque et du même type figure dans le CATALOGUE ACTION ARCHIVE (indiqué dans les données), donne EXACTEMENT ce prix boutique. S'il y a le moindre doute sur la marque ou le type (ex. demandé Meccano, catalogue propose Mego), NE METS PAS le lien et n'utilise pas ce prix.
+- Jamais de phrases génériques, de rappels d'astuces ou de formules creuses : seuls les chiffres concrets comptent.
 
 STYLE : français, passionné, structuré en 4 blocs sur 14 lignes max :
-IDENTIFICATION · PRIX OBSERVÉS (courte liste avec provenance) · ESTIMATION (Reproduction / Loose / MIB-NRFB, fourchettes) · CONSEIL (UNE seule ligne : le piège ou la variante la plus décisive).
+IDENTIFICATION · PRIX OBSERVÉS (courte liste avec provenance) · ESTIMATION (Reproduction / Loose / MIB-NRFB, fourchettes étiquetées) · CONSEIL (UNE seule ligne : le piège ou la variante la plus décisive).
 Si aucun prix exploitable n'a été trouvé, dis-le et donne une fourchette indicative avec réserves explicites.
 Écris la ligne "Sources utilisées : ..." UNIQUEMENT si tu as réellement utilisé des sources numérotées ; autrement, ne l'écris pas du tout.`;
 
@@ -204,7 +205,7 @@ async function harvestPrices(query, results) {
     return out;
 }
 
-// ─── Catalogue boutique : les MÊMES champs que la page produits.html (Nom, Collection, Année, Prix) ───
+// ─── Catalogue boutique ───
 function norm(s) {
     return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
@@ -231,10 +232,22 @@ async function ownCatalog(host) {
     } catch (e) { return []; }
 }
 
+// Gardien de marque : si l'utilisateur nomme une marque/ligne précise, le produit lié DOIVIT la contenir
+const BRANDS = ['mego', 'meccano', 'palitoy', 'mattel', 'big jim', 'gi joe', 'gijoe', 'hasbro', 'ceji', 'arbois', 'popy', 'action man', 'action joe', 'kenner', 'matchbox', 'creta', 'lone star', 'gama', 'cherilea', 'britains', 'timpo', 'starlux', 'claude'];
+function brandGuard(item, texto) {
+    const t = norm(texto);
+    const mentioned = BRANDS.filter(b => t.includes(norm(b)));
+    if (mentioned.length === 0) return true; // pas de marque précisée → pas de contrainte
+    const n = norm(item.nom + ' ' + item.collection);
+    return mentioned.some(b => n.includes(norm(b)));
+}
+
 function matchCatalogItem(items, texto) {
-    const words = norm(texto).replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter(w => w.length > 3);
-    if (!words.length || !items.length) return null;
-    // Poids : un mot qui revient sur >30 % du catalogue ne compte pas (soldat, russe, figurine…)
+    if (!items.length) return null;
+    // TA question prime : jamais la description IA en mélange
+    const sourceText = queryOrDescription(texto);
+    const words = norm(sourceText).replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter(w => w.length > 3);
+    if (!words.length) return null;
     const freq = {};
     for (const it of items) {
         const n = norm(it.nom + ' ' + it.collection);
@@ -247,15 +260,17 @@ function matchCatalogItem(items, texto) {
         for (const w of words) {
             if (n.includes(w) && ((freq[w] || 0) / N) < 0.3) sc++;
         }
-        // Une année en 4 chiffres (1970-2000) qui correspond exactement au produit pèse lourd
         const yearInQuery = (words.find(w => /^(19[7-9]\d|200\d)$/.test(w)) || '');
         if (yearInQuery && it.annee === parseInt(yearInQuery)) sc += 2;
         return { it, sc };
-    }).sort((a, b) => b.sc - a.sc);
+    }).filter(x => brandGuard(x.it, sourceText)).sort((a, b) => b.sc - a.sc);
     const top = scored[0], second = scored[1];
     if (!top || top.sc < 2 || (second ? top.sc - second.sc < 1 : false)) return null;
     return top.it;
 }
+// texto = {q: question utilisateur, d: description IA} — la question gagne toujours
+let __matchCtx = { q: '', d: '' };
+function queryOrDescription(texto) { return texto.q || texto.d || ''; }
 
 // ─── Point d'entrée ───
 module.exports = async (req, res) => {
@@ -278,7 +293,7 @@ module.exports = async (req, res) => {
             if (process.env.GEMINI_API_KEY) {
                 try {
                     imgDesc = await geminiVision(imageData,
-                        'Identifie cette pièce de collection vintage (figurine, jouet ou boîte : type, marque/fabricant probable, époque, état apparent, variantes visibles). Indique aussi si l\'objet semble être une impression neuve (reproduction, carton non fatigué) ou un article vintage d\'origine. Français, 7 lignes max, sans décorum.');
+                        'Identifie cette pièce de collection vintage (figurine, jouet ou boîte : type, marque/fabricant probable, époque, état apparent, variantes visibles). Indique aussi si l\'objet semble être une impression neuve (reproduction, carton non fatigué) ou un article vintage d\'origine. Français, 7 lignes max, sans décorum. Si tu es incertain de la marque, écris "marque incertaine" au lieu de citer une marque par conjecture.');
                 } catch (e) {
                     imgDesc = ''; photoNote = 'Gemini a échoué : ' + e.message;
                 }
@@ -308,9 +323,10 @@ module.exports = async (req, res) => {
             priceCtx = '\n\n(Aucun prix exploitable trouvé dans les sources — fourchette indicative + signal clairement.)';
         }
 
-        // 2c) CATALOGUE BOUTIQUE : prix réel de la reproduction (champs Nom/Collection de la page produits)
+        // 2c) CATALOGUE BOUTIQUE — ta question prime, la description IA ne rentre que si tu n'as rien tapé
+        __matchCtx = { q: query, d: imgDesc };
         const catalog = await ownCatalog(hostHeader);
-        const shopItem = matchCatalogItem(catalog, combo || query);
+        const shopItem = matchCatalogItem(catalog, __matchCtx);
         let shopCtx = '';
         if (shopItem) {
             const link = 'https://' + hostHeader + '/produit.html?id=' + shopItem.id;
