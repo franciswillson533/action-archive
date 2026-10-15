@@ -1,5 +1,15 @@
-// api/agent-search.js — Groq (texte) · Gemini (photos) · DuckDuckGo + extraction de PRIX RÉELS des pages sources
-const SYSTEM_PROMPT = `Tu es Action Archive-Bot, un expert mondial en jouets vintage, figurines de collection et rétrogaming des années 1970 à 2000. Ton but est d'aider l'utilisateur à identifier des jouets, estimer leur rareté, leur état (Loose, MIB, NRFB) et leur valeur historique. Si une photo est fournie, commence par ce que tu y vois (objet, marque probable, époque, état apparent, variantes visibles) avant l'estimation. Pour le prix : les PRIX OBSERVÉS extraits des pages sources sont ta base prioritaire — donne une fourchette basse-haute cohérente avec eux et cite de qui ils viennent. Sois passionné, précis, et mentionne les variantes connues (variations de couleur, pays de fabrication) si elles impactent la valeur. Réponds en français, structuré et concise (14 lignes maximum). Si aucun prix exploitable n'a été trouvé, dis-le et donne une fourchette indicative avec réserves explicites. Termine par "Sources utilisées : [n°1]..." si tu t'es appuyé sur les résultats.`;
+// api/agent-search.js — Groq (texte) · Gemini (photos) · DuckDuckGo + prix réels des sources
+const SYSTEM_PROMPT = `Tu es Action Archive-Bot, un expert mondial en jouets vintage, figurines de collection et rétrogaming des années 1970 à 2000. Ton but : aider l'utilisateur à identifier des jouets, estimer leur rareté, leur état (Loose, MIB, NRFB) et leur valeur historique.
+
+RÈGLES D'ESTIMATION (primordiales) :
+- Les PRIX OBSERVÉS extraits des pages sources sont ta base prioritaire. Cite-les avec leur provenance.
+- Un même jouet a MARCHÉS SÉPARÉS : (a) le prix d'une reproduction/impression neuve, (b) le prix d'un original Loose, (c) le prix d'un original MIB ou NRFB. Rends ces trois lignes chaque fois que possible.
+- Un article EN BOÎTE COMPLETE (MIB/NRFB) vaut souvent 3 à 10 fois le prix Loose : prends le HAUT des prix observés pour les exemplaires complets. Ne sous-estime JAMAIS un article en boîte : si le haut des observations dépasse 150 €, dis-le franchement.
+- Si la photo montre une reproduction récente (impression neuve, carton non jauni), le prix à estimer est celui de la reproduction — et tu précises à part la valeur de l'original équivalent d'après les observations.
+
+STYLE : réponds en français, passionné et précis, structuré en 4 blocs :
+IDENTIFICATION (ce que je vois / la pièce) · PRIX OBSERVÉS (liste courte avec source) · ESTIMATION (Reproduction / Loose / MIB-NRFB, fourchettes basse-haute) · CONSEIL (variantes, pièges). 14 lignes maximum. Si aucun prix exploitable n'a été trouvé, dis-le et donne une fourchette indicative avec réserves explicites. Termine par "Sources utilisées : [n°1]..." si tu t'es appuyé sur les résultats.
+N'invente JAMAIS de nom d'outil, de fonction ou de système interne (pas de "readWebUrlTool", etc.) — parle simplement des "pages consultées".`;
 
 const PREF_TEXT = ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'llama-3.1-70b-versatile'];
 
@@ -141,7 +151,7 @@ async function searchDDG(query) {
     return results;
 }
 
-// ─── Extraction de PRIX RÉELS : on va lire les pages sources ───
+// ─── Extraction de PRIX RÉELS ───
 async function fetchPageText(url, timeoutMs) {
     const ctrl = new AbortController();
     const to = setTimeout(() => ctrl.abort(), timeoutMs || 3500);
@@ -160,7 +170,6 @@ async function fetchPageText(url, timeoutMs) {
 }
 
 function extractPrices(text) {
-    // formats : 24,90 € · 24.90 € · €24.90 · 24 EUR · £20 · £20.00 · $12.99 · USD 3 450
     const re = /(\d{1,4}(?:[ .]\d{3})*(?:[.,]\d{1,2})?)\s*(?:€|eurs?|EUR)|(?:€|EUR)\s*(\d{1,4}(?:[ .]\d{3})*(?:[.,]\d{1,2})?)|£\s*(\d{1,4}(?:[ .]\d{3})*(?:[.,]\d{1,2})?)|(\d{1,4}(?:[.,]\d{1,2})?)\s*(?:£|GBP)|(?:\$|USD)\s*(\d{1,4}(?:[ .]\d{3})*(?:[.,]\d{1,2})?)|(\d{1,4}(?:[.,]\d{1,2})?)\s*(?:USD|\$)/gi;
     const found = [];
     let m;
@@ -176,19 +185,21 @@ function extractPrices(text) {
 async function harvestPrices(query, results) {
     const hit = priceCache.get(query.toLowerCase());
     if (hit && Date.now() - hit.t < CACHE_TTL) return hit.prices;
-    const targets = [];
-    // 1) Une recherche eBay directe (les pages de résultats eBay affichent les prix)
-    targets.push('https://www.ebay.fr/sch/i.html?_nkw=' + encodeURIComponent(query.slice(0, 120)));
-    // 2) Les 3 premières URLs organiques
+    const targets = [
+        'https://www.ebay.fr/sch/i.html?_nkw=' + encodeURIComponent(query.slice(0, 110)),
+        'https://www.ebay.com/sch/i.html?_nkw=' + encodeURIComponent(query.slice(0, 110))
+    ];
     results.slice(0, 3).forEach(r => targets.push(r.url));
     const settled = await Promise.allSettled(targets.map(u => fetchPageText(u, 3500)));
     const prices = [];
-    for (let i = 0; i < settled.length && prices.length < 10; i++) {
+    for (let i = 0; i < settled.length && prices.length < 12; i++) {
         if (settled[i].status !== 'fulfilled' || !settled[i].value) continue;
         const found = extractPrices(settled[i].value);
         found.forEach(p => prices.push({ p, src: targets[i] }));
     }
-    const out = prices.slice(0, 10);
+    // tri croissant : le haut de fourchette est visible pour l'IA (MIB/NRFB)
+    prices.sort((a, b) => a.p - b.p);
+    const out = prices.slice(0, 12);
     priceCache.set(query.toLowerCase(), { t: Date.now(), prices: out });
     return out;
 }
@@ -212,7 +223,7 @@ module.exports = async (req, res) => {
             if (process.env.GEMINI_API_KEY) {
                 try {
                     imgDesc = await geminiVision(imageData,
-                        'Identifie cette pièce de collection vintage (figurine, jouet ou boîte : type, marque/fabricant probable, époque, état apparent, variantes visibles). Français, 6 lignes max, sans décorum.');
+                        'Identifie cette pièce de collection vintage (figurine, jouet ou boîte : type, marque/fabricant probable, époque, état apparent, variantes visibles). Indique aussi si l\'objet semble être une IMPRESSION NEUVE (reproduction/création récente, carton non fatigué) ou un article VINTAGE d\'origine (jauneur, usure, marques d\'époque). Français, 7 lignes max, sans décorum.');
                 } catch (e) {
                     imgDesc = ''; photoNote = 'Gemini a échoué : ' + e.message;
                 }
@@ -230,21 +241,24 @@ module.exports = async (req, res) => {
               results.map((r, i) => `[${i + 1}] ${r.title}\n${r.url}\n${r.snippet}`).join('\n')
             : '\n\n(Aucun résultat web disponible — réponds avec ton expertise en le signalant.)';
 
-        // 2b) PRIX RÉELSExtraits des sources (+ eBay en direct)
+        // 2b) PRIX RÉELS : eBay FR + COM + 3 sources
         const prices = await harvestPrices(searchQuery || query || 'figurine vintage', results);
         let priceCtx = '';
         if (prices.length) {
-            priceCtx = '\n\nPRIX OBSERVÉS sur le web en ce moment (base prioritaire de ton estimation) :\n' +
-                prices.map(pr => '• ' + pr.p.toFixed(2).replace('.', ',') + ' € (équivalent) ← ' + pr.src).join('\n');
+            const low = prices[0].p.toFixed(2).replace('.', ',');
+            const high = prices[prices.length - 1].p.toFixed(2).replace('.', ',');
+            priceCtx = '\n\nPRIX OBSERVÉS (extraction automatique, triés du plus bas au plus haut — ' + prices.length + ' relevés, entre ' + low + ' € et ' + high + ' €) :\n' +
+                prices.map(pr => '• ' + pr.p.toFixed(2).replace('.', ',') + ' ← ' + pr.src).join('\n') +
+                '\n(Astuce : les prix bas correspondent généralement aux pièces Loose/reproductions, les prix hauts aux exemplaires complets en boîte — MIB/NRFB.)';
         } else {
-            priceCtx = '\n\n(Aucun prix exploitable trouvé dans les sources — donne une fourchette indicative ET signale-le clairement.)';
+            priceCtx = '\n\n(Aucun prix exploitable trouvé dans les sources — fourchette indicative + signal clairement.)';
         }
 
         // 3) Réponse finale
         const question = (query || (imgDesc ? 'Estime la pièce analysée en photo.' : 'J\'ai joint une photo de ma pièce.')) +
             (imgDesc ? '\n\nIdentification de la photo (analyse Gemini) : ' + imgDesc : '') + context + priceCtx;
         const model = await pickTextModel();
-        let reply = await chat(model, [ { role: 'system', content: SYSTEM_PROMPT }, ...history, { role: 'user', content: question } ], 800);
+        let reply = await chat(model, [ { role: 'system', content: SYSTEM_PROMPT }, ...history, { role: 'user', content: question } ], 900);
 
         if (photoFailed && photoNote) reply += '\n\n⚠️ Détail technique : ' + photoNote;
         return res.status(200).json({ reply, photoNote, priceCount: prices.length, sources: results.map(r => ({ title: r.title, url: r.url })) });
