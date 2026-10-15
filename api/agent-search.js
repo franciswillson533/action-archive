@@ -1,17 +1,17 @@
-// api/agent-search.js — Groq (texte) · Gemini (photos) · DuckDuckGo 2 passes + prix réels + catalogue boutique
+// api/agent-search.js — Groq (texte) · Gemini (photos) · DuckDuckGo 2 passes + prix réels + catalogue
 const SYSTEM_PROMPT = `Tu es Action Archive-Bot, un expert mondial en jouets vintage, figurines de collection et rétrogaming des années 1970 à 2000. Ton but : aider l'utilisateur à identifier des jouets, estimer leur rareté, leur état (Loose, MIB, NRFB) et leur valeur historique.
 
 RÈGLES (primordiales) :
-- NE SUPPOSE JAMAIS que la pièce montrée ou décrite est une reproduction : une photo ne permet pas de trancher original/reproduction (ni l'âge, ni le papier). Tu estimes par défaut le MARCHÉ DE L'ORIGINAL, et tu ajoutes la mention "(sous réserve d'une pièce originale)" après tes fourchettes.
-- Les PRIX OBSERVÉS (ventes soldées eBay en priorité) sont ta base chiffrée ; cite la provenance. N'invente JAMAIS de nom d'outil interne — parle des "pages consultées".
-- Marchés SÉPARÉS pour un même jouet : (a) reproduction neuve, (b) original Loose, (c) original MIB/NRFB — en boîte/carte complète, souvent 3 à 10 fois le Loose.
-- MIB/NRFB : fourchette dans la MOITIÉ SUPÉRIEURE des relevés (75e centile → maximum observé). ÉTIQUETTES obligatoires : "(fourchette basse du marché — ventes exceptionnelles au-dessus)" pour MIB/NRFB ; "(marché courant)" pour Loose ; "(sous réserve d'une pièce originale)" sur les estimations d'original.
-- Ligne REPRODUCTION : elle vient UNIQUEMENT du CATALOGUE ACTION ARCHIVE fourni dans les données. Pièce équivalente présente → EXACTEMENT le prix boutique + le lien (formulé "fiche produit", pas l'URL brute). Rien ne correspond → "Reproduction : non proposée au catalogue" — JAMAIS de prix de reproduction inventé.
-- Interdits : phrases génériques, rappels d'astuces, formules creuses. Les données parlent, pas les suppositions.
+- NE SUPPOSE JAMAIS reproduction/original (impossible par photo). Estime par défaut le MARCHÉ DE L'ORIGINAL avec la mention "(sous réserve d'une pièce originale)".
+- Les PRIX OBSERVÉS sont des relevés RÉELS mais peuvent couvrir des conditions/variantes hétérogènes (Loose, boîtes pliées, jouets modernes, rééditions). Utilise-les comme REPÈRES, pas comme PLAFOND : si la pièce décrite (état, référence recherchée) correspond au haut de marché et que ta connaissance d'expert est supérieure au relevé, donne ta fourchette experte ET signale l'écart d'une phrase. Jamais de fourchette écrasée par des relevés qui ne correspondent pas à l'état décrit.
+- Marchés SÉPARÉS : (a) reproduction neuve, (b) original Loose, (c) original MIB/NRFB — en boîte/carte complète, souvent 3 à 10 fois le Loose.
+- MIB/NRFB : part du haut des relevés pertinents ET/OU de ta fourchette experte si supérieure. ÉTIQUETTES : "(fourchette basse — ventes exceptionnelles au-dessus)" pour MIB/NRFB ; "(marché courant)" pour Loose.
+- Devise : convertis £/$ en € (1 £ ≈ 1,17 € ; 1 $ ≈ 0,92 €)
+- Ligne REPRODUCTION : UNIQUEMENT depuis le CATALOGUE ACTION ARCHIVE fourni : pièce équivalente → prix boutique EXACT + "fiche produit" ; absent → "non proposée au catalogue". JAMAIS de prix de reproduction inventé. Contradiction de marque (demandé Meccano, catalogue Mego) → pas de lien.
+- Interdits : phrases génériques, rappels d'astuces, nommer des outils internes.
 
-STYLE : français, passionné, 4 blocs, 16 lignes max :
-IDENTIFICATION · PRIX OBSERVÉS (courte liste avec provenance) · ESTIMATION (Reproduction / Loose / MIB-NRFB, fourchettes étiquetées) · CONSEIL (UNE seule ligne).
-"Aucun prix exploitable" → dis-le + fourchette indicative avec réserves. "Sources utilisées : ..." UNIQUEMENT si des sources ont servi ; sinon rien.`;
+STYLE : français, passionné, 4 blocs, 16 lignes max : IDENTIFICATION · PRIX OBSERVÉS (avec provenance + ligne d'alerte si relevés faibles) · ESTIMATION (Reproduction / Loose / MIB-NRFB étiquetées) · CONSEIL (UNE ligne).
+Ligne "Sources utilisées : ..." UNIQUEMENT si des sources ont servi ; sinon rien.`;
 
 const PREF_TEXT = ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'llama-3.1-70b-versatile'];
 
@@ -70,14 +70,14 @@ async function chat(model, messages, maxTokens, liteMessages) {
     let attempt = 0;
     while (out === null && attempt < 2) {
         attempt++;
-        await new Promise(r => setTimeout(r, attempt === 1 ? 800 : 500));
+        await new Promise(r => setTimeout(r, attempt === 1 ? 800 : 400));
         out = await chatOrNull(model, (attempt === 2 && liteMessages) ? liteMessages : messages, (attempt === 2 && liteMessages) ? maxTokens - 100 : maxTokens);
     }
-    if (!out) throw new Error('Le cerveau de l\'agent n\'a pas répondu pour le moment (réessaie dans un instant)');
+    if (!out) throw new Error("Le cerveau de l'agent n'a pas répondu pour le moment (réessaie dans un instant)");
     return out;
 }
 
-// ─── Gemini : description FACTUELLE, sans verdict original/reproduction ───
+// ─── Gemini : description factuelle ───
 async function geminiVision(dataUrl, prompt) {
     const m = dataUrl.match(/^data:(image\/[a-z0-9+.-]+);base64,(.+)$/i);
     if (!m) throw new Error('Image illisible');
@@ -87,9 +87,7 @@ async function geminiVision(dataUrl, prompt) {
             const res = await fetch(GEMINI_BASE + '/' + model + ':generateContent?key=' + encodeURIComponent(process.env.GEMINI_API_KEY), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{ parts: [ { text: prompt }, { inline_data: { mime_type: m[1], data: m[2] } } ] }]
-                })
+                body: JSON.stringify({ contents: [{ parts: [ { text: prompt }, { inline_data: { mime_type: m[1], data: m[2] } } ] }] })
             });
             const data = await res.json();
             const parts = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts;
@@ -189,16 +187,28 @@ async function fetchPageText(url, timeoutMs) {
 }
 
 function extractPrices(text) {
-    let m;
     const re = /(\d{1,4}(?:[ .]\d{3})*(?:[.,]\d{1,2})?)\s*(?:€|eurs?|EUR)|(?:€|EUR)\s*(\d{1,4}(?:[ .]\d{3})*(?:[.,]\d{1,2})?)|£\s*(\d{1,4}(?:[ .]\d{3})*(?:[.,]\d{1,2})?)|(\d{1,4}(?:[.,]\d{1,2})?)\s*(?:£|GBP)|(?:\$|USD)\s*(\d{1,4}(?:[ .]\d{3})*(?:[.,]\d{1,2})?)|(\d{1,4}(?:[.,]\d{1,2})?)\s*(?:USD|\$)/gi;
     const found = [];
+    let m;
     while ((m = re.exec(text)) && found.length < 10) {
-        const raw = m[1] || m[2] || m[3] || m[4] || m[5] || m[6];
+        const idx = [1, 2, 3, 4, 5, 6].find(i => m[i] !== undefined);
+        const raw = idx !== undefined ? m[idx] : null;
         if (!raw) continue;
         const num = parseFloat(raw.replace(/[ .](?=\d{3}\b)/g, '').replace(',', '.'));
-        if (!isNaN(num) && num >= 1 && num <= 25000) found.push(num);
+        if (isNaN(num) || num < 1 || num > 25000) continue;
+        let cur = 'EUR';
+        if (idx === 3 || idx === 4) cur = 'GBP';
+        if (idx === 5 || idx === 6) cur = 'USD';
+        found.push({ v: num, cur });
     }
     return found;
+}
+function convPush(found, src, out, cap) {
+    found.forEach(x => {
+        if (out.length >= cap) return;
+        const k = x.cur === 'GBP' ? 1.17 : x.cur === 'USD' ? 0.92 : 1;
+        out.push({ p: Math.round(x.v * k * 100) / 100, src, orig: x.cur === 'EUR' ? '' : ' (devise : ' + x.cur + ')' });
+    });
 }
 
 async function passFetch(query, results, withText) {
@@ -207,17 +217,21 @@ async function passFetch(query, results, withText) {
         { url: 'https://www.ebay.fr/sch/i.html?_nkw=' + kw + '&LH_Complete=1&LH_Sold=1', src: 'eBay FR — ventes soldées' },
         { url: 'https://www.ebay.com/sch/i.html?_nkw=' + kw + '&LH_Complete=1&LH_Sold=1', src: 'eBay COM — ventes soldées' },
         { url: results[0] ? results[0].url : '', src: 'source web 1' },
-        { url: results[1] ? results[1].url : '', src: 'source web 2' }
+        { url: results[1] ? results[1].url : '', src: 'source web 2' },
+        { url: results[2] ? results[2].url : '', src: 'source web 3' },
+        { url: results[3] ? results[3].url : '', src: 'source web 4' }
     ].filter(t => t.url);
     const settled = await Promise.allSettled(targets.map(t => fetchPageText(t.url, 2300)));
     const prices = [], texts = [];
-    for (let i = 0; i < settled.length && prices.length < 16; i++) {
+    let read = 0;
+    for (let i = 0; i < settled.length; i++) {
         if (settled[i].status !== 'fulfilled' || !settled[i].value) continue;
-        extractPrices(settled[i].value).forEach(p => prices.push({ p, src: targets[i].src }));
+        read++;
+        convPush(extractPrices(settled[i].value), targets[i].src, prices, 16);
         if (withText && texts.length < 2) texts.push(settled[i].value.slice(0, 600));
     }
     prices.sort((a, b) => a.p - b.p);
-    return { prices: prices.slice(0, 16), texts };
+    return { prices: prices.slice(0, 16), texts, read, total: targets.length };
 }
 
 // ─── Passe d'affinage ───
@@ -234,10 +248,7 @@ Réponds UNIQUEMENT en JSON compact : {"identification":"...","query":"..."}`;
         const out = await chat(model, [{ role: 'user', content: msg }], 320, [{ role: 'user', content: 'Extraits:\n' + (snippets || '').slice(0, 300) + '\nRends UNIQUEMENT: {"identification":"...","query":"..."}' }]);
         const t = String(out).replace(/```json|```/g, '').trim();
         const j = t.match(/\{[\s\S]*\}/) ? JSON.parse(t.match(/\{[\s\S]*\}/)[0]) : null;
-        return {
-            identification: stripTags(j && j.identification || '').slice(0, 400),
-            query: stripTags(j && j.query || '').slice(0, 160)
-        };
+        return { identification: stripTags(j && j.identification || '').slice(0, 400), query: stripTags(j && j.query || '').slice(0, 160) };
     } catch (e) { return { identification: '', query: '' }; }
 }
 
@@ -251,23 +262,21 @@ async function ownCatalog(host) {
         const data = await res.json();
         const items = (Array.isArray(data) ? data : []).map(r => {
             const f = r.fields || r;
-            return { id: r.id, nom: f.Nom || '', collection: f.Collection || '', annee: parseInt(f.Année) || 0, prix: parseFloat(f.Prix) || 0 };
+            return { id: r.id, nom: f.Nom || '', collection: f.Collection || '', prix: parseFloat(f.Prix) || 0 };
         }).filter(x => x.nom && x.prix > 0);
         catCache = { t: Date.now(), items };
         return items;
     } catch (e) { return []; }
 }
-
-// Garde-fou de marque par CONTRADICTION : ne bloque que si le produit lié porte une marque DIFFÉRENTE de celle demandée
 const BRANDS = ['mego', 'meccano', 'palitoy', 'mattel', 'big jim', 'gi joe', 'gijoe', 'hasbro', 'ceji', 'arbois', 'popy', 'action man', 'action joe', 'kenner', 'matchbox', 'creta', 'lone star', 'gama', 'cherilea', 'britains', 'timpo', 'starlux'];
 function brandGuard(item, texto) {
     const t = norm(texto);
     const mentioned = BRANDS.filter(b => t.includes(norm(b)));
-    if (!mentioned.length) return true;                       // pas de marque citée → libre
+    if (!mentioned.length) return true;
     const n = norm(item.nom + ' ' + item.collection);
-    const present = BRANDS.filter(b => n.includes(norm(b)));  // marques visibles sur le produit
-    if (present.length === 0) return true;                    // produit sans marque visible → autorisé (pas de contradiction)
-    return mentioned.some(b => present.includes(b));          // contradiction interdite : demandé Meccano, produit Mego → refusé
+    const present = BRANDS.filter(b => n.includes(norm(b)));
+    if (!present.length) return true;
+    return mentioned.some(b => present.includes(b));
 }
 function matchCatalogItem(items, texto) {
     const sourceText = texto.q || texto.d || '';
@@ -308,11 +317,11 @@ module.exports = async (req, res) => {
 
         const hostHeader = (req.headers && (req.headers['x-forwarded-host'] || req.headers.host)) || 'www.actionarchive.ink';
 
-        // ─── PASSE 1 : description factuelle + recherche ───
+        // ─── PASSE 1 ───
         let imgDesc = '', photoNote = '';
         const p1 = await Promise.all([
             imageData && process.env.GEMINI_API_KEY
-                ? geminiVision(imageData, 'Décris CETTE pièce de collection vintage de façon FACTUELLE (figurine, jouet ou boîte : type, marque ou fabricant VISIBLE ou probable — avec incertitude, époque, texte imprimé visible, état apparent : jaunement, plis, usure, couleurs). IMPORTANT : ne conclus PAS s\'il s\'agit d\'une reproduction ou d\'un original (impossible par photo) — note seulement des indices observables. Marque incertaine ? Écris-le. Français, 7 lignes max.')
+                ? geminiVision(imageData, 'Décris CETTE pièce de collection vintage de façon FACTUELLE (type, marque ou fabricant VISIBLE ou probable — avec ton incertitude, époque, texte imprimé visible, état apparent : jaunement, plis, usure). IMPORTANT : ne conclus PAS reproduction/original (impossible par photo) — note seulement des indices visibles. Marque incertaine ? Écris-le. Français, 7 lignes max.')
                 : Promise.resolve(''),
             query ? searchDDG(query) : Promise.resolve([])
         ]);
@@ -322,10 +331,12 @@ module.exports = async (req, res) => {
         if (!query && imageData) results1 = await searchDDG(imgDesc.slice(0, 160));
         const photoFailed = imageData && !imgDesc;
 
+        const combo = (query + ' ' + imgDesc).trim();
+
         const harv1 = await passFetch(query || 'figurine vintage', results1, true);
 
-        // ─── PASSE 2 : affinage + marché ───
-        let refineId = '', results2 = [], harv2 = { prices: [], texts: [] };
+        // ─── PASSE 2 ───
+        let refineId = '', results2 = [], harv2 = { prices: [], texts: [], read: 0, total: 0 };
         if (Date.now() - t0 < BUDGET_MS) {
             const r = await refinePass(query, imgDesc, (harv1.texts || []).join('\n'));
             refineId = r.identification;
@@ -336,11 +347,20 @@ module.exports = async (req, res) => {
             }
         }
 
-        // ─── Fusion ───
+        // ─── Fusion + extraction de prix depuis les EXTRAITDDG eux-mêmes (zéro blocage possible) ───
         const seen = new Set(); const merged = [];
         [...results1, ...results2].forEach(r => { if (!seen.has(r.url)) { seen.add(r.url); merged.push(r); } });
-        const pk = {}; [... harv1.prices, ...harv2.prices].forEach(x => { pk[x.p + '|' + x.src] = x; });
-        const prices = Object.values(pk).sort((a, b) => a.p - b.p).slice(0, 16);
+        merged.forEach(r => {
+            convPush(extractPrices(stripTags((r.title || '') + ' ' + (r.snippet || ''))).slice(0, 3), 'extrait de recherche (' + String(r.url || '').split('/')[2] + ')', [], 3);
+        });
+        const pk = {}; const pushPrice = x => { if (x && x.p) pk[x.p.toFixed(2) + '|' + x.src] = x; };
+        [...harv1.prices, ...harv2.prices].forEach(pushPrice);
+        const snippetPrices = [];
+        merged.slice(0, 8).forEach(r => {
+            convPush(extractPrices(stripTags((r.title || '') + ' ' + (r.snippet || ''))).slice(0, 2), 'extrait de recherche', snippetPrices, 4);
+        });
+        snippetPrices.forEach(pushPrice);
+        const prices = Object.values(pk).sort((a, b) => a.p - b.p).slice(0, 18);
 
         let context = '';
         if (merged.length) {
@@ -350,20 +370,21 @@ module.exports = async (req, res) => {
             context = '\n\n(Aucun résultat web — réponds avec ton expertise en le signalant.)';
         }
 
+        const readInfo = 'pages lues : ' + (harv1.read + harv2.read) + '/' + (harv1.total + harv2.total) + ' (sources bloquées ignorées)';
         let priceCtx = '';
         if (prices.length) {
             const arr = prices.map(x => x.p);
             const med = arr[Math.floor(arr.length / 2)];
             const p75 = arr[Math.floor(arr.length * 0.75)];
             const max = arr[arr.length - 1];
-            priceCtx = '\n\nPRIX OBSERVÉS (' + arr.length + ' relevés, ventes soldées en priorité — triés croissant) : min ' + arr[0].toFixed(2).replace('.', ',') + ' € · médiane ' + med.toFixed(2).replace('.', ',') + ' € · 75e centile ' + p75.toFixed(2).replace('.', ',') + ' € · maximum ' + max.toFixed(2).replace('.', ',') + ' €\n' +
-                prices.map(pr => '• ' + pr.p.toFixed(2).replace('.', ',') + ' € ← ' + pr.src).join('\n') +
-                '\n(MIB/NRFB = zone 75e centile → maximum ; Loose = zone basse/médiane.)';
+            priceCtx = '\n\nPRIX OBSERVÉS (' + readInfo + ' — triés croissant) : min ' + arr[0].toFixed(2).replace('.', ',') + ' € · médiane ' + med.toFixed(2).replace('.', ',') + ' € · 75e centile ' + p75.toFixed(2).replace('.', ',') + ' € · maximum ' + max.toFixed(2).replace('.', ',') + ' €\n' +
+                prices.map(pr => '• ' + pr.p.toFixed(2).replace('.', ',') + ' €' + (pr.orig || '') + ' ← ' + pr.src).join('\n') +
+                (arr.length < 5 ? '\nⓘ ATtENTION : peu de relevés fiables — ta fourchette experte peut être plus juste ; dis-le.' : '');
         } else {
-            priceCtx = '\n\n(Aucun prix exploitable — fourchette indicative + signale-le clairement.)';
+            priceCtx = '\n\n(' + readInfo + ') AUCUN prix exploitable — fourchette experte obligatoire + dis-le clairement.';
         }
 
-        // ─── Catalogue : l'utilisateur identifie la marque → on regarde SI ce genre de produit existe ICI ───
+        // ─── Catalogue ───
         const catalog = await ownCatalog(hostHeader);
         const shopItem = matchCatalogItem(catalog, { q: query, d: imgDesc });
         let shopCtx = '';
@@ -372,17 +393,17 @@ module.exports = async (req, res) => {
             shopCtx = '\n\n★ CATALOGUE ACTION ARCHIVE — reproduction neuve équivalente EN VENTE : « ' + shopItem.nom + ' » (' + (shopItem.collection || '—') + ') — PRIX BOUTIQUE RÉEL : ' + shopItem.prix.toFixed(2).replace('.', ',') + ' € — lien : ' + linkRel + '\nLigne REPRODUCTION : EXACTEMENT ce prix + cite le lien sous la forme "fiche produit".';
             results1.unshift({ title: 'Action Archive — ' + shopItem.nom, url: 'https://' + hostHeader + '/' + linkRel, snippet: 'Reproduction neuve en vente sur le site' });
         } else if (catalog.length) {
-            shopCtx = '\n\n★ CATALOGUE ACTION ARCHIVE : aucune reproduction équivalente trouvée au catalogue → ligne REPRODUCTION = "non proposée au catalogue" (aucun prix inventé).';
+            shopCtx = '\n\n★ CATALOGUE ACTION ARCHIVE : aucune reproduction équivalente au catalogue → ligne REPRODUCTION = "non proposée au catalogue" (aucun prix inventé).';
         }
 
-        // ─── Réponse finale : version complète puis allégée si le cerveau boudé ───
+        // ─── Réponse finale ───
         const questionFull = (query || (imgDesc ? 'Estime la pièce analysée en photo.' : 'J\'ai joint une photo de ma pièce.')) +
-            (imgDesc ? '\n\nDescription factuelle de la photo (analyse Gemini) : ' + imgDesc : '') +
-            (refineId ? '\n\nPrécision d\'identification (passe 2) : ' + refineId : '') +
+            (imgDesc ? '\n\nDescription factuelle (photo) : ' + imgDesc : '') +
+            (refineId ? '\n\nPrécision (passe 2) : ' + refineId : '') +
             shopCtx + context + priceCtx;
-        const questionLite = (query || (imgDesc ? 'Estime la pièce (Reproduction / Loose / MIB-NRFB).' : 'Identifie et estime la pièce en photo d\'après les données.')) +
-            (imgDesc ? '\nDescription photo : ' + imgDesc.slice(0, 300) : '') +
-            (refineId ? '\nPrécision passe 2 : ' + refineId.slice(0, 200) : '') +
+        const questionLite = (query || (imgDesc ? 'Estime la pièce (Reproduction / Loose / MIB-NRFB avec étiquettes).' : 'Identifie et estime la pièce (données ci-dessus).')) +
+            (imgDesc ? '\nDescription : ' + imgDesc.slice(0, 300) : '') +
+            (refineId ? '\nPrécision : ' + refineId.slice(0, 200) : '') +
             shopCtx + priceCtx;
         const model = await pickTextModel();
         const base = [ { role: 'system', content: SYSTEM_PROMPT }, ...history ];
@@ -394,6 +415,7 @@ module.exports = async (req, res) => {
             reply,
             photoNote,
             priceCount: prices.length,
+            pagesRead: harv1.read + harv2.read,
             matchedShop: shopItem ? { name: shopItem.nom, price: shopItem.prix, id: shopItem.id } : null,
             sources: results1.map(r => ({ title: r.title, url: r.url }))
         });
