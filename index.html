@@ -189,17 +189,6 @@
         .aa-shortcut-btn:hover .aa-shortcut-label{ color:var(--red); }
         .aa-shortcut-toutvoir .aa-shortcut-img{ background:var(--yellow); }
 
-        /* ============ 9b. PAVÉ AGENT EXPERT ============ */
-        .aa-agent-call{ display:flex; flex-direction:column; align-items:center; gap:1.25rem; padding:3.4rem 1.5rem 3.8rem; text-decoration:none; }
-        .aa-agent-logo-btn{ display:block; width:clamp(120px,18vw,175px); height:auto; filter:drop-shadow(4px 6px 0 var(--red)); transition:transform .35s cubic-bezier(.34,1.56,.64,1), filter .3s ease; animation:aaBobLogo 5s ease-in-out infinite; }
-        .aa-agent-call:hover .aa-agent-logo-btn{ transform:rotate(-4deg) scale(1.07); filter:drop-shadow(7px 9px 0 var(--ink)); }
-        @keyframes aaBobLogo{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-8px);} }
-        .aa-agent-msg{ font-family:'Work Sans',sans-serif; font-weight:800; font-size:clamp(1.05rem,2.3vw,1.4rem); text-align:center; max-width:46rem; color:var(--ink); line-height:1.45; }
-        .aa-agent-msg .hl{ color:var(--red); }
-        .aa-agent-cta{ display:inline-flex; align-items:center; gap:.5rem; background:var(--ink); color:var(--yellow); font-family:'Epilogue',sans-serif; font-weight:900; text-transform:uppercase; font-size:.85rem; letter-spacing:.04em; padding:.6rem 1.1rem; border:3px solid var(--ink); box-shadow:4px 4px 0 var(--red); transition:all .2s ease; }
-        .aa-agent-call:hover .aa-agent-cta{ background:var(--yellow); color:var(--ink); transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--red); }
-        .aa-agent-cta .material-symbols-outlined{ font-size:18px; font-variation-settings:'FILL' 1; }
-
         /* ============ 10. RUBAN SÉPARATEUR ============ */
         .aa-ribbon{ background:var(--yellow); border-top:4px solid var(--ink); border-bottom:4px solid var(--ink); overflow:hidden; padding:.7rem 0; margin:3.5rem -1rem; transform:rotate(-1deg); box-shadow:0 6px 0 rgba(52,46,30,.15); }
         .aa-ribbon-track{ display:flex; width:max-content; animation:aaRibbon 32s linear infinite; }
@@ -293,10 +282,6 @@
             .aa-carousel{ width:280px; height:280px; }
             .aa-badge-circ{ width:48px; height:48px; font-size:.85rem; }
 
-            /* --- Pavé agent sur mobile --- */
-            .aa-agent-call{ padding:2.6rem 1.25rem 3rem; gap:1rem; }
-            .aa-agent-msg{ font-size:1rem; max-width:100%; }
-
             /* --- Programme Collectionneur --- */
             .aa-programme{ padding:3.25rem 0 3.5rem; }
             .aa-programme-grid{ grid-template-columns:minmax(0,1fr); gap:2.2rem; text-align:center; }
@@ -322,7 +307,6 @@
             .aa-lcell{ height:36px; font-size:1.1rem; }
             .aa-programme-pill{ font-size:.8rem; padding:.55rem .8rem; }
             .aa-ribbon{ margin:2.5rem -1rem; }
-            .aa-agent-logo-btn{ width:104px; }
         }
         @media (prefers-reduced-motion: reduce){
             *, *::before, *::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
@@ -402,7 +386,6 @@
                 <a href="produits.html" class="aa-drawer-link">PRODUITS</a>
                 <a href="info.html" class="aa-drawer-link">INFO</a>
                 <a href="toys-history.html" class="aa-drawer-link">TOYS HISTORY</a>
-                <a href="agent.html" class="aa-drawer-link">EXPERT JOUETS</a>
                 <a href="panier.html" class="aa-drawer-link">COMMANDE</a>
                 <a href="inscription.html" class="aa-drawer-link">INSCRIPTION</a>
             </nav>
@@ -500,15 +483,6 @@
                     <a href="produits.html?brands=Hasbro,GI+Joe" class="aa-shortcut-btn reveal"><div class="aa-shortcut-img"><img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1788007195/GIJOE_1_itzju9.ico" alt="GI Joe" loading="lazy"></div><span class="aa-shortcut-label">GI JOE</span></a>
                 </div>
             </div>
-        </section>
-
-        <!-- ═══ PAVÉ AGENT EXPERT (après les raccourcis) ═══ -->
-        <section aria-label="Expert Jouets Vintage">
-            <a href="agent.html" class="aa-agent-call reveal" aria-label="Ouvrir l'agent Expert Jouets Vintage — identification et estimation">
-                <img src="https://res.cloudinary.com/uvnbvhiw/image/upload/v1792068823/Change_text_in_circle_2K_20261015145043_ror30z.png" alt="Logo de l'agent Expert Jouets Vintage" class="aa-agent-logo-btn" loading="lazy"/>
-                <p class="aa-agent-msg">Identifie tes figurines <span class="hl">(photo acceptée)</span>, évalue la rareté <span class="hl">(Loose, MIB, NRFB)</span> et obtiens une estimation de valeur.</p>
-                <span class="aa-agent-cta"><span class="material-symbols-outlined">smart_toy</span>Ouvrir l'Expert <span class="material-symbols-outlined" style="margin-left:.2rem;">arrow_forward</span></span>
-            </a>
         </section>
 
         <!-- ═══ RUBAN DÉFILANT ═══ -->
