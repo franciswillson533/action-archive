@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="utf-8"><title>CSV Airtable → products.json</title>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script></head>
+<body>
+<h2>CSV Airtable → products.json</h2>
+<p>Sélectionne ton export (« Produits-Grid view.csv ») :</p>
+<input type="file" accept=".csv">
+<pre id="out">En attente d'un fichier…</pre>
+<script>
+function slugify(s){
+  return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,60);
+}
+document.querySelector('input').addEventListener('change', e=>{
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    const parsed=Papa.parse(reader.result.replace(/^\uFEFF/,''),{header:true,skipEmptyLines:'greedy'});
+    const usedIds=new Set(), records=[]; let ignores=0;
+    parsed.data.forEach(r=>{
+      const nom=(r.Nom||'').trim();
+      if(!nom){ignores++;return;}
+      let id='rec_'+slugify(nom), n=2;
+      while(usedIds.has(id)) id='rec_'+slugify(nom)+'-'+(n++);  // doublons → -2, -3
+      usedIds.add(id);
+      records.push({
+        id,
+        fields:{
+          Nom:nom,
+          Prix:(r.Prix||'')!=='' ? Number(String(r.Prix).replace(',','.')) : null,
+          Description:r.Description||'',
+          Statut:r.Statut||'Disponible',
+          Lien:r.Lien||'',
+          'Lien Recto':r['Lien Recto']||'',
+          'Lien Verso':r['Lien Verso']||'',
+          Type:(r.Type||'').trim()||'Reproduction',
+          Année:r.Année?parseInt(r.Année,10):null,
+          Collection:(r.Collection||'').trim()
+        }
+      });
+    });
+    const blob=new Blob([JSON.stringify(records)],{type:'application/json'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob); a.download='products.json'; a.click();
+    document.getElementById('out').textContent='✅ '+records.length+' produits convertis ('+Math.round(blob.size/1024)+' Ko). '+ignores+' ligne(s) sans nom ignorée(s).';
+  };
+  reader.readAsText(file,'utf-8');
+});
+</script>
+</body>
+</html>
