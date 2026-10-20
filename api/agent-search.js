@@ -304,7 +304,7 @@ function norm(s) { return String(s || '').toLowerCase().normalize('NFD').replace
 async function ownCatalog(host) {
     try {
         if (catCache && Date.now() - catCache.t < CACHE_TTL) return catCache.items;
-        const res = await fetch('https://' + host + '/api/airtable-proxy', { headers: { 'User-Agent': 'AA-Agent/1.0' } });
+        const res = await fetch('https://' + host + '/products.json', { headers: { 'User-Agent': 'AA-Agent/1.0' } });
         if (!res.ok) return [];
         const data = await res.json();
         const items = (Array.isArray(data) ? data : []).map(r => {

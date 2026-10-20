@@ -613,7 +613,7 @@
 
     async function fetchProducts() {
         try {
-            const response = await fetch('/api/airtable-proxy');
+            const response = await fetch('/products.json');
             if (!response.ok) throw new Error('HTTP ' + response.status);
             const data = await response.json();
             const products = Array.isArray(data) ? data : [];

@@ -1,4 +1,4 @@
-const API_ENDPOINT = '/api/airtable-proxy';
+const API_ENDPOINT = '/products.json';
 const CACHE_DURATION = 60 * 60 * 1000;
 const CACHE_KEY = 'aa_products_cache';
 const CACHE_TIME_KEY = 'aa_products_cache_time';
