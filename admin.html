@@ -3,8 +3,10 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta name="robots" content="noindex,nofollow"/>
     <title>Admin - Action Archive</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,700;0,900;1,900&family=Work+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script>
@@ -105,12 +107,12 @@
         <h2 class="font-headline font-black text-2xl uppercase italic text-center mb-2">Accès restreint</h2>
         <p class="text-center text-on-surface-variant font-bold text-sm mb-6 italic">
             🔒 Cette partie est strictement personnelle.<br>
-            📊 Elle contient toutes les <strong>statistiques</strong> du site.
+            🛠️ Elle héberge tes outils de gestion du catalogue.
         </p>
         <form onsubmit="return adminLogin(event)">
             <label class="font-headline font-black uppercase text-sm block mb-2">Mot de passe admin</label>
             <input id="admin-pwd" type="password" required placeholder="" class="w-full border-2 border-on-background p-3 font-bold bg-surface focus:outline-none focus:border-primary mb-4" autocomplete="off">
-            <button type="submit" class="btn-physical w-full bg-primary text-on-primary font-headline font-black py-3 uppercase shadow-[4px_4px_0px_0px_#755700]">ENTRER</button>
+            <button type="submit" class="btn-physical w-full bg-primary text-[#fff5e5] font-headline font-black py-3 uppercase shadow-[4px_4px_0px_0px_#755700]">ENTRER</button>
         </form>
     </div>
 
@@ -128,27 +130,56 @@
 
         <div id="tab-inventory" class="tab-content active">
             <div class="bg-surface-container-high border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_#bb0003]">
-                <h2 class="font-headline font-black text-2xl uppercase italic mb-2 flex items-center gap-2"><span class="material-symbols-outlined">inventory_2</span> Inventaire (<span id="aa-local-count">0</span>)</h2>
-                <div class="bg-secondary-container border-2 border-on-background p-3 mb-4 text-sm">
-                    <p>⚠️ <strong>Système local désactivé.</strong> Tes produits sont gérés directement dans Airtable.</p>
-                </div>
-                <div id="aa-local-list" class="space-y-2 max-h-[600px] overflow-y-auto">
-                    <div class="text-center py-12">
-                        <p class="font-bold italic text-on-surface-variant mb-2">📦 Le système local n'est plus utilisé</p>
-                        <p class="text-sm">Tes produits sont maintenant gérés directement dans <a href="https://airtable.com" target="_blank" class="text-tertiary underline font-bold">Airtable</a>.</p>
+                <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+                    <h2 class="font-headline font-black text-2xl uppercase italic flex items-center gap-2"><span class="material-symbols-outlined">inventory_2</span> Inventaire — copie de travail (<span id="inv-count">0</span>)</h2>
+                    <div class="flex gap-2 flex-wrap">
+                        <button onclick="reloadFromLive()" class="btn-physical bg-surface border-2 border-on-background px-3 py-2 text-[11px] font-headline font-black uppercase">↻ Version publiée</button>
+                        <button onclick="exportProductsJson()" class="btn-physical bg-green-700 text-white border-2 border-on-background px-3 py-2 text-[11px] font-headline font-black uppercase shadow-[2px_2px_0px_0px_#342e1e]">💾 Exporter products.json</button>
                     </div>
                 </div>
+                <div id="inv-modified" class="hidden bg-surface-container-low border-2 border-on-background p-2 mb-3 text-xs font-headline font-black uppercase text-[#755700]"></div>
+                <div class="flex items-center gap-2 border-2 border-on-background p-2 mb-4 bg-surface">
+                    <span class="material-symbols-outlined text-on-surface-variant">search</span>
+                    <input id="inv-search" oninput="renderInventory()" type="search" placeholder="RECHERCHER UN PRODUIT..." class="w-full bg-transparent border-0 outline-none font-headline font-black uppercase text-sm">
+                </div>
+                <div id="inv-list" class="space-y-2 max-h-[600px] overflow-y-auto"><p class="text-center py-8 text-on-surface-variant italic">Chargement…</p></div>
             </div>
         </div>
 
         <div id="tab-add" class="tab-content">
-            <div class="bg-surface-container-high border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_#0f56bf]">
-                <h2 class="font-headline font-black text-2xl uppercase italic mb-4 flex items-center gap-2"><span class="material-symbols-outlined">add_box</span> Ajout de produit</h2>
-                <div class="bg-fdefd5 border-2 border-on-background p-6 text-center">
-                    <span class="material-symbols-outlined text-6xl text-on-surface-variant mb-4 block">cloud_off</span>
-                    <p class="font-headline font-black uppercase text-lg mb-2">⚠️ Fonctionnalité désactivée</p>
-                    <p class="font-body text-on-surface-variant mb-4">L'ajout de produits se fait maintenant directement dans Airtable.</p>
-                    <a href="https://airtable.com" target="_blank" class="btn-physical inline-block bg-tertiary text-on-primary font-headline font-black px-6 py-3 uppercase shadow-[4px_4px_0px_0px_#342e1e]">🔗 Ouvrir Airtable</a>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-surface-container-high border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_#0f56bf]">
+                    <h2 class="font-headline font-black text-2xl uppercase italic mb-2 flex items-center gap-2"><span class="material-symbols-outlined">upload_file</span> Import CSV</h2>
+                    <p class="text-xs font-bold italic text-on-surface-variant mb-4">Importe un CSV exporté d'Airtable. Le site ne lit que le products.json.</p>
+                    <div class="bg-surface border-2 border-on-background p-4 space-y-3">
+                        <div class="flex flex-wrap gap-4 text-xs font-headline font-black uppercase">
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="csv-mode" value="merge" checked> Fusion (maj + nouveaux)</label>
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="csv-mode" value="replace"> Remplacement total</label>
+                        </div>
+                        <input type="file" accept=".csv" onchange="handleCsvFile(this)" class="text-sm">
+                        <div id="csv-result" class="text-xs font-bold"></div>
+                    </div>
+                    <div class="bg-surface-container-low border-2 border-on-background p-3 mt-4 text-xs italic">📤 Après export : remplace <b>products.json</b> dans ton dossier, puis <code>git add -A && git commit -m "Maj catalogue" && git push</code></div>
+                </div>
+                <div class="bg-surface-container-high border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_#bb0003]">
+                    <h2 class="font-headline font-black text-2xl uppercase italic mb-4 flex items-center gap-2"><span class="material-symbols-outlined">add_box</span> Ajouter un produit</h2>
+                    <form onsubmit="return addManualProduct(event)" class="bg-surface border-2 border-on-background p-4 space-y-2">
+                        <input id="mp-nom" required placeholder="Nom du produit" class="w-full border-2 border-on-background p-2 font-bold bg-surface text-sm">
+                        <div class="grid grid-cols-2 gap-2">
+                            <input id="mp-prix" type="number" step="0.01" min="0" required placeholder="Prix (€)" class="border-2 border-on-background p-2 font-bold bg-surface text-sm">
+                            <input id="mp-annee" type="number" min="1950" max="2000" placeholder="Année" class="border-2 border-on-background p-2 font-bold bg-surface text-sm">
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <select id="mp-type" class="border-2 border-on-background p-2 font-bold bg-surface text-xs"><option value="Reproduction">Reproduction</option><option value="Custom">Custom</option></select>
+                            <select id="mp-statut" class="border-2 border-on-background p-2 font-bold bg-surface text-xs"><option>Disponible</option><option>Réservé</option><option>Vendu</option><option>Indisponible</option></select>
+                            <input id="mp-collection" placeholder="Collection" class="border-2 border-on-background p-2 font-bold bg-surface text-sm">
+                        </div>
+                        <input id="mp-recto" type="url" placeholder="Lien image RECTO (Cloudinary)" class="w-full border-2 border-on-background p-2 font-bold bg-surface text-sm">
+                        <input id="mp-verso" type="url" placeholder="Lien image VERSO (optionnel)" class="w-full border-2 border-on-background p-2 font-bold bg-surface text-sm">
+                        <textarea id="mp-desc" rows="3" placeholder="Description" class="w-full border-2 border-on-background p-2 bg-surface text-sm"></textarea>
+                        <button type="submit" class="btn-physical w-full bg-primary text-[#fff5e5] font-headline font-black py-2 uppercase text-sm shadow-[2px_2px_0px_0px_#342e1e]">✓ AJOUTER</button>
+                        <div id="mp-result" class="text-xs font-bold"></div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -225,9 +256,9 @@
                 <div class="stat-card bg-surface-container-high border-4 border-on-background p-6 text-center shadow-[4px_4px_0px_0px_#00aa00]"><span class="material-symbols-outlined text-3xl text-green-700">emoji_events</span><p class="font-headline font-black text-base md:text-lg text-green-700 mt-2 truncate" id="loyalty-stat-top">-</p><p class="font-headline font-black uppercase text-xs mt-2">Top client</p></div>
             </div>
             <div class="bg-surface-container-high border-4 border-on-background p-6 shadow-[6px_6px_0px_0px_#ffca4d]">
-                <div class="search-big mb-4" style="box-shadow:4px 4px 0 0 #342e1e; border-width:2px;">
-                    <span class="material-symbols-outlined">search</span>
-                    <input id="loyalty-search" onkeyup="renderLoyaltyList()" type="search" placeholder="RECHERCHER UN CLIENT...">
+                <div class="flex items-center gap-2 border-2 border-on-background p-2 mb-4 bg-surface">
+                    <span class="material-symbols-outlined text-on-surface-variant">search</span>
+                    <input id="loyalty-search" oninput="renderLoyaltyList()" type="search" placeholder="RECHERCHER UN CLIENT..." class="w-full bg-transparent border-0 outline-none font-headline font-black uppercase text-sm">
                 </div>
                 <div id="aa-loyalty-list" class="space-y-3 max-h-[700px] overflow-y-auto"><p class="text-center py-8 text-on-surface-variant italic">Chargement...</p></div>
             </div>
@@ -246,7 +277,7 @@
                             <div class="flex items-center gap-1"><input id="ship-cost" type="number" step="0.01" min="0" placeholder="Coût (€)" required class="flex-grow border-2 border-on-background p-2 font-bold bg-surface text-sm"><span class="text-xs">€</span></div>
                             <div class="flex items-center gap-1"><input id="ship-surcharge" type="number" step="0.01" min="0" placeholder="Surplus 4+ (€)" class="flex-grow border-2 border-on-background p-2 font-bold bg-surface text-sm"><span class="text-xs">€</span></div>
                         </div>
-                        <button type="submit" class="btn-physical w-full bg-tertiary text-on-primary font-headline font-black py-2 uppercase text-sm shadow-[2px_2px_0px_0px_#342e1e]">✓ AJOUTER</button>
+                        <button type="submit" class="btn-physical w-full bg-tertiary text-[#fff5e5] font-headline font-black py-2 uppercase text-sm shadow-[2px_2px_0px_0px_#342e1e]">✓ AJOUTER</button>
                     </form>
                     <div class="bg-surface border-2 border-on-background max-h-[500px] overflow-y-auto">
                         <table class="w-full"><thead class="bg-on-background text-surface sticky top-0"><tr><th class="font-headline font-black uppercase text-[10px] p-2 text-left">Pays</th><th class="font-headline font-black uppercase text-[10px] p-2 text-left">Transporteur</th><th class="font-headline font-black uppercase text-[10px] p-2 text-right">Coût</th><th class="font-headline font-black uppercase text-[10px] p-2 text-right">/art. 4+</th><th class="font-headline font-black uppercase text-[10px] p-2 text-center">×</th></tr></thead><tbody id="shipping-rates-table"></tbody></table>
@@ -265,7 +296,7 @@
                             <input id="tax-country" placeholder="Pays" required class="border-2 border-on-background p-2 font-bold bg-surface text-sm">
                             <div class="flex items-center gap-1"><input id="tax-rate" type="number" step="0.01" min="0" max="100" placeholder="20" required class="flex-grow border-2 border-on-background p-2 font-bold bg-surface text-sm"><span class="text-xs">%</span></div>
                         </div>
-                        <button type="submit" class="btn-physical w-full bg-primary text-on-primary font-headline font-black py-2 uppercase text-sm shadow-[2px_4px_0px_0px_#342e1e]">✓ AJOUTER</button>
+                        <button type="submit" class="btn-physical w-full bg-primary text-[#fff5e5] font-headline font-black py-2 uppercase text-sm shadow-[2px_2px_0px_0px_#342e1e]">✓ AJOUTER</button>
                     </form>
                     <div class="bg-surface border-2 border-on-background max-h-[280px] overflow-y-auto">
                         <table class="w-full"><thead class="bg-on-background text-surface sticky top-0"><tr><th class="font-headline font-black uppercase text-xs p-2 text-left">Pays</th><th class="font-headline font-black uppercase text-xs p-2 text-right">Taux</th><th class="font-headline font-black uppercase text-xs p-2 text-center">×</th></tr></thead><tbody id="tax-rates-table"></tbody></table>
@@ -281,7 +312,7 @@
                         <h2 class="font-headline font-black text-xl uppercase italic mb-4 flex items-center gap-2"><span class="material-symbols-outlined">email</span> Contact international</h2>
                         <input id="ship-email" type="email" placeholder="contact@action-archive.com" class="w-full border-2 border-on-background p-2 font-bold bg-surface mb-3">
                         <textarea id="ship-default-message" rows="2" class="w-full border-2 border-on-background p-2 font-bold bg-surface text-sm mb-3"></textarea>
-                        <button onclick="saveShippingParams()" class="btn-physical w-full bg-secondary text-on-secondary font-headline font-black py-2 uppercase text-sm shadow-[2px_2px_0px_0px_#342e1e]">💾 SAUVEGARDER</button>
+                        <button onclick="saveShippingParams()" class="btn-physical w-full bg-secondary text-[#fff5e5] font-headline font-black py-2 uppercase text-sm shadow-[2px_2px_0px_0px_#342e1e]">💾 SAUVEGARDER</button>
                     </div>
                 </div>
             </div>
@@ -316,8 +347,8 @@
                         <input id="yt-url" type="url" placeholder="https://youtube.com/@ta-chaine" class="w-full border-2 border-on-background p-2 font-bold bg-surface text-sm">
                     </div>
                 </div>
-                <button onclick="saveSocialConfig()" class="btn-physical w-full bg-primary text-on-primary font-headline font-black py-3 uppercase text-base mt-6 shadow-[4px_4px_0px_0px_#342e1e]">💾 SAUVEGARDER TOUS</button>
-                <div class="mt-6 bg-fdefd5 border-2 border-on-background p-4"><p class="font-headline font-black uppercase text-xs mb-2">👁️ Aperçu</p><div id="social-preview" class="flex flex-wrap gap-3"></div></div>
+                <button onclick="saveSocialConfig()" class="btn-physical w-full bg-primary text-[#fff5e5] font-headline font-black py-3 uppercase text-base mt-6 shadow-[4px_4px_0px_0px_#342e1e]">💾 SAUVEGARDER TOUS</button>
+                <div class="mt-6 bg-surface-container-low border-2 border-on-background p-4"><p class="font-headline font-black uppercase text-xs mb-2">👁️ Aperçu</p><div id="social-preview" class="flex flex-wrap gap-3"></div></div>
             </div>
         </div>
     </div>
@@ -347,7 +378,7 @@ function getLocalProducts() { return []; }
 function saveLocalProducts(p) { /* no-op */ }
 function detectTypeStrict(f) {
     if (!f) return 'reproduction';
-    const rawType = f.Type || f.type || ''; 
+    const rawType = f.Type || f.type || f.TYPE || '';
     const t = String(rawType).trim().toLowerCase();
     if (t === 'custom' || t.startsWith('custom') || t.includes('custom')) return 'custom';
     return 'reproduction';
@@ -358,6 +389,7 @@ function switchTab(tabId, btn) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('tab-' + tabId).classList.add('active');
     btn.classList.add('active');
+    if (tabId === 'inventory') loadInventory();
     if (tabId === 'orders') loadOrders();
     if (tabId === 'stats') loadStats();
     if (tabId === 'customers') loadCustomers();
@@ -371,6 +403,7 @@ function adminLogin(e) {
     if (document.getElementById('admin-pwd').value === ADMIN_PWD) {
         document.getElementById('aa-admin-login').classList.add('hidden');
         document.getElementById('aa-admin-panel').classList.remove('hidden');
+        loadInventory();
         loadOrders();
         loadStats();
         loadCustomers();
@@ -531,7 +564,7 @@ function loadShippingConfig() {
     document.getElementById('ship-tax-label').value = c.taxLabel || 'TVA';
     document.getElementById('ship-email').value = c.email || '';
     document.getElementById('ship-default-message').value = c.defaultMessage || '';
-    renderShippingRates(); renderTaxRates(); renderShippingPreview(); updateTaxesStatus();
+    renderShippingRates(); renderTaxRates();
 }
 function updateTaxesStatus() {
     const status = document.getElementById('taxes-status');
@@ -659,6 +692,194 @@ initSocialConfig();
         if (data && data.enabled && data.url) nav.innerHTML += `<a href="${data.url}" target="_blank" class="text-[#ffca4d]"><span class="material-symbols-outlined">${item.icon}</span></a>`;
     });
 })();
+</script>
+
+<script>
+/* ═══════════ OUTILS CATALOGUE — copie de travail / import / export ═══════════ */
+const AA_WC_KEY = 'aa_admin_products';
+let aaLiveSnapshot = null;
+
+function slugifyName(s){ return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,60); }
+function genProductId(nom, list){
+    const base = 'rec_' + slugifyName(nom);
+    const ids = new Set(list.filter(x=>x.id).map(x=>x.id));
+    let id = base, n = 2;
+    while(ids.has(id)) id = base + '-' + (n++);
+    return id;
+}
+async function fetchLiveProducts(){
+    const r = await fetch('/products.json');
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+}
+function getWorkingCopy(){ try{ return JSON.parse(localStorage.getItem(AA_WC_KEY)||'null'); }catch(e){ return null; } }
+function saveWorkingCopy(p){ localStorage.setItem(AA_WC_KEY, JSON.stringify(p)); }
+
+/* ---------- INVENTAIRE ---------- */
+async function loadInventory(){
+    if(!getWorkingCopy()){
+        try{ saveWorkingCopy(await fetchLiveProducts()); }
+        catch(e){ document.getElementById('inv-list').innerHTML = '<p class="text-center py-8 text-red-700 font-bold">Impossible de lire products.json (' + e.message + ')</p>'; return; }
+    }
+    try{ aaLiveSnapshot = await fetchLiveProducts(); }catch(e){ aaLiveSnapshot = null; }
+    renderInventory();
+}
+
+function renderInventory(){
+    const wc = getWorkingCopy() || [];
+    const q = (document.getElementById('inv-search')?.value || '').toLowerCase();
+    let list = wc;
+    if(q) list = wc.filter(p => ('' + (p.fields.Nom||'') + ' ' + (p.fields.Collection||'') + ' ' + (p.fields.Année||'')).toLowerCase().includes(q));
+    document.getElementById('inv-count').textContent = wc.length;
+    const box = document.getElementById('inv-list');
+    if(list.length === 0){
+        box.innerHTML = '<p class="text-center py-8 italic text-on-surface-variant">' + (q ? 'Aucun résultat.' : 'Copie de travail vide — clique « Version publiée ».') + '</p>';
+        updateModified(); return;
+    }
+    box.innerHTML = list.map(p => {
+        const f = p.fields || {};
+        const img = (f['Lien Recto'] || f.Lien || '').trim();
+        const isC = String(f.Type||'').toLowerCase().includes('custom');
+        const st = f.Statut || 'Disponible';
+        const sc = { 'Disponible':'#00aa00', 'Réservé':'#755700', 'Vendu':'#bb0003', 'Indisponible':'#635b48' }[st] || '#635b48';
+        return `<div class="flex items-center gap-2 p-2 bg-surface border-2 border-on-background flex-wrap">
+            <a href="produit.html?id=${p.id}" target="_blank" class="flex-none">${img ? `<img src="${img}" class="w-12 h-16 object-cover border-2 border-on-background" onerror="this.remove()">` : '<div class="w-12 h-16 bg-surface-container-low border-2 border-on-background"></div>'}</a>
+            <div class="flex-grow min-w-[140px]">
+                <p class="font-headline font-black uppercase text-sm leading-tight">${aaEscapeHtml(f.Nom||'')}</p>
+                <p class="text-[10px] font-bold text-on-surface-variant">${aaEscapeHtml(f.Collection||'')} • ${aaEscapeHtml(String(f.Année||'—'))} • <span class="px-1" style="background:${isC?'#7b1fa2':'#0f56bf'};color:#fff5e5;">${isC?'CUSTOM':'REPRO'}</span></p>
+            </div>
+            <span class="text-[9px] font-black uppercase px-2 py-1 border-2 border-on-background flex-none" style="color:${sc};">${st==='Disponible'?'DISPO':st}</span>
+            <label class="flex-none text-[9px] font-black uppercase text-on-surface-variant">Prix<input type="number" step="0.01" min="0" value="${f.Prix ?? ''}" onchange="editProduct('${p.id}','Prix',this.value)" class="w-20 border-2 border-on-background p-1 font-bold bg-surface text-sm text-right"></label>
+            <label class="flex-none text-[9px] font-black uppercase text-on-surface-variant">Statut<select onchange="editProduct('${p.id}','Statut',this.value)" class="border-2 border-on-background p-1 font-bold bg-surface text-xs">${['Disponible','Réservé','Vendu','Indisponible'].map(s=>`<option ${s===st?'selected':''}>${s}</option>`).join('')}</select></label>
+            <button onclick="deleteProduct('${p.id}')" title="Supprimer" class="flex-none p-1 text-red-700">🗑️</button>
+        </div>`;
+    }).join('');
+    updateModified();
+}
+
+function editProduct(id, key, val){
+    const p = getWorkingCopy(); if(!p) return;
+    const rec = p.find(x => x.id === id); if(!rec) return;
+    if(key === 'Prix') val = parseFloat(val) || 0;
+    rec.fields[key] = val;
+    saveWorkingCopy(p);
+    updateModified();
+}
+
+function deleteProduct(id){
+    const p = getWorkingCopy(); if(!p) return;
+    if(!confirm('Supprimer ce produit de la copie de travail ? (publié seulement après export + push)')) return;
+    saveWorkingCopy(p.filter(x => x.id !== id));
+    renderInventory();
+    if (typeof aaToast === 'function') aaToast('Retiré de la copie de travail', 'delete');
+}
+
+function updateModified(){
+    const el = document.getElementById('inv-modified'); if(!el) return;
+    const wc = getWorkingCopy() || [];
+    let n = 0;
+    if(aaLiveSnapshot){
+        const liveById = new Map(aaLiveSnapshot.map(p=>[p.id,p]));
+        const wcIds = new Set(wc.map(p=>p.id));
+        wc.forEach(p => { const l = liveById.get(p.id); if(!l){ n++; return; }
+            const a = l.fields, b = p.fields;
+            if(String(a.Nom)!==String(b.Nom) || String(a.Prix)!==String(b.Prix) || (a.Statut||'')!==(b.Statut||'')) n++; });
+        aaLiveSnapshot.forEach(p => { if(!wcIds.has(p.id)) n++; });
+    }
+    if(n > 0){ el.classList.remove('hidden'); el.innerHTML = '⚠️ ' + n + ' modification(s) non publiée(s) — Exporter → remplacer products.json dans ton dossier → git push'; }
+    else { el.classList.add('hidden'); el.innerHTML = ''; }
+}
+
+async function reloadFromLive(){
+    if(!confirm('Charger la version publiée ? Les changements non exportés seront perdus.')) return;
+    try{
+        const live = await fetchLiveProducts();
+        saveWorkingCopy(live); aaLiveSnapshot = live;
+        renderInventory();
+        if (typeof aaToast === 'function') aaToast('Version publiée chargée', 'sync');
+    }catch(e){ if (typeof aaToast === 'function') aaToast('Échec (' + e.message + ')', 'error'); }
+}
+
+/* ---------- EXPORT ---------- */
+function exportProductsJson(){
+    const p = getWorkingCopy();
+    if(!p || !p.length){ if (typeof aaToast === 'function') aaToast('Copie de travail vide', 'error'); return; }
+    const blob = new Blob([JSON.stringify(p)], { type:'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = 'products.json'; a.click();
+    if (typeof aaToast === 'function') aaToast('products.json téléchargé — dossier + git push', 'download');
+}
+
+/* ---------- AJOUT : formulaire manuel ---------- */
+function addManualProduct(e){
+    e.preventDefault();
+    const nom = document.getElementById('mp-nom').value.trim();
+    if(!nom) return false;
+    const p = getWorkingCopy() || [];
+    p.unshift({ id: genProductId(nom, p), fields: {
+        Nom: nom,
+        Prix: parseFloat(document.getElementById('mp-prix').value) || 0,
+        Description: document.getElementById('mp-desc').value.trim(),
+        Statut: document.getElementById('mp-statut').value,
+        Lien: '',
+        'Lien Recto': document.getElementById('mp-recto').value.trim(),
+        'Lien Verso': document.getElementById('mp-verso').value.trim(),
+        Type: document.getElementById('mp-type').value,
+        Année: parseInt(document.getElementById('mp-annee').value, 10) || null,
+        Collection: document.getElementById('mp-collection').value.trim()
+    }});
+    saveWorkingCopy(p);
+    e.target.reset();
+    document.getElementById('mp-result').innerHTML = '✅ Ajouté en tête de catalogue (' + p.length + ' produits, non publié)';
+    renderInventory();
+    if (typeof aaToast === 'function') aaToast(nom + ' ajouté !', 'inventory');
+    return false;
+}
+
+/* ---------- AJOUT : import CSV (Airtable) ---------- */
+function handleCsvFile(input){
+    const file = input.files[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+        try{
+            const parsed = Papa.parse(reader.result.replace(/^\uFEFF/, ''), { header:true, skipEmptyLines:'greedy' });
+            const mode = document.querySelector('input[name="csv-mode"]:checked')?.value || 'merge';
+            let list = mode === 'replace' ? [] : (getWorkingCopy() || []);
+            let added = 0, updated = 0;
+            const names = new Set(list.map(p => (p.fields.Nom||'').trim().toLowerCase()));
+            parsed.data.forEach(r => {
+                const nom = (r.Nom||'').trim(); if(!nom) return;
+                const fields = {
+                    Nom: nom,
+                    Prix: (r.Prix||'')!=='' ? Number(String(r.Prix).replace(',','.')) : null,
+                    Description: r.Description||'',
+                    Statut: r.Statut||'Disponible',
+                    Lien: r.Lien||'',
+                    'Lien Recto': r['Lien Recto']||'',
+                    'Lien Verso': r['Lien Verso']||'',
+                    Type: (r.Type||'').trim()||'Reproduction',
+                    Année: r.Année?parseInt(r.Année,10):null,
+                    Collection: (r.Collection||'').trim()
+                };
+                const key = nom.toLowerCase();
+                if(mode === 'merge' && names.has(key)){
+                    const idx = list.findIndex(x => (x.fields.Nom||'').trim().toLowerCase() === key);
+                    list[idx] = { id: list[idx].id, fields };  // garde l'ancien id
+                    updated++;
+                } else {
+                    list.push({ id: genProductId(nom, list), fields });
+                    names.add(key); added++;
+                }
+            });
+            saveWorkingCopy(list);
+            document.getElementById('csv-result').innerHTML = '✅ ' + (mode==='merge' ? 'Fusion' : 'Remplacement total') + ' : <b>' + added + '</b> ajouté(s), <b>' + updated + '</b> mis à jour — <b>' + list.length + '</b> en copie de travail.';
+            renderInventory(); updateModified();
+        }catch(err){
+            document.getElementById('csv-result').innerHTML = '❌ Erreur d\'import : ' + aaEscapeHtml(err.message);
+        }
+    };
+    reader.readAsText(file, 'utf-8');
+}
 </script>
 </body>
 </html>
